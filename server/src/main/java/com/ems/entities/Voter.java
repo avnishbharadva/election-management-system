@@ -1,4 +1,4 @@
-package com.ems.controllers;
+package com.ems.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
