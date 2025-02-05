@@ -1,5 +1,6 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class CandidateAddress {
     private AddressType addressType;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "candidate_id")
     private Candidate candidate;
 

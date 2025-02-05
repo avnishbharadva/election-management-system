@@ -1,4 +1,4 @@
-package com.ems.dto;
+package com.ems.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,5 +19,5 @@ public class PartyDTO {
     @Size(max = 10, message = "Party abbreviation is too long")
     private String partyAbbreviation;
 
-    private List<Long> candidateIds; 
+    private List<Long> candidateIds;
 }

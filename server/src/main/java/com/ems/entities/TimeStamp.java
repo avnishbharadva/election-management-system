@@ -1,5 +1,6 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 @Setter
 public abstract class TimeStamp {
     @CreationTimestamp
+    @JsonIgnore
     private LocalDateTime createdAt;
     @UpdateTimestamp
+    @JsonIgnore
     private LocalDateTime updatedAt;
 }

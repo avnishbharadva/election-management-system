@@ -1,5 +1,7 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,6 +26,7 @@ public class Election {
 
     private int totalSeats;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Candidate> candidates;
 }

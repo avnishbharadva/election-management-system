@@ -1,4 +1,4 @@
-package com.ems.dto;
+package com.ems.dtos;
 
 import com.ems.entities.AddressType;
 import jakarta.validation.constraints.NotBlank;

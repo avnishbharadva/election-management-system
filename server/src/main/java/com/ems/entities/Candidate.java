@@ -1,5 +1,8 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,6 +41,7 @@ public class Candidate extends TimeStamp {
     private String spouseName;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "party_id")
     private Party party;
 
@@ -45,14 +49,17 @@ public class Candidate extends TimeStamp {
 
     private String candidateEmail;
 
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<CandidateAddress> address;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "election_id")
     private Election election;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "bank_details_id")
     private BankDetails bankDetails;
 

@@ -1,4 +1,4 @@
-package com.ems.dto;
+package com.ems.dtos;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;

@@ -1,5 +1,6 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class BankDetails {
 
     private String bankAddress;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "bankDetails", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Candidate> candidates;
 }

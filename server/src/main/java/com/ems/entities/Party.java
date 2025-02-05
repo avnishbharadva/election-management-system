@@ -1,5 +1,7 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,5 +19,6 @@ public class Party {
     private String partyAbbreviation;
 
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Candidate> candidates;
 }
