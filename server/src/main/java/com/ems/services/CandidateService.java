@@ -6,4 +6,7 @@ import com.ems.entities.CandidateAddress;
 
 public interface CandidateService {
     CandidateDTO findByCandidateSSN(String candidateSSN);
+    Candidate save(CandidateDTO candidateDTO);
+
+
 }

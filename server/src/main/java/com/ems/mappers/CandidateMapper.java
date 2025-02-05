@@ -12,17 +12,17 @@ public interface CandidateMapper {
     @Mapping(target = "partyId", source = "party")
     @Mapping(target = "candidateAddress", source = "address")
     @Mapping(target ="electionId",source = "election")
-    @Mapping(target = "bankDetailsId",source = "bankDetails")
+    @Mapping(target = "bankDetails",source = "bankDetails")
     CandidateDTO toCandidateDTO(Candidate candidate);
 
     Candidate toCandidate(CandidateDTO candidateDTO);
 
     default Long mapPartyToId(Party party) {
+
         return (party != null) ? party.getPartyId() : null;
     }
-    default Long mapBankToId(BankDetails bankDetails){
-        return (bankDetails!=null)?bankDetails.getBankDetailsId():null;
-    }
+
+
     default Long mapElectionTOElectionId(Election election)
     {
         return (election!=null)?election.getElectionId():null;

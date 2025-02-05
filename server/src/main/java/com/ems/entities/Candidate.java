@@ -15,7 +15,7 @@ public class Candidate extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_seq")
-    @SequenceGenerator(name = "candidate_seq", sequenceName = "candidate_sequence", allocationSize = 1, initialValue = 1000)
+    @SequenceGenerator(name = "candidate_seq", sequenceName = "candidate_sequence", allocationSize = 1, initialValue = 2000)
     private Long candidateId;
 
 
@@ -41,7 +41,7 @@ public class Candidate extends TimeStamp {
     private String spouseName;
 
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference("party-candidate")
     @JoinColumn(name = "party_id")
     private Party party;
 
@@ -50,16 +50,16 @@ public class Candidate extends TimeStamp {
     private String candidateEmail;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private List<CandidateAddress> address;
 
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference
     @JoinColumn(name = "election_id")
     private Election election;
 
-    @ManyToOne
-    @JsonManagedReference
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinColumn(name = "bank_details_id")
     private BankDetails bankDetails;
 

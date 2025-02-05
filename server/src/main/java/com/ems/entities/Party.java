@@ -19,6 +19,6 @@ public class Party {
     private String partyAbbreviation;
 
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+    @JsonIgnore
     private List<Candidate> candidates;
 }
