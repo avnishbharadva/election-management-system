@@ -2,6 +2,7 @@ package com.ems.services;
 
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
+import com.ems.exceptions.CandidateNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,14 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public CandidateDTO findByCandidateSSN(String candidateSSN) {
-        Candidate candidate = candidateRepository.findByCandidateSSN(candidateSSN)
-                .orElse(null);
-        if(candidate==null)
+        Optional<Candidate> candidate = candidateRepository.findByCandidateSSN(candidateSSN);
+        if (candidate.isPresent())
         {
-            return null;
+            return candidateMapper.toCandidateDTO(candidate.get());
         }
-        return candidateMapper.toCandidateDTO(candidate);
+        else {
+            throw new CandidateNotFoundException("No Candidate is found with the SSN:"+candidateSSN);
+        }
+
     }
 }
