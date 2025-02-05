@@ -11,8 +11,10 @@ import java.util.List;
 public class Candidate extends TimeStamp {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_seq")
+    @SequenceGenerator(name = "candidate_seq", sequenceName = "candidate_sequence", allocationSize = 1, initialValue = 1000)
     private Long candidateId;
+
 
     @Embedded
     private CandidateName candidateName;
@@ -25,6 +27,7 @@ public class Candidate extends TimeStamp {
     private Gender gender;
 
     @Lob
+    @Column(columnDefinition = "BLOB")
     private Byte[] candidateImage;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +46,7 @@ public class Candidate extends TimeStamp {
     private String candidateEmail;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> address;
+    private List<CandidateAddress> address;
 
     @ManyToOne
     @JoinColumn(name = "election_id")
@@ -54,6 +57,7 @@ public class Candidate extends TimeStamp {
     private BankDetails bankDetails;
 
     @Lob
+    @Column(columnDefinition = "BLOB")
     private Byte[] candidateSignature;
 
 

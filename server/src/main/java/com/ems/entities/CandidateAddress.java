@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Address {
+public class CandidateAddress {
 
     @Id
     @GeneratedValue

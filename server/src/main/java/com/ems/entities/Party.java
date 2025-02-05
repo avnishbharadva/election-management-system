@@ -14,23 +14,8 @@ public class Party {
 
     private String partyName;
 
-    @Lob
-    private Byte[] partySymbol;
-
-    private String leaderName;
-
-    private String partyEmail;
-
-    private String founderName;
-
-    private int foundedYear;
-
-    private String partyIdeology;
-
-    private String partyHeadquarter;
-
-    private String partyWebsite;
+    private String partyAbbreviation;
 
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Candidate> candidates; // One-to-Many mapping with Candidate
+    private List<Candidate> candidates;
 }

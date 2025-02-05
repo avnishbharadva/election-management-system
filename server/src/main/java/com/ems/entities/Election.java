@@ -25,5 +25,5 @@ public class Election {
     private int totalSeats;
 
     @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Candidate> candidates; // One-to-Many mapping with Candidate
+    private List<Candidate> candidates;
 }

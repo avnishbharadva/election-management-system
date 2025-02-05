@@ -1,6 +1,6 @@
 package com.ems.repositories;
 
-import com.example.entity.Election;
+import com.ems.entities.Election;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
