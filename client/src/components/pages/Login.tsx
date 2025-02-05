@@ -1,8 +1,6 @@
-import { Box, Button, colors, TextField, Typography } from "@mui/material";
-import loginpageImage from "../../assets/images/loginpageImage.jpg";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import dummy from "../../assets/images/NYC_Flag.jpg";
 import { Resolver, useForm } from "react-hook-form";
-import { Password } from "@mui/icons-material";
 
 type FormValues = {
   email: string;
