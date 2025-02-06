@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -20,7 +20,7 @@ public class Candidate extends TimeStamp {
     private CandidateName candidateName;
 
     private String candidateSSN;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

@@ -27,22 +27,23 @@ public class CandidateServiceImpl implements CandidateService{
                 .orElseThrow(() -> new CandidateNotFoundException("No Candidate is found with the SSN: " + candidateSSN));
     }
 
-
     @Override
     public Candidate save(CandidateDTO candidateDTO) {
-        var candidate=candidateMapper.toCandidate(candidateDTO);
+        var candidate = candidateMapper.toCandidate(candidateDTO);
 
-        var electionId=candidateDTO.getElectionId();
-        var election=electionRepository.findById(electionId).get();
-        candidate.setElection(election);
+        candidate.setElection(electionRepository.findById(candidateDTO.getElectionId()).get());
+        candidate.setParty(partyRepository.findById(candidateDTO.getPartyId()).get());
 
-        var partyId=candidateDTO.getPartyId();
-        var party=partyRepository.findById(partyId).get();
-        candidate.setParty(party);
+        var residentialAddress = candidateDTO.getResidentialAddress();
+        var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress()) ? residentialAddress : candidateDTO.getMailingAddress();
+
+        candidate.setResidentialAddress(residentialAddress);
+        candidate.setMailingAddress(mailingAddress);
 
         return candidateRepository.save(candidate);
-
     }
+
+
 
     @Override
     public CandidateDTO findById(Long candidateId) {
