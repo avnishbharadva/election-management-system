@@ -2,13 +2,10 @@ package com.ems.controllers;
 
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
-import com.ems.entities.CandidateAddress;
-import com.ems.entities.CandidateName;
 import com.ems.services.CandidateService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -23,7 +20,7 @@ public class CandidateController {
     }
 
     @PostMapping("/addCandidate")
-    Candidate createCandidate(@RequestBody CandidateDTO candidateDTO)
+    Candidate createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
     {
         return candidateService.save(candidateDTO);
     }

@@ -2,12 +2,10 @@ package com.ems.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -18,12 +16,10 @@ public class Candidate extends TimeStamp {
     @SequenceGenerator(name = "candidate_seq", sequenceName = "candidate_sequence", allocationSize = 1, initialValue = 2000)
     private Long candidateId;
 
-
     @Embedded
     private CandidateName candidateName;
 
     private String candidateSSN;
-
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +33,6 @@ public class Candidate extends TimeStamp {
     private MaritialStatus maritialStatus;
 
     private int noOfChildren;
-
     private String spouseName;
 
     @ManyToOne
@@ -46,12 +41,15 @@ public class Candidate extends TimeStamp {
     private Party party;
 
     private String stateName;
-
     private String candidateEmail;
 
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<CandidateAddress> address;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "residential_address_id", referencedColumnName = "addressId")
+    private CandidateAddress residentialAddress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "mailing_address_id", referencedColumnName = "addressId")
+    private CandidateAddress mailingAddress;
 
     @ManyToOne
     @JsonBackReference
@@ -66,7 +64,4 @@ public class Candidate extends TimeStamp {
     @Lob
     @Column(columnDefinition = "BLOB")
     private Byte[] candidateSignature;
-
-
-
 }

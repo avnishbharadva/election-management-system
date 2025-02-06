@@ -10,7 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
     @Mapping(target = "partyId", source = "party")
-    @Mapping(target = "candidateAddress", source = "address")
     @Mapping(target ="electionId",source = "election")
     @Mapping(target = "bankDetails",source = "bankDetails")
     CandidateDTO toCandidateDTO(Candidate candidate);
@@ -18,7 +17,6 @@ public interface CandidateMapper {
     Candidate toCandidate(CandidateDTO candidateDTO);
 
     default Long mapPartyToId(Party party) {
-
         return (party != null) ? party.getPartyId() : null;
     }
 

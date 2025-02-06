@@ -1,9 +1,11 @@
 package com.ems.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Data;
+
+import java.util.Objects;
 
 @Data
 @Entity
@@ -13,17 +15,17 @@ public class CandidateAddress {
     @GeneratedValue
     private Long addressId;
 
-    @Enumerated(EnumType.STRING)
-    private AddressType addressType;
-
-    @ManyToOne
-    @JsonBackReference("candidate-address")
-    @JoinColumn(name = "candidate_id")
-    private Candidate candidate;
-
     private String street;
-
     private String city;
-
     private int zipcode;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CandidateAddress that = (CandidateAddress) o;
+        return zipcode == that.zipcode &&
+                Objects.equals(street, that.street) &&
+                Objects.equals(city, that.city);
+    }
 }
