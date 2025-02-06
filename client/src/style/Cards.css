@@ -1,0 +1,61 @@
+.card-wrapper{
+    display: flex; /* Display in a row */
+    gap: 2rem; /* Space between cards */
+    justify-content: center; /* Center cards horizontally */
+    padding: 3rem;
+    flex-wrap: nowrap; /* Ensures cards stay in a single row */
+    overflow-x: auto;
+}
+.card-container {
+  width: 320px; /* Fixed width for each card */
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+
+.card-container:hover {
+  transform: scale(1.05); /* Hover effect */
+}
+
+.card-action {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.card-action[data-active] {
+  background-color: var(--action-selected);
+}
+
+.card-action[data-active]:hover {
+  background-color: var(--action-selectedHover);
+}
+
+.card-box1{
+  display: flex;
+  gap:10rem;
+}
+
+.card-title{
+  font-weight: 800;
+}
+
+.card-box2{
+  display:flex; 
+  justify-content:flex-start;
+}
+
+.card-count{
+  font-weight: 800;
+  margin-top: 1rem; /* Adjust as needed */
+
+}
