@@ -2,10 +2,8 @@ package com.ems.entities;
 
 import com.ems.entities.constants.Gender;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -16,14 +14,7 @@ import java.util.Set;
 public class Voter extends TimeStamp {
     @Id
     @Column(unique = true, nullable = false, length = 9)
-    @Setter(AccessLevel.NONE)
     private String voterId;
-
-    @SequenceGenerator(name = "voter_id_seq",sequenceName = "voter_id_seq",initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "voter_id_seq")
-    @Setter(AccessLevel.NONE)
-    @Transient
-    private long tempId;
 
     @Column(nullable = false)
     private String firstName;
@@ -72,7 +63,8 @@ public class Voter extends TimeStamp {
     private String signature;
 
     @PrePersist
-    public void setVoterId(){
-        this.voterId = String.format("%09d",tempId);
+    public void createVoterID(){
+        if(this.voterId==null)
+            this.voterId = VoterIdGenerator.getNextId();
     }
 }

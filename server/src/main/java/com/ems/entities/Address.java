@@ -20,16 +20,13 @@ public class Address extends TimeStamp {
     @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
     private String county;
 
-    @Column(columnDefinition = "varchar(8) default 'new york'")
-    private String state;
+    private String state = "New York";
 
     @Column(length = 5, nullable = false)
     private String zipCode;
 
-    @Column(columnDefinition = "boolean default false")
     private boolean isMailing;
 
     @ManyToOne
