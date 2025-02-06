@@ -1,15 +1,12 @@
 import './App.css'
-
-import Login from './components/pages/Login'
-
+import AllRoutes from './Routes/AllRoutes'
 
 function App() {
 
   return (
 
     <>
-    <Login/>
-   
+   <AllRoutes/>
     </>
   )
 }

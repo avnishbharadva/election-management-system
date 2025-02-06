@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import Sidebar from "./Sidebar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,6 +9,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import GroupsIcon from "@mui/icons-material/Groups";
 import BallotIcon from "@mui/icons-material/Ballot";
+import { BarChart } from "@mui/x-charts";
 
 const cards = [
   {
@@ -35,81 +37,80 @@ const cards = [
     icon: <BallotIcon fontSize="large" sx={{ color: "#1976d2" }} />,
   },
 ];
-
+const chartData = cards.map((card) => card.count); // Extract counts for the chart
+  const chartLabels = cards.map((card) => card.title);
 function Cards() {
-  const [selectedCard, setSelectedCard] = React.useState(0);
-
   return (
-    <Box
-      sx={{
-        display: "flex", // Display in a row
-        gap: 2, // Space between cards
-        justifyContent: "center", // Center cards horizontally
-        padding: 3,
-        flexWrap: "nowrap", // Ensures cards stay in a single row
-        overflowX: "auto", // Allows horizontal scrolling if needed
-      }}
-      className='card-wrapper'
-    >
-      {cards.map((card, index) => (
-        <Card
-          key={card.id}
+    <div style={{ display: "flex" ,minHeight: "100vh" }}>
+      <Sidebar />
+      <div style={{ flex: 1, padding: "1rem" }}>
+        <Box
           sx={{
-            width: 320, // Fixed width for each card
-            height: 180,
             display: "flex",
-            flexDirection: "column",
+            gap: 2,
             justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-            borderRadius: "15px",
-            boxShadow: "0px 6px 10px rgba(0,0,0,0.2)",
-            transition: "0.3s",
-            "&:hover": { transform: "scale(1.05)" }, // Hover effect
+            flexWrap: "wrap",
           }}
-          className="card-container"
         >
-          <CardActionArea
-            className='card-action'
-            onClick={() => setSelectedCard(index)}
-            data-active={selectedCard === index ? "" : undefined}
-            sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems:'center',
-              justifyContent: "space-between",
-              padding: 2,
-              "&[data-active]": {
-                backgroundColor: "action.selected",
-                "&:hover": {
-                  backgroundColor: "action.selectedHover",
-                },
-              },
-            }}
-          >
-            <CardContent>
-              <Box sx={{ display: "flex", gap:'10rem'}} className='card-box1'>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }} className='card-title'>
-                  {card.title}
-                </Typography>
-                {card.icon} 
-              </Box>
-              {/* Display count instead of description */}
-              <Box sx={{display:'flex', justifyContent:'flex-start'}} className='card-box1'>
-              <Typography variant="h4" sx={{ fontWeight: "bold", mt: 1 }} className='card-title'>
-                {card.count}
-              </Typography>
-              </Box>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      ))}
-    </Box>
+          {cards.map((card) => (
+            <Card
+              key={card.id}
+              sx={{
+                width: 280,
+                height: 180,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                borderRadius: "15px",
+                boxShadow: "0px 6px 10px rgba(0,0,0,0.2)",
+                transition: "0.3s",
+                "&:hover": { transform: "scale(1.05)" },
+              }}
+            >
+              <CardActionArea>
+                <CardContent>
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      {card.title}
+                    </Typography>
+                    {card.icon}
+                  </Box>
+                  <Typography variant="h4" sx={{ fontWeight: "bold", mt: 1 }}>
+                    {card.count}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
+        </Box>
+        <BarChart
+        sx={{ml:"30px"}}
+        
+      xAxis={[
+        {
+          id: 'barCategories',
+          data: chartLabels,
+          scaleType: 'band',
+        },
+      ]}
+      series={[
+        {
+          data:chartData,
+        },
+      ]}
+      width={500}
+      height={300}
+    />
+      </div>
+      
+    </div>
   );
 }
 
 export default Cards;
+
 
 // import React from "react";
 // import Box from "@mui/material/Box";
