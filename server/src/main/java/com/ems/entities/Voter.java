@@ -4,11 +4,6 @@ import com.ems.entities.constants.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
-
-import java.time.LocalDate;
-import java.util.Set;
-
 import java.time.LocalDate;
 import java.util.Set;
 

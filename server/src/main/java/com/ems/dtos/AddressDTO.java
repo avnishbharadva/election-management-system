@@ -16,5 +16,5 @@ public class AddressDTO {
 
     private String zipCode;
 
-    private boolean isMailing;
+    private boolean mailingAddress;
 }

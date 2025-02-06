@@ -27,7 +27,7 @@ public class Address extends TimeStamp {
     @Column(length = 5, nullable = false)
     private String zipCode;
 
-    private boolean isMailing;
+    private boolean mailingAddress;
 
     @ManyToOne
     @JoinColumn(name = "voter_id")
