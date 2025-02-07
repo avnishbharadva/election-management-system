@@ -7,6 +7,4 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ElectionMapper {
 
-    Election toElectionDTO(ElectionDTO electionDTO);
-    ElectionDTO toElection(Election election);
 }

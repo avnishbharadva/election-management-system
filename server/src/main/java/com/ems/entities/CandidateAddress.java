@@ -28,4 +28,9 @@ public class CandidateAddress {
                 Objects.equals(street, that.street) &&
                 Objects.equals(city, that.city);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(addressId, street, city, zipcode);
+    }
 }

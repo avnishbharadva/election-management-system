@@ -2,7 +2,6 @@ package com.ems.dtos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 

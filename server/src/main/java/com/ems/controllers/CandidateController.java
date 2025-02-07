@@ -18,7 +18,7 @@ public class CandidateController {
     private final CandidateService candidateService;
 
     @GetMapping("/ssn/{candidateSSN}")
-    ResponseEntity<?> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
+    ResponseEntity<CandidateDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
     {
         try{
             CandidateDTO candidateDTO= candidateService.findByCandidateSSN(candidateSSN);

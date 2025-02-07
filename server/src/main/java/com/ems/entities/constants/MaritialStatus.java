@@ -1,4 +1,4 @@
-package com.ems.entities;
+package com.ems.entities.constants;
 
 public enum MaritialStatus {
     SINGLE,
