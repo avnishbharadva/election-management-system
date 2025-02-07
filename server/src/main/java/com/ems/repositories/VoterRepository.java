@@ -8,8 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface VoterRepository extends JpaRepository<Voter, String> {
-    Optional<Voter> findBySsnNumber(String ssnNumber);
-    Optional<Voter> findByDmvNumber(String dmvNumber);
 
-    Optional<Voter> findByFirstName(String name);
 }

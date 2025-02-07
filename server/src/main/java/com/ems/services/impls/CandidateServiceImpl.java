@@ -1,4 +1,4 @@
-package com.ems.services;
+package com.ems.services.impls;
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
@@ -7,6 +7,7 @@ import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
+import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CandidateServiceImpl implements CandidateService{
+public class CandidateServiceImpl implements CandidateService {
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
     private final ElectionRepository electionRepository;

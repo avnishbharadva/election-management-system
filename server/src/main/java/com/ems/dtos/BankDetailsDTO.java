@@ -19,5 +19,5 @@ public class BankDetailsDTO {
     @Size(max = 500, message = "Bank address is too long")
     private String bankAddress;
 
-    private List<Long> candidateIds; // Store only candidate IDs instead of full objects
+    private List<Long> candidateIds;
 }

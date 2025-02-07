@@ -1,6 +1,8 @@
 package com.ems.dtos;
 
 import com.ems.entities.*;
+import com.ems.entities.constants.Gender;
+import com.ems.entities.constants.MaritialStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
