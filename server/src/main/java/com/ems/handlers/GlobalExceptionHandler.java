@@ -1,6 +1,6 @@
 package com.ems.handlers;
 
-import com.ems.dtos.CandidateErrorResponse;
+import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.CandidateNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CandidateNotFoundException.class)
-    public ResponseEntity<CandidateErrorResponse> handleException(
+    public ResponseEntity<ErrorResponse> handleException(
             CandidateNotFoundException candidateNotFoundException
     ){
-        CandidateErrorResponse candidateErrorResponse=new CandidateErrorResponse();
+        ErrorResponse candidateErrorResponse=new ErrorResponse();
         candidateErrorResponse.setStatus(HttpStatus.NOT_FOUND.value());
         candidateErrorResponse.setMessage(String.valueOf(candidateNotFoundException.getMessage()));
         candidateErrorResponse.setTimestamp(LocalDateTime.now());
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CandidateErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         List<ObjectError> errors = bindingResult.getAllErrors();
 
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .map(ObjectError::getDefaultMessage)
                 .findFirst() // Get the first error message
                 .orElse("Validation failed");
-        CandidateErrorResponse candidateErrorResponse = new CandidateErrorResponse();
+        ErrorResponse candidateErrorResponse = new ErrorResponse();
         candidateErrorResponse.setMessage(errorMessage);
         candidateErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         candidateErrorResponse.setTimestamp(LocalDateTime.now());
