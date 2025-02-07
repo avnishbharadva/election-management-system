@@ -2,9 +2,11 @@ package com.ems.controllers;
 
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
+import com.ems.exceptions.CandidateNotFoundException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +17,15 @@ public class CandidateController {
     private final CandidateService candidateService;
 
     @GetMapping("/ssn/{candidateSSN}")
-    CandidateDTO getCandidateBySSN(@Valid @PathVariable String candidateSSN) {
-        return candidateService.findByCandidateSSN(candidateSSN);
+    ResponseEntity<?> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
+    {
+        try{
+            CandidateDTO candidateDTO= candidateService.findByCandidateSSN(candidateSSN);
+            return ResponseEntity.ok(candidateDTO);
+        }
+        catch (CandidateNotFoundException e){
+            throw new CandidateNotFoundException("No candidate found");
+        }
     }
 
     @PostMapping("/addCandidate")
