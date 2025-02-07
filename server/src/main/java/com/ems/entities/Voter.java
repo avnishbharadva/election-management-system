@@ -17,14 +17,16 @@ public class Voter extends TimeStamp {
     @Column(unique = true, nullable = false, length = 9)
     private String voterId;
   
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String firstName;
 
+    @Column(length = 20)
     private String middleName;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 20)
     private String lastName;
 
+    @Column(length = 10)
     private String suffixName;
 
     @Column(nullable = false)
@@ -39,7 +41,7 @@ public class Voter extends TimeStamp {
     @Column(length = 9,unique = true,nullable = false)
     private String ssnNumber;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String email;
 
     @Column(length = 11, unique = true)
