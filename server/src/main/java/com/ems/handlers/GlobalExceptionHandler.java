@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         ErrorResponse candidateErrorResponse=new ErrorResponse();
         candidateErrorResponse.setStatus(HttpStatus.NOT_FOUND.value());
         candidateErrorResponse.setMessage(String.valueOf(candidateNotFoundException.getMessage()));
-        candidateErrorResponse.setTimestamp(LocalDateTime.now());
+        candidateErrorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(candidateErrorResponse,HttpStatus.NOT_FOUND);
     }
 
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
         ErrorResponse candidateErrorResponse = new ErrorResponse();
         candidateErrorResponse.setMessage(errorMessage);
         candidateErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        candidateErrorResponse.setTimestamp(LocalDateTime.now());
+        candidateErrorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }

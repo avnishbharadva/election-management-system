@@ -1,16 +1,16 @@
 package com.ems.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class ErrorResponse {
-
     private int status;
     private String message;
-
-    @JsonFormat(pattern = "dd-MM-yyyy 'at' hh:mm:ss a" )
-    private LocalDateTime timestamp;
+    @JsonFormat(pattern = "dd-MMM-yyyy 'at' hh:mm:ss a")
+    private LocalDateTime requestTime;
 }

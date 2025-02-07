@@ -32,4 +32,5 @@ public class PartyDTO {
     private String founderName;
 
     private List<Long> candidateIds;
+
 }

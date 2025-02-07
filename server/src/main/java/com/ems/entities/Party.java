@@ -32,4 +32,5 @@ public class Party {
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Candidate> candidates;
+
 }
