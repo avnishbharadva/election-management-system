@@ -1,7 +1,7 @@
 package com.ems.entities;
 
+import com.ems.entities.constants.AddressType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class    Address extends TimeStamp {
+public class Address extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long addressId;
@@ -29,10 +29,11 @@ public class    Address extends TimeStamp {
     @Column(length = 5, nullable = false)
     private String zipCode;
 
-    private boolean isMailing;
+    @Enumerated(EnumType.STRING)
+    private AddressType addressType;
 
     @ManyToOne
-    @JsonManagedReference
     @JoinColumn(name = "voter_id")
+    @JsonBackReference
     private Voter voter;
 }

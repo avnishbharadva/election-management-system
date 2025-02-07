@@ -1,6 +1,8 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import dummy from "../../assets/images/NYC_Flag.jpg";
 import { Resolver, useForm } from "react-hook-form";
+import '../../style/login.css'
+import { useNavigate } from "react-router-dom";
 
 type FormValues = {
   email: string;
@@ -31,6 +33,12 @@ const resolver: Resolver<FormValues> = async (values) => {
 };
 
 const Login = () => {
+
+  const navigate = useNavigate()
+
+  const redirect = ()=>{
+    navigate('/dashboard/cards')
+  }
   const {
     register,
     handleSubmit,
@@ -72,6 +80,7 @@ const Login = () => {
               sx={{ mt: "20px" }}
               fullWidth
               variant="contained"
+              onClick={redirect}
             >
               Login
             </Button>
