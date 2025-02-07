@@ -1,5 +1,7 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -7,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Address extends TimeStamp {
+public class    Address extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long addressId;
@@ -30,6 +32,7 @@ public class Address extends TimeStamp {
     private boolean isMailing;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "voter_id")
     private Voter voter;
 }

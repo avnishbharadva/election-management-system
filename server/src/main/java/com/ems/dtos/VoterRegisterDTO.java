@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -41,7 +42,7 @@ public class VoterRegisterDTO {
 
     private long partyId;
 
-    private Set<AddressDTO> address;
+    private List<AddressDTO> address;
 
     private String image;
 

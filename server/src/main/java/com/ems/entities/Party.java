@@ -1,5 +1,6 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class Party extends TimeStamp{
     @Column(nullable = false)
     private String abbreviation;
 
-    @OneToMany(mappedBy = "party")
+    @OneToMany(mappedBy = "party" ,cascade = CascadeType.ALL ,orphanRemoval = true)
+    @JsonBackReference
     private Set<Voter> voters;
 }

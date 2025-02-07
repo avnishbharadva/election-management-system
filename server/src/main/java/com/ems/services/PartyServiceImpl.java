@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PartyService {
+public class PartyServiceImpl {
     private final PartyRepository partyRepo;
     private final PartyMapper partyMapper;
 

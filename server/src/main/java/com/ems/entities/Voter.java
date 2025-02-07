@@ -1,12 +1,16 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.Gender;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import java.time.LocalDate;
@@ -55,11 +59,13 @@ public class Voter extends TimeStamp {
     private String firstVotedYear;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "party_id")
     private Party party;
 
-    @OneToMany(mappedBy = "voter")
-    private Set<Address> address;
+    @JsonBackReference
+    @OneToMany(mappedBy = "voter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> address;
 
     private String image;
 
