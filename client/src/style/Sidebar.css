@@ -1,0 +1,13 @@
+.sidebar-container{
+    width: 15vw;
+    background-color: rgb(7 11 67);
+    color: rgb(255, 255, 255);
+    padding: 2px;
+    
+      position: sticky;
+      top: 0;
+      /* overflow-y: auto; */
+}
+.sidebar-icon{
+    color: white;
+}
