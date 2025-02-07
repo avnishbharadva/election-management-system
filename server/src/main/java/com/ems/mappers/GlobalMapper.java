@@ -3,6 +3,7 @@ package com.ems.mappers;
 import com.ems.dtos.AddressDTO;
 import com.ems.dtos.PartyDTO;
 import com.ems.dtos.VoterRegisterDTO;
+import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
 import com.ems.entities.Party;
 import com.ems.entities.Voter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface GlobalMapper {
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
+    Voter toVoter(VoterSearchDTO voterSearchDTO);
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
     Party toParty(PartyDTO partyDTO);
