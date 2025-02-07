@@ -23,7 +23,6 @@ public class VoterServiceImpl implements VoterService{
 
     private final VoterRepository voterRepo;
     private final GlobalMapper globalMapper;
-    private final AddressService addressService;
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
 
