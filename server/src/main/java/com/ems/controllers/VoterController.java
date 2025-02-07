@@ -3,6 +3,7 @@ package com.ems.controllers;
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.services.VoterService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class VoterController {
     private final VoterService voterService;
 
     @PostMapping
-    public ResponseEntity<VoterRegisterDTO> register(@RequestBody VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
+    public ResponseEntity<VoterRegisterDTO> register(@Valid @RequestBody VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(voterService.register(voterRegisterDTO));
     }
 
