@@ -3,6 +3,7 @@ package com.ems.controllers;
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.CandidateNotFoundException;
+import com.ems.exceptions.CustomValidationException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,9 +30,14 @@ public class CandidateController {
     }
 
     @PostMapping("/addCandidate")
-    Candidate createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
+    ResponseEntity<?> createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
     {
-        return candidateService.saveCandidate(candidateDTO);
+        try{
+            var candidate=candidateService.saveCandidate(candidateDTO);
+            return ResponseEntity.ok(candidate);
+        }catch (CustomValidationException e){
+            throw new CustomValidationException("Field provided are not valid");
+        }
     }
 
     @GetMapping("/candidateId/{candidateId}")

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.Date;
 
 @Data
+@DynamicUpdate
 @Entity
 public class Candidate extends TimeStamp {
 

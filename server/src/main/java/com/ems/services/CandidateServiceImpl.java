@@ -1,5 +1,4 @@
 package com.ems.services;
-
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
@@ -54,7 +53,7 @@ public class CandidateServiceImpl implements CandidateService{
 
     @Override
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
-        Candidate existingCandidate = candidateRepository.findById(candidateId)
+        var existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with ID: " + candidateId));
 
         if (candidateDTO.getCandidateName() != null) {
@@ -77,7 +76,6 @@ public class CandidateServiceImpl implements CandidateService{
         Optional.ofNullable(candidateDTO.getDateOfBirth()).ifPresent(existingCandidate::setDateOfBirth);
         Optional.ofNullable(candidateDTO.getGender()).ifPresent(existingCandidate::setGender);
         Optional.ofNullable(candidateDTO.getMaritialStatus()).ifPresent(existingCandidate::setMaritialStatus);
-
         if (candidateDTO.getNoOfChildren() != 0) {
             existingCandidate.setNoOfChildren(candidateDTO.getNoOfChildren());
         }
@@ -87,22 +85,20 @@ public class CandidateServiceImpl implements CandidateService{
         Optional.ofNullable(candidateDTO.getMailingAddress()).ifPresent(existingCandidate::setMailingAddress);
         Optional.ofNullable(candidateDTO.getStateName()).ifPresent(existingCandidate::setStateName);
         Optional.ofNullable(candidateDTO.getBankDetails()).ifPresent(existingCandidate::setBankDetails);
-
         if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
             existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
                     .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
         }
-
         if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
             existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
                     .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
         }
-
         return candidateRepository.save(existingCandidate);
     }
-
-
-
-
-
 }
+
+
+
+
+
+
