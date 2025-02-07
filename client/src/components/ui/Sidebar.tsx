@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
   return (
     <Box className='sidebar-container'>
       <List>
-      <ListItem disablePadding button component={Link} to="/dashboard/cards">
+      <ListItem disablePadding  component={Link} to="/dashboard/cards">
             <ListItemButton>
               <ListItemIcon >
                  <AccountBoxIcon className="sidebar-icon"/>
@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
              <ListItemText primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Dashboard</Typography>} /> 
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding button component={Link} to="/dashboard/candidate">
+          <ListItem disablePadding  component={Link} to="/dashboard/candidate">
             <ListItemButton>
               <ListItemIcon >
                  <AccountBoxIcon className="sidebar-icon"/>
@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
               <ListItemIcon >
                  <GroupsIcon className="sidebar-icon"/>
               </ListItemIcon>
-              <ListItemText  primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Party</Typography>}/>
+              <ListItemText  primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Parties</Typography>}/>
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding component={Link} to="/dashboard/election">
@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => {
               <ListItemIcon >
                  <BallotIcon className="sidebar-icon"/>
               </ListItemIcon>
-              <ListItemText disableTypography primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Election</Typography>}></ListItemText>
+              <ListItemText disableTypography primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Elections</Typography>}></ListItemText>
             </ListItemButton>
           </ListItem>
       </List>

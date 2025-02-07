@@ -10,12 +10,11 @@ import AddElection from '../components/pages/AddElection'
 
 const AllRoutes = () => {
   return (
-    
-    <>
-    <Navbar/>
+    <>   
 
     <Routes>
         <Route path='/' element={<Login/>}></Route>
+        
         <Route path='/dashboard/cards' element={<Cards/>}></Route>
         <Route path='/dashboard/candidate' element={<AddCandidate/>}></Route>
         <Route path='/dashboard/voter' element={<AddVoter/>}></Route>
