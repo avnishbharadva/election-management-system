@@ -1,10 +1,9 @@
 package com.ems.repositories;
 
-import com.ems.entities.Party;
+import com.ems.entities.BankDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PartyRepository extends JpaRepository<Party, Long> {
-
+public interface BankDetailsRepository extends JpaRepository<BankDetails,Long> {
 }

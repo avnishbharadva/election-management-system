@@ -1,27 +1,36 @@
 package com.ems.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
-public class Party extends TimeStamp{
+@Entity
+public class Party {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long partyId;
+    @GeneratedValue
+    private Long partyId;
 
-    @Column(nullable = false)
     private String partyName;
 
-    @Column(nullable = false)
-    private String abbreviation;
+    private String partyAbbreviation;
 
-    @OneToMany(mappedBy = "party")
-    @JsonManagedReference
-    private List<Voter> voters;
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private Byte[] partySymbol;
+
+    private int partyFoundationYear;
+
+    private String partyWebSite;
+
+    private String headQuarters;
+
+    private String founderName;
+
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Candidate> candidates;
+
 }
