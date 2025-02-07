@@ -5,6 +5,7 @@ import com.ems.entities.Candidate;
 
 public interface CandidateService {
     CandidateDTO findByCandidateSSN(String candidateSSN);
-    Candidate save(CandidateDTO candidateDTO);
+    Candidate saveCandidate(CandidateDTO candidateDTO);
     CandidateDTO findById(Long id);
+    Candidate update(Long candidateId,CandidateDTO candidateDTO);
 }

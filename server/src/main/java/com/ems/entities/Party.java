@@ -17,6 +17,18 @@ public class Party {
 
     private String partyAbbreviation;
 
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private Byte[] partySymbol;
+
+    private int partyFoundationYear;
+
+    private String partyWebSite;
+
+    private String headQuarters;
+
+    private String founderName;
+
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Candidate> candidates;

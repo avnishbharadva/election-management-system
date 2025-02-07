@@ -1,27 +1,22 @@
 package com.ems.mappers;
 
 import com.ems.dtos.CandidateDTO;
-import com.ems.entities.*;
+import com.ems.entities.Candidate;
+import com.ems.entities.CandidateAddress;
+import com.ems.entities.Election;
+import com.ems.entities.Party;
+import jakarta.validation.constraints.Past;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
     @Mapping(target = "partyId", source = "party")
-    @Mapping(target ="electionId",source = "election")
-    @Mapping(target = "bankDetails",source = "bankDetails")
-    @Mapping(target = "dateOfBirth", source = "dateOfBirth")
+    @Mapping(target = "electionId", source = "election")
+    @Mapping(target = "bankDetails", source = "bankDetails")
     CandidateDTO toCandidateDTO(Candidate candidate);
-
-
-    default LocalDate mapDateOfBirth(Date date) {
-        return date == null ? null : date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
 
     Candidate toCandidate(CandidateDTO candidateDTO);
 
@@ -29,11 +24,10 @@ public interface CandidateMapper {
         return (party != null) ? party.getPartyId() : null;
     }
 
-
-    default Long mapElectionTOElectionId(Election election)
-    {
-        return (election!=null)?election.getElectionId():null;
+    default Long mapElectionTOElectionId(Election election) {
+        return (election != null) ? election.getElectionId() : null;
     }
 
     List<CandidateAddress> mapAddressList(List<CandidateAddress> addressList);
 }
+

@@ -1,5 +1,7 @@
 package com.ems.dtos;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -16,6 +18,18 @@ public class PartyDTO {
 
     @Size(max = 10, message = "Party abbreviation is too long")
     private String partyAbbreviation;
+
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private Byte[] partySymbol;
+
+    private int partyFoundationYear;
+
+    private String partyWebSite;
+
+    private String headQuarters;
+
+    private String founderName;
 
     private List<Long> candidateIds;
 }

@@ -14,15 +14,25 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @GetMapping("/{candidateSSN}")
-    CandidateDTO getCandidateBySSN(@PathVariable String candidateSSN) {
+    @GetMapping("/ssn/{candidateSSN}")
+    CandidateDTO getCandidateBySSN(@Valid @PathVariable String candidateSSN) {
         return candidateService.findByCandidateSSN(candidateSSN);
     }
 
     @PostMapping("/addCandidate")
     Candidate createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
     {
-        return candidateService.save(candidateDTO);
+        return candidateService.saveCandidate(candidateDTO);
+    }
+
+    @GetMapping("/candidateId/{candidateId}")
+    CandidateDTO getCandidateById(@PathVariable Long candidateId){
+        return candidateService.findById(candidateId);
+    }
+
+    @PutMapping("/updateCandidate/{candidateId}")
+    Candidate updateCandidate(@PathVariable Long candidateId,@Valid @RequestBody CandidateDTO candidateDTO){
+       return candidateService.update(candidateId,candidateDTO);
     }
 
 }
