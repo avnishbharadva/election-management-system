@@ -1,5 +1,6 @@
 package com.ems.dtos;
 
+import com.ems.entities.constants.AddressType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,5 @@ public class AddressDTO {
 
     private String zipCode;
 
-    private boolean isMailing;
+    private AddressType addressType;
 }

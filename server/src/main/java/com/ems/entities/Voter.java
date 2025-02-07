@@ -1,16 +1,13 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.Gender;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
-
 import java.time.LocalDate;
-import java.util.Set;
-
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -20,14 +17,16 @@ public class Voter extends TimeStamp {
     @Column(unique = true, nullable = false, length = 9)
     private String voterId;
   
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String firstName;
 
+    @Column(length = 20)
     private String middleName;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 20)
     private String lastName;
 
+    @Column(length = 10)
     private String suffixName;
 
     @Column(nullable = false)
@@ -42,7 +41,7 @@ public class Voter extends TimeStamp {
     @Column(length = 9,unique = true,nullable = false)
     private String ssnNumber;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String email;
 
     @Column(length = 11, unique = true)
@@ -56,10 +55,12 @@ public class Voter extends TimeStamp {
 
     @ManyToOne
     @JoinColumn(name = "party_id")
+    @JsonBackReference
     private Party party;
 
     @OneToMany(mappedBy = "voter")
-    private Set<Address> address;
+    @JsonManagedReference
+    private List<Address> address;
 
     private String image;
 
