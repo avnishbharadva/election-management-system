@@ -1,40 +1,19 @@
-import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import "../../style/Navbar.css";
-
-const Navbar: React.FC = () => {
+import { Toolbar, Typography } from "@mui/material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { StyledAppBar } from "../../style/NavbarCss";
+import { StyledButton } from "../../style/NavbarCss";
+export default function Navbar() {
   return (
-    <AppBar position="sticky" className="navbar-container">
+    <StyledAppBar position="static">
       <Toolbar>
-      <Typography variant="h6" sx={{ flexGrow:1  }}>
-         State Officer
-        </Typography>
-      <Typography variant="h6" sx={{display:"flex",  flexGrow: 8 }}>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Election Management System
         </Typography>
-       
-        <Button
-          variant="contained"
-          sx={{
-            padding: "0.6rem 1.4rem",
-            borderRadius: "5px",
-            background: "linear-gradient(90deg, #1E90FF, rgb(29, 38, 154))",
-            color: "white",
-            textTransform: "none",
-            transition: "all 0.3s ease-in",
-            "&:hover": {
-              background: "linear-gradient(90deg, #007BFF, #0056b3)",
-            },
-          }}
-        >
-          Logout
-        </Button>
+        <Typography variant="h4">
+          <AccountCircleIcon/>
+        </Typography>
+        <StyledButton>Logout</StyledButton>
       </Toolbar>
-    </AppBar>
+    </StyledAppBar>
   );
-};
-
-export default Navbar;
+}

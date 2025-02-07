@@ -1,63 +1,39 @@
-import React from "react";
-import Box from "@mui/material/Box";
+import { Typography } from "@mui/material";
+import {SidebarContainer} from '../../style/SidebarCss';
+import {StyledListItemButton} from '../../style/SidebarCss';
+import {StyledListItemIcon} from '../../style/SidebarCss';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import GroupsIcon from '@mui/icons-material/Groups';
-import HowToVoteIcon from '@mui/icons-material/HowToVote';
-import BallotIcon from '@mui/icons-material/Ballot';
-import '../../style/Sidebar.css';
-//import PersonIcon from '@mui/icons-material/Person';
-import { ListItemButton, ListItemIcon, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
-const Sidebar: React.FC = () => {
-  return (
-    <Box className='sidebar-container'>
-      <List>
-      <ListItem disablePadding  component={Link} to="/dashboard/cards">
-            <ListItemButton>
-              <ListItemIcon >
-                 <AccountBoxIcon className="sidebar-icon"/>
-              </ListItemIcon>
-             <ListItemText primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Dashboard</Typography>} /> 
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding  component={Link} to="/dashboard/candidate">
-            <ListItemButton>
-              <ListItemIcon >
-                 <AccountBoxIcon className="sidebar-icon"/>
-              </ListItemIcon>
-             <ListItemText primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Candidates</Typography>} /> 
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding component={Link} to="/dashboard/voter">
-            <ListItemButton>
-              <ListItemIcon >
-                 <HowToVoteIcon className="sidebar-icon"/>
-              </ListItemIcon>
-              <ListItemText primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Voters</Typography>} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding component={Link} to="/dashboard/party">
-            <ListItemButton>
-              <ListItemIcon >
-                 <GroupsIcon className="sidebar-icon"/>
-              </ListItemIcon>
-              <ListItemText  primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Parties</Typography>}/>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding component={Link} to="/dashboard/election">
-            <ListItemButton>
-              <ListItemIcon >
-                 <BallotIcon className="sidebar-icon"/>
-              </ListItemIcon>
-              <ListItemText disableTypography primary={<Typography variant="body2" style={{ color: '#FFFFFF' }}>Elections</Typography>}></ListItemText>
-            </ListItemButton>
-          </ListItem>
-      </List>
-    </Box>
-  );
-};
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import GroupsIcon from "@mui/icons-material/Groups";
+import HowToVoteIcon from "@mui/icons-material/HowToVote";
+import BallotIcon from "@mui/icons-material/Ballot";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
-export default Sidebar;
+// Styled Sidebar Container
+
+
+export default function Sidebar() {
+  return (
+    <SidebarContainer>
+      <List>
+        {[{text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard"},
+          { text: "Candidates", icon: <AccountBoxIcon />, path: "/dashboard/candidate" },
+          { text: "Voters", icon: <HowToVoteIcon />, path: "/dashboard/voter" },
+          { text: "Party", icon: <GroupsIcon />, path: "/dashboard/party" },
+          { text: "Election", icon: <BallotIcon />, path: "/dashboard/election" },
+        ].map(({ text, icon }) => (
+          <ListItem key={text} disablePadding>
+            <StyledListItemButton>
+              <StyledListItemIcon>{icon}</StyledListItemIcon>
+              <ListItemText
+                primary={<Typography variant="body2" sx={{ color: "#FFFFFF" }}>{text}</Typography>}
+              />
+            </StyledListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </SidebarContainer>
+  );
+}
