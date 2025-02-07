@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,47 +25,43 @@ public class VoterService {
 
     private final VoterRepository voterRepo;
     private final GlobalMapper globalMapper;
-    private final PartyService partyService;
-    private final AddressService addressService;
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
 
     public VoterRegisterDTO register(VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
+        log.info("voter registration start for : {}",voterRegisterDTO.getSsnNumber());
+
         var party = partyRepo.findById(voterRegisterDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party Not Found with ID : " + voterRegisterDTO.getPartyId()));
 
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
-        Set<AddressDTO> addressDTOSet = voterRegisterDTO.getAddress();
-        Set<Address> addressSet = globalMapper.toAddressSet(addressDTOSet);
+
+        var addressDTOList = voterRegisterDTO.getAddress();
+        var addressList = globalMapper.toAddressList(addressDTOList);
 
         var savedVoter = voterRepo.save(voter);
-        addressSet.forEach(address -> address.setVoter(savedVoter));
-        addressRepo.saveAll(addressSet);
+        addressList.forEach(address -> {
+            address.setVoter(savedVoter);
+            if(address.getCounty()==null)
+                address.setCounty(addressList.getFirst().getCounty());
+        });
+        addressRepo.saveAll(addressList);
+        log.info("voter registration completed for : {}",savedVoter.getSsnNumber());
         return globalMapper.toVoterRegisterDTO(savedVoter);
     }
 
     public VoterRegisterDTO findBySSN(String ssnNumber) {
-        var voter = voterRepo.findBySsnNumber(ssnNumber).orElseThrow(() -> new VoterNotFoundException("Voter not found with SSN : " + ssnNumber));
-        return globalMapper.toVoterRegisterDTO(voter);
-
-//        var voterOptional = voterRepo.findBySsnNumber(ssnNumber);
-//        if(voterOptional.isPresent()){
-//            var voter = voterOptional.get();
-//            log.info("voter with ssn {} : {}",ssnNumber,voter);
-//            return voterMapper.toVoterRegisterDTO(voter);
-//        }
-//        throw new VoterNotFoundException("Voter not found with SSN : " + ssnNumber);
+        log.info("searching start for ssn : {}",ssnNumber);
+        return voterRepo.findBySsnNumber(ssnNumber).map(globalMapper::toVoterRegisterDTO).orElseThrow((() -> new VoterNotFoundException("Voter not exist with SSN No : " + ssnNumber)));
     }
 
     public VoterRegisterDTO findByDMV(String dmvNumber){
-        Optional<Voter> voterOptional = voterRepo.findByDmvNumber(dmvNumber);
-        return voterOptional.map(globalMapper::toVoterRegisterDTO).orElse(null);
+        log.info("searching start for DMV No : {}",dmvNumber);
+        return voterRepo.findByDmvNumber(dmvNumber).map(globalMapper::toVoterRegisterDTO).orElseThrow(() -> new VoterNotFoundException("Voter not exist with DMV No : " + dmvNumber));
     }
 
     public VoterRegisterDTO findByFirstName(String name) {
-        Optional<Voter> voterOptional = voterRepo.findByFirstName(name);
-        if(voterOptional.isPresent())
-            return globalMapper.toVoterRegisterDTO(voterOptional.get());
-        return null;
+        log.info("searching start for first name : {}",name);
+        return voterRepo.findByFirstName(name).map(globalMapper::toVoterRegisterDTO).orElseThrow(() -> new VoterNotFoundException("Voter not found with first name : " + name));
     }
 }

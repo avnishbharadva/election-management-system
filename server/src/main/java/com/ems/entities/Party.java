@@ -1,10 +1,11 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Set;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -21,5 +22,6 @@ public class Party extends TimeStamp{
     private String abbreviation;
 
     @OneToMany(mappedBy = "party")
-    private Set<Voter> voters;
+    @JsonManagedReference
+    private List<Voter> voters;
 }

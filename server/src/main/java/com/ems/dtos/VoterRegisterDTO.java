@@ -1,15 +1,11 @@
 package com.ems.dtos;
 
-import com.ems.entities.Address;
-import com.ems.entities.Party;
 import com.ems.entities.constants.Gender;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,7 +37,7 @@ public class VoterRegisterDTO {
 
     private long partyId;
 
-    private Set<AddressDTO> address;
+    private List<AddressDTO> address;
 
     private String image;
 
