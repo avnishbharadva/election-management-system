@@ -21,7 +21,6 @@ import java.util.List;
 public class VoterController {
 
     private final VoterService voterService;
-    private final VoterSearchDTO searchDTO;
 
     @PostMapping
     public ResponseEntity<VoterRegisterDTO> register(@Valid @RequestBody VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
