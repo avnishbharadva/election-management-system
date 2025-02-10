@@ -1,24 +1,34 @@
 package com.ems.controllers;
 
 import com.ems.dtos.PartyDTO;
-import com.ems.entities.Party;
 import com.ems.services.PartyService;
+import jakarta.validation.Valid;
 import lombok.Data;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Data
+import java.util.List;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/party")
 public class PartyController {
     private final PartyService partyService;
 
-    @PostMapping("/newParty")
-    Party createParty(@RequestBody PartyDTO partyDTO)
+    @PostMapping
+    public ResponseEntity<PartyDTO> createParty(@Valid @RequestBody PartyDTO partyDTO)
     {
-        return partyService.saveParty(partyDTO);
+        return ResponseEntity.ok(partyService.saveParty(partyDTO));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PartyDTO> findByPartyId(@PathVariable long id){
+        return ResponseEntity.ok(partyService.partyById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PartyDTO>> findAllParties(){
+        return ResponseEntity.ok(partyService.findAll());
+    }
 }

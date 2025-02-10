@@ -1,8 +1,9 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+// import { styled } from "@mui/system";
+import { Button, TextField, Typography } from "@mui/material";
 import dummy from "../../assets/images/NYC_Flag.jpg";
 import { Resolver, useForm } from "react-hook-form";
-import '../../style/login.css'
 import { useNavigate } from "react-router-dom";
+import { ErrorMsg, FormCard, LoginBox, LoginField, LoginForm, LoginImg } from "../../style/LoginStyle";
 
 type FormValues = {
   email: string;
@@ -32,61 +33,67 @@ const resolver: Resolver<FormValues> = async (values) => {
   };
 };
 
+
+
 const Login = () => {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
+  // const redirect = () => {
+  //   navigate("/dashboard/cards");
+  // };
 
-  const redirect = ()=>{
-    navigate('/dashboard/cards')
-  }
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver });
 
-  const onSubmit = handleSubmit((data: object) => console.log(data));
+  const onSubmit = handleSubmit((data: FormValues) => console.log(data));
+
   return (
     <>
-      <Box className="loginBox">
-        <img src={dummy} className="loginImg" alt="" />
-        <Box className="formCard">
-          <form className="loginform" onSubmit={handleSubmit(onSubmit)}>
+      <LoginBox>
+        <LoginImg src={dummy} alt="" />
+        <FormCard>
+          <LoginForm onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="h5">Sign In Here!</Typography>
-            <Box className="loginField">
+            <LoginField>
               <TextField
                 fullWidth
-                sx={{ mt: "20px" }}
+                sx={{
+                  mt: "20px",
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                }}
                 {...register("email", { required: true })}
                 label="Email"
               />
-              {errors?.email && (
-                <p className="errorMsg">{errors.email.message}</p>
-              )}
-            </Box>
-            <Box className="loginField">
+              {errors?.email && <ErrorMsg>{errors.email.message}</ErrorMsg>}
+            </LoginField>
+            <LoginField>
               <TextField
                 fullWidth
+                sx={{
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                }}
                 {...register("password", { required: true })}
                 label="Password"
               />
-              {errors?.password && (
-                <p className="errorMsg">{errors.password.message}</p>
-              )}
-            </Box>
-
+              {errors?.password && <ErrorMsg>{errors.password.message}</ErrorMsg>}
+            </LoginField>
             <Button
               type="submit"
               sx={{ mt: "20px" }}
               fullWidth
               variant="contained"
-              onClick={redirect}
+              // onClick={redirect}
             >
               Login
             </Button>
-          </form>
-        </Box>
-      </Box>
+          </LoginForm>
+        </FormCard>
+      </LoginBox>
     </>
   );
 };

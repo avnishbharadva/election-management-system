@@ -6,6 +6,7 @@ import com.ems.entities.Election;
 import com.ems.entities.Party;
 import com.ems.entities.Voter;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public interface GlobalMapper {
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
     Voter toVoter(VoterSearchDTO voterSearchDTO);
+
+    @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
 

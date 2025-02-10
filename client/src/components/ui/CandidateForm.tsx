@@ -29,9 +29,9 @@ const CandidateForm: React.FC = () => {
   return (
    <>
      <Box sx={{display: 'flex', justifyContent: 'center', alignItems:"center"}}>
-      <Paper elevation={3} sx={{ padding: 4 , width:'90%'}}>
+      <Paper elevation={3} sx={{ padding: 4 , width:'auto'}}>
         <Typography variant="h5" textAlign="center" mb={2}>
-          Register
+          Register Candidate
         </Typography>
         <form>
           {/* First Row */}

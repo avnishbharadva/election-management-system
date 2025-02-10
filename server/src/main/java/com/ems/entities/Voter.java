@@ -48,7 +48,7 @@ public class Voter extends TimeStamp {
     private String phoneNumber;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean hasVotedBefore;
+    private Boolean hasVotedBefore;
 
     @Column(length = 4)
     private String firstVotedYear;

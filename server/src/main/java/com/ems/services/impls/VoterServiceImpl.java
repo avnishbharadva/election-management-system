@@ -2,6 +2,7 @@ package com.ems.services.impls;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.entities.Voter;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.exceptions.VoterNotFoundException;
 import com.ems.mappers.GlobalMapper;
@@ -53,12 +54,13 @@ public class VoterServiceImpl implements VoterService
 
     @Override
     public List<VoterRegisterDTO> searchVoters(VoterSearchDTO searchDTO) {
-        var result = voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()), FluentQuery.FetchableFluentQuery::all).stream().map(globalMapper::toVoterRegisterDTO).toList();
-        if (result.isEmpty()) {
+        var voters = voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()), FluentQuery.FetchableFluentQuery::all).stream().map(globalMapper::toVoterRegisterDTO).toList();
+
+        if (voters.isEmpty()) {
             log.warn("No voters found for search criteria: {}", searchDTO);
             throw new VoterNotFoundException("No voters found matching the given criteria.");
         }
-        return result;
+        return voters;
     }
 
 }

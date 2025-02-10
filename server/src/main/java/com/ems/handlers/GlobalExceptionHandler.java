@@ -6,6 +6,7 @@ import com.ems.exceptions.ElectionNotFoundException;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.exceptions.VoterNotFoundException;
 import org.apache.coyote.BadRequestException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,18 +34,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        BindingResult bindingResult = ex.getBindingResult();
-        List<ObjectError> errors = bindingResult.getAllErrors();
-
-        String errorMessage = errors.stream()
-                .map(ObjectError::getDefaultMessage)
-                .findFirst()
-                .orElse("Validation failed");
-        ErrorResponse candidateErrorResponse = new ErrorResponse();
-        candidateErrorResponse.setMessage(errorMessage);
-        candidateErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        candidateErrorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(candidateErrorResponse, HttpStatus.BAD_REQUEST);
+        var errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getAllErrors().getFirst().getDefaultMessage());
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({PartyNotFoundException.class, VoterNotFoundException.class})
@@ -56,14 +50,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
 
     @ExceptionHandler(ElectionNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleElectionNotFoundException(RuntimeException runtimeException)
@@ -74,5 +60,6 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
 
 }
