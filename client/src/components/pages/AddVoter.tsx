@@ -3,7 +3,7 @@
 const AddVoter = () => {
   return (
     
-        <></>
+        <>hello</>
   )
 }
 
