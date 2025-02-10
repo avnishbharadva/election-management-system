@@ -6,10 +6,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
-
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @DynamicUpdate
 @Entity
