@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Data
 @RestController
-@RequestMapping("/party")
+@RequestMapping("/api/party")
 public class PartyController {
     private final PartyService partyService;
 
