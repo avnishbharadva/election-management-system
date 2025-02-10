@@ -48,6 +48,7 @@ const CandidateForm: React.FC = () => {
               fullWidth
               name="dob"
               type="date"
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
               fullWidth
