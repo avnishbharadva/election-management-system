@@ -2,13 +2,19 @@ package com.ems.services.impls;
 
 import com.ems.dtos.PartyDTO;
 import com.ems.entities.Party;
+import com.ems.exceptions.PartyNotFoundException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.PartyService;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Data
+import java.util.List;
+
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class PartyServiceImpl implements PartyService {
     private final PartyRepository partyRepository;
@@ -16,12 +22,20 @@ public class PartyServiceImpl implements PartyService {
 
     @Override
     public PartyDTO partyById(long id) {
-        return null;
+        var party = partyRepository.findById(id).orElseThrow(() -> new PartyNotFoundException("Party not found with id : " + id));
+        return globalMapper.toPartyDTO(party);
     }
 
     @Override
-    public Party saveParty(PartyDTO partyDTO) {
-        var party=globalMapper.toParty(partyDTO);
-        return partyRepository.save(party);
+    public PartyDTO saveParty(PartyDTO partyDTO) {
+        var party = globalMapper.toParty(partyDTO);
+        party = partyRepository.save(party);
+        log.info("Party Successfully Saved : {}",party.getPartyName());
+        return globalMapper.toPartyDTO(party);
+    }
+
+    @Override
+    public List<PartyDTO> findAll() {
+        return partyRepository.findAll().stream().map(globalMapper::toPartyDTO).toList();
     }
 }
