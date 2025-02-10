@@ -33,7 +33,6 @@ public class VoterServiceImpl implements VoterService
     @Override
     public VoterRegisterDTO register(VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
-
         var party = partyRepo.findById(voterRegisterDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party Not Found with ID : " + voterRegisterDTO.getPartyId()));
 
         var voter = globalMapper.toVoter(voterRegisterDTO);

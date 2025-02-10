@@ -1,8 +1,11 @@
 package com.ems.services.impls;
+
+import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
 import com.ems.exceptions.CandidateNotFoundException;
+import com.ems.exceptions.PartyNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
@@ -12,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -95,6 +99,19 @@ public class CandidateServiceImpl implements CandidateService {
                     .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
         }
         return candidateRepository.save(existingCandidate);
+    }
+
+    @Override
+    public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {
+        List<Candidate> candidates=candidateRepository.findByParty_PartyName(candidatePartyName);
+
+        if(candidates.isEmpty()){
+            throw new PartyNotFoundException("Party with given name not found");
+        }
+        return candidates.stream()
+                .map(candidateMapper::toCandidateByPartyDTO)
+                .toList();
+
     }
 }
 

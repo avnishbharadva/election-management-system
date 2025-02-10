@@ -1,5 +1,6 @@
 package com.ems.controllers;
 
+import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.CandidateNotFoundException;
@@ -10,9 +11,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@CrossOrigin
 @AllArgsConstructor
-@RequestMapping("/candidate")
+@RequestMapping("/api/candidate")
 public class CandidateController {
 
     private final CandidateService candidateService;
@@ -21,7 +25,7 @@ public class CandidateController {
     ResponseEntity<CandidateDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
     {
         try{
-            CandidateDTO candidateDTO= candidateService.findByCandidateSSN(candidateSSN);
+            var candidateDTO= candidateService.findByCandidateSSN(candidateSSN);
             return ResponseEntity.ok(candidateDTO);
         }
         catch (CandidateNotFoundException e){
@@ -30,7 +34,7 @@ public class CandidateController {
     }
 
     @PostMapping("/addCandidate")
-    ResponseEntity<?> createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
+    ResponseEntity<Candidate> createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
     {
         try{
             var candidate=candidateService.saveCandidate(candidateDTO);
@@ -48,6 +52,13 @@ public class CandidateController {
     @PutMapping("/updateCandidate/{candidateId}")
     Candidate updateCandidate(@PathVariable Long candidateId,@Valid @RequestBody CandidateDTO candidateDTO){
        return candidateService.update(candidateId,candidateDTO);
+    }
+
+
+    @GetMapping("/partyName/{candidatePartyName}")
+    List<CandidateByPartyDTO> getCandidateByPartyName(@PathVariable String candidatePartyName)
+    {
+        return candidateService.findByPartyName(candidatePartyName);
     }
 
 }

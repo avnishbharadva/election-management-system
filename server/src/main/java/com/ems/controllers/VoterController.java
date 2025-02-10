@@ -27,7 +27,6 @@ public class VoterController {
 
     @GetMapping("/search")
     public ResponseEntity<List<VoterRegisterDTO>> searchVoters(@RequestBody VoterSearchDTO searchDTO) {
-
         return ResponseEntity.ok(voterService.searchVoters(searchDTO));
     }
 
