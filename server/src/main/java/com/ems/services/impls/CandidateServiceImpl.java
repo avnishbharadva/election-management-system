@@ -4,7 +4,9 @@ import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
+import com.ems.exceptions.CandidateAlreadyExistsException;
 import com.ems.exceptions.CandidateNotFoundException;
+import com.ems.exceptions.ElectionNotFoundException;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
@@ -35,19 +37,31 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public Candidate saveCandidate(@Valid CandidateDTO candidateDTO) {
-        var candidate = candidateMapper.toCandidate(candidateDTO);
 
-        candidate.setElection(electionRepository.findById(candidateDTO.getElectionId()).get());
-        candidate.setParty(partyRepository.findById(candidateDTO.getPartyId()).get());
+        if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
+            throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
+        }
+
+        var candidate = candidateMapper.toCandidate(candidateDTO);
+        var election = electionRepository.findById(candidateDTO.getElectionId())
+                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + candidateDTO.getElectionId()));
+        var party = partyRepository.findById(candidateDTO.getPartyId())
+                .orElseThrow(() -> new PartyNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
+
+        candidate.setElection(election);
+        candidate.setParty(party);
 
         var residentialAddress = candidateDTO.getResidentialAddress();
-        var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress()) ? residentialAddress : candidateDTO.getMailingAddress();
+        var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
+                ? residentialAddress
+                : candidateDTO.getMailingAddress();
 
         candidate.setResidentialAddress(residentialAddress);
         candidate.setMailingAddress(mailingAddress);
 
         return candidateRepository.save(candidate);
     }
+
 
     @Override
     public CandidateDTO findById(Long candidateId) {
@@ -119,6 +133,11 @@ public class CandidateServiceImpl implements CandidateService {
         return candidateRepository.findAll()
                 .stream().map(candidateMapper::toCandidateDTO)
                 .toList();
+    }
+
+    @Override
+    public void deleteCandidateByCandidateId(Long candidateId) {
+        candidateRepository.deleteById(candidateId);
     }
 }
 

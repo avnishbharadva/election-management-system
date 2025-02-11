@@ -1,22 +1,26 @@
 package com.ems.services.impls;
 
 import com.ems.dtos.ElectionDTO;
+import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Election;
 import com.ems.exceptions.ElectionNotFoundException;
-import com.ems.mappers.ElectionMapper;
+import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 @Service
 public class ElectionServiceImpl implements ElectionService {
     private final ElectionRepository electionRepository;
     private final GlobalMapper globalMapper;
+    private final CandidateMapper candidateMapper;
 
     @Override
     public Election saveElection(ElectionDTO electionDTO) {
@@ -39,4 +43,18 @@ public class ElectionServiceImpl implements ElectionService {
 
         return electionRepository.save(existingElection);
     }
+
+
+    @Override
+    public List<ElectionSortDTO> getElectionsSorted(String order) {
+        List<Election> elections;
+
+        if ("desc".equalsIgnoreCase(order)) {
+            elections = electionRepository.findAllByOrderByElectionDateDesc();
+        } else {
+            elections = electionRepository.findAllByOrderByElectionDateAsc();
+        }
+        return elections.stream().map(candidateMapper::toElectionSortDTO).collect(Collectors.toList());
+    }
+
 }

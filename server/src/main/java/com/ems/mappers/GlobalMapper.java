@@ -13,7 +13,6 @@ public interface GlobalMapper {
     Voter toVoter(VoterSearchDTO voterSearchDTO);
     Voter toVoter(VoterUpdateDTO voterUpdateDTO);
 
-    VoterHistory toVoterHistory(Voter voter);
 
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);

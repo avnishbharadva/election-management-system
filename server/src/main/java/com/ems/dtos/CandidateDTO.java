@@ -7,6 +7,7 @@ import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -14,43 +15,45 @@ import java.util.Date;
 public class CandidateDTO {
 
     private Long candidateId;
-    @NotEmpty
+//    @NotNull
     private CandidateName candidateName;
 
-    @NotEmpty
+//    @NotNull
     @Pattern(regexp = "^\\d{9}$", message = "SSN must contain exactly 9 digits")
     private String candidateSSN;
 
     @Past
-    @NotEmpty
+//    @NotNull
     private Date dateOfBirth;
 
-    @NotEmpty
+//    @NotNull
     private Gender gender;
 
-    @NotEmpty
     private MaritialStatus maritialStatus;
     private int noOfChildren;
-    @Pattern(regexp = "^[a-zA-Z]$",message = "Name must have alphabets")
+    @Pattern(regexp = "^[A-Za-z]+$",message = "Name must have alphabets")
     private String spouseName;
 
-    @NotEmpty
+//    @NotNull
     private Long partyId;
 
-    @NotEmpty
+//    @NotNull
     private CandidateAddress residentialAddress;
-    @NotEmpty
+//    @NotNull
     private CandidateAddress mailingAddress;
 
-    @NotEmpty
+//    @NotNull
     private String stateName;
 
-    @NotEmpty
+//    @NotNull
     @Email(message = "Must be a valid email")
     private String candidateEmail;
 
-    @NotNull
+//    @NotNull
     private Long electionId;
-    @NotEmpty
+//    @NotNull
     private BankDetails bankDetails;
+
+    private String candidateSignature;
+    private String candidateImage;
 }
