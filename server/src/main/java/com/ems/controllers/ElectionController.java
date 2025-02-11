@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Data
-@RequestMapping("/elections")
+@RequestMapping("/api/elections")
 public class ElectionController {
 
     private final ElectionService electionService;
@@ -20,4 +20,6 @@ public class ElectionController {
     Election createElection(@RequestBody ElectionDTO electionDTO){
         return electionService.saveElection(electionDTO);
     }
+
+
 }

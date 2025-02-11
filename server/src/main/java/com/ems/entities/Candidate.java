@@ -1,5 +1,4 @@
 package com.ems.entities;
-
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -24,6 +23,7 @@ public class Candidate extends TimeStamp {
     @Embedded
     private CandidateName candidateName;
 
+    @Column(unique = true)
     private String candidateSSN;
     private Date dateOfBirth;
 

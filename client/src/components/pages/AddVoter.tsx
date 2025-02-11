@@ -1,9 +1,12 @@
+import Model from "../ui/Model"
 
 
 const AddVoter = () => {
   return (
     
-        <>hello</>
+        <Model>
+          <>dummy</>
+        </Model>
   )
 }
 

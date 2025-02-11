@@ -2,6 +2,7 @@ package com.ems.handlers;
 
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.CandidateNotFoundException;
+import com.ems.exceptions.ElectionNotFoundException;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.exceptions.VoterNotFoundException;
 import org.apache.coyote.BadRequestException;
@@ -48,4 +49,17 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+
+    @ExceptionHandler(ElectionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleElectionNotFoundException(RuntimeException runtimeException)
+    {
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setMessage(runtimeException.getMessage());
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+
 }
