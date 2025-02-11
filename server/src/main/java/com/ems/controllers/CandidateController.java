@@ -21,6 +21,19 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
+    @GetMapping
+    ResponseEntity<List<CandidateDTO>> getAllCandidates()
+    {
+        try {
+            var candidateDTO=candidateService.findAll();
+            return ResponseEntity.ok(candidateDTO);
+        }
+        catch (CandidateNotFoundException ex){
+            throw new CandidateNotFoundException("Not found");
+        }
+
+    }
+
     @GetMapping("/ssn/{candidateSSN}")
     ResponseEntity<CandidateDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
     {
@@ -53,7 +66,6 @@ public class CandidateController {
     Candidate updateCandidate(@PathVariable Long candidateId,@Valid @RequestBody CandidateDTO candidateDTO){
        return candidateService.update(candidateId,candidateDTO);
     }
-
 
     @GetMapping("/partyName/{candidatePartyName}")
     List<CandidateByPartyDTO> getCandidateByPartyName(@PathVariable String candidatePartyName)

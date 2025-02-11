@@ -113,6 +113,13 @@ public class CandidateServiceImpl implements CandidateService {
                 .toList();
 
     }
+
+    @Override
+    public List<CandidateDTO> findAll() {
+        return candidateRepository.findAll()
+                .stream().map(candidateMapper::toCandidateDTO)
+                .toList();
+    }
 }
 
 
