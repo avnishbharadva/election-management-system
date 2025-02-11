@@ -2,7 +2,7 @@ package com.ems.controllers;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
-import com.ems.entities.Voter;
+import com.ems.dtos.VoterUpdateDTO;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.services.VoterService;
 import jakarta.validation.Valid;
@@ -27,9 +27,11 @@ public class VoterController {
 
     @GetMapping("/search")
     public ResponseEntity<List<VoterRegisterDTO>> searchVoters(@RequestBody VoterSearchDTO searchDTO) {
-
         return ResponseEntity.ok(voterService.searchVoters(searchDTO));
     }
 
-
+    @PutMapping("/{id}")
+    public ResponseEntity<VoterRegisterDTO> updateVoter(@PathVariable String id, @Valid @RequestBody VoterUpdateDTO voterUpdateDTO){
+        return ResponseEntity.ok(voterService.updateVoter(id,voterUpdateDTO));
+    }
 }

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
+@Audited
 public class Address extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

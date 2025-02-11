@@ -2,7 +2,7 @@ package com.ems.services.impls;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
-import com.ems.entities.Voter;
+import com.ems.dtos.VoterUpdateDTO;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.exceptions.VoterNotFoundException;
 import com.ems.mappers.GlobalMapper;
@@ -12,6 +12,7 @@ import com.ems.repositories.VoterRepository;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.repository.query.FluentQuery;
@@ -24,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService
 {
-
     private final VoterRepository voterRepo;
     private final GlobalMapper globalMapper;
     private final AddressRepository addressRepo;
@@ -50,6 +50,7 @@ public class VoterServiceImpl implements VoterService
         });
         addressRepo.saveAll(addressList);
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
+
         return globalMapper.toVoterRegisterDTO(savedVoter);
     }
 
@@ -62,6 +63,21 @@ public class VoterServiceImpl implements VoterService
             throw new VoterNotFoundException("No voters found matching the given criteria.");
         }
         return voters;
+    }
+
+    @Override
+    public VoterRegisterDTO updateVoter(String id, VoterUpdateDTO voterUpdateDTO) {
+        log.info("update process start for {} voter",id);
+
+        var existingVoter = voterRepo.findById(id).orElseThrow(() -> new VoterNotFoundException("Voter not found with id : " + id));
+
+        partyRepo.findById(voterUpdateDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party not found with id : " + voterUpdateDTO.getPartyId()));
+
+        BeanUtils.copyProperties(voterUpdateDTO, existingVoter);
+
+        voterRepo.save(existingVoter);
+        log.info("updated voter details of : {}",id);
+        return globalMapper.toVoterRegisterDTO(existingVoter);
     }
 
 }
