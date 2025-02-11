@@ -6,12 +6,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
+@Audited
 public class Voter extends TimeStamp {
     @Id
     @Column(unique = true, nullable = false, length = 9)
@@ -56,6 +60,7 @@ public class Voter extends TimeStamp {
     @ManyToOne
     @JoinColumn(name = "party_id")
     @JsonBackReference
+    @NotAudited
     private Party party;
 
     @OneToMany(mappedBy = "voter")
@@ -69,7 +74,8 @@ public class Voter extends TimeStamp {
 
     @PrePersist
     public void createVoterID(){
-        if(this.voterId==null)
+        if(this.voterId==null){
             this.voterId = VoterIdGenerator.getNextId();
+        }
     }
 }

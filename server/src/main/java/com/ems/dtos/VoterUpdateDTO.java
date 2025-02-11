@@ -4,15 +4,12 @@ import com.ems.entities.constants.Gender;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
-public class VoterRegisterDTO {
-
+public class VoterUpdateDTO {
     @NotBlank(message = "First Name cannot be blank")
     @Size(min = 2, max = 50, message = "First Name must be between 2 and 50 characters")
     private String firstName;
@@ -35,14 +32,6 @@ public class VoterRegisterDTO {
     @NotNull(message = "Gender cannot be null")
     private Gender gender;
 
-    @NotBlank(message = "DMV Number cannot be blank")
-    @Pattern(regexp = "\\d{9}", message = "DMV Number must be exactly 9 digits")
-    private String dmvNumber;
-
-    @NotBlank(message = "SSN Number cannot be blank")
-    @Pattern(regexp = "\\d{9}", message = "SSN Number must be exactly 9 digits")
-    private String ssnNumber;
-
     @Email
     @NotBlank(message = "Email cannot be blank")
     private String email;
@@ -59,13 +48,9 @@ public class VoterRegisterDTO {
     @Positive(message = "Party ID must be a positive number")
     private Long partyId;
 
-    @NotEmpty(message = "Address cannot be empty")
-    @Size(min = 1, message = "At least one address is required")
-    private List<AddressDTO> address;
-
     @NotBlank(message = "Image url can not be blank")
-    private MultipartFile image;
+    private String image;
 
     @NotBlank(message = "Signature url can not be blank")
-    private MultipartFile signature;
+    private String signature;
 }
