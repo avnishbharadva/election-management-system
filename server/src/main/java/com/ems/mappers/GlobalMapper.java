@@ -18,6 +18,7 @@ public interface GlobalMapper {
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
+
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 

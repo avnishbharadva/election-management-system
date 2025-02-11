@@ -13,30 +13,46 @@ import java.util.Date;
 public class CandidateDTO {
 
     private Long candidateId;
+
+//    @NotNull
     private CandidateName candidateName;
 
     @Pattern(regexp = "^\\d{9}$", message = "SSN must contain exactly 9 digits")
     private String candidateSSN;
 
     @Past
+//    @NotNull
     private Date dateOfBirth;
 
+//    @NotNull
     private Gender gender;
+
     private MaritialStatus maritialStatus;
     private int noOfChildren;
-
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Name must have alphabets")
+    @Pattern(regexp = "^[A-Za-z]+$",message = "Name must have alphabets")
     private String spouseName;
 
+//    @NotNull
     private Long partyId;
-    private Long electionId;
+
+//    @NotNull
     private CandidateAddress residentialAddress;
+//    @NotNull
     private CandidateAddress mailingAddress;
+
+//    @NotNull
     private String stateName;
 
+//    @NotNull
     @Email(message = "Must be a valid email")
     private String candidateEmail;
+
+//    @NotNull
+    private Long electionId;
+//    @NotNull
     private BankDetails bankDetails;
+
+
     private String candidateSignature;
     private String candidateImage;
 }

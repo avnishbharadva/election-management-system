@@ -2,6 +2,7 @@ package com.ems.mappers;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
 import com.ems.entities.Party;
@@ -16,6 +17,10 @@ public interface CandidateMapper {
     CandidateDTO toCandidateDTO(Candidate candidate);
 
     Candidate toCandidate(CandidateDTO candidateDTO);
+
+    Election toElection(ElectionSortDTO electionSortDTO);
+    ElectionSortDTO toElectionSortDTO(Election election);
+
 
     default Long mapPartyToId(Party party) {
         return (party != null) ? party.getPartyId() : null;

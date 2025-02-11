@@ -11,6 +11,5 @@ public interface PartyService {
 
     PartyDTO partyById(long id);
     PartyDTO saveParty(PartyDTO partyDTO);
-
     List<PartyDTO> findAll();
 }
