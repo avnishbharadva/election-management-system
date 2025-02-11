@@ -7,14 +7,11 @@ import com.ems.exceptions.PartyNotFoundException;
 import com.ems.services.VoterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,7 +22,7 @@ public class VoterController {
     private final VoterService voterService;
 
     @PostMapping
-    public ResponseEntity<VoterRegisterDTO> register(@Valid @RequestBody VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
+    public ResponseEntity<VoterRegisterDTO> register(@Valid @RequestBody VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException, IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(voterService.register(voterRegisterDTO));
     }
 
@@ -40,11 +37,8 @@ public class VoterController {
         return ResponseEntity.ok(result);
     }
 
-
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<VoterRegisterDTO> updateVoter(@PathVariable String id, @Valid @RequestBody VoterUpdateDTO voterUpdateDTO){
-        return ResponseEntity.ok(voterService.updateVoter(id,voterUpdateDTO));
+    @PutMapping("/{voterId}")
+    public ResponseEntity<VoterRegisterDTO> updateVoter(@PathVariable String voterId, @Valid @RequestBody VoterUpdateDTO voterUpdateDTO){
+        return ResponseEntity.ok(voterService.updateVoter(voterId,voterUpdateDTO));
     }
 }

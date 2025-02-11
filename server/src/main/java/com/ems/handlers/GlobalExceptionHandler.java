@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({PartyNotFoundException.class, VoterNotFoundException.class})
+    @ExceptionHandler({PartyNotFoundException.class, VoterNotFoundException.class, ElectionNotFoundException.class})
     public ResponseEntity<ErrorResponse> handlePartyNotFoundException(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
@@ -49,17 +49,4 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
-
-
-    @ExceptionHandler(ElectionNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleElectionNotFoundException(RuntimeException runtimeException)
-    {
-        ErrorResponse errorResponse=new ErrorResponse();
-        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-        errorResponse.setMessage(runtimeException.getMessage());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-
 }

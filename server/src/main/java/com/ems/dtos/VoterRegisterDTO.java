@@ -4,6 +4,7 @@ import com.ems.entities.constants.Gender;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -63,8 +64,8 @@ public class VoterRegisterDTO {
     private List<AddressDTO> address;
 
     @NotBlank(message = "Image url can not be blank")
-    private String image;
+    private MultipartFile image;
 
     @NotBlank(message = "Signature url can not be blank")
-    private String signature;
+    private MultipartFile signature;
 }
