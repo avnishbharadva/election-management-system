@@ -23,7 +23,7 @@ const AllRoutes = () => {
         <Route path='/dashboard/election' element={<AddElection/>}></Route>
         </Route>)} */}
         <Route path="/" element={<Layout />}>
-        <Route path='/dashboard/cards' element={<Cards/>}></Route>
+        <Route path='/dashboard' element={<Cards/>}></Route>
         <Route path='/dashboard/candidate' element={<AddCandidate/>}></Route>
         <Route path='/dashboard/voter' element={<AddVoter/>}></Route>
         <Route path='/dashboard/party' element={<AddParty/>}></Route>
