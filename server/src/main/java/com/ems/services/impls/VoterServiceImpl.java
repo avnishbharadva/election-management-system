@@ -13,11 +13,17 @@ import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -25,13 +31,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService
 {
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     private final VoterRepository voterRepo;
     private final GlobalMapper globalMapper;
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
 
     @Override
-    public VoterRegisterDTO register(VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException {
+    public VoterRegisterDTO register(VoterRegisterDTO voterRegisterDTO) throws PartyNotFoundException, IOException {
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
         var party = partyRepo.findById(voterRegisterDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party Not Found with ID : " + voterRegisterDTO.getPartyId()));
 
@@ -40,6 +48,19 @@ public class VoterServiceImpl implements VoterService
 
         var addressDTOList = voterRegisterDTO.getAddress();
         var addressList = globalMapper.toAddressList(addressDTOList);
+
+        Files.createDirectories(Paths.get(uploadDir + "/photos"));
+        Files.createDirectories(Paths.get(uploadDir + "/signatures"));
+
+        MultipartFile voterImage = voterRegisterDTO.getImage();
+        var imagePath = uploadDir + "/photos/" + voterImage.getOriginalFilename();
+        voterImage.transferTo(new File(imagePath));
+        voter.setImage(imagePath);
+
+        MultipartFile signature = voterRegisterDTO.getSignature();
+        var signaturePath = uploadDir + "/signatures/" + signature.getOriginalFilename();
+        signature.transferTo(new File(signaturePath));
+        voter.setSignature(signaturePath);
 
         var savedVoter = voterRepo.save(voter);
         addressList.forEach(address -> {
