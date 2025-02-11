@@ -23,16 +23,14 @@ public class Candidate extends TimeStamp {
     @Embedded
     private CandidateName candidateName;
 
-    @Column(unique = true)
+//    @Column(unique = true)
+    @Column(name = "candidatessn")
     private String candidateSSN;
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private Byte[] candidateImage;
 
     @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus;
@@ -66,7 +64,7 @@ public class Candidate extends TimeStamp {
     @JoinColumn(name = "bank_details_id")
     private BankDetails bankDetails;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private Byte[] candidateSignature;
+    private String candidateSignature;
+
+    private String candidateImage;
 }

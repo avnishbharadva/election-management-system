@@ -22,9 +22,9 @@ public class PartyController {
         return ResponseEntity.ok(partyService.saveParty(partyDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PartyDTO> findByPartyId(@PathVariable long id){
-        return ResponseEntity.ok(partyService.partyById(id));
+    @GetMapping("/{partyId}")
+    public ResponseEntity<PartyDTO> findByPartyId(@PathVariable long partyId){
+        return ResponseEntity.ok(partyService.partyById(partyId));
     }
 
     @GetMapping

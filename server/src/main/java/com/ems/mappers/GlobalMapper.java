@@ -1,10 +1,7 @@
 package com.ems.mappers;
 
 import com.ems.dtos.*;
-import com.ems.entities.Address;
-import com.ems.entities.Election;
-import com.ems.entities.Party;
-import com.ems.entities.Voter;
+import com.ems.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,8 +9,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface GlobalMapper {
+
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "signature", ignore = true)
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
     Voter toVoter(VoterSearchDTO voterSearchDTO);
+    Voter toVoter(VoterUpdateDTO voterUpdateDTO);
+
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "signature", ignore = true)
 
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
