@@ -3,7 +3,7 @@ import React from 'react'
 const Dummy = () => {
   return (
     <div>
-      <h1>abc</h1>
+      <h1>xyzerty</h1>
     </div>
   )
 }
