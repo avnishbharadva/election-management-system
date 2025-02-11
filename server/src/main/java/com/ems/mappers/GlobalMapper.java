@@ -9,10 +9,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface GlobalMapper {
+
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "signature", ignore = true)
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
     Voter toVoter(VoterSearchDTO voterSearchDTO);
     Voter toVoter(VoterUpdateDTO voterUpdateDTO);
 
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "signature", ignore = true)
 
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);

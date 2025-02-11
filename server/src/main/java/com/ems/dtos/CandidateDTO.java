@@ -7,18 +7,16 @@ import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Date;
 
 @Data
 public class CandidateDTO {
 
     private Long candidateId;
+
 //    @NotNull
     private CandidateName candidateName;
 
-//    @NotNull
     @Pattern(regexp = "^\\d{9}$", message = "SSN must contain exactly 9 digits")
     private String candidateSSN;
 
@@ -53,6 +51,7 @@ public class CandidateDTO {
     private Long electionId;
 //    @NotNull
     private BankDetails bankDetails;
+
 
     private String candidateSignature;
     private String candidateImage;
