@@ -23,7 +23,8 @@ public class Candidate extends TimeStamp {
     @Embedded
     private CandidateName candidateName;
 
-    @Column(unique = true)
+//    @Column(unique = true)
+    @Column(name = "candidatessn")
     private String candidateSSN;
     private Date dateOfBirth;
 
