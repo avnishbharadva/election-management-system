@@ -17,6 +17,7 @@ import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Sort;
 @Service
@@ -80,49 +82,26 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
-        var existingCandidate = candidateRepository.findById(candidateId)
+        Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with ID: " + candidateId));
 
-        if (candidateDTO.getCandidateName() != null) {
-            CandidateName existingName = existingCandidate.getCandidateName();
-            CandidateName newName = candidateDTO.getCandidateName();
+        candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
 
-            if (existingName == null) {
-                existingName = new CandidateName();
-            }
-
-            Optional.ofNullable(newName.getFirstName()).ifPresent(existingName::setFirstName);
-            Optional.ofNullable(newName.getMiddleName()).ifPresent(existingName::setMiddleName);
-            Optional.ofNullable(newName.getLastName()).ifPresent(existingName::setLastName);
-
-            existingCandidate.setCandidateName(existingName);
-        }
-
-        Optional.ofNullable(candidateDTO.getCandidateEmail()).ifPresent(existingCandidate::setCandidateEmail);
-        Optional.ofNullable(candidateDTO.getCandidateSSN()).ifPresent(existingCandidate::setCandidateSSN);
-        Optional.ofNullable(candidateDTO.getDateOfBirth()).ifPresent(existingCandidate::setDateOfBirth);
-        Optional.ofNullable(candidateDTO.getGender()).ifPresent(existingCandidate::setGender);
-        Optional.ofNullable(candidateDTO.getMaritialStatus()).ifPresent(existingCandidate::setMaritialStatus);
-        if (candidateDTO.getNoOfChildren() != 0) {
-            existingCandidate.setNoOfChildren(candidateDTO.getNoOfChildren());
-        }
-
-        Optional.ofNullable(candidateDTO.getSpouseName()).ifPresent(existingCandidate::setSpouseName);
-        Optional.ofNullable(candidateDTO.getResidentialAddress()).ifPresent(existingCandidate::setResidentialAddress);
-        Optional.ofNullable(candidateDTO.getMailingAddress()).ifPresent(existingCandidate::setMailingAddress);
-        Optional.ofNullable(candidateDTO.getStateName()).ifPresent(existingCandidate::setStateName);
-        Optional.ofNullable(candidateDTO.getBankDetails()).ifPresent(existingCandidate::setBankDetails);
         if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
             existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
                     .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
         }
+
         if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
             existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
                     .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
         }
+
         return candidateRepository.save(existingCandidate);
     }
+
 
     @Override
     public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {
@@ -153,7 +132,6 @@ public class CandidateServiceImpl implements CandidateService {
     public Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
-
         return candidatePage.map(candidateMapper::toCandidateDTO);
     }
 
@@ -181,8 +159,11 @@ public class CandidateServiceImpl implements CandidateService {
                 candidateDTOPage.getTotalPages(),
                 candidateDTOPage.getTotalElements(),
                 candidateDTOPage.getSize()
+
+
         );
     }
+
 
 }
 
