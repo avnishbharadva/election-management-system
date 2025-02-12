@@ -4,7 +4,6 @@ import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
-import com.ems.entities.CandidateName;
 import com.ems.exceptions.CandidateAlreadyExistsException;
 
 import com.ems.entities.Election;
@@ -17,27 +16,37 @@ import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CandidateServiceImpl implements CandidateService {
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
     private final ElectionRepository electionRepository;
     private final PartyRepository partyRepository;
+    private final ObjectMapper objectMapper;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @Override
     public CandidateDTO findByCandidateSSN(String candidateSSN) {
@@ -47,21 +56,37 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Candidate saveCandidate(@Valid CandidateDTO candidateDTO) {
-
+    @Transactional
+    public Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
+        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
+        System.out.println(candidateDTO.getElectionId()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
+        Path candidateImagePath=Path.of(uploadDir,"candidateImage");
+        Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+        Files.createDirectories(candidateImagePath);
+        Files.createDirectories(candidateSignaturePath);
 
         var candidate = candidateMapper.toCandidate(candidateDTO);
         var election = electionRepository.findById(candidateDTO.getElectionId())
                 .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + candidateDTO.getElectionId()));
         var party = partyRepository.findById(candidateDTO.getPartyId())
                 .orElseThrow(() -> new PartyNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
-
         candidate.setElection(election);
         candidate.setParty(party);
-
+        if (candidateImage != null && !candidateImage.isEmpty()) {
+            String imageFileName = UUID.randomUUID() + "_" + candidateImage.getOriginalFilename(); // Unique filename
+            Path imagePath = candidateImagePath.resolve(imageFileName);
+            Files.copy(candidateImage.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+            candidate.setCandidateImage(imageFileName);
+        }
+        if (candidateSignature != null && !candidateSignature.isEmpty()) {
+            String signatureFileName = UUID.randomUUID() + "_" + candidateSignature.getOriginalFilename(); // Unique filename
+            Path signaturePath = candidateSignaturePath.resolve(signatureFileName);
+            Files.copy(candidateSignature.getInputStream(), signaturePath, StandardCopyOption.REPLACE_EXISTING);
+            candidate.setCandidateSignature(signatureFileName);
+        }
         var residentialAddress = candidateDTO.getResidentialAddress();
         var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
                 ? residentialAddress
@@ -117,7 +142,6 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-
     public List<CandidateDTO> findAll() {
         return candidateRepository.findAll()
                 .stream().map(candidateMapper::toCandidateDTO)

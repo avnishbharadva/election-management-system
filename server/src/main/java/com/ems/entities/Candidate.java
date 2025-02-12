@@ -26,6 +26,7 @@ public class Candidate extends TimeStamp {
 //    @Column(unique = true)
     @Column(name = "candidatessn")
     private String candidateSSN;
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
