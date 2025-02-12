@@ -1,4 +1,4 @@
-import { FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material'
+import { Box, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Divider, Grid } from '@mui/material'
 import React, { PropsWithChildren, useState } from 'react'
 
 type VoterdetailProps = PropsWithChildren<{
@@ -25,15 +25,16 @@ type InputFieldProps = {
     max?: Number,
 }
 
-const Voterdetail = ({ children }: VoterdetailProps) => { 
+const Voterdetails = ({ children }: PropsWithChildren) => { 
     return (
-        <div>
-            {children}
+        <div>            
+            <Divider />
+         {children}
         </div>
     )
 }
 
-export const NameFild = ({ id, onChange, ref }: InputFieldProps) => {
+export const NameField = ({ id, onChange, ref }: InputFieldProps) => {
     const [error, setError] = useState(false);
 
     const handleChange = (e: any) => {
@@ -88,6 +89,8 @@ export const Email = ({ id, onChange, ref }: InputFieldProps) => {
 export const Gender = () => {
     return (
         <>
+            <br/>
+            <Box sx={{ ml: 2 }}> 
             <FormLabel id="Gender">Gender</FormLabel>
             <RadioGroup
                 aria-labelledby="Gender"
@@ -98,6 +101,8 @@ export const Gender = () => {
                 <FormControlLabel value="male" control={<Radio />} label="Male" />
                 <FormControlLabel value="other" control={<Radio />} label="Other" />
             </RadioGroup>
+            </Box>
+
         </>
     )
 }
@@ -113,9 +118,13 @@ export const DateOfBirth = ({ id, onChange, ref }: InputFieldProps) => {
 
     return (
         <>
+        <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+            <Box sx={{mb: 2, display:"flex"}} >
+            <FormLabel id="DateofBirth">Date of Birth</FormLabel>
+        
             <TextField
                 id={id}
-                label="Date Of Birth"
                 type='date'
                 variant="outlined"
                 onChange={handleChange} 
@@ -123,11 +132,16 @@ export const DateOfBirth = ({ id, onChange, ref }: InputFieldProps) => {
                 autoFocus={error}
                 inputRef={ref}
                 sx={{ mb: 2 }}
+                fullWidth
             />
-        </>)
+            </Box>
+            </Grid>
+            </Grid>
+            </>
+         )   
 }
 
-export const voterNumber = ({ id, onChange, ref }: InputFieldProps) => {
+export const VoterNumber = ({ id, onChange, ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
         if (onChange) {
             onChange(e);
@@ -143,7 +157,7 @@ export const voterNumber = ({ id, onChange, ref }: InputFieldProps) => {
             sx={{ mb: 2 }}
             inputRef={ref}
             required
-            onChange={handleChange} // Use handleChange to avoid infinite loop
+            onChange={handleChange} 
         />
     </>)
 }
@@ -192,6 +206,7 @@ export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
 
     return (
         <>
+            <FormLabel id="PartyId">Party Id</FormLabel>
             <Select
                 id={id}
                 defaultValue={10}
@@ -210,5 +225,5 @@ export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
     )
 }
 
-export default Voterdetail
+export default Voterdetails
 
