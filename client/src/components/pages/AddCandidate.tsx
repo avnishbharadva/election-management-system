@@ -8,6 +8,7 @@ import Model from "../ui/Model";
 import CandidateForm from "../ui/CandidateForm";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import CandidateData from "../ui/CandidateData";
 
 
 const AddCandidate = () => {
@@ -30,19 +31,20 @@ const AddCandidate = () => {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-      {/* Search Bar */}
-      <Box sx={{ width: "80%", display: "flex", justifyContent: "flex-end", marginBottom: 3 }}>
-        <SearchComponent />
-        {/* Show "Add Candidate" Button If Not Found */}
-      {notFound && (
-        <Model open={handleOpen} handleClose={handleClose}>
-          <CandidateForm/>
-        </Model>
-      )}
-      </Box>
+    {/* Search Bar */}
+    {/* <Box sx={{ width: "80%", display: "flex", justifyContent: "flex-end", marginBottom: 3 }}> */}
+      <SearchComponent />
+      {/* Show "Add Candidate" Button If Not Found */}
+    {/* {notFound && (
+      <Model open={open} handleClose={handleClose}>
+        <CandidateForm/>
+      </Model>
+    )} */}
+    {/* </Box> */}
+
 
       {/* Candidate Table */}
-      <TableContainer component={Paper} sx={{ marginTop: 2, width: "80%" }}>
+      {/* <TableContainer component={Paper} sx={{ marginTop: 2, width: "80%" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -81,7 +83,8 @@ const AddCandidate = () => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+      <CandidateData/>
     </Box>
   );
 };
