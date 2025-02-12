@@ -16,10 +16,10 @@ export default function Sidebar() {
   const location = useLocation(); 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-    { text: "Candidates", icon: <AccountBoxIcon />, path: "/dashboard/candidate" },
-    { text: "Voters", icon: <HowToVoteIcon />, path: "/dashboard/voter" },
-    { text: "Parties", icon: <GroupsIcon />, path: "/dashboard/party" },
-    { text: "Elections", icon: <BallotIcon />, path: "/dashboard/election" },
+    { text: "Candidates", icon: <AccountBoxIcon />, path: "/candidate" },
+    { text: "Voters", icon: <HowToVoteIcon />, path: "/voter" },
+    { text: "Parties", icon: <GroupsIcon />, path: "/party" },
+    { text: "Elections", icon: <BallotIcon />, path: "/election" },
   ];
 
   return (

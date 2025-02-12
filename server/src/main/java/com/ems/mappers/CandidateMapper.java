@@ -2,6 +2,7 @@ package com.ems.mappers;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
 import com.ems.entities.Election;
@@ -23,6 +24,10 @@ public interface CandidateMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCandidateNameFromDTO(CandidateName newName, @MappingTarget CandidateName existingName);
+
+    Election toElection(ElectionSortDTO electionSortDTO);
+    ElectionSortDTO toElectionSortDTO(Election election);
+
 
 
     default Long mapPartyToId(Party party) {

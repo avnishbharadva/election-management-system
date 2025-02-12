@@ -33,6 +33,7 @@ public class Candidate extends TimeStamp {
 
     private String candidateImage;
 
+
     @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus;
 
@@ -66,4 +67,5 @@ public class Candidate extends TimeStamp {
     private BankDetails bankDetails;
 
     private String candidateSignature;
+
 }

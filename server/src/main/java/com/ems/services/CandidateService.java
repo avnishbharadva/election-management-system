@@ -15,7 +15,12 @@ public interface CandidateService {
     CandidateDTO findById(Long id);
     Candidate update(Long candidateId,CandidateDTO candidateDTO);
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
+
+    List<CandidateDTO> findAll();
+    void deleteCandidateByCandidateId(Long candidateId);
+
     Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort);
     CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage);
+
 
 }
