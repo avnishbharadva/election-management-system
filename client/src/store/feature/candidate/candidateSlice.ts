@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCandidateBySSN, fetchCandidates } from './candidateAPI';
+import { addCandidate, fetchCandidateBySSN, fetchCandidates } from './candidateAPI';
 import { CandidateState } from './types';
 
   const initialState: CandidateState = {
@@ -9,6 +9,7 @@ import { CandidateState } from './types';
     notFound: false,
     loading: false,
     error: null,
+    success: false,
   };
 
 //   const candidateSlice = createSlice({
@@ -61,6 +62,11 @@ const candidateSlice = createSlice({
       setCandidateNotFound: (state, action: PayloadAction<boolean>) => {
         state.notFound = action.payload;
       },
+      resetState: (state) => {
+        state.loading = false;
+        state.success = false;
+        state.error = null;
+      },
     },
     extraReducers: (builder) => {
       builder
@@ -97,8 +103,24 @@ const candidateSlice = createSlice({
             state.error = action.payload as string;
           }
         });
+        builder
+      .addCase(addCandidate.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+        state.error = null;
+      })
+      .addCase(addCandidate.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+      })
+      .addCase(addCandidate.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload as string;
+      });
     },
   });
   
-  export const { setSearchQuery, clearSearchQuery, setCandidateNotFound } = candidateSlice.actions;
+  export const { setSearchQuery, clearSearchQuery, setCandidateNotFound ,resetState} = candidateSlice.actions;
   export default candidateSlice.reducer;

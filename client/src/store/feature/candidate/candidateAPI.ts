@@ -29,7 +29,7 @@ import { setCandidateNotFound } from "./candidateSlice";
 
 // Fetch all candidates initially
 export const fetchCandidates = createAsyncThunk("candidate/fetchAll", async () => {
-  const response = await axios.get("http://172.16.16.63:8082/api/candidate/getAll"); // Replace with your API endpoint
+  const response = await axios.get("http://172.16.16.69:8082/api/candidate/getAll"); // Replace with your API endpoint
   return response.data;
 });
 
@@ -46,6 +46,26 @@ export const fetchCandidateBySSN = createAsyncThunk(
         return rejectWithValue("No candidate found");
       }
       return rejectWithValue(error.message);
+    }
+  }
+);
+export const addCandidate = createAsyncThunk(
+  "candidate/addCandidate",
+  async (formData: FormData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://172.16.16.69:8082/api/candidate/addCandidate",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
