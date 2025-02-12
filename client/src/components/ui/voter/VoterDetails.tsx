@@ -1,5 +1,6 @@
-import { Box, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Divider, Grid } from '@mui/material'
+import { Box, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Divider, FormControl } from '@mui/material'
 import React, { PropsWithChildren, useState } from 'react'
+import { Row } from '../../../style/CandidateFormCss'
 
 type VoterdetailProps = PropsWithChildren<{
     firstName?: String,
@@ -43,7 +44,8 @@ export const NameField = ({ id, onChange, ref }: InputFieldProps) => {
         }
     };
 
-    return (<TextField
+    return (
+    <TextField
         required
         label={id}
         id={id}
@@ -52,8 +54,9 @@ export const NameField = ({ id, onChange, ref }: InputFieldProps) => {
         variant="outlined"
         error={error}
         autoFocus={error}
-        sx={{ mb: 2 }}
-    />)
+        fullWidth
+    />
+)
 }
 
 export const Email = ({ id, onChange, ref }: InputFieldProps) => {
@@ -81,7 +84,7 @@ export const Email = ({ id, onChange, ref }: InputFieldProps) => {
             error={error}
             autoFocus={error}
             inputRef={ref}
-            sx={{ mb: 2 }}
+            fullWidth
         />
     )
 }
@@ -90,18 +93,18 @@ export const Gender = () => {
     return (
         <>
             <br/>
-            <Box sx={{ ml: 2 }}> 
-            <FormLabel id="Gender">Gender</FormLabel>
+            <Row> 
+            <FormLabel id="Gender">Gender:</FormLabel>
             <RadioGroup
                 aria-labelledby="Gender"
-                defaultValue="other"
+                defaultValue="female"
                 name="Gender"
+                row
             >
-                <FormControlLabel value="female" control={<Radio />} label="Female" />
                 <FormControlLabel value="male" control={<Radio />} label="Male" />
-                <FormControlLabel value="other" control={<Radio />} label="Other" />
+                <FormControlLabel value="female" control={<Radio />} label="Female" />
             </RadioGroup>
-            </Box>
+            </Row>
 
         </>
     )
@@ -118,25 +121,25 @@ export const DateOfBirth = ({ id, onChange, ref }: InputFieldProps) => {
 
     return (
         <>
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-            <Box sx={{mb: 2, display:"flex"}} >
-            <FormLabel id="DateofBirth">Date of Birth</FormLabel>
+   
+            <Box  >
+            {/* <FormLabel id="DateofBirth">Date of Birth</FormLabel> */}
         
             <TextField
                 id={id}
+                label="Date of Birth"
                 type='date'
                 variant="outlined"
                 onChange={handleChange} 
                 error={error}
                 autoFocus={error}
                 inputRef={ref}
-                sx={{ mb: 2 }}
                 fullWidth
+                sx={{width: '253px'}}
+                InputLabelProps={{shrink:true}}
             />
             </Box>
-            </Grid>
-            </Grid>
+
             </>
          )   
 }
@@ -154,25 +157,37 @@ export const VoterNumber = ({ id, onChange, ref }: InputFieldProps) => {
             label={id}
             variant="outlined"
             type='Number'
-            sx={{ mb: 2 }}
             inputRef={ref}
             required
+            fullWidth
             onChange={handleChange} 
+            onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
         />
     </>)
 }
 
-export const HasVotedBefore = () => {
-    return (<>
-        <FormLabel id="hasVotedBefore">Has Voted Before</FormLabel>
-        <RadioGroup
-            aria-labelledby="hasVotedBefore"
-            defaultValue="true"
-            name="hasVotedBefore"
+export const HasVotedBefore =({ id, onChange, ref }: InputFieldProps) => {
+    const handleChange = (e: any) => {
+        if (onChange) {
+            onChange(e);
+        }
+    };
+
+    return (
+    <>
+        <FormControl fullWidth>
+            <InputLabel>Has Voted Before:</InputLabel>
+        <Select
+             id={id}
+             label={id}
+             onChange={handleChange} 
+             inputRef={ref}
+
         >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-        </RadioGroup>
+            <MenuItem value="true" >Yes</MenuItem>
+            <MenuItem value="false">No</MenuItem>
+        </Select>
+        </FormControl>
     </>)
 }
 
@@ -189,13 +204,14 @@ export const FirstVoterYear = ({ id, onChange, ref }: InputFieldProps) => {
             label={id}
             variant="outlined"
             type='Number'
-            sx={{ mb: 2 }}
             inputRef={ref}
-            required
+            fullWidth
+            onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
             onChange={handleChange} 
         />
     </>
 }
+
 
 export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
@@ -206,13 +222,12 @@ export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
 
     return (
         <>
-            <FormLabel id="PartyId">Party Id</FormLabel>
+            <FormControl fullWidth>
+                <InputLabel>Party Id</InputLabel>
             <Select
                 id={id}
-                defaultValue={10}
                 onChange={handleChange} 
                 inputRef={ref}
-                sx={{ mb: 2 }}
             >
                 <MenuItem value={10}>Democratic party</MenuItem>
                 <MenuItem value={20}>Republican party</MenuItem>
@@ -221,6 +236,7 @@ export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
                 <MenuItem value={50}>Other</MenuItem>
                 <MenuItem value={60}>No Party</MenuItem>
             </Select>
+            </FormControl>
         </>
     )
 }

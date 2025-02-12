@@ -1,10 +1,10 @@
-import { Select, TextField, MenuItem, InputLabel } from '@mui/material'
+import { Select, TextField, MenuItem, InputLabel, FormControl } from '@mui/material'
 import React, { PropsWithChildren } from 'react'
 import { useState } from 'react'
 
 type InputFieldProps = {
     id:string,
-    onChange?:()=>void,
+    onChange?:(e: any)=>void,
     ref?:React.Ref<HTMLInputElement>
     max?:Number
     min?:Number
@@ -33,17 +33,22 @@ const Address = ({children, title}: AddressProps) => {
 export const AddressLine= ({id,onChange,ref}:InputFieldProps) =>{
     const [error, setError] = useState(false);
 
+    const handleChange = (e: any) => {
+        if(onChange){
+            onChange(e);
+        }
+    }
     return(
         <TextField
             required
             id={id}
             label={id}
             inputRef={ref}
-            onChange={onChange}
+            onChange={handleChange}
             variant='outlined'
             error={error}
             autoFocus={error}
-            sx={{}}
+            fullWidth
             
         />
     )
@@ -51,68 +56,90 @@ export const AddressLine= ({id,onChange,ref}:InputFieldProps) =>{
 
 export const AptNumber = ({id,onChange,ref}:InputFieldProps) =>{
     const [error, setError] = useState(false);
+    const handleChange = (e: any) => {
+        if(onChange){
+            onChange(e);
+        }
+    }
     return(
         <TextField
         required
         id={id}
         label={id}
         inputRef={ref}
-        onChange={onChange}
+        onChange={handleChange}
         variant='outlined'
         error={error}
-        sx={{}}
+        fullWidth
         />
     )
 }
 
 export const City = ({id, onChange}:InputFieldProps) =>{
+    const handleChange = (e: any) => {
+        if(onChange){
+            onChange(e);
+        }
+    }
     return(
         <>
+        <FormControl fullWidth>
         <InputLabel>City</InputLabel>
         <Select
         required
         id={id}
-        labelId={id}
-        onChange={onChange}
-        sx={{}}
+        label={id}
+        onChange={handleChange}
+        fullWidth
         >
             <MenuItem value="option1">New York</MenuItem>
                 <MenuItem value="option2">New Jersey</MenuItem>
                 <MenuItem value="option3">Las Vegas</MenuItem>
                 <MenuItem value="option4">California</MenuItem>
         </Select>
+        </FormControl>
         </>
     )
 }
 
-export const Pincode = ({id,onChange }:InputFieldProps) =>{
+export const Zipcode = ({id,onChange }:InputFieldProps) =>{
     const [error, setError] = useState(false)
+    const handleChange = (e: any) => {
+        if(onChange){
+            onChange(e);
+        }
+    }
     return(
         <TextField
         required
         id={id}
         label={id}
         type='number'
-        onChange={onChange}
+        onChange={handleChange}
         error={error}
-        sx={{}}
+        fullWidth
+        onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}
         />
     )
 }
 
 
-export const Country = ({id,ref,onChange}:InputFieldProps) =>{
+export const County = ({id,ref,onChange}:InputFieldProps) =>{
     const [error, setError] = useState(false)
-
+    const handleChange = (e: any) => {
+        if(onChange){
+            onChange(e);
+        }
+    }
     return(
         <TextField 
         required
         id={id}
         label={id}
         inputRef={ref}
-        onChange={onChange}
+        onChange={handleChange}
         error={error}
-        sx={{}}
+        fullWidth
         />
     )
 }
