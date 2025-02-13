@@ -1,11 +1,11 @@
 import { Select, TextField, MenuItem, InputLabel, FormControl } from '@mui/material'
-import React, { PropsWithChildren } from 'react'
+import React, { forwardRef, PropsWithChildren } from 'react'
 import { useState } from 'react'
 
 type InputFieldProps = {
     id:string,
-    onChange?:(e: any)=>void,
-    ref?:React.Ref<HTMLInputElement>
+    onChange?: (e: React.ChangeEvent<{ value: unknown }>) => void | ((e: any)=>void) ,
+    inputRef?:React.Ref<HTMLInputElement>
     max?:Number
     min?:Number
 }
@@ -30,7 +30,7 @@ const Address = ({children, title}: AddressProps) => {
 }
 
 
-export const AddressLine= ({id,onChange,ref}:InputFieldProps) =>{
+export const AddressLine= ({id,onChange,inputRef:ref}:InputFieldProps) =>{
     const [error, setError] = useState(false);
 
     const handleChange = (e: any) => {
@@ -54,7 +54,7 @@ export const AddressLine= ({id,onChange,ref}:InputFieldProps) =>{
     )
 }
 
-export const AptNumber = ({id,onChange,ref}:InputFieldProps) =>{
+export const AptNumber = ({id,onChange,inputRef:ref}:InputFieldProps) =>{
     const [error, setError] = useState(false);
     const handleChange = (e: any) => {
         if(onChange){
@@ -75,34 +75,68 @@ export const AptNumber = ({id,onChange,ref}:InputFieldProps) =>{
     )
 }
 
-export const City = ({id, onChange}:InputFieldProps) =>{
-    const handleChange = (e: any) => {
-        if(onChange){
+// export const City = ({id, onChange,inputRef:ref}:InputFieldProps) =>{
+//     const handleChange = (e: any) => {
+//         if(onChange){
+//             onChange(e);
+//         }
+//     }
+//     return(
+//         <>
+//         <FormControl fullWidth>
+//         <InputLabel>City</InputLabel>
+//         <Select
+//         required
+//         id={id}
+//         value={ref}
+//         label={id}
+//         onChange={handleChange}
+//         fullWidth
+//         >
+//             <MenuItem value="option1">New York</MenuItem>
+//                 <MenuItem value="option2">New Jersey</MenuItem>
+//                 <MenuItem value="option3">Las Vegas</MenuItem>
+//                 <MenuItem value="option4">California</MenuItem>
+//         </Select>
+//         </FormControl>
+//         </>
+//     )
+// }
+
+
+//  not apply input ref add staticly
+
+export const City = forwardRef<HTMLSelectElement, InputFieldProps>(({ id, onChange, inputRef }, ref) => {
+    const handleChange = (e:any) => {
+        if (onChange) {
             onChange(e);
         }
-    }
-    return(
-        <>
-        <FormControl fullWidth>
-        <InputLabel>City</InputLabel>
-        <Select
-        required
-        id={id}
-        label={id}
-        onChange={handleChange}
-        fullWidth
-        >
-            <MenuItem value="option1">New York</MenuItem>
-                <MenuItem value="option2">New Jersey</MenuItem>
-                <MenuItem value="option3">Las Vegas</MenuItem>
-                <MenuItem value="option4">California</MenuItem>
-        </Select>
-        </FormControl>
-        </>
-    )
-}
+    };
 
-export const Zipcode = ({id,onChange }:InputFieldProps) =>{
+    return (
+        <>
+            <FormControl fullWidth>
+                <InputLabel>{id}</InputLabel>
+                <Select
+                    required
+                    id={id}
+                    // value={inputRef?.current?.value || ""}
+                    label={id}
+                    onChange={handleChange}
+                    ref={ref}
+                    fullWidth
+                >
+                    <MenuItem value="option1">New York</MenuItem>
+                    <MenuItem value="option2">New Jersey</MenuItem>
+                    <MenuItem value="option3">Las Vegas</MenuItem>
+                    <MenuItem value="option4">California</MenuItem>
+                </Select>
+            </FormControl>
+        </>
+    );
+});
+
+export const Zipcode = ({id,onChange,inputRef:ref }:InputFieldProps) =>{
     const [error, setError] = useState(false)
     const handleChange = (e: any) => {
         if(onChange){
@@ -114,6 +148,7 @@ export const Zipcode = ({id,onChange }:InputFieldProps) =>{
         required
         id={id}
         label={id}
+        inputRef={ref}
         type='number'
         onChange={handleChange}
         error={error}
@@ -124,7 +159,7 @@ export const Zipcode = ({id,onChange }:InputFieldProps) =>{
 }
 
 
-export const County = ({id,ref,onChange}:InputFieldProps) =>{
+export const County = ({id,onChange, inputRef:ref}:InputFieldProps) =>{
     const [error, setError] = useState(false)
     const handleChange = (e: any) => {
         if(onChange){

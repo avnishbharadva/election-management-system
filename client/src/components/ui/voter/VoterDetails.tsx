@@ -1,5 +1,5 @@
 import { Box, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Divider, FormControl } from '@mui/material'
-import React, { PropsWithChildren, useState } from 'react'
+import React, { forwardRef, PropsWithChildren, useState } from 'react'
 import { Row } from '../../../style/CandidateFormCss'
 
 type VoterdetailProps = PropsWithChildren<{
@@ -20,13 +20,13 @@ type VoterdetailProps = PropsWithChildren<{
 
 type InputFieldProps = {
     id: string,
-    onChange?: (e: any) => void, // Fixed typo of e
-    ref?: React.Ref<HTMLInputElement>,
+    onChange?: (e: any) => void, 
+    inputRef?: React.Ref<HTMLInputElement>,
     min?: Number,
     max?: Number,
 }
 
-const Voterdetails = ({ children }: PropsWithChildren) => { 
+const Voterdetails = forwardRef(({ children }: PropsWithChildren) => { 
     return (
         <div>            
             <Divider />
@@ -34,8 +34,9 @@ const Voterdetails = ({ children }: PropsWithChildren) => {
         </div>
     )
 }
+)
 
-export const NameField = ({ id, onChange, ref }: InputFieldProps) => {
+export const NameField = ({ id, onChange, inputRef : ref }: InputFieldProps) => {
     const [error, setError] = useState(false);
 
     const handleChange = (e: any) => {
@@ -59,7 +60,7 @@ export const NameField = ({ id, onChange, ref }: InputFieldProps) => {
 )
 }
 
-export const Email = ({ id, onChange, ref }: InputFieldProps) => {
+export const Email = ({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const [error, setError] = useState(false);
 
     const handleChange = (e: any) => {
@@ -88,8 +89,8 @@ export const Email = ({ id, onChange, ref }: InputFieldProps) => {
         />
     )
 }
-
-export const Gender = () => {
+// toDo  make value is not pass in ref
+export const Gender = ({inputRef: ref}:InputFieldProps) => {
     return (
         <>
             <br/>
@@ -99,10 +100,11 @@ export const Gender = () => {
                 aria-labelledby="Gender"
                 defaultValue="female"
                 name="Gender"
+                ref={ref}
                 row
             >
-                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                <FormControlLabel value="female" control={<Radio />} label="Female" />
+                <FormControlLabel value="MALE" control={<Radio />} label="Male" />
+                <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
             </RadioGroup>
             </Row>
 
@@ -110,7 +112,7 @@ export const Gender = () => {
     )
 }
 
-export const DateOfBirth = ({ id, onChange, ref }: InputFieldProps) => {
+export const DateOfBirth = ({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const [error, setError] = useState(false)
 
     const handleChange = (e: any) => {
@@ -144,7 +146,7 @@ export const DateOfBirth = ({ id, onChange, ref }: InputFieldProps) => {
          )   
 }
 
-export const VoterNumber = ({ id, onChange, ref }: InputFieldProps) => {
+export const VoterNumber = ({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
         if (onChange) {
             onChange(e);
@@ -166,12 +168,12 @@ export const VoterNumber = ({ id, onChange, ref }: InputFieldProps) => {
     </>)
 }
 
-export const HasVotedBefore =({ id, onChange, ref }: InputFieldProps) => {
+export const HasVotedBefore =({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
         if (onChange) {
             onChange(e);
         }
-    };
+    }
 
     return (
     <>
@@ -191,7 +193,7 @@ export const HasVotedBefore =({ id, onChange, ref }: InputFieldProps) => {
     </>)
 }
 
-export const FirstVoterYear = ({ id, onChange, ref }: InputFieldProps) => {
+export const FirstVoterYear = ({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
         if (onChange) {
             onChange(e);
@@ -213,7 +215,7 @@ export const FirstVoterYear = ({ id, onChange, ref }: InputFieldProps) => {
 }
 
 
-export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
+export const PartyId = ({ id, onChange, inputRef: ref }: InputFieldProps) => {
     const handleChange = (e: any) => {
         if (onChange) {
             onChange(e);
@@ -226,10 +228,11 @@ export const PartyId = ({ id, onChange, ref }: InputFieldProps) => {
                 <InputLabel>Party Id</InputLabel>
             <Select
                 id={id}
+                label={id}
                 onChange={handleChange} 
                 inputRef={ref}
             >
-                <MenuItem value={10}>Democratic party</MenuItem>
+                <MenuItem value={1}>Democratic party</MenuItem>
                 <MenuItem value={20}>Republican party</MenuItem>
                 <MenuItem value={30}>Conservative party</MenuItem>
                 <MenuItem value={40}>Working Families party</MenuItem>
