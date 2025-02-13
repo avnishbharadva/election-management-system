@@ -75,6 +75,7 @@ public class VoterServiceImpl implements VoterService
 
     @Override
     public Page<VoterRegisterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
+        log.info("search dto {}" , searchDTO);
         return voterRepo.findBy(
                 Example.of(globalMapper.toVoter(searchDTO),
                         ExampleMatcher.matching()
