@@ -2,10 +2,9 @@ package com.ems.services.impls;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
-import com.ems.exceptions.CandidateAlreadyExistsException;
-import com.ems.entities.CandidateName;
 import com.ems.entities.Election;
 import com.ems.exceptions.CandidateAlreadyExistsException;
 import com.ems.exceptions.CandidateNotFoundException;
@@ -17,17 +16,18 @@ import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,9 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.multipart.MultipartFile;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,9 +50,9 @@ public class CandidateServiceImpl implements CandidateService {
     private String uploadDir;
 
     @Override
-    public CandidateDTO findByCandidateSSN(String candidateSSN) {
+    public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
         return candidateRepository.findByCandidateSSN(candidateSSN)
-                .map(candidateMapper::toCandidateDTO)
+                .map(candidateMapper::toCandidateDetailsDTO)
                 .orElseThrow(() -> new CandidateNotFoundException("No Candidate found with SSN: " + candidateSSN));
     }
 
@@ -144,14 +141,6 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public List<CandidateDTO> findAll() {
-        return candidateRepository.findAll()
-                .stream()
-                .map(candidateMapper::toCandidateDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public void deleteCandidateByCandidateId(Long candidateId) {
         candidateRepository.deleteById(candidateId);
     }
@@ -181,9 +170,78 @@ public class CandidateServiceImpl implements CandidateService {
                 candidateDTOPage.getTotalPages(),
                 candidateDTOPage.getTotalElements(),
                 candidateDTOPage.getSize()
-
-
         );
+    }
+
+
+    @Override
+    public List<CandidateDetailsDTO> getCandidateInfo() {
+        List<Candidate> candidates = candidateRepository.findAll();
+
+        if (candidates.isEmpty()) {
+            throw new CandidateNotFoundException("No candidates found");
+        }
+        return candidates.stream().map(candidateMapper::toCandidateDetailsDTO).
+                toList();
+    }
+
+    @Override
+    public Page<CandidateDTO> searchCandidates(CandidateDTO searchCriteria, int page, int perPage, Sort sort) {
+        Pageable pageable = PageRequest.of(page, perPage, sort);
+        Specification<Candidate> spec = buildSearchSpecification(searchCriteria);
+        Page<Candidate> candidatePage = candidateRepository.findAll(spec, pageable);
+        if(candidatePage.isEmpty()){
+            throw new CandidateNotFoundException("No such candidate with this filters");
+        }
+        return candidatePage.map(candidateMapper::toCandidateDTO);
+    }
+
+    private Specification<Candidate> buildSearchSpecification(CandidateDTO searchCriteria) {
+        return (root, query, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.conjunction();
+
+            if (searchCriteria.getCandidateSSN() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("candidateSSN"), searchCriteria.getCandidateSSN()));
+            }
+
+            if (searchCriteria.getCandidateName() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateName"), "%" + searchCriteria.getCandidateName() + "%"));
+            }
+
+            if (searchCriteria.getGender() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("gender"), searchCriteria.getGender()));
+            }
+
+            if (searchCriteria.getMaritialStatus() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("maritialStatus"), searchCriteria.getMaritialStatus()));
+            }
+
+            if (searchCriteria.getStateName() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("stateName"), "%" + searchCriteria.getStateName() + "%"));
+            }
+
+            if (searchCriteria.getCandidateEmail() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateEmail"), "%" + searchCriteria.getCandidateEmail() + "%"));
+            }
+
+            if (searchCriteria.getPartyId()!=null && searchCriteria.getPartyId() != 0 ) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("party").get("partyId"), searchCriteria.getPartyId()));
+            }
+
+            if (searchCriteria.getElectionId()!=null && searchCriteria.getElectionId() != 0) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("election").get("electionId"), searchCriteria.getElectionId()));
+            }
+
+            if (searchCriteria.getNoOfChildren() != 0) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("noOfChildren"), searchCriteria.getNoOfChildren()));
+            }
+
+            if (searchCriteria.getSpouseName() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("spouseName"), "%" + searchCriteria.getSpouseName() + "%"));
+            }
+
+            return predicate;
+        };
     }
 
 
