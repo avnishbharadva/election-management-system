@@ -1,17 +1,27 @@
 package com.ems.controllers;
 
+import com.ems.dtos.CandidateByPartyDTO;
+import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.ErrorResponse;
 import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.CandidateNotFoundException;
-import com.ems.exceptions.CustomValidationException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -47,14 +57,17 @@ public class CandidateController {
         }
     }
 
-    @PostMapping("/addCandidate")
-    ResponseEntity<Candidate> createCandidate(@Valid @RequestBody CandidateDTO candidateDTO)
-    {
-        try{
-            var candidate=candidateService.saveCandidate(candidateDTO);
-            return ResponseEntity.ok(candidate);
-        }catch (CustomValidationException e){
-            throw new CustomValidationException("Field provided are not valid");
+    @PostMapping(value = "/addCandidate",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Candidate> createCandidate(
+            @RequestParam("candidate") String candidateData,
+            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+        try {
+            Candidate savedCandidate = candidateService.saveCandidate(candidateData, candidateImage, candidateSignature);
+            return ResponseEntity.ok(savedCandidate);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
