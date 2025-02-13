@@ -15,14 +15,10 @@ public interface CandidateService {
     CandidateDTO findByCandidateSSN(String candidateSSN);
     Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     CandidateDTO findById(Long id);
-    Candidate update(Long candidateId,CandidateDTO candidateDTO);
+    Candidate update(Long candidateId, CandidateDTO candidateDTO);
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
-
     List<CandidateDTO> findAll();
     void deleteCandidateByCandidateId(Long candidateId);
-
     Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort);
     CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage);
-
-
 }
