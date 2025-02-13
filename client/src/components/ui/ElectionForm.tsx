@@ -1,119 +1,191 @@
-import { Box, TextField, Typography } from "@mui/material";
-import { Form, StyledButton } from "../../style/CommanStyle";
-import { useForm } from "react-hook-form";
-import { ErrorMsg } from "../../style/LoginStyle";
-type FormValues = {
-    election_name: string;
-    election_type: string;
-    election_date: string;
-    state: string;
-    total_seats: number;
-    status: string;
-  };
-  const resolver: Resolver<FormValues> = async (values) => {
-    const errors: Record<string, object> = {};
-  
-    if (!values.election_name) {
-      errors.election_name = {
-        type: "required",
-        message: "Election Name is required.",
-      };
-    }
-  
-    if (!values.election_type) {
-      errors.election_type = {
-        type: "required",
-        message: "Election Type is required.",
-      };
-    }
-  
-    if (!values.election_date) {
-      errors.election_date = {
-        type: "required",
-        message: "Election Date is required.",
-      };
-    }
-  
-    if (!values.state) {
-      errors.state = {
-        type: "required",
-        message: "State is required.",
-      };
-    }
-  
-    if (!values.total_seats || values.total_seats <= 0) {
-      errors.total_seats = {
-        type: "required",
-        message: "Total Seats must be greater than zero.",
-      };
-    }
-  
-    if (!values.status) {
-      errors.status = {
-        type: "required",
-        message: "Status is required.",
-      };
-    }
-  
-    return {
-      values: Object.keys(errors).length === 0 ? values : {},
-      errors,
-    };
-  };
-  
-const ElectionForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm<FormValues>({ resolver });
-    
-      const onSubmit = handleSubmit((data: FormValues) => {
-        console.log(data);
-      });
-  return (
-    <Box>
-      <Typography align="center" variant="h5" mb="15px">Add Election</Typography>
-      <Form onSubmit={onSubmit}>
-      <Box display="flex" flexDirection="column" gap={2}>
-        <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField fullWidth label="Election Name" {...register("election_name", { required: true })}/>{errors?.election_name && (
-                <ErrorMsg>{errors.election_name.message}</ErrorMsg>
-              )}</Box>
-              <Box>
-            <TextField fullWidth label="Election Type"  {...register("election_type", { required: true })}/>
-            {errors?.election_type && (
-                <ErrorMsg>{errors.election_type.message}</ErrorMsg>
-              )}
+import React from "react";
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { addElection } from "../../store/feature/election/electionApi";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { Form } from "../../style/CommanStyle";
 
+type FormValues = {
+  election_name: string;
+  election_type: string;
+  election_date: string;
+  state: string;
+  total_seats: number;
+  status: string;
+};
+
+const ElectionForm = () => {
+  const dispatch = useDispatch()
+  const { loading, error, success } = useSelector((state: any) => state.election);
+  const { register, handleSubmit, reset,control } = useForm<FormValues>({
+    defaultValues: {
+      election_name: "",
+      election_type: "",
+      election_date: "",
+      state: "New York",
+      total_seats: 0,
+      status: "Upcoming",
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    dispatch(addElection(data));
+  };
+
+  const handleReset = () => {
+    reset();
+    dispatch(resetState());
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        // height: "100vh",
+        // backgroundColor: "#f5f5f5",
+      }}
+    >
+      <Box
+        sx={{
+          width: "400px",
+          padding: "20px",
+          borderRadius: "8px",
+          // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+          backgroundColor: "#fff",
+        }}
+      > {loading && <CircularProgress />}
+      {error && <Alert severity="error">{error}</Alert>}
+      {success && <Alert severity="success">Election added successfully!</Alert>}
+        <Typography align="center" variant="h5" mb={3}>
+          Add Election
+        </Typography>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Box display="flex" gap={2}>
+              <TextField
+                fullWidth
+                label="Election Name"
+                {...register("election_name", {
+                  required: "Election name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Election name must be at least 3 characters",
+                  },
+                })}
+                error={!!error?.election_name}
+                helperText={error?.election_name?.message}
+              />
+
+              <FormControl fullWidth error={!!error?.election_type}>
+                <InputLabel id="election-type-label">Election Type</InputLabel>
+                <Controller
+                  name="election_type"
+                  control={control}
+                  rules={{ required: "Election type is required" }}
+                  render={({ field }) => (
+                    <Select {...field} labelId="election-type-label" label="Election Type">
+                      <MenuItem value="General">General</MenuItem>
+                      <MenuItem value="Primary">Primary</MenuItem>
+                      <MenuItem value="Runoff">Runoff</MenuItem>
+                      <MenuItem value="Special">Special</MenuItem>
+                    </Select>
+                  )}
+                />
+                {error?.election_type && (
+                  <FormHelperText>{error?.election_type?.message}</FormHelperText>
+                )}
+              </FormControl>
             </Box>
+
+            <Box display="flex" gap={2}>
+              <TextField
+                type="date"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                label="Election Date"
+                {...register("election_date", {
+                  required: "Election date is required",
+                  validate: (value) =>
+                    new Date(value) > new Date() || "Election date must be in the future",
+                })}
+                error={!!error?.election_date}
+                helperText={error?.election_date?.message}
+              />
+
+              <TextField
+                fullWidth
+                label="State"
+                value="New York"
+                InputProps={{ readOnly: true }}
+                {...register("state")}
+              />
+            </Box>
+
+            <Box display="flex" gap={2}>
+              <TextField
+                fullWidth
+                label="Total Seats"
+                type="number"
+                {...register("total_seats", {
+                  required: "Total seats are required",
+                  min: {
+                    value: 1,
+                    message: "Total seats must be at least 1",
+                  },
+                })}
+                error={!!error?.total_seats}
+                helperText={error?.total_seats?.message}
+              />
+
+              {/* <TextField
+                fullWidth
+                label="Status"
+                {...register("status", {
+                  required: "Status is required",
+                  minLength: {
+                    value: 3,
+                    message: "Status must be at least 3 characters",
+                  },
+                })}
+                error={!!error.status}
+                helperText={error?.status?.message}
+              /> */}
+            </Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                mt: 2,
+                bgcolor: "#1976d2",
+                color: "#fff",
+                "&:hover": {
+                  bgcolor: "#1565c0",
+                },
+              }}
+              // onClick={handleReset}
+            >
+              Submit
+            </Button>
           </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField type="date" sx={{width:"224px"}} InputLabelProps={{ shrink: true }} fullWidth label="Election Date"  {...register("election_date", { required: true })}/>
-            {errors?.election_date && (
-                <ErrorMsg>{errors.election_date.message}</ErrorMsg>
-              )}</Box>
-            <Box>
-            <TextField fullWidth label="State" {...register("state", { required: true })}/>
-            {errors?.state && <ErrorMsg>{errors.state.message}</ErrorMsg>}</Box>
-          </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField fullWidth label="Total Seats" {...register("total_seats", { required: true })}/> {errors?.total_seats && (
-                <ErrorMsg>{errors.total_seats.message}</ErrorMsg>
-              )}</Box>
-            <Box>
-            <TextField fullWidth label="Status" {...register("status", { required: true })}/> {errors?.status && <ErrorMsg>{errors.status.message}</ErrorMsg>}</Box>
-          </Box>
-         
-         
-          <Box display="flex" alignContent="center" justifyContent="center" flexDirection="row" gap={2}> <StyledButton type="submit" variant="contained">
-      Submit
-    </StyledButton></Box>
-          </Box>
-      </Form>
+        </Form>
+      </Box>
     </Box>
   );
 };
