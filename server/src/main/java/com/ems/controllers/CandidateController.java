@@ -1,25 +1,17 @@
 package com.ems.controllers;
 
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-
-import com.ems.dtos.ErrorResponse;
-
-import com.ems.dtos.CandidatePageResponse;
-import org.springframework.data.domain.Sort;
-
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.CandidateNotFoundException;
 import com.ems.exceptions.CustomValidationException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,8 +22,8 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @GetMapping
-    ResponseEntity<List<CandidateDTO>> getAllCandidates()
+    @GetMapping("/getAll")
+    ResponseEntity<List<CandidateDTO>> getAllCandidate()
     {
         try {
             var candidateDTO=candidateService.findAll();
@@ -123,17 +115,11 @@ public class CandidateController {
     ResponseEntity<?> deleteById(@PathVariable Long candidateId)
     {
         if (candidateService.findById(candidateId)!=null) {
-            candidateService.deleteCandidateByCandidateId(candidateId);
-            ErrorResponse errorResponse=new ErrorResponse();
-            errorResponse.setStatus(HttpStatus.OK.value());
-            errorResponse.setMessage("Candidate with id:" + candidateId + " is deleted");
-            errorResponse.setRequestTime(LocalDateTime.now());
-            return ResponseEntity.ok(errorResponse);
+            return ResponseEntity.ok("Candidate with id:"+candidateId);
 
         } else {
             throw new CandidateNotFoundException("No candidate with id:"+candidateId+" is found");
         }
 
     }
-
 }
