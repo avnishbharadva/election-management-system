@@ -5,81 +5,7 @@ const api = axios.create({
     baseURL: "http://172.16.16.67:8081"
 })
 
-
-// export const voterPost = ({ post }) => {    
-//     return api.post("/api/voters/register", post)
-// }
-
-
-// export const voterGet = ({page, size, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber} = {}) => {
-//     try {
-//         return api.get(`/api/voters/search?page=${page}&size=${size}&firstName=${firstName ?? ''}&lastName=${lastName ?? ''}&dateOfBirth=${dateOfBirth ?? ''}&dmvNumber=${dmvNumber ?? ''}&ssnNumber=${ssnNumber ?? ''}`)
-//     } catch (error) {
-//         console.error("Error registering voter:", error.response?.data || error.message);
-//         throw error;
-//     }
-// }
-
-
-
-
-// export const voterPost = ({ post, img, sign }) => {
-
-
-//     return api.post("/api/voters/register", post)
-// }
-
-// export const voterPost = async ({post, img, sign}) => {
-//     const formData = new FormData();
-
-//     // Append voter JSON data as a Blob
-//     formData.append(
-//         "voter",
-//          new Blob([JSON.stringify(post)],
-//           { type: "application/json" })
-//         // post
-//     )
-
-//     // Append image and signature files
-//    img? formData.append("image", 
-//     new Blob([JSON.stringify(img)], 
-//     { type: "multipart/form-data" })
-//     // img
-// )  : `${console.log("img not found")}`
-
-//    sign? formData.append("signature",
-//     new Blob([JSON.stringify(sign)], 
-//     { type: "multipart/form-data" })
-//     // sign
-//     ) :`${console.log("sign not found")}`
-
-//     console.log(formData)
-
-//     // Log the contents of formData
-//     for (let pair of formData.entries()) {
-//         console.log(pair[0]+ ', ' + pair[1]);
-//     }
-
-//     try {
-// const response = await api.post("/api/voters/register", formData, {
-//             headers: {
-//                 "Content-Type": "multipart/form-data",
-//             },
-//         });
-
-// console.log("Voter registered successfully:", response.data);
-// return response.data;
-//     } catch (error) {
-//         console.error("Error registering voter:", error.response?.data || error.message);
-//         throw error;
-//     }
-// };
-
-
 ///for search voter
-
-
-
 function searchVoters({ page = 1, size = 10, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber }) {
     // Create an object with the filters to pass in the query
     const filters = { page, size, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber };
@@ -121,33 +47,6 @@ const dataURLtoFile = (dataURL: string, filename: string): File => {
 export const voterPost = async ({ post, img, sign }) => {
     const formData = new FormData();
 
-    // Append voter JSON data as a Blob
-    //     formData.append(
-    //         "voter",
-    //          new Blob([JSON.stringify(post)],
-    //           { type: "application/json" })
-    //         // post
-    //     )
-
-    //     // Append image and signature files
-    //    img? formData.append("image", 
-    //     new Blob([JSON.stringify(img)], 
-    //     { type: "multipart/form-data" })
-    //     // img
-    // )  : `${console.log("img not found")}`
-
-    //    sign? formData.append("signature",
-    //     new Blob([JSON.stringify(sign)], 
-    //     { type: "multipart/form-data" })
-    //     // sign
-    //     ) :`${console.log("sign not found")}`
-
-    //     console.log(formData)
-
-    //     // Log the contents of formData
-    //     for (let pair of formData.entries()) {
-    //         console.log(pair[0]+ ', ' + pair[1]);
-    //     }
 
     formData.append(
         "voter",
