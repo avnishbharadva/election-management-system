@@ -1,10 +1,12 @@
 package com.ems.services.impls;
 
 import com.ems.dtos.VoterRegisterDTO;
-import com.ems.dtos.VoterResponseDTO;
+import com.ems.dtos.VoterDTO;
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.entities.Address;
 import com.ems.entities.NameHistory;
 import com.ems.entities.Voter;
+import com.ems.entities.constants.AddressType;
 import com.ems.exceptions.PartyNotFoundException;
 import com.ems.exceptions.VoterAlreadyExistException;
 import com.ems.exceptions.VoterNotFoundException;
@@ -47,7 +49,7 @@ public class VoterServiceImpl implements VoterService {
 
     @Override
     @Transactional
-    public VoterResponseDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws PartyNotFoundException, IOException {
+    public VoterDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws PartyNotFoundException, IOException {
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
 
         if (voterRepo.existsBySsnNumber(voterRegisterDTO.getSsnNumber()))
@@ -85,15 +87,15 @@ public class VoterServiceImpl implements VoterService {
         addressRepo.saveAll(addressList);
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
 
-        return globalMapper.toVoterResponseDTO(savedVoter);
+        return globalMapper.toVoterDTO(savedVoter);
     }
 
     @Override
     public
-    Page<VoterResponseDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
+    Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
         VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber);
         log.info("searching started for criteria : {}", searchDTO);
-        return voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)), query -> query.sortBy(getSort(sort)).page(PageRequest.of(page, size, getSort(sort)))).map(globalMapper::toVoterResponseDTO);
+        return voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)), query -> query.sortBy(getSort(sort)).page(PageRequest.of(page, size, getSort(sort)))).map(globalMapper::toVoterDTO);
     }
 
     private Sort getSort(String[] sort) {
@@ -107,30 +109,45 @@ public class VoterServiceImpl implements VoterService {
     }
 
     @Override
-    public VoterResponseDTO updateVoter(String ssnId, VoterResponseDTO voterResponseDTO) {
-        log.info("update process start for {} voter", ssnId);
+    public VoterDTO updateVoter(String voterId, VoterDTO voterDTO) {
+        log.info("update process start for {} voter", voterId);
 
-        var existingVoter = voterRepo.findBySsnNumber(ssnId).orElseThrow(() -> new VoterNotFoundException("Voter not found with SSN : " + ssnId));
+        var existingVoter = voterRepo.findById(voterId)
+                .orElseThrow(() -> new VoterNotFoundException("Voter not found with voter id : " + voterId));
 
-        if (voterResponseDTO.getPartyId() != null)
-            partyRepo.findById(voterResponseDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party not found with ssnId : " + voterResponseDTO.getPartyId()));
+        if(voterDTO.getPartyId()!=null)
+            partyRepo.findById(voterDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party not found with id : " + voterDTO.getPartyId()));
 
-        var addressDTOList = voterResponseDTO.getAddress();
-        var updatedAddress = globalMapper.toAddressList(addressDTOList);
 
-//        addressDTOList.stream().map(addressDTO -> globalMapper.updateAddressToAddress(addressDTO,))
+        // Update voter details
+        var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
+        voterRepo.save(updatedVoter);
 
-        var updatedVoter = globalMapper.updateDTOtoVoter(voterResponseDTO, existingVoter);
+        // Update or create residence address using the DTO mapper
+        if (voterDTO.getResidentialAddress() != null) {
+            Address residenceAddress = addressRepo
+                    .findByVoter_VoterIdAndAddressType(voterId, AddressType.RESIDENTIAL)
+                    .orElseThrow(() -> new VoterNotFoundException("Residential address not found for voter : " + voterId));
 
-        addHistory(voterResponseDTO, existingVoter);
-        auditService.voterAudit(existingVoter, updatedVoter);
+            globalMapper.addressDTOToAddress(voterDTO.getResidentialAddress(), residenceAddress);
+//            residenceAddress.setVoter(updatedVoter);
+            addressRepo.save(residenceAddress);
+        }
 
-        voterRepo.save(existingVoter);
-        log.info("updated voter details of : {}", ssnId);
-        return globalMapper.toVoterResponseDTO(existingVoter);
+        // Update mailing address
+        if (voterDTO.getMailingAddress() != null) {
+            Address mailingAddress = addressRepo
+                    .findByVoter_VoterIdAndAddressType(voterId, AddressType.MAILING)
+                    .orElseThrow(() -> new RuntimeException("Mailing Address not found for voter : " + voterId));
+
+            globalMapper.addressDTOToAddress(voterDTO.getMailingAddress(), mailingAddress);
+//            mailingAddress.setVoter(updatedVoter);
+            addressRepo.save(mailingAddress);
+        }
+        return globalMapper.toVoterDTO(updatedVoter);
     }
 
-    private void addHistory(VoterResponseDTO voterUpdateDTO, Voter voter) {
+    private void addHistory(VoterDTO voterUpdateDTO, Voter voter) {
         if (voterUpdateDTO.getFirstName() != null || voterUpdateDTO.getMiddleName() != null || voterUpdateDTO.getLastName() != null || voterUpdateDTO.getSuffixName() != null) {
             NameHistory nameHistory = new NameHistory();
             BeanUtils.copyProperties(voter, nameHistory);

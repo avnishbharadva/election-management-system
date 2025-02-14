@@ -15,17 +15,17 @@ public interface GlobalMapper {
     Voter toVoter(VoterSearchDTO voterSearchDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Voter updateDTOtoVoter(VoterResponseDTO voterUpdateDTO, @MappingTarget Voter voter);
+    Voter voterDTOtoVoter(VoterDTO voterDTO, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Address updateAddressToAddress(AddressDTO addressDTO, @MappingTarget Address address);
+    Address addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
-    VoterResponseDTO toVoterResponseDTO(Voter voter);
+    VoterDTO toVoterDTO(Voter voter);
 
     Party toParty(PartyDTO partyDTO);
     PartyDTO toPartyDTO(Party party);

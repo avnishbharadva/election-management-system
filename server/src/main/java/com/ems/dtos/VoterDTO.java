@@ -8,7 +8,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class VoterUpdateDTO {
+public class VoterDTO {
+
+    private String voterId;
+
     private String firstName;
 
     private String middleName;
@@ -21,15 +24,23 @@ public class VoterUpdateDTO {
 
     private Gender gender;
 
+    private String dmvNumber;
+
+    private String ssnNumber;
+
     private String email;
 
     private String phoneNumber;
 
     private Boolean hasVotedBefore;
 
-    private String firstVotedYear;
+    private Long firstVotedYear;
 
     private Long partyId;
+
+    private AddressDTO residentialAddress;
+
+    private AddressDTO mailingAddress;
 
     private String image;
 

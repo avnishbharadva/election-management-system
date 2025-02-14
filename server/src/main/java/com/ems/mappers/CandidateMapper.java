@@ -28,11 +28,6 @@ public interface CandidateMapper {
     Election toElection(ElectionSortDTO electionSortDTO);
     ElectionSortDTO toElectionSortDTO(Election election);
 
-    CandidateSearchDTO toCandidateSearchDTO(Candidate candidate);
-    Candidate toCandidateFromSearch(CandidateSearchDTO candidateSearchDTO);
-
-
-
     default Long mapPartyToId(Party party) {
         return (party != null) ? party.getPartyId() : null;
     }
