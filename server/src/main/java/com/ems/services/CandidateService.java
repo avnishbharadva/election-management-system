@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CandidateService {
     CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
-    Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
+    Candidate saveCandidate(CandidateDTO candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     CandidateDTO findById(Long id);
     Candidate update(Long candidateId, CandidateDTO candidateDTO);
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);

@@ -56,7 +56,7 @@ public class CandidateController {
 
     @PostMapping(value = "/addCandidate",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Candidate> createCandidate(
-            @RequestParam("candidate") String candidateData,
+            @RequestPart("candidate") CandidateDTO candidateData,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
             @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
         try {

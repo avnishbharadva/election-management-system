@@ -58,8 +58,8 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
-        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
+    public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
+//        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
