@@ -3,9 +3,9 @@ package com.ems.mappers;
 import com.ems.dtos.AddressDTO;
 import com.ems.dtos.ElectionDTO;
 import com.ems.dtos.PartyDTO;
+import com.ems.dtos.VoterDTO;
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
-import com.ems.dtos.VoterUpdateDTO;
 import com.ems.entities.Address;
 import com.ems.entities.Election;
 import com.ems.entities.Party;
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-11T12:43:30+0530",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
+    date = "2025-02-14T13:31:06+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
 public class GlobalMapperImpl implements GlobalMapper {
@@ -41,11 +41,11 @@ public class GlobalMapperImpl implements GlobalMapper {
         voter.setSsnNumber( voterRegisterDTO.getSsnNumber() );
         voter.setEmail( voterRegisterDTO.getEmail() );
         voter.setPhoneNumber( voterRegisterDTO.getPhoneNumber() );
-        voter.setHasVotedBefore( voterRegisterDTO.getHasVotedBefore() );
+        if ( voterRegisterDTO.getHasVotedBefore() != null ) {
+            voter.setHasVotedBefore( voterRegisterDTO.getHasVotedBefore() );
+        }
         voter.setFirstVotedYear( voterRegisterDTO.getFirstVotedYear() );
         voter.setAddress( toAddressList( voterRegisterDTO.getAddress() ) );
-        voter.setImage( voterRegisterDTO.getImage() );
-        voter.setSignature( voterRegisterDTO.getSignature() );
 
         return voter;
     }
@@ -68,27 +68,92 @@ public class GlobalMapperImpl implements GlobalMapper {
     }
 
     @Override
-    public Voter toVoter(VoterUpdateDTO voterUpdateDTO) {
-        if ( voterUpdateDTO == null ) {
-            return null;
+    public Voter voterDTOtoVoter(VoterDTO voterDTO, Voter voter) {
+        if ( voterDTO == null ) {
+            return voter;
         }
 
-        Voter voter = new Voter();
-
-        voter.setFirstName( voterUpdateDTO.getFirstName() );
-        voter.setMiddleName( voterUpdateDTO.getMiddleName() );
-        voter.setLastName( voterUpdateDTO.getLastName() );
-        voter.setSuffixName( voterUpdateDTO.getSuffixName() );
-        voter.setDateOfBirth( voterUpdateDTO.getDateOfBirth() );
-        voter.setGender( voterUpdateDTO.getGender() );
-        voter.setEmail( voterUpdateDTO.getEmail() );
-        voter.setPhoneNumber( voterUpdateDTO.getPhoneNumber() );
-        voter.setHasVotedBefore( voterUpdateDTO.getHasVotedBefore() );
-        voter.setFirstVotedYear( voterUpdateDTO.getFirstVotedYear() );
-        voter.setImage( voterUpdateDTO.getImage() );
-        voter.setSignature( voterUpdateDTO.getSignature() );
+        if ( voterDTO.getVoterId() != null ) {
+            voter.setVoterId( voterDTO.getVoterId() );
+        }
+        if ( voterDTO.getFirstName() != null ) {
+            voter.setFirstName( voterDTO.getFirstName() );
+        }
+        if ( voterDTO.getMiddleName() != null ) {
+            voter.setMiddleName( voterDTO.getMiddleName() );
+        }
+        if ( voterDTO.getLastName() != null ) {
+            voter.setLastName( voterDTO.getLastName() );
+        }
+        if ( voterDTO.getSuffixName() != null ) {
+            voter.setSuffixName( voterDTO.getSuffixName() );
+        }
+        if ( voterDTO.getDateOfBirth() != null ) {
+            voter.setDateOfBirth( voterDTO.getDateOfBirth() );
+        }
+        if ( voterDTO.getGender() != null ) {
+            voter.setGender( voterDTO.getGender() );
+        }
+        if ( voterDTO.getDmvNumber() != null ) {
+            voter.setDmvNumber( voterDTO.getDmvNumber() );
+        }
+        if ( voterDTO.getSsnNumber() != null ) {
+            voter.setSsnNumber( voterDTO.getSsnNumber() );
+        }
+        if ( voterDTO.getEmail() != null ) {
+            voter.setEmail( voterDTO.getEmail() );
+        }
+        if ( voterDTO.getPhoneNumber() != null ) {
+            voter.setPhoneNumber( voterDTO.getPhoneNumber() );
+        }
+        if ( voterDTO.getHasVotedBefore() != null ) {
+            voter.setHasVotedBefore( voterDTO.getHasVotedBefore() );
+        }
+        if ( voterDTO.getFirstVotedYear() != null ) {
+            voter.setFirstVotedYear( voterDTO.getFirstVotedYear() );
+        }
+        if ( voterDTO.getImage() != null ) {
+            voter.setImage( voterDTO.getImage() );
+        }
+        if ( voterDTO.getSignature() != null ) {
+            voter.setSignature( voterDTO.getSignature() );
+        }
 
         return voter;
+    }
+
+    @Override
+    public Address addressDTOToAddress(AddressDTO addressDTO, Address address) {
+        if ( addressDTO == null ) {
+            return address;
+        }
+
+        if ( addressDTO.getAddressId() != null ) {
+            address.setAddressId( addressDTO.getAddressId() );
+        }
+        if ( addressDTO.getAddressLine() != null ) {
+            address.setAddressLine( addressDTO.getAddressLine() );
+        }
+        if ( addressDTO.getAptNumber() != null ) {
+            address.setAptNumber( addressDTO.getAptNumber() );
+        }
+        if ( addressDTO.getCity() != null ) {
+            address.setCity( addressDTO.getCity() );
+        }
+        if ( addressDTO.getCounty() != null ) {
+            address.setCounty( addressDTO.getCounty() );
+        }
+        if ( addressDTO.getState() != null ) {
+            address.setState( addressDTO.getState() );
+        }
+        if ( addressDTO.getZipCode() != null ) {
+            address.setZipCode( addressDTO.getZipCode() );
+        }
+        if ( addressDTO.getAddressType() != null ) {
+            address.setAddressType( addressDTO.getAddressType() );
+        }
+
+        return address;
     }
 
     @Override
@@ -110,13 +175,38 @@ public class GlobalMapperImpl implements GlobalMapper {
         voterRegisterDTO.setSsnNumber( voter.getSsnNumber() );
         voterRegisterDTO.setEmail( voter.getEmail() );
         voterRegisterDTO.setPhoneNumber( voter.getPhoneNumber() );
-        voterRegisterDTO.setHasVotedBefore( voter.getHasVotedBefore() );
+        voterRegisterDTO.setHasVotedBefore( voter.isHasVotedBefore() );
         voterRegisterDTO.setFirstVotedYear( voter.getFirstVotedYear() );
         voterRegisterDTO.setAddress( toAddressDTOList( voter.getAddress() ) );
-        voterRegisterDTO.setImage( voter.getImage() );
-        voterRegisterDTO.setSignature( voter.getSignature() );
 
         return voterRegisterDTO;
+    }
+
+    @Override
+    public VoterDTO toVoterDTO(Voter voter) {
+        if ( voter == null ) {
+            return null;
+        }
+
+        VoterDTO voterDTO = new VoterDTO();
+
+        voterDTO.setVoterId( voter.getVoterId() );
+        voterDTO.setFirstName( voter.getFirstName() );
+        voterDTO.setMiddleName( voter.getMiddleName() );
+        voterDTO.setLastName( voter.getLastName() );
+        voterDTO.setSuffixName( voter.getSuffixName() );
+        voterDTO.setDateOfBirth( voter.getDateOfBirth() );
+        voterDTO.setGender( voter.getGender() );
+        voterDTO.setDmvNumber( voter.getDmvNumber() );
+        voterDTO.setSsnNumber( voter.getSsnNumber() );
+        voterDTO.setEmail( voter.getEmail() );
+        voterDTO.setPhoneNumber( voter.getPhoneNumber() );
+        voterDTO.setHasVotedBefore( voter.isHasVotedBefore() );
+        voterDTO.setFirstVotedYear( voter.getFirstVotedYear() );
+        voterDTO.setImage( voter.getImage() );
+        voterDTO.setSignature( voter.getSignature() );
+
+        return voterDTO;
     }
 
     @Override
@@ -167,10 +257,12 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         Address address = new Address();
 
+        address.setAddressId( addressDTO.getAddressId() );
         address.setAddressLine( addressDTO.getAddressLine() );
         address.setAptNumber( addressDTO.getAptNumber() );
         address.setCity( addressDTO.getCity() );
         address.setCounty( addressDTO.getCounty() );
+        address.setState( addressDTO.getState() );
         address.setZipCode( addressDTO.getZipCode() );
         address.setAddressType( addressDTO.getAddressType() );
 
@@ -185,10 +277,12 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         AddressDTO addressDTO = new AddressDTO();
 
+        addressDTO.setAddressId( address.getAddressId() );
         addressDTO.setAddressLine( address.getAddressLine() );
         addressDTO.setAptNumber( address.getAptNumber() );
         addressDTO.setCity( address.getCity() );
         addressDTO.setCounty( address.getCounty() );
+        addressDTO.setState( address.getState() );
         addressDTO.setZipCode( address.getZipCode() );
         addressDTO.setAddressType( address.getAddressType() );
 

@@ -238,15 +238,15 @@ const CandidateData = () => {
               </TableRow>
             ) : candidatesToDisplay.length > 0 ? (
               candidatesToDisplay.map((candidate) => (
-                <TableRow key={candidate.candidateSSN} style={{textWrap:'nowrap'}}>
-                  <TableCell>{candidate.candidateSSN}</TableCell>
-                  <TableCell>{`${candidate.candidateName.firstName}`}</TableCell>
-                  <TableCell>{`${candidate.candidateName.middleName || ""}`}</TableCell>
-                  <TableCell>{`${candidate.candidateName.lastName}`}</TableCell>
-                  <TableCell>{candidate.candidateEmail}</TableCell>
-                  <TableCell>{candidate.gender}</TableCell>
-                  <TableCell>{candidate.electionId}</TableCell>
-                  <TableCell>{candidate.partyId}</TableCell>
+                <TableRow key={candidate?.candidateSSN} style={{textWrap:'nowrap'}}>
+                  <TableCell>{candidate?.candidateSSN}</TableCell>
+                  <TableCell>{`${candidate?.candidateName?.firstName}`}</TableCell>
+                  <TableCell>{`${candidate?.candidateName?.middleName || ""}`}</TableCell>
+                  <TableCell>{`${candidate?.candidateName?.lastName}`}</TableCell>
+                  <TableCell>{candidate?.candidateEmail}</TableCell>
+                  <TableCell>{candidate?.gender}</TableCell>
+                  <TableCell>{candidate?.electionName}</TableCell>
+                  <TableCell>{candidate?.partyName}</TableCell>
                   <TableCell>
                     <Button>Edit</Button>
                     <Button>Delete</Button>

@@ -2,6 +2,7 @@ package com.ems.services;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,9 @@ public interface CandidateService {
     Map<String,Object> findById(Long id);
     Candidate update(Long candidateId,CandidateDTO candidateDTO);
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
-    List<CandidateDTO> findAll();
     void deleteCandidateByCandidateId(Long candidateId);
     Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort);
     CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage);
+    Page<CandidateDTO> searchCandidates(CandidateDTO candidateDTO, int page, int perPage, Sort sort);
+    List<CandidateDetailsDTO> getCandidateInfo();
 }
