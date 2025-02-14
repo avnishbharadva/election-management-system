@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressDTO {
+    private Long addressId;
+
     private String addressLine;
 
     private String aptNumber;
@@ -15,7 +17,11 @@ public class AddressDTO {
 
     private String county;
 
+    private String state = "New York";
+
     private String zipCode;
 
     private AddressType addressType;
+
+    private Long voterId;
 }

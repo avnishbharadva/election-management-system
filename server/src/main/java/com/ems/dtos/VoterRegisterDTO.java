@@ -53,8 +53,9 @@ public class VoterRegisterDTO {
 
     private Boolean hasVotedBefore;
 
-    @Pattern(regexp = "\\d{4}", message = "Voted Year must be a 4-digit year")
-    private String firstVotedYear;
+    @Min(value = 1900, message = "Year must be 1900 or later")
+    @Max(value = 2025, message = "Year must be 2025 or earlier")
+    private Long firstVotedYear;
 
     @Positive(message = "Party ID must be a positive number")
     private Long partyId;
@@ -63,9 +64,7 @@ public class VoterRegisterDTO {
     @Size(min = 1, message = "At least one address is required")
     private List<AddressDTO> address;
 
-    @NotBlank(message = "Image url can not be blank")
     private MultipartFile image;
 
-    @NotBlank(message = "Signature url can not be blank")
     private MultipartFile signature;
 }

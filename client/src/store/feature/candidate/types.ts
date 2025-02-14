@@ -33,8 +33,26 @@ export interface Address {
     candidateEmail: string;
     electionId: number;
     bankDetails: BankDetails;
-    candidateSignature?: string | null;  // ✅ Optional candidateSignature
-    candidateImage?: string | null;      // ✅ Optional candidateImage
+    candidateSignature?: string | null;  
+    candidateImage?: string | null;      
+  }
+  export interface IFormInput {
+    candidateName: CandidateName;
+    candidateSSN: string;
+    dateOfBirth: string;
+    gender: string;
+    maritialStatus: string;
+    noOfChildren: number;
+    spouseName: string;
+    partyId: number;
+    residentialAddress: Address;
+    mailingAddress: Address;
+    stateName: string;
+    candidateEmail: string;
+    electionId: number;
+    bankDetails: BankDetails;
+    candidateImage: string;
+    candidateSignature: string;
   }
   
 //  export interface CandidateState {
@@ -54,11 +72,3 @@ export interface Address {
     success: boolean;
   }
   
-//   const initialState: CandidateState = {
-//     searchQuery: "",
-//     allCandidates: [],
-//     filteredCandidate: null,
-//     notFound: false,
-//     loading: false,
-//     error: null,
-//   };

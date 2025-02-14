@@ -42,7 +42,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    @ExceptionHandler(CandidateAlreadyExistsException.class)
+
+    @ExceptionHandler({CandidateAlreadyExistsException.class, VoterAlreadyExistException.class})
     public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(RuntimeException runtimeException)
     {
         var errorResponse=new ErrorResponse();
