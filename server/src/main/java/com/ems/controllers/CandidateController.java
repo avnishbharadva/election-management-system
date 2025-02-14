@@ -30,7 +30,7 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     ResponseEntity<List<CandidateDTO>> getAllCandidates()
     {
         try {

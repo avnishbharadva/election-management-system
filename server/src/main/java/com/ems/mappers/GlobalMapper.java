@@ -2,8 +2,7 @@ package com.ems.mappers;
 
 import com.ems.dtos.*;
 import com.ems.entities.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -14,14 +13,19 @@ public interface GlobalMapper {
     @Mapping(target = "signature", ignore = true)
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
     Voter toVoter(VoterSearchDTO voterSearchDTO);
-    Voter toVoter(VoterUpdateDTO voterUpdateDTO);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter updateDTOtoVoter(VoterResponseDTO voterUpdateDTO, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address updateAddressToAddress(AddressDTO addressDTO, @MappingTarget Address address);
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
-
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
+    VoterResponseDTO toVoterResponseDTO(Voter voter);
 
     Party toParty(PartyDTO partyDTO);
     PartyDTO toPartyDTO(Party party);
