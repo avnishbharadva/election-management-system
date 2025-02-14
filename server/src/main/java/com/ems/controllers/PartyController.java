@@ -3,7 +3,6 @@ package com.ems.controllers;
 import com.ems.dtos.PartyDTO;
 import com.ems.services.PartyService;
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
