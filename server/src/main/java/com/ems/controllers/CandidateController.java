@@ -4,6 +4,7 @@ import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.dtos.ErrorResponse;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.CandidateNotFoundException;
 import com.ems.services.CandidateService;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
@@ -126,17 +129,11 @@ public class CandidateController {
     ResponseEntity<?> deleteById(@PathVariable Long candidateId)
     {
         if (candidateService.findById(candidateId)!=null) {
-            candidateService.deleteCandidateByCandidateId(candidateId);
-            ErrorResponse errorResponse=new ErrorResponse();
-            errorResponse.setStatus(HttpStatus.OK.value());
-            errorResponse.setMessage("Candidate with id:" + candidateId + " is deleted");
-            errorResponse.setRequestTime(LocalDateTime.now());
-            return ResponseEntity.ok(errorResponse);
+            return ResponseEntity.ok("Candidate with id:"+candidateId);
 
         } else {
             throw new CandidateNotFoundException("No candidate with id:"+candidateId+" is found");
         }
 
     }
-
 }

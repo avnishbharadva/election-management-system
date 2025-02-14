@@ -1,17 +1,17 @@
-interface Address {
+export interface Address {
     addressId: number;
     street: string;
     city: string;
     zipcode: number;
   }
   
-  interface CandidateName {
+  export interface CandidateName {
     firstName: string;
     middleName?: string;
     lastName: string;
   }
   
-  interface BankDetails {
+  export interface BankDetails {
     bankDetailsId: number;
     bankName: string;
     bankAddress: string;
@@ -51,6 +51,7 @@ interface Address {
     notFound: boolean;
     loading: boolean;
     error: string | null;
+    success: boolean;
   }
   
 //   const initialState: CandidateState = {
