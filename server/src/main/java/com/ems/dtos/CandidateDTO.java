@@ -5,6 +5,7 @@ import com.ems.entities.CandidateAddress;
 import com.ems.entities.CandidateName;
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.util.Date;
@@ -29,7 +30,8 @@ public class CandidateDTO {
 
     private MaritialStatus maritialStatus;
     private int noOfChildren;
-    @Pattern(regexp = "^[A-Za-z]+$",message = "Name must have alphabets")
+//    @Pattern(regexp = "^[A-Za-z]+$",message = "Name must have alphabets")
+//    @Nullable
     private String spouseName;
 
 //    @NotNull
@@ -53,6 +55,4 @@ public class CandidateDTO {
     private BankDetails bankDetails;
 
 
-    private String candidateSignature;
-    private String candidateImage;
 }

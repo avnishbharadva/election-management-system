@@ -20,6 +20,7 @@ public class Election {
 
     private String electionType;
 
+    @Temporal(TemporalType.DATE)
     private Date electionDate;
 
     private String electionState;

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -69,8 +70,8 @@ public class CandidateController {
     }
 
     @GetMapping("/candidateId/{candidateId}")
-    CandidateDTO getCandidateById(@PathVariable Long candidateId){
-        return candidateService.findById(candidateId);
+    ResponseEntity<Map<String,Object>> getCandidateById(@PathVariable Long candidateId){
+        return ResponseEntity.ok().body( candidateService.findById(candidateId));
     }
 
     @PutMapping("/updateCandidate/{candidateId}")
