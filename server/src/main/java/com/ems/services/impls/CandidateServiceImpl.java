@@ -23,6 +23,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,8 +61,8 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
-        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
+    public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
+//        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         System.out.println(candidateDTO.getElectionId()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
@@ -100,12 +104,36 @@ public class CandidateServiceImpl implements CandidateService {
 
 
     @Override
-    public CandidateDTO findById(Long candidateId) {
-       return candidateRepository.findById(candidateId)
-               .map(candidateMapper::toCandidateDTO)
-               .orElseThrow(()->new CandidateNotFoundException("No Such candidate with id"+candidateId));
+    public Map<String,Object> findById(Long candidateId) {
+        Path candidateImagePath=Path.of(uploadDir,"candidateImage");
+        Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+        Candidate candidate=candidateRepository.findById(candidateId).get();
+        var candidateDto=candidateMapper.toCandidateDTO(candidate);
+        Path imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
+        Path signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
+        System.out.println(signaturepath+"-------------------------------");
+//        Resource candidateImageResouce=imagepath.toFile().exists()?new FileSystemResource(imagepath):null;
+//        Resource signatureResourse=signaturepath.toFile().exists()?new FileSystemResource(signaturepath):null;
+        String candidateImageResouce=encodeFileToBase64(imagepath);
+        String signatureResourse=encodeFileToBase64(signaturepath);
+        System.out.println(signatureResourse+"//////////////////");
+        return Map.of("candidate",candidateDto,
+               "candidateImage",candidateImageResouce,
+               "candidateSignature",signatureResourse);
     }
 
+    private String encodeFileToBase64(Path filePath) {
+        try {
+            if (Files.exists(filePath)) {
+                byte[] fileContent = Files.readAllBytes(filePath);
+                System.out.println(Base64.getEncoder().encodeToString(fileContent)+"****************");
+                return Base64.getEncoder().encodeToString(fileContent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     @Override
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
@@ -113,6 +141,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with ID: " + candidateId));
 
         candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
+
 
         if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
             existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())

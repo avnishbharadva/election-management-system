@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -56,7 +57,7 @@ public class CandidateController {
 
     @PostMapping(value = "/addCandidate",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Candidate> createCandidate(
-            @RequestParam("candidate") String candidateData,
+            @RequestPart("candidate") CandidateDTO candidateData,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
             @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
         try {
@@ -69,8 +70,8 @@ public class CandidateController {
     }
 
     @GetMapping("/candidateId/{candidateId}")
-    CandidateDTO getCandidateById(@PathVariable Long candidateId){
-        return candidateService.findById(candidateId);
+    ResponseEntity<Map<String,Object>> getCandidateById(@PathVariable Long candidateId){
+        return ResponseEntity.ok().body( candidateService.findById(candidateId));
     }
 
     @PutMapping("/updateCandidate/{candidateId}")

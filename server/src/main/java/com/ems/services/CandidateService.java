@@ -10,11 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface CandidateService {
     CandidateDTO findByCandidateSSN(String candidateSSN);
-    Candidate saveCandidate(String candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
-    CandidateDTO findById(Long id);
+    Candidate saveCandidate(CandidateDTO candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
+    Map<String,Object> findById(Long id);
     Candidate update(Long candidateId,CandidateDTO candidateDTO);
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
 
