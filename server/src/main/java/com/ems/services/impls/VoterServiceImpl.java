@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -60,8 +61,8 @@ public class VoterServiceImpl implements VoterService {
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
-        var addressDTOList = voterRegisterDTO.getAddress();
-        var addressList = globalMapper.toAddressList(addressDTOList);
+//        var addressDTOList = voterRegisterDTO.getAddress();
+//        var addressList = globalMapper.toAddressList(addressDTOList);
 
         Files.createDirectories(Paths.get(uploadDir + "/photos"));
         Files.createDirectories(Paths.get(uploadDir + "/signatures"));
@@ -79,12 +80,20 @@ public class VoterServiceImpl implements VoterService {
         }
 
         var savedVoter = voterRepo.save(voter);
-        addressList.forEach(address -> {
-            address.setVoter(savedVoter);
-            if (address.getCounty() == null)
-                address.setCounty(addressList.getFirst().getCounty());
-        });
+
+        var residentialAddress = globalMapper.toAddress(voterRegisterDTO.getResidentialAddress());
+        var mailingAddress = globalMapper.toAddress(voterRegisterDTO.getMailingAddress());
+
+        var addressList = List.of(residentialAddress, mailingAddress);
+        addressList.forEach(address -> address.setVoter(savedVoter));
         addressRepo.saveAll(addressList);
+
+//        addressList.forEach(address -> {
+//            address.setVoter(savedVoter);
+//            if (address.getCounty() == null)
+//                address.setCounty(addressList.getFirst().getCounty());
+//        });
+//        addressRepo.saveAll(addressList);
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
 
         return globalMapper.toVoterDTO(savedVoter);
@@ -118,32 +127,43 @@ public class VoterServiceImpl implements VoterService {
         if(voterDTO.getPartyId()!=null)
             partyRepo.findById(voterDTO.getPartyId()).orElseThrow(() -> new PartyNotFoundException("Party not found with id : " + voterDTO.getPartyId()));
 
+        var oldVoter = new Voter();
+        BeanUtils.copyProperties(existingVoter, oldVoter);
 
-        // Update voter details
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
+
+        auditService.voterAudit(oldVoter, updatedVoter);
         voterRepo.save(updatedVoter);
 
-        // Update or create residence address using the DTO mapper
         if (voterDTO.getResidentialAddress() != null) {
             Address residenceAddress = addressRepo
                     .findByVoter_VoterIdAndAddressType(voterId, AddressType.RESIDENTIAL)
                     .orElseThrow(() -> new VoterNotFoundException("Residential address not found for voter : " + voterId));
 
-            globalMapper.addressDTOToAddress(voterDTO.getResidentialAddress(), residenceAddress);
-//            residenceAddress.setVoter(updatedVoter);
+            var oldAddress = new Address();
+            BeanUtils.copyProperties(residenceAddress, oldAddress);
+
+            globalMapper.addressDTOToAddress(voterDTO.getResidentialAddress(), residenceAddress); //update
+
+            auditService.addressAudit(updatedVoter, oldAddress, residenceAddress);
             addressRepo.save(residenceAddress);
         }
 
-        // Update mailing address
         if (voterDTO.getMailingAddress() != null) {
             Address mailingAddress = addressRepo
                     .findByVoter_VoterIdAndAddressType(voterId, AddressType.MAILING)
                     .orElseThrow(() -> new RuntimeException("Mailing Address not found for voter : " + voterId));
 
+            var oldAddress = new Address();
+            BeanUtils.copyProperties(mailingAddress, oldAddress);
+
             globalMapper.addressDTOToAddress(voterDTO.getMailingAddress(), mailingAddress);
-//            mailingAddress.setVoter(updatedVoter);
+
+            auditService.addressAudit(updatedVoter, oldAddress, mailingAddress);
             addressRepo.save(mailingAddress);
         }
+
+        addHistory(voterDTO, updatedVoter);
         return globalMapper.toVoterDTO(updatedVoter);
     }
 

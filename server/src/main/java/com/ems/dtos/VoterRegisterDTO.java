@@ -60,9 +60,10 @@ public class VoterRegisterDTO {
     @Positive(message = "Party ID must be a positive number")
     private Long partyId;
 
-    @NotEmpty(message = "Address cannot be empty")
-    @Size(min = 1, message = "At least one address is required")
-    private List<AddressDTO> address;
+    @NotNull(message = "Residential Address cannot be empty")
+    private AddressDTO residentialAddress;
+
+    private AddressDTO mailingAddress;
 
     private MultipartFile image;
 
