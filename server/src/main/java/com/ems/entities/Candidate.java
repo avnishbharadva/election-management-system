@@ -26,10 +26,13 @@ public class Candidate extends TimeStamp {
 //    @Column(unique = true)
     @Column(name = "candidatessn")
     private String candidateSSN;
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private String candidateImage;
 
 
     @Enumerated(EnumType.STRING)
@@ -66,5 +69,4 @@ public class Candidate extends TimeStamp {
 
     private String candidateSignature;
 
-    private String candidateImage;
 }
