@@ -4,6 +4,7 @@ import com.ems.entities.constants.Gender;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class VoterRegisterDTO {
 
     @NotBlank(message = "First Name cannot be blank")
@@ -68,4 +70,6 @@ public class VoterRegisterDTO {
     private MultipartFile image;
 
     private MultipartFile signature;
+
+    private Long statusId;
 }

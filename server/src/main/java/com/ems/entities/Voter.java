@@ -66,6 +66,10 @@ public class Voter extends TimeStamp {
 
     private String signature;
 
+    @ManyToOne
+    @JoinColumn(name = "voter_status_id")
+    private VoterStatus voterStatus;
+
     @PrePersist
     public void createVoterID(){
         if(this.voterId==null){

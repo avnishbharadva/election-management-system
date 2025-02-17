@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CandidateService {
-    CandidateDTO findByCandidateSSN(String candidateSSN);
+    CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
     Candidate saveCandidate(CandidateDTO candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     Map<String,Object> findById(Long id);
     Candidate update(Long candidateId,CandidateDTO candidateDTO);

@@ -6,10 +6,7 @@ import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
-import com.ems.exceptions.CandidateAlreadyExistsException;
-import com.ems.exceptions.CandidateNotFoundException;
-import com.ems.exceptions.ElectionNotFoundException;
-import com.ems.exceptions.PartyNotFoundException;
+import com.ems.exceptions.*;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
@@ -20,10 +17,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +52,7 @@ public class CandidateServiceImpl implements CandidateService {
     public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
         return candidateRepository.findByCandidateSSN(candidateSSN)
                 .map(candidateMapper::toCandidateDetailsDTO)
-                .orElseThrow(() -> new CandidateNotFoundException("No Candidate found with SSN: " + candidateSSN));
+                .orElseThrow(() -> new DataNotFoundException("No Candidate found with SSN: " + candidateSSN));
     }
 
     @Override
@@ -66,7 +60,7 @@ public class CandidateServiceImpl implements CandidateService {
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
 //        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
-            throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
+            throw new DataNotFoundException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
         Path candidateImagePath=Path.of(uploadDir,"candidateImage");
         Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
@@ -75,9 +69,9 @@ public class CandidateServiceImpl implements CandidateService {
 
         var candidate = candidateMapper.toCandidate(candidateDTO);
         var election = electionRepository.findById(candidateDTO.getElectionId())
-                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + candidateDTO.getElectionId()));
+                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + candidateDTO.getElectionId()));
         var party = partyRepository.findById(candidateDTO.getPartyId())
-                .orElseThrow(() -> new PartyNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
+                .orElseThrow(() -> new DataNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
         candidate.setElection(election);
         candidate.setParty(party);
         if (candidateImage != null && !candidateImage.isEmpty()) {
@@ -138,7 +132,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with ID: " + candidateId));
+                .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
 
         candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
 
@@ -162,7 +156,7 @@ public class CandidateServiceImpl implements CandidateService {
         List<Candidate> candidates = candidateRepository.findByParty_PartyName(candidatePartyName);
 
         if (candidates.isEmpty()) {
-            throw new PartyNotFoundException("Party with the given name not found.");
+            throw new DataNotFoundException("Party with the given name not found.");
         }
 
         return candidates.stream()
@@ -185,12 +179,12 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage) {
         Election election = electionRepository.findById(electionId)
-                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + electionId));
+                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + electionId));
         Pageable pageable = PageRequest.of(page, perPage);
         Page<Candidate> candidatePage = candidateRepository.findByElection_electionId(electionId, pageable);
 
         if (candidatePage.isEmpty()) {
-            throw new CandidateNotFoundException("No candidates found for Election ID: " + electionId);
+            throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
         }
 
         Page<CandidateDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDTO);
@@ -209,7 +203,7 @@ public class CandidateServiceImpl implements CandidateService {
         List<Candidate> candidates = candidateRepository.findAll();
 
         if (candidates.isEmpty()) {
-            throw new CandidateNotFoundException("No candidates found");
+            throw new DataNotFoundException("No candidates found");
         }
         return candidates.stream().map(candidateMapper::toCandidateDetailsDTO).
                 toList();
@@ -221,7 +215,7 @@ public class CandidateServiceImpl implements CandidateService {
         Specification<Candidate> spec = buildSearchSpecification(searchCriteria);
         Page<Candidate> candidatePage = candidateRepository.findAll(spec, pageable);
         if(candidatePage.isEmpty()){
-            throw new CandidateNotFoundException("No such candidate with this filters");
+            throw new DataNotFoundException("No such candidate with this filters");
         }
         return candidatePage.map(candidateMapper::toCandidateDTO);
     }

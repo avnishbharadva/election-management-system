@@ -4,7 +4,7 @@ import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
-import com.ems.exceptions.CandidateNotFoundException;
+import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
 @AllArgsConstructor
 @RequestMapping("/api/candidate")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CandidateController {
 
     private final CandidateService candidateService;
@@ -33,12 +33,12 @@ public class CandidateController {
             List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
 
             if (candidateDetailsList.isEmpty()) {
-                throw new CandidateNotFoundException("No candidates found");
+                throw new DataNotFoundException("No candidates found");
             }
 
             return ResponseEntity.ok(candidateDetailsList);
-        } catch (CandidateNotFoundException ex) {
-            throw new CandidateNotFoundException("No such candidate is found");
+        } catch (DataNotFoundException ex) {
+            throw new DataNotFoundException("No such candidate is found");
         }
     }
 
@@ -50,8 +50,8 @@ public class CandidateController {
             var candidateDTO= candidateService.findByCandidateSSN(candidateSSN);
             return ResponseEntity.ok(candidateDTO);
         }
-        catch (CandidateNotFoundException e){
-            throw new CandidateNotFoundException("No candidate found");
+        catch (DataNotFoundException e){
+            throw new DataNotFoundException("No candidate found");
         }
     }
 
@@ -99,7 +99,7 @@ public class CandidateController {
         Page<CandidateDTO> candidatePage = candidateService.getPagedCandidate(page, perPage, sort);
 
         if (candidatePage.isEmpty()) {
-            throw new CandidateNotFoundException("No candidates found.");
+            throw new DataNotFoundException("No candidates found.");
         }
 
         return ResponseEntity.ok(new CandidatePageResponse(
@@ -129,7 +129,7 @@ public class CandidateController {
             return ResponseEntity.ok("Candidate with id:"+candidateId);
 
         } else {
-            throw new CandidateNotFoundException("No candidate with id:"+candidateId+" is found");
+            throw new DataNotFoundException("No candidate with id:"+candidateId+" is found");
         }
 
     }
