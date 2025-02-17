@@ -56,7 +56,7 @@ const VoterForm = () => {
     dmvNumber:0,
     gender: "",
     suffixName:"",
-    partyId: 0,
+    partyId: 1,
     dateOfBirth: "",
     firstVoterYear: 0,
     hasVotedBefore: false,
@@ -191,7 +191,7 @@ const VoterForm = () => {
           <Title variant='h6'>Voting Information</Title>
           <DividerStyle />
           <Box display='flex' alignItems='center' gap='2.5rem'>
-            <PartyField name='partyid' control={control} label={'Select Name'} />
+            <PartyField name='partyId' control={control} label={'Select Name'} />
             <HasVotedBefore name='hasVotedBefore' control={control} label='Has Voted Before' />
             <FirstVoterYear name='firstVotedYear' control={control} label='First Voter Year' />
 
