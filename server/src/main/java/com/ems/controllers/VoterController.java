@@ -53,7 +53,7 @@ public class VoterController {
     @PatchMapping(value = "/{voterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VoterDTO> updateVoterImage(
             @PathVariable String voterId,
-            @RequestPart("voter") VoterDTO voterDTO,
+            @RequestPart(value = "voter", required = false) VoterDTO voterDTO,
             @RequestPart(value = "image", required = false) MultipartFile profileImg,
             @RequestPart(value = "signature", required = false) MultipartFile signImg) throws IOException {
         return ResponseEntity.ok(voterService.updateVoter(voterId, voterDTO, profileImg, signImg));
