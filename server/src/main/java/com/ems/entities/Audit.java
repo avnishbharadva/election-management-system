@@ -1,10 +1,10 @@
 package com.ems.entities;
 
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -14,19 +14,19 @@ import java.util.Map;
 @Document(collection = "system_audit")
 public class Audit {
 
+
     private String id;
 
     private String tableName;
+    private Map<String, Object> metadata;
     private Map<String, Object> changeFields;
 
     private String createdBy;
     private String updatedBy;
 
-    @Setter(AccessLevel.NONE)
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @Setter(AccessLevel.NONE)
-    @UpdateTimestamp
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 }

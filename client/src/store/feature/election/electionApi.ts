@@ -6,7 +6,7 @@ export const addElection = createAsyncThunk(
     "election/addElection",
     async (election: Election, { rejectWithValue }) => {
       try {
-        const response = await axios.post("http://172.16.16.69:8082/api/elections/addElection", election);
+        const response = await axios.post("http://localhost:8081/api/elections/addElection", election);
         console.log(response)
         return response.data; // Return response data if needed
       } catch (error: any) {
