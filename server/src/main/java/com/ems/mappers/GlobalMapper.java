@@ -34,7 +34,9 @@ public interface GlobalMapper {
     @Mapping(source = "party.partyId", target = "partyId")
     VoterDTO toVoterDTO(Voter voter);
 
+    @Mapping(target = "partySymbol", ignore = true)
     Party toParty(PartyDTO partyDTO);
+    @Mapping(target = "partySymbol", ignore = true)
     PartyDTO toPartyDTO(Party party);
 
     @Mapping(target = "addressId", ignore = true)

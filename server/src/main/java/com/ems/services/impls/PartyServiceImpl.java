@@ -8,7 +8,13 @@ import com.ems.services.PartyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -25,11 +31,35 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public PartyDTO saveParty(PartyDTO partyDTO) {
+    public PartyDTO saveParty(PartyDTO partyDTO, MultipartFile image) throws IOException {
         var party = globalMapper.toParty(partyDTO);
-        party = partyRepository.save(party);
-        log.info("Party Successfully Saved : {}",party.getPartyName());
+
+        log.info("Party Successfully Saved : {}", party.getPartyName());
+
+        String imageDir = "uploads/partySymbol";
+        File imageFolder = new File(imageDir);
+
+        if (!imageFolder.exists()) {
+            imageFolder.mkdirs();
+        }
+
+        if (image != null && !image.isEmpty()) {
+            if (party.getPartySymbol() != null) {
+                File oldImg = new File(imageDir, party.getPartySymbol());
+                if (oldImg.exists()) {
+                    oldImg.delete();
+                }
+            }
+
+            String imgName = party.getPartyName() + "_" + image.getOriginalFilename();
+            Path imagePath = Paths.get(imageDir, imgName);
+            Files.write(imagePath, image.getBytes());
+            party.setPartySymbol(imgName);
+            party = partyRepository.save(party);
+
+        }
         return globalMapper.toPartyDTO(party);
+
     }
 
     @Override
