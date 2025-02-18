@@ -50,10 +50,15 @@ public class VoterController {
         return ResponseEntity.ok(result);
     }
 
-    @PatchMapping("/{voterId}")
-    public ResponseEntity<VoterDTO> updateVoter(@PathVariable String voterId, @RequestBody VoterDTO voterDTO) {
-        return ResponseEntity.ok(voterService.updateVoter(voterId, voterDTO));
+    @PatchMapping(value = "/{voterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<VoterDTO> updateVoterImage(
+            @PathVariable String voterId,
+            @RequestPart("voter") VoterDTO voterDTO,
+            @RequestPart(value = "image", required = false) MultipartFile profileImg,
+            @RequestPart(value = "signature", required = false) MultipartFile signImg) throws IOException {
+        return ResponseEntity.ok(voterService.updateVoter(voterId, voterDTO, profileImg, signImg));
     }
+
 
     @GetMapping("/status")
     public ResponseEntity<List<VoterStatusDTO>> getAllStatus(){

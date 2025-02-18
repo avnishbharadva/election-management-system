@@ -32,6 +32,7 @@ public interface GlobalMapper {
     @Mapping(target = "mailingAddress",
             expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.MAILING))")
     @Mapping(source = "party.partyId", target = "partyId")
+    @Mapping(target = "statusId", source = "voterStatus.statusId")
     VoterDTO toVoterDTO(Voter voter);
 
     @Mapping(target = "partySymbol", ignore = true)

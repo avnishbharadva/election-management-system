@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,14 +17,14 @@ public class Voter extends TimeStamp {
     @Id
     @Column(unique = true, nullable = false, length = 9)
     private String voterId;
-  
+
     @Column(nullable = false, length = 20)
     private String firstName;
 
     @Column(length = 20)
     private String middleName;
 
-    @Column(nullable = false,length = 20)
+    @Column(nullable = false, length = 20)
     private String lastName;
 
     @Column(length = 10)
@@ -35,10 +36,10 @@ public class Voter extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(length = 9,unique = true,nullable = false)
+    @Column(length = 9, unique = true, nullable = false)
     private String dmvNumber;
 
-    @Column(length = 9,unique = true,nullable = false)
+    @Column(length = 9, unique = true, nullable = false)
     private String ssnNumber;
 
     @Column(unique = true, length = 50)
@@ -66,14 +67,16 @@ public class Voter extends TimeStamp {
 
     private String signature;
 
+
     @ManyToOne
     @JoinColumn(name = "voter_status_id")
     private VoterStatus voterStatus;
 
     @PrePersist
-    public void createVoterID(){
-        if(this.voterId==null){
+    public void createVoterID() {
+        if (this.voterId == null) {
             this.voterId = VoterIdGenerator.getNextId();
         }
     }
+
 }
