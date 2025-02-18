@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addCandidate, fetchCandidateBySSN, fetchCandidates } from './candidateAPI';
+import { addCandidate, fetchCandidateBySSN, fetchCandidates, fetchCandidateUpdateDetails, updateCandidateById } from './candidateAPI';
 import { CandidateState } from './types';
 
   const initialState: CandidateState = {
@@ -118,9 +118,33 @@ const candidateSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchCandidateUpdateDetails.fulfilled, (state, action) => {
+        state.allCandidates = action.payload; // Store candidate data in candidateData
+      })
+      .addCase(fetchCandidateUpdateDetails.rejected, (state, action) => {
+        state.error = action.payload as string; // Handle error
+      })
+
+      // Update candidate
+      .addCase(updateCandidateById.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+      })
+      .addCase(updateCandidateById.fulfilled, (state, action) => {
+        state.success = true;
+        state.allCandidates = state.allCandidates.map((candidate) =>
+          candidate.candidateId === action.payload.candidateId ? action.payload : candidate
+        );
+        state.loading = false;
+      })
+      .addCase(updateCandidateById.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload as string;
       });
-    },
-  });
+  },
+});
   
   export const { setSearchQuery, clearSearchQuery, setCandidateNotFound ,resetState} = candidateSlice.actions;
   export default candidateSlice.reducer;

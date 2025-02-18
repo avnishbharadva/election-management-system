@@ -44,12 +44,12 @@ export interface Address {
     maritialStatus: string;
     noOfChildren: number;
     spouseName: string;
-    partyId: number;
+    partyName: string;
     residentialAddress: Address;
     mailingAddress: Address;
     stateName: string;
     candidateEmail: string;
-    electionId: number;
+    electionName: string;
     bankDetails: BankDetails;
     candidateImage: string;
     candidateSignature: string;

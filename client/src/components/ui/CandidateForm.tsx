@@ -107,7 +107,7 @@ const CandidateForm: React.FC = () => {
       formData.append("candidateSignature", signatureFile);
     }
 
-    await dispatch(addCandidate(formData));
+    dispatch(addCandidate(formData));
     dispatch(fetchCandidates());
   };
   const dataURLtoFile = (dataURL: string, filename: string): File => {
