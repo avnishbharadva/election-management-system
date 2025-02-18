@@ -3,6 +3,7 @@ package com.ems.services.impls;
 import com.ems.dtos.*;
 import com.ems.entities.Address;
 import com.ems.entities.NameHistory;
+import com.ems.entities.Party;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.exceptions.DataNotFoundException;
@@ -15,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -34,8 +34,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+
+    private static final String DIRECTORY = "E:/bright_peers/projects/new/election-management-system/server/uploads";
+    private static final String PHOTO_DIR = DIRECTORY + "/photos";
+    private static final String SIGNATURE_DIR = DIRECTORY + "/signatures";
+
     private final VoterRepository voterRepo;
     private final GlobalMapper globalMapper;
     private final AddressRepository addressRepo;
@@ -57,24 +60,24 @@ public class VoterServiceImpl implements VoterService {
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
-        Files.createDirectories(Paths.get(uploadDir + "/photos"));
-        Files.createDirectories(Paths.get(uploadDir + "/signatures"));
+        Files.createDirectories(Paths.get(PHOTO_DIR));
+        Files.createDirectories(Paths.get(SIGNATURE_DIR));
 
         if (!image.isEmpty()) {
-            var imageFileName =  voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
-            var imagePath = Paths.get(uploadDir, "/photos").resolve(imageFileName);
+            var imageFileName = voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
+            var imagePath = Paths.get(DIRECTORY, "/photos").resolve(imageFileName);
             Files.write(imagePath, image.getBytes());
             voter.setImage(imageFileName);
         }
 
         if (!signature.isEmpty()) {
             var signatureFileName = voterRegisterDTO.getSsnNumber() + "_" + signature.getOriginalFilename();
-            var signaturePath = Paths.get(uploadDir, "/signatures").resolve(signatureFileName);
+            var signaturePath = Paths.get(DIRECTORY, "/signatures").resolve(signatureFileName);
             Files.write(signaturePath, signature.getBytes());
             voter.setSignature(signatureFileName);
         }
 
-        var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(()->new DataNotFoundException("Voter Status Not Found"));
+        var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(() -> new DataNotFoundException("Voter Status Not Found"));
         voter.setVoterStatus(voterStatus);
 
         var savedVoter = voterRepo.save(voter);
@@ -92,8 +95,7 @@ public class VoterServiceImpl implements VoterService {
     }
 
     @Override
-    public
-    Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
+    public Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
         VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber);
         log.info("searching started for criteria : {}", searchDTO);
         return voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)), query -> query.sortBy(getSort(sort)).page(PageRequest.of(page, size, getSort(sort)))).map(globalMapper::toVoterDTO);
@@ -123,14 +125,17 @@ public class VoterServiceImpl implements VoterService {
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
 
+        log.info("updatedVoter party : {},",updatedVoter.getParty().getPartyId());
+
         updateProfileImage(updatedVoter, profileImg);
         updateSignatureImage(updatedVoter, signImg);
 
-        if(voterDTO != null)
-        {
+        if (voterDTO != null) {
             if (voterDTO.getPartyId() != null) {
-                partyRepo.findById(voterDTO.getPartyId())
+                log.info("voterDto party : {}", voterDTO.getPartyId());
+                var party = partyRepo.findById(voterDTO.getPartyId())
                         .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + voterDTO.getPartyId()));
+                updatedVoter.setParty(party);
             }
 
             updateVoterStatus(updatedVoter, voterDTO);
@@ -138,7 +143,7 @@ public class VoterServiceImpl implements VoterService {
 
         voterRepo.save(updatedVoter);
 
-        if(voterDTO != null) {
+        if (voterDTO != null) {
             updateAddress(voterId, voterDTO.getResidentialAddress(), AddressType.RESIDENTIAL);
             updateAddress(voterId, voterDTO.getMailingAddress(), AddressType.MAILING);
         }
@@ -158,11 +163,10 @@ public class VoterServiceImpl implements VoterService {
     private void updateProfileImage(Voter updatedVoter, MultipartFile profileImg) throws IOException {
         if (profileImg == null || profileImg.isEmpty()) return;
 
-        String imageDir = uploadDir + "/photos";
-        deleteExistingFile(imageDir, updatedVoter.getImage());
+        deleteExistingFile(PHOTO_DIR, updatedVoter.getImage());
 
         String imgName = updatedVoter.getSsnNumber() + "_" + profileImg.getOriginalFilename();
-        Path imagePath = Paths.get(imageDir, imgName);
+        Path imagePath = Paths.get(PHOTO_DIR, imgName);
         Files.write(imagePath, profileImg.getBytes());
 
         updatedVoter.setImage(imgName);
@@ -171,11 +175,10 @@ public class VoterServiceImpl implements VoterService {
     private void updateSignatureImage(Voter updatedVoter, MultipartFile signImg) throws IOException {
         if (signImg == null || signImg.isEmpty()) return;
 
-        String signDir = uploadDir + "/signatures";
-        deleteExistingFile(signDir, updatedVoter.getSignature());
+        deleteExistingFile(SIGNATURE_DIR, updatedVoter.getSignature());
 
         String signName = updatedVoter.getSsnNumber() + "_" + signImg.getOriginalFilename();
-        Path signPath = Paths.get(signDir, signName);
+        Path signPath = Paths.get(SIGNATURE_DIR, signName);
         Files.write(signPath, signImg.getBytes());
 
         updatedVoter.setSignature(signName);

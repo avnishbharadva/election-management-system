@@ -43,6 +43,8 @@ public interface GlobalMapper {
     @Mapping(target = "addressId", ignore = true)
     @Mapping(target = "voter", ignore = true)
     Address toAddress(AddressDTO addressDTO);
+
+    @Mapping(source = "voter.voterId", target = "voterId")
     AddressDTO toAddressDTO(Address address);
 
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
