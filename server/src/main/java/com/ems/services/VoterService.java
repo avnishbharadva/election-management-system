@@ -17,7 +17,7 @@ public interface VoterService {
 
     Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort);
 
-    VoterDTO updateVoter(String voterId, VoterDTO voterDTO);
+    VoterDTO updateVoter(String voterId, VoterDTO voterDTO, MultipartFile profileImg, MultipartFile signImg) throws IOException;
 
     List<VoterStatusDTO> getAllStatus();
 }

@@ -45,4 +45,6 @@ public class VoterDTO {
     private String image;
 
     private String signature;
+
+    private Long statusId;
 }
