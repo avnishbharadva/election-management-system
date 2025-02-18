@@ -6,6 +6,7 @@ import com.ems.entities.NameHistory;
 import com.ems.entities.Party;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
+import com.ems.events.VoterUpdateEvent;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.mappers.GlobalMapper;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -44,8 +46,8 @@ public class VoterServiceImpl implements VoterService {
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
     private final NameHistoryRepository nameHistoryRepo;
-    private final AuditService auditService;
     private final VoterStatusRepository voterStatusRepo;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -122,6 +124,11 @@ public class VoterServiceImpl implements VoterService {
 
         var oldVoter = new Voter();
         BeanUtils.copyProperties(existingVoter, oldVoter);
+        var oldResidentialAddress = new Address();
+        BeanUtils.copyProperties(existingVoter.getAddress().getFirst(), oldResidentialAddress);
+        var oldMailingAddress = new Address();
+        BeanUtils.copyProperties(existingVoter.getAddress().stream().filter(address -> address.getAddressType().equals(AddressType.MAILING)).findFirst().orElseThrow(), oldMailingAddress);
+        var oldAddressList = List.of(oldResidentialAddress, oldMailingAddress);
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
 
@@ -147,6 +154,8 @@ public class VoterServiceImpl implements VoterService {
             updateAddress(voterId, voterDTO.getResidentialAddress(), AddressType.RESIDENTIAL);
             updateAddress(voterId, voterDTO.getMailingAddress(), AddressType.MAILING);
         }
+
+        eventPublisher.publishEvent(new VoterUpdateEvent(this, oldVoter, updatedVoter, oldAddressList, updatedVoter.getAddress()));
         return globalMapper.toVoterDTO(updatedVoter);
     }
 

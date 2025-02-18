@@ -14,11 +14,11 @@ import java.util.Map;
 @Document(collection = "system_audit")
 public class Audit {
 
-
     private String id;
 
     private String tableName;
     private Map<String, Object> metadata;
+    private Map<String, Object> oldFields;
     private Map<String, Object> changeFields;
 
     private String createdBy;
