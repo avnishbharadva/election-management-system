@@ -1,4 +1,7 @@
 import React, { useCallback, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   Button,
   Typography,
@@ -31,16 +34,18 @@ import {
 } from "../../store/feature/candidate/candidateAPI";
 import { Form } from "../../style/CommanStyle";
 import { IFormInput } from "../../store/feature/candidate/types";
+import { clearSearchQuery } from "../../store/feature/candidate/candidateSlice";
 
 interface CandidateFormProps {
   handleClose: () => void;
   selectedCandidate: any;
 }
 
-const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCandidate }) => {
+const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
-
+  
+  const searchQuery = useSelector((state: RootState) => state.candidate.searchQuery);
   const onDropProfile = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
@@ -63,46 +68,49 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
   } = useDropzone({ onDrop: onDropSignature });
 
   const dispatch = useDispatch();
-  const { loading, success, error } = useSelector((state) => state.candidate);
 
   const {
     register,
     handleSubmit,
     reset,
     control,
+    setValue,
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    if (!data.candidateSSN) {
-      data.candidateSSN = Math.floor(
-        100000000 + Math.random() * 900000000
-      ).toString(); // 9-digit random number
+  React.useEffect(() => {
+    if (searchQuery) {
+      setValue("candidateSSN", searchQuery); // Updates the react-hook-form field value
     }
+  }, [searchQuery, setValue]);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const formData = new FormData();
     formData.append(
       "candidate",
-      new Blob([JSON.stringify({
-        candidateName: data.candidateName,
-        residentialAddress: data.residentialAddress,
-        mailingAddress: data.mailingAddress,
-        bankDetails: data.bankDetails,
-        candidateSSN: data.candidateSSN,
-        dateOfBirth: data.dateOfBirth,
-        gender: data.gender,
-        maritialStatus: data.maritialStatus,
-        noOfChildren: data.noOfChildren,
-        spouseName: data.spouseName,
-        partyId: data.partyId,
-        stateName: data.stateName,
-        candidateEmail: data.candidateEmail,
-        electionId: data.electionId,
-      })],{type:"application/json"})
+      new Blob(
+        [
+          JSON.stringify({
+            candidateName: data.candidateName,
+            residentialAddress: data.residentialAddress,
+            mailingAddress: data.mailingAddress,
+            bankDetails: data.bankDetails,
+            candidateSSN: data.candidateSSN,
+            dateOfBirth: data.dateOfBirth,
+            gender: data.gender,
+            maritialStatus: data.maritialStatus,
+            noOfChildren: data.noOfChildren,
+            spouseName: data.spouseName,
+            partyId: data.partyId,
+            stateName: data.stateName,
+            candidateEmail: data.candidateEmail,
+            electionId: data.electionId,
+          }),
+        ],
+        { type: "application/json" }
+      )
     );
-    // formData.append("candidateImage", data.candidateImage);
-    // formData.append("candidateSignature", data.candidateSignature);
-
-    // Append the uploaded files
+  
     if (profilePic) {
       const profileFile = dataURLtoFile(profilePic, "profile.jpg");
       formData.append("candidateImage", profileFile);
@@ -111,10 +119,22 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
       const signatureFile = dataURLtoFile(signature, "signature.jpg");
       formData.append("candidateSignature", signatureFile);
     }
-
-    dispatch(addCandidate(formData));
-    dispatch(fetchCandidates());
+  
+    try {
+      await dispatch(addCandidate(formData));
+      reset();
+      clearSearch()
+      handleClose()
+      dispatch(fetchCandidates());
+      
+      toast.success("Candidate added successfully!"); 
+    } catch (error) {
+      toast.error("Failed to add candidate."); 
+    }
   };
+  const clearSearch = () => {
+      dispatch(clearSearchQuery());
+    };
   const dataURLtoFile = (dataURL: string, filename: string): File => {
     const [mimePart, base64Data] = dataURL.split(",");
     const mime = mimePart.match(/:(.*?);/)![1];
@@ -127,10 +147,9 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
   };
   return (
     <>
+     
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <CloseIcon />
-        </Box>
+        
         <Title variant="h5" align="center" gutterBottom>
           CANDIDATE REGISTRATION
         </Title>
@@ -198,46 +217,68 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
               error={!!errors.candidateEmail}
               helperText={errors.candidateEmail?.message}
             />
+             <TextField
+        fullWidth
+        label="SSN"
+        value={searchQuery || ''}
+        // type="text"
+        // defaultValue={searchQuery} // Pre-fills the SSN with the searched number
+        {...register("candidateSSN")}
+        error={!!errors.candidateSSN}
+        helperText={errors.candidateSSN?.message}
+        InputProps={{
+          readOnly: true, // Make it read-only as it should not be editable
+        }}
+      />
           </Row>
           <Row>
-          <FormControl component="fieldset" error={!!errors.gender}>
-        <FormLabel component="legend">Gender</FormLabel>
-        <Controller
-          name="gender"
-          control={control}
-          rules={{ required: "Please select a gender." }}
-          render={({ field }) => (
-            <RadioGroup {...field} row>
-              <FormControlLabel value="MALE" control={<Radio />} label="Male" />
-              <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
-            </RadioGroup>
-          )}
-        />
-        {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
-      </FormControl>
+            <FormControl component="fieldset" error={!!errors.gender}>
+              <FormLabel component="legend">Gender</FormLabel>
+              <Controller
+                name="gender"
+                control={control}
+                rules={{ required: "Please select a gender." }}
+                render={({ field }) => (
+                  <RadioGroup {...field} row>
+                    <FormControlLabel
+                      value="MALE"
+                      control={<Radio />}
+                      label="Male"
+                    />
+                    <FormControlLabel
+                      value="FEMALE"
+                      control={<Radio />}
+                      label="Female"
+                    />
+                  </RadioGroup>
+                )}
+              />
+              {errors.gender && (
+                <FormHelperText>{errors.gender.message}</FormHelperText>
+              )}
+            </FormControl>
           </Row>
           <Row>
-          <FormControl fullWidth error={!!errors.maritialStatus} >
-        <InputLabel id="marital-status-label">Marital Status</InputLabel>
-        <Controller
-          name="maritialStatus"
-          control={control}
-          rules={{ required: "Marital status is required" }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              labelId="marital-status-label"
-              label="Marital Status"
-            >
-              <MenuItem value="SINGLE">Single</MenuItem>
-              <MenuItem value="MARRIED">Married</MenuItem>
-              <MenuItem value="DIVORCED">Divorced</MenuItem>
-              <MenuItem value="WIDOWED">Widowed</MenuItem>
-            </Select>
-          )}
-        />
-        
-      </FormControl>
+            <FormControl fullWidth error={!!errors.maritialStatus}>
+              <InputLabel id="marital-status-label">Marital Status</InputLabel>
+              <Controller
+                name="maritialStatus"
+                control={control}
+                rules={{ required: "Marital status is required" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="marital-status-label"
+                    label="Marital Status"
+                  >
+                    <MenuItem value="SINGLE">Single</MenuItem>
+                    <MenuItem value="MARRIED">Married</MenuItem>
+                    <MenuItem value="DIVORCED">Divorced</MenuItem>
+                    <MenuItem value="WIDOWED">Widowed</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
 
             <TextField
               fullWidth
@@ -255,62 +296,57 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
             />
           </Row>
           {errors.maritialStatus && (
-          <FormHelperText>{errors.maritialStatus.message}</FormHelperText>
-        )}
+            <FormHelperText>{errors.maritialStatus.message}</FormHelperText>
+          )}
         </Section>
 
         <Section>
           <Title variant="h6">Election Details</Title>
           <DividerStyle />
           <Row>
-          <FormControl fullWidth error={!!errors.electionId} >
-        <InputLabel id="election-type-label">Election Type</InputLabel>
-        <Controller
-          name="electionId"
-          control={control}
-          rules={{ required: "Election type is required" }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              labelId="election-type-label"
-              label="Election Type"
-            >
-              <MenuItem value="1">General</MenuItem>
-              <MenuItem value="2">Primary</MenuItem>
-              <MenuItem value="3">Runoff</MenuItem>
-              <MenuItem value="4">Special</MenuItem>
-            </Select>
-          )}
-        />
-        {errors.electionId && (
-          <FormHelperText>{errors.electionId.message}</FormHelperText>
-        )}
-      </FormControl>
+            <FormControl fullWidth error={!!errors.electionId}>
+              <InputLabel id="election-type-label">Election Type</InputLabel>
+              <Controller
+                name="electionId"
+                control={control}
+                rules={{ required: "Election type is required" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="election-type-label"
+                    label="Election Type"
+                  >
+                    <MenuItem value="1">General</MenuItem>
+                    <MenuItem value="2">Primary</MenuItem>
+                    <MenuItem value="3">Runoff</MenuItem>
+                    <MenuItem value="4">Special</MenuItem>
+                  </Select>
+                )}
+              />
+              {errors.electionId && (
+                <FormHelperText>{errors.electionId.message}</FormHelperText>
+              )}
+            </FormControl>
 
-
-      <FormControl fullWidth error={!!errors.partyId} >
-        <InputLabel id="party-label">Party</InputLabel>
-        <Controller
-          name="partyId"
-          control={control}
-          rules={{ required: "Party selection is required" }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              labelId="party-label"
-              label="Party"
-            >
-              <MenuItem value="1">Democratic</MenuItem>
-              <MenuItem value="2">Republican</MenuItem>
-              <MenuItem value="3">Independent</MenuItem>
-              <MenuItem value="4">Green</MenuItem>
-            </Select>
-          )}
-        />
-        {errors.partyId && (
-          <FormHelperText>{errors.partyId.message}</FormHelperText>
-        )}
-      </FormControl>
+            <FormControl fullWidth error={!!errors.partyId}>
+              <InputLabel id="party-label">Party</InputLabel>
+              <Controller
+                name="partyId"
+                control={control}
+                rules={{ required: "Party selection is required" }}
+                render={({ field }) => (
+                  <Select {...field} labelId="party-label" label="Party">
+                    <MenuItem value="1">Democratic</MenuItem>
+                    <MenuItem value="2">Republican</MenuItem>
+                    <MenuItem value="3">Independent</MenuItem>
+                    <MenuItem value="4">Green</MenuItem>
+                  </Select>
+                )}
+              />
+              {errors.partyId && (
+                <FormHelperText>{errors.partyId.message}</FormHelperText>
+              )}
+            </FormControl>
             <TextField
               fullWidth
               label="State"
@@ -371,7 +407,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
               error={!!errors.mailingAddress?.street}
               helperText={errors.mailingAddress?.street?.message}
             />
-           
+
             <TextField
               fullWidth
               label="City"
@@ -381,7 +417,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
               error={!!errors.mailingAddress?.city}
               helperText={errors.mailingAddress?.city?.message}
             />
-           
+
             <TextField
               fullWidth
               label="Zipcode"
@@ -395,7 +431,6 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
               error={!!errors.mailingAddress?.city}
               helperText={errors.mailingAddress?.city?.message}
             />
-          
           </Row>
         </Section>
 
@@ -412,17 +447,16 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
               error={!!errors.bankDetails?.bankName}
               helperText={errors.bankDetails?.bankName?.message}
             />
-           
+
             <TextField
               fullWidth
               label="Bank Address"
               {...register("bankDetails.bankAddress", {
                 required: "Bank address is required",
               })}
-               error={!!errors.bankDetails?.bankAddress}
+              error={!!errors.bankDetails?.bankAddress}
               helperText={errors.bankDetails?.bankAddress?.message}
             />
-           
           </Row>
         </Section>
 
@@ -470,7 +504,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCand
           <Button variant="contained" type="submit">
             Submit
           </Button>
-          <Button variant="contained">Cancel</Button>
+          <Button variant="contained" onClick={handleClose}>Cancel</Button>
         </FlexCenter>
       </Form>
     </>

@@ -70,5 +70,6 @@ export interface Address {
     loading: boolean;
     error: string | null;
     success: boolean;
+    searchedSSN: string,
   }
   
