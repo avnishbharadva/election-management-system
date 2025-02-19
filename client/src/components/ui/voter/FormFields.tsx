@@ -1,8 +1,12 @@
 
 import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel } from '@mui/material';
-import { Controller, FieldValues } from 'react-hook-form';
+import { useCallback, useEffect } from 'react';
+import { Controller } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { patythunk } from '../../../store/feature/formFields/partyslice';
 
-// Type for the props of each form field component
+
+
 type FieldProps = {
     control: any;
     name: string;
@@ -12,17 +16,17 @@ type FieldProps = {
     maxLength?: number;
     isRequired?: boolean;
     rules?: any;
-};
+}
 
 export const NumberField = ({
     control,
     name,
     label,
-    minLength=5 ,
-    maxLength =11,
+    minLength = 5,
+    maxLength = 11,
     fixedLength,
 }: FieldProps) => {
-    
+
     const validationRules: any = {
         required: `${label} is required`,
         minLength: {
@@ -34,7 +38,7 @@ export const NumberField = ({
             message: `Maximum length is ${maxLength} digits`
         },
         pattern: {
-            value: /^[0-9]+$/, // Allow only digits
+            value: /^[0-9]+$/,
             message: "Only digits are allowed"
         }
     };
@@ -44,11 +48,11 @@ export const NumberField = ({
         validationRules.minLength = {
             value: fixedLength,
             message: `Must be exactly ${fixedLength} digits`
-        };
+        }
         validationRules.maxLength = {
             value: fixedLength,
             message: `Must be exactly ${fixedLength} digits`
-        };
+        }
     }
 
     return (
@@ -64,15 +68,16 @@ export const NumberField = ({
                     fullWidth
                     error={!!fieldState?.error}
                     helperText={fieldState?.error?.message}
+                    
                     inputProps={{
                         maxLength: fixedLength || maxLength, // Limit the number of characters based on fixedLength or maxLength
                     }}
-                    onInput={(e:any) => {
+                    onInput={(e: any) => {
                         let value = e.target.value;
-                        
+
                         // Enforce only digits
                         e.target.value = value.replace(/[^0-9]/g, '');
-                        
+
                         // If fixedLength is set, slice the input to that length
                         if (fixedLength && value.length > fixedLength) {
                             e.target.value = value.slice(0, fixedLength);
@@ -86,13 +91,13 @@ export const NumberField = ({
             )}
         />
     );
-};
+}
 // Name Field
 export const NameField = ({
     control,
     name,
     label,
-    isRequired = true ,
+    isRequired = true,
     minLength = 0,
     maxLength = 1000
 }: FieldProps) => {
@@ -123,7 +128,7 @@ export const NameField = ({
             )}
         />
     );
-};
+}
 
 // Email Field
 export const EmailField = ({ control, name, label }: FieldProps) => {
@@ -150,7 +155,7 @@ export const EmailField = ({ control, name, label }: FieldProps) => {
             )}
         />
     );
-};
+}
 
 // Gender Field (Radio Buttons)
 export const GenderField = ({ control, name }: FieldProps) => {
@@ -174,73 +179,89 @@ export const GenderField = ({ control, name }: FieldProps) => {
             )}
         />
     );
-};
+}
 
 // Party Selector Field
-export const PartyField = ({ control, name , label}: FieldProps) => {
+export const PartyField = ({ control, name, label }: FieldProps) => {
+
+    const dispatch = useDispatch();
+
+    const fetchParties = useCallback(() => {
+        dispatch(patythunk());
+    }, [dispatch])
+
+
+    useEffect(() => {
+        fetchParties()
+    }, [fetchParties])
+
+    const parties = useSelector((state: any) => state.party.parties)
+    console.log(parties)
     return (
         <Controller
             name={name}
             control={control}
             rules={{
-                
                 required: "Party selection is required"
             }}
+            defaultValue={parties.length > 0 ? parties[0].partyId : ''}
             render={({ field, fieldState }) => (
                 <FormControl fullWidth>
                     <InputLabel>Select Party</InputLabel>
-                    <Select 
-                    label = { label }
+                    <Select
+                        label={label}
 
-                    {...field}>
-                        <MenuItem value={1}>Democratic Party</MenuItem>
-                        <MenuItem value={2}>Republican Party</MenuItem>
-                        <MenuItem value={3}>Independent</MenuItem>
+                        {...field}>
+                        {parties.map((party: any) => (
+                            <MenuItem key={party.partyId} value={party.partyId}>
+                                {party.partyName}
+                            </MenuItem>
+                        ))}
                     </Select>
                     {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
                 </FormControl>
             )}
         />
     );
-};
+}
 
 
- export const DateOfBirthField = ({ control, name, label, rules }:FieldProps) => {
+export const DateOfBirthField = ({ control, name, label, rules }: FieldProps) => {
     // Custom validation for date of birth: ensure it is not in the future
     const validateDateOfBirth = (value: string) => {
-      const today = new Date();
-      const birthDate = new Date(value);
-      if (birthDate >= today) {
-        return 'Date of birth cannot be in the future.';
-      }
-      return true;
+        const today = new Date();
+        const birthDate = new Date(value);
+        if (birthDate >= today) {
+            return 'Date of birth cannot be in the future.';
+        }
+        return true;
     };
-  
-    return (
-      <Controller
-        name={name}
-        control={control}
-        rules={{
-          required: `${label} is required`,
-          validate: validateDateOfBirth,
-          ...rules, // Optionally pass additional validation rules
-        }}
-        render={({ field, fieldState }) => (
-          <TextField
-            {...field}
-            label={label}
-            type="date"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            error={!!fieldState?.error}
-            helperText={fieldState?.error?.message}
-          />
-        )}
-      />
-    );
-  };
 
-  export const FirstVoterYear = ({ control, name }: FieldProps) => {
+    return (
+        <Controller
+            name={name}
+            control={control}
+            rules={{
+                required: `${label} is required`,
+                validate: validateDateOfBirth,
+                ...rules, // Optionally pass additional validation rules
+            }}
+            render={({ field, fieldState }) => (
+                <TextField
+                    {...field}
+                    label={label}
+                    type="date"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    error={!!fieldState?.error}
+                    helperText={fieldState?.error?.message}
+                />
+            )}
+        />
+    );
+}
+
+export const FirstVoterYear = ({ control, name }: FieldProps) => {
     return (
         <Controller
             name={name}
@@ -263,15 +284,15 @@ export const PartyField = ({ control, name , label}: FieldProps) => {
                         InputLabelProps={{ shrink: true }}
                         error={!!fieldState?.error}
                         helperText={fieldState?.error?.message}
-                       
+
                     />
                 </>
             )}
         />
     );
-};
+}
 
-export const HasVotedBefore = ({ control, name , label}: FieldProps) => {
+export const HasVotedBefore = ({ control, name, label }: FieldProps) => {
     return (
         <Controller
             name={name}
@@ -282,25 +303,20 @@ export const HasVotedBefore = ({ control, name , label}: FieldProps) => {
             render={({ field, fieldState }) => (
                 <>
                     <FormControl fullWidth>
-                    <InputLabel>Has Voter Before</InputLabel>
-                    <Select 
-                    {...field} 
-                    label = { label }
-                    
-                    >
-                        <MenuItem value= 'false'>No</MenuItem>
-                        <MenuItem value='true'>Yes</MenuItem>
-                        
-                    </Select>
+                        <InputLabel>Has Voter Before</InputLabel>
+                        <Select
+                            {...field}
+                            label={label}
+
+                        >
+                            <MenuItem value='false'>No</MenuItem>
+                            <MenuItem value='true'>Yes</MenuItem>
+
+                        </Select>
                     </FormControl>
                     {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
                 </>
             )}
         />
     );
-};
-
-
-
-
-
+}

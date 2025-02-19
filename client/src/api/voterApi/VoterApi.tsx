@@ -5,28 +5,38 @@ const api = axios.create({
     baseURL: "http://172.16.16.67:8081"
 })
 
+type searchvoterProps = {
+
+    page:number,
+    size:number
+    firstName?:string,
+    lastName?:string,
+    dateOfBirth?:string,
+    dmvNumber?:string,
+    ssnNumber?:string
+}
+
 ///for search voter
-function searchVoters({ page = 1, size = 10, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber }) {
-    // Create an object with the filters to pass in the query
+export const searchVoters=async({ page = 0, size = 10, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber }:searchvoterProps) =>{
+   
     const filters = { page, size, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber };
 
-    // Remove any filters with undefined or null values
+
     const queryParams = Object.entries(filters)
         .filter(([key, value]) => value != null && value !== '')  // Exclude empty or null values
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)  // Format key=value
         .join('&');  // Join all key=value pairs with "&"
 
-    // Construct the API URL with the dynamically generated query string
+  
     const apiUrl = `/api/voters/search?${queryParams}`;
 
-    // Make the API request
-    api.get(apiUrl)
-        .then(response => {
-            console.log(response.data); // Handle the response here
-        })
-        .catch(error => {
-            console.error('Error fetching voter data:', error);
-        });
+    try {
+        const response = await api.get(apiUrl);  
+        return response.data.content;  
+      } catch (error) {
+        console.error('Error fetching voter data:', error);
+        throw error; 
+      }
 }
 
 
@@ -44,7 +54,9 @@ const dataURLtoFile = (dataURL: string, filename: string): File => {
 };
 
 
-export const voterPost = async ({ post, img, sign }) => {
+
+
+export const voterPost = async ({ post, img, sign }:any) => {
     const formData = new FormData();
 
 

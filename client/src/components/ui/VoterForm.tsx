@@ -5,7 +5,7 @@ import { Box, Button, Checkbox, FormControlLabel } from '@mui/material'
 import { voterPost } from '../../api/voterApi/VoterApi'
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore } from './voter/VoterDetails';
+import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore } from './voter/FormFields';
 
 
 type Address={
@@ -14,10 +14,12 @@ type Address={
   city: string;
   county: string;
   zipCode: number | String
+  adressType:string
 
 }
 
 type FormData = {
+  statusId:number
   firstName: string
   middleName: string
   lastName: string
@@ -56,16 +58,18 @@ const VoterForm = () => {
     dmvNumber:0,
     gender: "",
     suffixName:"",
-    partyId: 1,
+    partyId: 0,
     dateOfBirth: "",
     firstVoterYear: 0,
     hasVotedBefore: false,
+    statusId:1,
     residentialAddress: {
       addressLine: "",
       aptNumber: "",
       city: "",
       county: "",
-      zipCode: " "
+      zipCode: " ",
+      adressType:"RESIDENTIAL"
     },
     mailingAddress: {
       addressLine: "",
@@ -73,6 +77,7 @@ const VoterForm = () => {
       city: "",
       county: "",
       zipCode:"" ,
+      adressType:"MAILING"
     }
   }
 
