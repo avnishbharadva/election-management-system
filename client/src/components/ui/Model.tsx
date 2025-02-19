@@ -20,42 +20,34 @@ const style = {
 };
 
 interface ModelProps {
-  children: React.ReactNode;
   open: boolean;
   handleClose: () => void;
-  handleOpen: () => void;
   actionType: "add" | "edit";
   selectedCandidate?: any;
+  children: React.ReactNode;
 }
 
-const Model: React.FC<ModelProps> = ({ children, open, handleClose, handleOpen, actionType }) => {
+const Model: React.FC<ModelProps> = ({ open, handleClose, actionType, selectedCandidate, children }) => {
   const getButtonProps = () => {
     switch (actionType) {
       case "add":
-        return { label: "Add", icon: <PersonAddIcon /> };
+        return { label: "Add New Candidate", icon: <PersonAddIcon /> };
       case "edit":
-        return { label: "Edit", icon: <EditIcon /> };
+        return { label: "Edit Candidate", icon: <EditIcon /> };
       default:
-        return { label: "Add", icon: <PersonAddIcon /> };
+        return { label: "Add New Candidate", icon: <PersonAddIcon /> };
     }
   };
 
   const { label, icon } = getButtonProps();
 
   return (
-    <>
-      {/* Dynamic Action Button */}
-      <StyledButton variant="contained" startIcon={icon} onClick={handleOpen}>
-        {label}
-      </StyledButton>
-
-      {/* Modal */}
-      <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title">
-        <Box sx={style}>
-          <Box sx={{ mt: 2 }}>{children}</Box>
-        </Box>
-      </Modal>
-    </>
+    <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title">
+      <Box sx={style}>
+        <h2>{icon} {label}</h2>
+        {React.isValidElement(children) && React.cloneElement(children, { handleClose, selectedCandidate } as any)}
+      </Box>
+    </Modal>
   );
 };
 

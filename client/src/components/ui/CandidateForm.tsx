@@ -32,7 +32,12 @@ import {
 import { Form } from "../../style/CommanStyle";
 import { IFormInput } from "../../store/feature/candidate/types";
 
-const CandidateForm: React.FC = () => {
+interface CandidateFormProps {
+  handleClose: () => void;
+  selectedCandidate: any;
+}
+
+const CandidateForm: React.FC<CandidateFormProps> = ({ handleClose, selectedCandidate }) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
 
