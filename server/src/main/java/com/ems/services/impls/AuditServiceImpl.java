@@ -82,13 +82,13 @@ public class AuditServiceImpl implements AuditService {
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
                 if(i==0){
-                    oldField.put("residentialAddress", addressFields.getFirst());
-                    updateField.put("residentialAddress", addressFields.getLast());
+                    oldField.put("residentialAddress", addressFields.get(0));
+                    updateField.put("residentialAddress", addressFields.get(addressFields.size()-1));
                     log.info("residential address change : {}", addressFields);
                 }
                 if(i==1){
-                    oldField.put("mailingAddress", addressFields.getFirst());
-                    updateField.put("mailingAddress", addressFields.getLast());
+                    oldField.put("mailingAddress", addressFields.get(0));
+                    updateField.put("mailingAddress", addressFields.get(addressFields.size()-1));
                     log.info("mailing address change : {}",addressFields);
                 }
             }
