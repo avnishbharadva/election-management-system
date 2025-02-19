@@ -121,13 +121,13 @@ import { IFormInput } from "../../store/feature/candidate/types";
 
 const CandidateData = () => {
   const [open, setOpen] = useState(false);
-  const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);  // Track selected candidate
-  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { allCandidates, filteredCandidate, loading, error, notFound } = useSelector(
     (state: RootState) => state.candidate
   );
 
+  const ITEM_HEIGHT = 48;
   const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
     open: false,
     actionType: "add",
@@ -142,51 +142,54 @@ const CandidateData = () => {
     setModalData({ open: false, actionType: "add", selectedCandidate: null });
   };
 
-  const handleClose = () => setOpen(false);
-
   const handleOpenDialog = (candidate: any) => {
-    setSelectedCandidate(candidate);  // Set the selected candidate here
-    setOpen(true);  // Open the dialog
+    setSelectedCandidate(candidate);
+    setOpen(true);
   };
 
   const handleCloseDialog = () => {
-    setOpen(false);  // Close the dialog
-    setSelectedCandidate(null);  // Reset the selected candidate when dialog is closed
+    setOpen(false);
+    setSelectedCandidate(null);
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<number | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>, candidateId: number) => {
     setAnchorEl(event.currentTarget);
+    setSelectedCandidateId(candidateId);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
+    setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
     try {
+      console.log("Viewing candidate:", candidateId);
       const data = await dispatch(fetchCandidateUpdateDetails(candidateId)).unwrap();
-      handleOpenDialog(data);  // Pass the fetched candidate data directly to the dialog
+      handleOpenDialog(data);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
     }
+    handleClose();
   };
 
   const handleEditCandidate = async (candidateId: number) => {
     try {
+      console.log("Editing candidate:", candidateId);
       const data = await dispatch(fetchCandidateUpdateDetails(candidateId)).unwrap();
       handleOpenModal("edit", data);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
     }
+    handleClose();
   };
 
   useEffect(() => {
     dispatch(fetchCandidates());
   }, [dispatch]);
-
-  function handleOpen(): void {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <TableContainer component={Paper} sx={{ marginTop: 2, width: "90%", boxShadow: '0px 4px 10px rgba(128, 128, 128, 0.5)' }}>
@@ -217,11 +220,9 @@ const CandidateData = () => {
             <TableRow>
               <TableCell colSpan={9} align="center">
                 No Candidate Found!
-                {notFound && (
-                  <Button variant="contained" onClick={() => handleOpenModal("add")}>
+                <Button variant="contained" onClick={() => handleOpenModal("add")}>
                   Add Candidate
                 </Button>
-                )}
               </TableCell>
             </TableRow>
           ) : (
@@ -236,18 +237,51 @@ const CandidateData = () => {
                 <TableCell>{candidate?.electionName}</TableCell>
                 <TableCell>{candidate?.partyName}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleView(candidate?.candidateId)}>
+                  <IconButton
+                    aria-label="more"
+                    onClick={(event) => handleClick(event, candidate.candidateId)}
+                  >
                     <MoreHorizIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleEditCandidate(candidate?.candidateId)} color="primary">
-                    <EditIcon />
-                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl) && selectedCandidateId === candidate.candidateId}
+                    onClose={handleClose}
+                    slotProps={{
+                      paper: {
+                        style: {
+                          maxHeight: ITEM_HEIGHT * 4.5,
+                          width: "20ch",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={() => handleView(candidate.candidateId)}>
+                      <ListItemIcon>
+                        <VisibilityIcon />
+                      </ListItemIcon>
+                      View
+                    </MenuItem>
+                    <MenuItem onClick={() => handleEditCandidate(candidate.candidateId)}>
+                      <ListItemIcon>
+                        <EditIcon />
+                      </ListItemIcon>
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => console.log("Delete clicked")}>
+                      <ListItemIcon>
+                        <DeleteIcon />
+                      </ListItemIcon>
+                      Delete
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))
           )}
         </TableBody>
       </Table>
+
       <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
         <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
       </Model>
