@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -22,8 +23,7 @@ public class PartyDTO {
     @Size(max = 10, message = "Party Abbreviation must not exceed 10 characters")
     private String partyAbbreviation;
 
-    @NotBlank(message = "Party Symbol can not be blank")
-    private String partySymbol;
+    private MultipartFile partySymbol;
 
     @NotNull(message = "Foundation year can not be null")
     private Integer partyFoundationYear;

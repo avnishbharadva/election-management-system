@@ -2,14 +2,17 @@ package com.ems.mappers;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Candidate;
+import com.ems.entities.CandidateName;
+import com.ems.entities.Election;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-19T11:46:53+0530",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
+    date = "2025-02-14T13:31:07+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
 public class CandidateMapperImpl implements CandidateMapper {
@@ -37,6 +40,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidateDTO.setMailingAddress( candidate.getMailingAddress() );
         candidateDTO.setStateName( candidate.getStateName() );
         candidateDTO.setCandidateEmail( candidate.getCandidateEmail() );
+        candidateDTO.setCandidateSignature( candidate.getCandidateSignature() );
+        candidateDTO.setCandidateImage( candidate.getCandidateImage() );
 
         return candidateDTO;
     }
@@ -54,6 +59,7 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidate.setCandidateSSN( candidateDTO.getCandidateSSN() );
         candidate.setDateOfBirth( candidateDTO.getDateOfBirth() );
         candidate.setGender( candidateDTO.getGender() );
+        candidate.setCandidateImage( candidateDTO.getCandidateImage() );
         candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
         candidate.setNoOfChildren( candidateDTO.getNoOfChildren() );
         candidate.setSpouseName( candidateDTO.getSpouseName() );
@@ -62,8 +68,114 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidate.setResidentialAddress( candidateDTO.getResidentialAddress() );
         candidate.setMailingAddress( candidateDTO.getMailingAddress() );
         candidate.setBankDetails( candidateDTO.getBankDetails() );
+        candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
 
         return candidate;
+    }
+
+    @Override
+    public void updateCandidateFromDTO(CandidateDTO candidateDTO, Candidate candidate) {
+        if ( candidateDTO == null ) {
+            return;
+        }
+
+        if ( candidateDTO.getCandidateId() != null ) {
+            candidate.setCandidateId( candidateDTO.getCandidateId() );
+        }
+        if ( candidateDTO.getCandidateName() != null ) {
+            if ( candidate.getCandidateName() == null ) {
+                candidate.setCandidateName( new CandidateName() );
+            }
+            updateCandidateNameFromDTO( candidateDTO.getCandidateName(), candidate.getCandidateName() );
+        }
+        if ( candidateDTO.getCandidateSSN() != null ) {
+            candidate.setCandidateSSN( candidateDTO.getCandidateSSN() );
+        }
+        if ( candidateDTO.getDateOfBirth() != null ) {
+            candidate.setDateOfBirth( candidateDTO.getDateOfBirth() );
+        }
+        if ( candidateDTO.getGender() != null ) {
+            candidate.setGender( candidateDTO.getGender() );
+        }
+        if ( candidateDTO.getCandidateImage() != null ) {
+            candidate.setCandidateImage( candidateDTO.getCandidateImage() );
+        }
+        if ( candidateDTO.getMaritialStatus() != null ) {
+            candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
+        }
+        candidate.setNoOfChildren( candidateDTO.getNoOfChildren() );
+        if ( candidateDTO.getSpouseName() != null ) {
+            candidate.setSpouseName( candidateDTO.getSpouseName() );
+        }
+        if ( candidateDTO.getStateName() != null ) {
+            candidate.setStateName( candidateDTO.getStateName() );
+        }
+        if ( candidateDTO.getCandidateEmail() != null ) {
+            candidate.setCandidateEmail( candidateDTO.getCandidateEmail() );
+        }
+        if ( candidateDTO.getResidentialAddress() != null ) {
+            candidate.setResidentialAddress( candidateDTO.getResidentialAddress() );
+        }
+        if ( candidateDTO.getMailingAddress() != null ) {
+            candidate.setMailingAddress( candidateDTO.getMailingAddress() );
+        }
+        if ( candidateDTO.getBankDetails() != null ) {
+            candidate.setBankDetails( candidateDTO.getBankDetails() );
+        }
+        if ( candidateDTO.getCandidateSignature() != null ) {
+            candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
+        }
+    }
+
+    @Override
+    public void updateCandidateNameFromDTO(CandidateName newName, CandidateName existingName) {
+        if ( newName == null ) {
+            return;
+        }
+
+        if ( newName.getFirstName() != null ) {
+            existingName.setFirstName( newName.getFirstName() );
+        }
+        if ( newName.getMiddleName() != null ) {
+            existingName.setMiddleName( newName.getMiddleName() );
+        }
+        if ( newName.getLastName() != null ) {
+            existingName.setLastName( newName.getLastName() );
+        }
+    }
+
+    @Override
+    public Election toElection(ElectionSortDTO electionSortDTO) {
+        if ( electionSortDTO == null ) {
+            return null;
+        }
+
+        Election election = new Election();
+
+        election.setElectionName( electionSortDTO.getElectionName() );
+        election.setElectionType( electionSortDTO.getElectionType() );
+        election.setElectionDate( electionSortDTO.getElectionDate() );
+        election.setElectionState( electionSortDTO.getElectionState() );
+        election.setTotalSeats( electionSortDTO.getTotalSeats() );
+
+        return election;
+    }
+
+    @Override
+    public ElectionSortDTO toElectionSortDTO(Election election) {
+        if ( election == null ) {
+            return null;
+        }
+
+        ElectionSortDTO electionSortDTO = new ElectionSortDTO();
+
+        electionSortDTO.setElectionName( election.getElectionName() );
+        electionSortDTO.setElectionType( election.getElectionType() );
+        electionSortDTO.setElectionDate( election.getElectionDate() );
+        electionSortDTO.setElectionState( election.getElectionState() );
+        electionSortDTO.setTotalSeats( election.getTotalSeats() );
+
+        return electionSortDTO;
     }
 
     @Override

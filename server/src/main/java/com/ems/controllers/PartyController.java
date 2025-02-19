@@ -3,11 +3,12 @@ package com.ems.controllers;
 import com.ems.dtos.PartyDTO;
 import com.ems.services.PartyService;
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,9 +18,10 @@ public class PartyController {
     private final PartyService partyService;
 
     @PostMapping
-    public ResponseEntity<PartyDTO> createParty(@Valid @RequestBody PartyDTO partyDTO)
+    public ResponseEntity<PartyDTO> createParty(@Valid @RequestPart(value = "party") PartyDTO partyDTO,
+                                                @RequestPart(value = "image", required = false)MultipartFile image) throws IOException
     {
-        return ResponseEntity.ok(partyService.saveParty(partyDTO));
+        return ResponseEntity.ok(partyService.saveParty(partyDTO, image));
     }
 
     @GetMapping("/{partyId}")

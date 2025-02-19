@@ -1,5 +1,6 @@
 package com.ems.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Election {
 
     private String electionType;
 
+    @Temporal(TemporalType.DATE)
     private Date electionDate;
 
     private String electionState;
