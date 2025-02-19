@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface CandidateService {
-    CandidateDTO findByCandidateSSN(String candidateSSN);
+    CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
     Candidate saveCandidate(CandidateDTO candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     Map<String,Object> findById(Long id);
-    Candidate update(Long candidateId,CandidateDTO candidateDTO);
+    Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
     void deleteCandidateByCandidateId(Long candidateId);
     Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort);

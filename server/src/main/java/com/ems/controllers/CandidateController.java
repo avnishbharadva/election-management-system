@@ -1,9 +1,7 @@
 package com.ems.controllers;
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
+import com.ems.exceptions.CandidateAlreadyExistsException;
 import com.ems.exceptions.CandidateNotFoundException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
@@ -14,8 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -55,29 +53,43 @@ public class CandidateController {
         }
     }
 
-    @PostMapping(value = "/addCandidate",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Candidate> createCandidate(
+    @PostMapping(value = "/addCandidate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> createCandidate(
             @RequestPart("candidate") CandidateDTO candidateData,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
+
         try {
             Candidate savedCandidate = candidateService.saveCandidate(candidateData, candidateImage, candidateSignature);
-            return ResponseEntity.ok(savedCandidate);
 
+            ResponseDTO responseDTO = new ResponseDTO();
+            responseDTO.setMessage("Candidate added successfully");
+            responseDTO.setData(savedCandidate);
+            responseDTO.setTimeStamp(LocalDateTime.now());
+
+            return ResponseEntity.ok(responseDTO);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CandidateAlreadyExistsException("Unable to add new Data");
         }
     }
+
 
     @GetMapping("/candidateId/{candidateId}")
     ResponseEntity<Map<String,Object>> getCandidateById(@PathVariable Long candidateId){
         return ResponseEntity.ok().body( candidateService.findById(candidateId));
     }
 
-    @PutMapping("/updateCandidate/{candidateId}")
-    Candidate updateCandidate(@PathVariable Long candidateId,@Valid @RequestBody CandidateDTO candidateDTO){
-       return candidateService.update(candidateId,candidateDTO);
+    @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Candidate> updateCandidate(
+            @PathVariable Long candidateId,
+            @RequestPart("candidate") CandidateDTO candidateDTO,
+            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+
+        Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
+        return ResponseEntity.ok(updatedCandidate);
     }
+
 
     @GetMapping("/partyName/{candidatePartyName}")
     List<CandidateByPartyDTO> getCandidateByPartyName(@PathVariable String candidatePartyName)
@@ -137,8 +149,8 @@ public class CandidateController {
     @GetMapping("/search")
     public Page<CandidateDTO> searchCandidates(@RequestBody CandidateDTO searchCriteria,
                                                @RequestParam int page,
-                                               @RequestParam int perPage,
                                                @RequestParam(defaultValue = "candidateId") String sortBy,
+                                               @RequestParam int perPage,
                                                @RequestParam(defaultValue = "ASC") String sortOrder) {
         Sort sort = Sort.by(Sort.Order.by(sortBy).with(Sort.Direction.fromString(sortOrder)));
         return candidateService.searchCandidates(searchCriteria, page, perPage, sort);

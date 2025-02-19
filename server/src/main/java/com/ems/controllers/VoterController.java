@@ -20,7 +20,6 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api/voters")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class VoterController {
 
     private final VoterService voterService;
