@@ -3,13 +3,17 @@ package com.ems.mappers;
 import com.ems.dtos.AddressDTO;
 import com.ems.dtos.ElectionDTO;
 import com.ems.dtos.PartyDTO;
+import com.ems.dtos.RoleRegisterDTO;
+import com.ems.dtos.RoleResponseDTO;
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.dtos.VoterUpdateDTO;
 import com.ems.entities.Address;
 import com.ems.entities.Election;
 import com.ems.entities.Party;
+import com.ems.entities.Role;
 import com.ems.entities.Voter;
+import com.ems.entities.constants.RoleType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -17,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-11T12:43:30+0530",
+    date = "2025-02-19T11:46:54+0530",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -44,8 +48,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         voter.setHasVotedBefore( voterRegisterDTO.getHasVotedBefore() );
         voter.setFirstVotedYear( voterRegisterDTO.getFirstVotedYear() );
         voter.setAddress( toAddressList( voterRegisterDTO.getAddress() ) );
-        voter.setImage( voterRegisterDTO.getImage() );
-        voter.setSignature( voterRegisterDTO.getSignature() );
 
         return voter;
     }
@@ -113,8 +115,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         voterRegisterDTO.setHasVotedBefore( voter.getHasVotedBefore() );
         voterRegisterDTO.setFirstVotedYear( voter.getFirstVotedYear() );
         voterRegisterDTO.setAddress( toAddressDTOList( voter.getAddress() ) );
-        voterRegisterDTO.setImage( voter.getImage() );
-        voterRegisterDTO.setSignature( voter.getSignature() );
 
         return voterRegisterDTO;
     }
@@ -259,11 +259,150 @@ public class GlobalMapperImpl implements GlobalMapper {
         return electionDTO;
     }
 
+    @Override
+    public Role toRole(RoleRegisterDTO roleRegisterDTO) {
+        if ( roleRegisterDTO == null ) {
+            return null;
+        }
+
+        Role role = new Role();
+
+        role.setUsername( roleRegisterDTO.getUsername() );
+        role.setSsnNumber( roleRegisterDTO.getSsnNumber() );
+        if ( roleRegisterDTO.getRole() != null ) {
+            role.setRole( Enum.valueOf( RoleType.class, roleRegisterDTO.getRole() ) );
+        }
+        role.setPassword( roleRegisterDTO.getPassword() );
+        role.setEmail( roleRegisterDTO.getEmail() );
+
+        return role;
+    }
+
+    @Override
+    public RoleRegisterDTO toRoleRegisterDTO(Role role) {
+        if ( role == null ) {
+            return null;
+        }
+
+        RoleRegisterDTO roleRegisterDTO = new RoleRegisterDTO();
+
+        roleRegisterDTO.setUsername( role.getUsername() );
+        roleRegisterDTO.setSsnNumber( role.getSsnNumber() );
+        if ( role.getRole() != null ) {
+            roleRegisterDTO.setRole( role.getRole().name() );
+        }
+        roleRegisterDTO.setEmail( role.getEmail() );
+        roleRegisterDTO.setPassword( role.getPassword() );
+
+        return roleRegisterDTO;
+    }
+
+    @Override
+    public List<RoleResponseDTO> toRoleResponseDTO(List<Role> role) {
+        if ( role == null ) {
+            return null;
+        }
+
+        List<RoleResponseDTO> list = new ArrayList<RoleResponseDTO>( role.size() );
+        for ( Role role1 : role ) {
+            list.add( roleToRoleResponseDTO( role1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public VoterUpdateDTO toVoterUpdateDTO(Voter voter) {
+        if ( voter == null ) {
+            return null;
+        }
+
+        VoterUpdateDTO voterUpdateDTO = new VoterUpdateDTO();
+
+        voterUpdateDTO.setFirstName( voter.getFirstName() );
+        voterUpdateDTO.setMiddleName( voter.getMiddleName() );
+        voterUpdateDTO.setLastName( voter.getLastName() );
+        voterUpdateDTO.setSuffixName( voter.getSuffixName() );
+        voterUpdateDTO.setDateOfBirth( voter.getDateOfBirth() );
+        voterUpdateDTO.setGender( voter.getGender() );
+        voterUpdateDTO.setEmail( voter.getEmail() );
+        voterUpdateDTO.setPhoneNumber( voter.getPhoneNumber() );
+        voterUpdateDTO.setHasVotedBefore( voter.getHasVotedBefore() );
+        voterUpdateDTO.setFirstVotedYear( voter.getFirstVotedYear() );
+        voterUpdateDTO.setImage( voter.getImage() );
+        voterUpdateDTO.setSignature( voter.getSignature() );
+
+        return voterUpdateDTO;
+    }
+
+    @Override
+    public void updateVoterFromDto(VoterUpdateDTO voterUpdateDTO, Voter voter) {
+        if ( voterUpdateDTO == null ) {
+            return;
+        }
+
+        if ( voterUpdateDTO.getFirstName() != null ) {
+            voter.setFirstName( voterUpdateDTO.getFirstName() );
+        }
+        if ( voterUpdateDTO.getMiddleName() != null ) {
+            voter.setMiddleName( voterUpdateDTO.getMiddleName() );
+        }
+        if ( voterUpdateDTO.getLastName() != null ) {
+            voter.setLastName( voterUpdateDTO.getLastName() );
+        }
+        if ( voterUpdateDTO.getSuffixName() != null ) {
+            voter.setSuffixName( voterUpdateDTO.getSuffixName() );
+        }
+        if ( voterUpdateDTO.getDateOfBirth() != null ) {
+            voter.setDateOfBirth( voterUpdateDTO.getDateOfBirth() );
+        }
+        if ( voterUpdateDTO.getGender() != null ) {
+            voter.setGender( voterUpdateDTO.getGender() );
+        }
+        if ( voterUpdateDTO.getEmail() != null ) {
+            voter.setEmail( voterUpdateDTO.getEmail() );
+        }
+        if ( voterUpdateDTO.getPhoneNumber() != null ) {
+            voter.setPhoneNumber( voterUpdateDTO.getPhoneNumber() );
+        }
+        if ( voterUpdateDTO.getHasVotedBefore() != null ) {
+            voter.setHasVotedBefore( voterUpdateDTO.getHasVotedBefore() );
+        }
+        if ( voterUpdateDTO.getFirstVotedYear() != null ) {
+            voter.setFirstVotedYear( voterUpdateDTO.getFirstVotedYear() );
+        }
+        if ( voterUpdateDTO.getImage() != null ) {
+            voter.setImage( voterUpdateDTO.getImage() );
+        }
+        if ( voterUpdateDTO.getSignature() != null ) {
+            voter.setSignature( voterUpdateDTO.getSignature() );
+        }
+    }
+
     private Long voterPartyPartyId(Voter voter) {
         Party party = voter.getParty();
         if ( party == null ) {
             return null;
         }
         return party.getPartyId();
+    }
+
+    protected RoleResponseDTO roleToRoleResponseDTO(Role role) {
+        if ( role == null ) {
+            return null;
+        }
+
+        RoleResponseDTO roleResponseDTO = new RoleResponseDTO();
+
+        roleResponseDTO.setRoleId( role.getRoleId() );
+        roleResponseDTO.setUsername( role.getUsername() );
+        roleResponseDTO.setSsnNumber( role.getSsnNumber() );
+        if ( role.getRole() != null ) {
+            roleResponseDTO.setRole( role.getRole().name() );
+        }
+        roleResponseDTO.setEmail( role.getEmail() );
+        roleResponseDTO.setPassword( role.getPassword() );
+
+        return roleResponseDTO;
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ElectionManagementSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ElectionManagementSystemApplication.class, args);
+			SpringApplication.run(ElectionManagementSystemApplication.class, args);
 	}
-
 }

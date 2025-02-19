@@ -1,13 +1,14 @@
 package com.ems.mappers;
 
+import com.ems.entities.Role;
 import com.ems.dtos.*;
 import com.ems.entities.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface GlobalMapper {
 
     @Mapping(target = "image", ignore = true)
@@ -31,7 +32,19 @@ public interface GlobalMapper {
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
     List<AddressDTO> toAddressDTOList(List<Address> addressList);
 
-
     Election toElectionDTO(ElectionDTO electionDTO);
     ElectionDTO toElection(Election election);
+
+    Role toRole(RoleRegisterDTO roleRegisterDTO);
+    RoleRegisterDTO toRoleRegisterDTO(Role role);
+
+    List<RoleResponseDTO> toRoleResponseDTO(List<Role> role);
+
+    VoterUpdateDTO toVoterUpdateDTO(Voter voter);
+
+    @Mapping(target = "voterId", ignore = true)
+    void updateVoterFromDto(VoterUpdateDTO voterUpdateDTO, @MappingTarget Voter voter);
+
+
+
 }

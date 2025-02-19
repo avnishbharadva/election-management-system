@@ -69,7 +69,7 @@ public class Voter extends TimeStamp {
 
     private String image;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String signature;
 
     @PrePersist
