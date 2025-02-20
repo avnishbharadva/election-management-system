@@ -3,11 +3,13 @@ package com.ems.services.impls;
 import com.ems.entities.Address;
 import com.ems.entities.Audit;
 import com.ems.entities.Voter;
+import com.ems.events.AddressUpdateEvent;
 import com.ems.events.VoterUpdateEvent;
 import com.ems.mongo.repository.AuditRepository;
 import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final AuditRepository auditRepository;
 
     @Async
@@ -35,7 +38,7 @@ public class AuditServiceImpl implements AuditService {
         if (!fields.isEmpty()) {
             Audit audit = getAudit(newVoter, fields);
             auditRepository.save(audit);
-            log.info("Voter audited: {}", fields);
+            log.info("thread - {}, Voter audited: {}", Thread.currentThread().getName(),fields);
         }
     }
 
@@ -81,12 +84,14 @@ public class AuditServiceImpl implements AuditService {
             addressFields = getAddressUpdatedFields(oldAddress, newAddress);
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
-                if(i==0){
+
+                eventPublisher.publishEvent(new AddressUpdateEvent(this,newAddress));
+                if(i==0 && !addressFields.getFirst().isEmpty()){
                     oldField.put("residentialAddress", addressFields.getFirst());
                     updateField.put("residentialAddress", addressFields.getLast());
                     log.info("residential address change : {}", addressFields);
                 }
-                if(i==1){
+                if(i==1 && !addressFields.getFirst().isEmpty()){
                     oldField.put("mailingAddress", addressFields.getFirst());
                     updateField.put("mailingAddress", addressFields.getLast());
                     log.info("mailing address change : {}",addressFields);
@@ -138,29 +143,6 @@ public class AuditServiceImpl implements AuditService {
             fieldMap.put(fieldName, newValue);
             oldField.put(fieldName, oldValue);
         }
-    }
-
-    @Override
-    public void addressAudit(Voter voter, Address oldAddress, Address newAddress) {
-//        var newField = new HashMap<String, Object>();
-
-//        if(!oldAddress.getAddressLine().equals(newAddress.getAddressLine()))
-//            newField.put("addressLine",newAddress.getAddressLine());
-//        if(!oldAddress.getAptNumber().equals(newAddress.getAptNumber()))
-//            newField.put("aptNumber", newAddress.getAptNumber());
-//        if(!oldAddress.getCity().equals(newAddress.getCity()))
-//            newField.put("city",newAddress.getCity());
-//        if(!oldAddress.getCounty().equals(newAddress.getCounty()))
-//            newField.put("county",newAddress.getCounty());
-//        if(!oldAddress.getZipCode().equals(newAddress.getZipCode()))
-//            newField.put("zipCode",newAddress.getZipCode());
-//        if(!oldAddress.getAddressType().equals(newAddress.getAddressType()))
-//            newField.put("addressType",newAddress.getAddressType());
-
-//        if(!newField.isEmpty()){
-//            Audit audit = getAudit(voter, newField);
-//            auditRepository.save(audit);
-//        }
     }
 
     private static Audit getAudit(Voter newVoter, List<Map<String, Object>> fieldList) {

@@ -3,6 +3,7 @@ package com.ems.mappers;
 import com.ems.dtos.*;
 import com.ems.entities.*;
 import com.ems.entities.constants.AddressType;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -89,6 +90,11 @@ public interface GlobalMapper {
     ElectionDTO toElection(Election election);
 
     List<VoterStatusDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
+
+    @Mapping(source = "address.voter.voterId", target = "voterId")
+    AddressHistory toAddressHistory(Address address);
+
+    NameHistory toNameHistory(Voter voter);
 
     default AddressDTO getAddressByType(List<Address> addresses, AddressType type) {
         if (addresses == null) return null;

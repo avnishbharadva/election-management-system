@@ -2,8 +2,10 @@ package com.ems.controllers;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterDTO;
+import com.ems.dtos.VoterResponseDTO;
 import com.ems.dtos.VoterStatusDTO;
 import com.ems.exceptions.DataNotFoundException;
+import com.ems.projections.VoterView;
 import com.ems.services.VoterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +65,10 @@ public class VoterController {
     @GetMapping("/status")
     public ResponseEntity<List<VoterStatusDTO>> getAllStatus(){
         return ResponseEntity.ok(voterService.getAllStatus());
+    }
+
+    @GetMapping("/{ssnNumber}")
+    public ResponseEntity<VoterResponseDTO> findBySsnNumber(@PathVariable String ssnNumber){
+        return ResponseEntity.ok(voterService.findBySsnNumber(ssnNumber));
     }
 }
