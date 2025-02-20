@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CandidateRepository extends JpaRepository<Candidate,Long>, JpaSpecificationExecutor<Candidate> {
+public interface CandidateRepository extends JpaRepository<Candidate, Long>, JpaSpecificationExecutor<Candidate> {
 
     Optional<Candidate> findByCandidateSSN(String candidateSSN);
+
     List<Candidate> findByParty_PartyName(String candidatePartyName);
+
     Page<Candidate> findByElection_electionId(Long electionId, Pageable pageable);
 }
