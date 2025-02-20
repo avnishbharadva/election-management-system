@@ -51,7 +51,6 @@
         private final ElectionRepository electionRepository;
         private final PartyRepository partyRepository;
         private final JavaMailSender mailSender;
-
         @Value("${file.upload-dir}")
         private String uploadDir;
 
@@ -68,8 +67,8 @@
            if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
                 throw new CandidateAlreadyExistsException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
             }
-            Path candidateImagePath=Path.of(uploadDir,"candidateImage");
-            Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+            var candidateImagePath=Path.of(uploadDir,"candidateImage");
+            var candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
             Files.createDirectories(candidateImagePath);
             Files.createDirectories(candidateSignaturePath);
 
@@ -152,13 +151,13 @@
 
         @Override
         public Map<String,Object> findById(Long candidateId) {
-            Path candidateImagePath=Path.of(uploadDir,"candidateImage");
-            Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
-            Candidate candidate=candidateRepository.findById(candidateId).get();
+            var candidateImagePath=Path.of(uploadDir,"candidateImage");
+            var candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+            var candidate=candidateRepository.findById(candidateId).get();
             var candidateDto=candidateMapper.toCandidateDTO(candidate);
-            Path imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
-            Path signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
-            String candidateImageResource=encodeFileToBase64(imagepath);
+            var imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
+            var signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
+            var candidateImageResource=encodeFileToBase64(imagepath);
             String signatureResource=encodeFileToBase64(signaturepath);
             System.out.println(signatureResource+"//////////////////");
             return Map.of("candidate",candidateDto,
