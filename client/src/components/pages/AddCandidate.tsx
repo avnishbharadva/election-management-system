@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { AppDispatch } from "../../store/app/store";
 import { RootState } from "@reduxjs/toolkit/query";
 import { fetchCandidates } from "../../store/feature/candidate/candidateAPI";
-import SearchComponent from "../ui/Search";
+import SearchComponent from "../ui/SearchCandidate";
 import Model from "../ui/Model";
 import CandidateForm from "../ui/CandidateForm";
 import { useDispatch } from "react-redux";
@@ -24,10 +24,10 @@ const AddCandidate = () => {
   // Fetch all candidates when the component mounts
   useEffect(() => {
     dispatch(fetchCandidates());
-  }, [dispatch]);
+  }, []);
 
   // Display searched candidate or all candidates
-  const candidatesToDisplay = filteredCandidate ? [filteredCandidate] : allCandidates;
+  // const candidatesToDisplay = filteredCandidate ? [filteredCandidate] : allCandidates;
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
