@@ -2,17 +2,13 @@ package com.ems.services.impls;
 
 import com.ems.dtos.*;
 import com.ems.entities.Address;
-import com.ems.entities.NameHistory;
-import com.ems.entities.Party;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.events.VoterUpdateEvent;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.mappers.GlobalMapper;
-import com.ems.projections.VoterView;
 import com.ems.repositories.*;
-import com.ems.services.AuditService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +48,7 @@ public class VoterServiceImpl implements VoterService {
 
     @Override
     @Transactional
-    public VoterDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws DataNotFoundException, IOException {
+    public VoterDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws IOException {
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
 
         if (voterRepo.existsBySsnNumber(voterRegisterDTO.getSsnNumber()))
@@ -63,22 +59,10 @@ public class VoterServiceImpl implements VoterService {
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
-        Files.createDirectories(Paths.get(PHOTO_DIR));
-        Files.createDirectories(Paths.get(SIGNATURE_DIR));
-
-        if (!image.isEmpty()) {
-            var imageFileName = voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
-            var imagePath = Paths.get(DIRECTORY, "/photos").resolve(imageFileName);
-            Files.write(imagePath, image.getBytes());
-            voter.setImage(imageFileName);
-        }
-
-        if (!signature.isEmpty()) {
-            var signatureFileName = voterRegisterDTO.getSsnNumber() + "_" + signature.getOriginalFilename();
-            var signaturePath = Paths.get(DIRECTORY, "/signatures").resolve(signatureFileName);
-            Files.write(signaturePath, signature.getBytes());
-            voter.setSignature(signatureFileName);
-        }
+        if(image!=null)
+            voter.setImage(getImage(voterRegisterDTO, image));
+        if(signature!=null)
+            voter.setSignature(getSignature(voterRegisterDTO, signature));
 
         var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(() -> new DataNotFoundException("Voter Status Not Found"));
         voter.setVoterStatus(voterStatus);
@@ -96,6 +80,30 @@ public class VoterServiceImpl implements VoterService {
 
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
         return globalMapper.toVoterDTO(savedVoter);
+    }
+
+    private String getImage(VoterRegisterDTO voterRegisterDTO, MultipartFile image) throws IOException {
+        Files.createDirectories(Paths.get(PHOTO_DIR));
+
+        String imageFileName = null;
+        if (!image.isEmpty()) {
+            imageFileName = voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
+            var imagePath = Paths.get(DIRECTORY, "/photos").resolve(imageFileName);
+            Files.write(imagePath, image.getBytes());
+        }
+        return imageFileName;
+    }
+
+    private String getSignature(VoterRegisterDTO voterRegisterDTO, MultipartFile signature) throws IOException {
+        Files.createDirectories(Paths.get(SIGNATURE_DIR));
+
+        String signatureFileName = null;
+        if (!signature.isEmpty()) {
+            signatureFileName = voterRegisterDTO.getSsnNumber() + "_" + signature.getOriginalFilename();
+            var signaturePath = Paths.get(DIRECTORY, "/signatures").resolve(signatureFileName);
+            Files.write(signaturePath, signature.getBytes());
+        }
+        return signatureFileName;
     }
 
     @Override
