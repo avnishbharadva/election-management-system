@@ -140,7 +140,7 @@ export const EmailField = ({ control, name, label }: FieldProps) => {
                 required: `${label} is required`,
                 pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z]{2,8})?$/,
-                    message: "Invalid email format"
+                    message: "ex. example@example.com"
                 }
             }}
             render={({ field, fieldState }) => (

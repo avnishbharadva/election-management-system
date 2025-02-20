@@ -81,9 +81,13 @@ const VoterForm = () => {
     }
   }
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
-    defaultValues 
+  const { control, handleSubmit, formState} = useForm<FormData>({
+    defaultValues ,
+    mode: "onTouched",
   })
+
+  const {  isSubmitting,isSubmitSuccessful,isValid } = formState
+
   
 
 
@@ -269,7 +273,9 @@ const VoterForm = () => {
             type="submit"
           >
             Submit</Button>
-          <Button variant="contained" type='reset'>Reset</Button>
+          <Button variant="contained" 
+          disabled= {isSubmitting || !isValid}
+          type='reset'>Reset</Button>
         </Box>
       </form >
     </>

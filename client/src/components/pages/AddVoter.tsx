@@ -2,7 +2,7 @@ import Model from "../ui/Model"
 import { useState } from "react"
 import VoterForm from "../ui/VoterForm"
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover, TextField, InputAdornment, Button, IconButton } from "@mui/material"
-import SearchComponent from "../ui/Search"
+import SearchComponent from "../ui/SearchVoter"
 import { searchVoters } from "../../api/voterApi/VoterApi"
 import useQuery from "../../hooks/usequery";
 import EditIcon from '@mui/icons-material/Edit';
