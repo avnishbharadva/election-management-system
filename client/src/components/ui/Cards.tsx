@@ -10,68 +10,49 @@ import {ContentWrapper} from '../../style/CardCss'
 import {CardsContainerLeft} from '../../style/CardCss'
 import {StyledCard} from '../../style/CardCss'
 import {ChartContainer} from '../../style/CardCss'
+import { useSelector } from "react-redux";
 interface CardData {
   id: number;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   title: string;
   count: number;
   icon: JSX.Element;
 }
 
-const cards: CardData[] = [
-  {
-    id: 1,
-    title: "Candidate",
-    count: 4021,
-    icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
-  },
-  {
-    id: 2,
-    title: "Voters",
-    count: 15000,
-    icon: <HowToVoteIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
-  },
-  {
-    id: 3,
-    title: "Party",
-    count: 120,
-    icon: <GroupsIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
-  },
-  {
-    id: 4,
-    title: "Election",
-    count: 5,
-    icon: <BallotIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
-  },
-];
 
-const chartData = cards.map((card) => card.count);
-const chartLabels = cards.map((card) => card.title);
 
 const Cards: React.FC = () => {
+  const { allCandidates, filteredCandidate, loading, error, notFound } = useSelector(
+    (state: any) => state.candidate
+  );
+  const cards: CardData[] = [
+    {
+      id: 1,
+      title: "Candidate",
+      count:  allCandidates.length,
+      icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+    {
+      id: 2,
+      title: "Voters",
+      count: 1000,
+      icon: <HowToVoteIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+    {
+      id: 3,
+      title: "Party",
+      count: 120,
+      icon: <GroupsIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+    {
+      id: 4,
+      title: "Election",
+      count: 5,
+      icon: <BallotIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+  ];
+  
+  const chartData = cards.map((card) => card.count);
+  const chartLabels = cards.map((card) => card.title);
   return (
     <Container>
       <Sidebar />

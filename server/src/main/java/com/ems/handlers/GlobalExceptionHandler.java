@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CandidateNotFoundException.class)
+    @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
-            CandidateNotFoundException candidateNotFoundException
+            DataNotFoundException dataNotFoundException
     ) {
         var candidateErrorResponse = new ErrorResponse();
         candidateErrorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-        candidateErrorResponse.setMessage(String.valueOf(candidateNotFoundException.getMessage()));
+        candidateErrorResponse.setMessage(String.valueOf(dataNotFoundException.getMessage()));
         candidateErrorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
     }
@@ -33,22 +33,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({PartyNotFoundException.class, VoterNotFoundException.class, ElectionNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handlePartyNotFoundException(RuntimeException ex) {
-        var errorResponse = new ErrorResponse();
-        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-
-    @ExceptionHandler({CandidateAlreadyExistsException.class, VoterAlreadyExistException.class})
-    public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(RuntimeException runtimeException)
+    @ExceptionHandler({DataAlreadyExistException.class})
+    public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(DataAlreadyExistException dataAlreadyExistException)
     {
         var errorResponse=new ErrorResponse();
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setMessage(runtimeException.getMessage());
+        errorResponse.setMessage(dataAlreadyExistException.getMessage());
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 

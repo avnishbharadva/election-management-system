@@ -3,7 +3,7 @@ package com.ems.services.impls;
 import com.ems.dtos.ElectionDTO;
 import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Election;
-import com.ems.exceptions.ElectionNotFoundException;
+import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
@@ -31,7 +31,7 @@ public class ElectionServiceImpl implements ElectionService {
     @Override
     public Election updateElection(Long electionId, ElectionDTO electionDTO) {
         var existingElection=electionRepository.findById(electionId)
-                .orElseThrow(()->new ElectionNotFoundException("No such election with id:"+electionId));
+                .orElseThrow(()->new DataNotFoundException("No such election with id:"+electionId));
 
         Optional.ofNullable(electionDTO.getElectionName()).ifPresent(existingElection::setElectionName);
         Optional.ofNullable(electionDTO.getElectionDate()).ifPresent(existingElection::setElectionDate);
