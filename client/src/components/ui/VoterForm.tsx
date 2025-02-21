@@ -5,7 +5,7 @@ import { Box, Button, Checkbox, FormControlLabel } from '@mui/material'
 import { voterPost } from '../../api/voterApi/VoterApi'
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore } from './voter/FormFields';
+import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore, StatusField } from './voter/FormFields';
 
 
 type Address={
@@ -13,25 +13,25 @@ type Address={
   aptNumber: string;
   city: string;
   county: string;
-  zipCode: number | String
+  zipCode: number | null
   adressType:string
 
 }
 
 type FormData = {
-  statusId:number
+  statusId:number | null
   firstName: string
   middleName: string
   lastName: string
   suffixName:string
   email: string
   ssnNumber: string
-  phoneNumber:number
-  dmvNumber:number
+  phoneNumber:number | null
+  dmvNumber:number | null
   gender: string
-  partyId: number
+  partyId: number | null
   dateOfBirth: string
-  firstVoterYear: number
+  firstVoterYear: number | null
   hasVotedBefore: boolean
   residentialAddress: Address;
   mailingAddress: Address;
@@ -54,21 +54,21 @@ const VoterForm = () => {
     lastName: "",
     email: "",
     ssnNumber : "",
-    phoneNumber:0,
-    dmvNumber:0,
+    phoneNumber:null,
+    dmvNumber:null,
     gender: "",
     suffixName:"",
     partyId: 0,
     dateOfBirth: "",
-    firstVoterYear: 0,
+    firstVoterYear:null,
     hasVotedBefore: false,
-    statusId:1,
+    statusId:null,
     residentialAddress: {
       addressLine: "",
       aptNumber: "",
       city: "",
       county: "",
-      zipCode: " ",
+      zipCode: null,
       adressType:"RESIDENTIAL"
     },
     mailingAddress: {
@@ -76,7 +76,7 @@ const VoterForm = () => {
       aptNumber: "",
       city: "",
       county: "",
-      zipCode:"" ,
+      zipCode:null ,
       adressType:"MAILING"
     }
   }
@@ -203,8 +203,10 @@ const VoterForm = () => {
             <PartyField name='partyId' control={control} label={'Select Name'} />
             <HasVotedBefore name='hasVotedBefore' control={control} label='Has Voted Before' />
             <FirstVoterYear name='firstVotedYear' control={control} label='First Voter Year' />
-
-
+          </Box>
+          
+          <Box display='flex' alignItems='center' sx={{ marginTop: '20px' }}>
+          <StatusField label='status: ' name='statusId' control={control} />
           </Box>
         </Box>
 
@@ -218,8 +220,7 @@ const VoterForm = () => {
             <NameField label='Addressline' name='residentialAddress.addressLine' control={control} />
             <NameField label='Apt Number' name='residentialAddress.aptNumber'control={control} />
 
-            {/* <AddressLine id="Addressline" inputRef={addressLineRef} />
-              <AptNumber id="AptNumber" inputRef={aptNumberRef} /> */}
+    
           </Box>
           <Box display='flex' alignItems='center' gap='1rem' sx={{ marginTop: '20px' }}>
             <NameField label='City' name="residentialAddress.city" control={control} />
