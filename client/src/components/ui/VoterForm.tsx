@@ -1,11 +1,12 @@
 
 import { Title, DividerStyle } from '../../style/CandidateFormCss'
 import ImageUpload from './voter/ImageUpload'
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material'
+import { Box, Button, Checkbox, FormControlLabel, Alert, Snackbar } from '@mui/material'
 import { voterPost } from '../../api/voterApi/VoterApi'
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore } from './voter/FormFields';
+import { StyledButton } from '../../style/CommanStyle';
 
 
 type Address={
@@ -35,6 +36,8 @@ type FormData = {
   hasVotedBefore: boolean
   residentialAddress: Address;
   mailingAddress: Address;
+  statusId: number | null
+
 }
 
 
@@ -47,6 +50,11 @@ const VoterForm = () => {
   const [profilePic, setProfilePic] = useState<string | null>(null)
   const [signature, setSignature] = useState<string | null>(null)
   const [sameAddress, setSameAddress] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false); // State for Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const defaultValues: FormData = {
     firstName: "",
@@ -78,7 +86,8 @@ const VoterForm = () => {
       county: "",
       zipCode:"" ,
       adressType:"MAILING"
-    }
+    },
+    statusId: null
   }
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -87,16 +96,32 @@ const VoterForm = () => {
   
 
 
-  const onSubmit: SubmitHandler<FormData> = async(data) => {
-
-    console.log("Form Data:", data)
-
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true); // this will disable the voter
+    console.log("Form Data:", data);
     try {
-          await voterPost({ post: data ,img:profilePic,sign:signature})
-        } catch (error) {
-          console.log(error)
-        }
-  }
+      await new Promise(resolve => setTimeout(resolve, 2000)) 
+      const response = await voterPost({ post: data, img: profilePic, sign: signature });
+      console.log('Response',response);
+      console.log("Snackbar should open");
+      setSnackbarOpen(true); // Show Snackbar when form is successfully submitted
+
+      //Reset after successfull
+      reset();
+      setProfilePic(null);
+      setSignature(null);
+      setSameAddress(false);
+
+    } catch (error) {
+       console.error("Error registering voter:", error);
+            setSnackbarMessage("Error registering voter. Please try again.");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+    
+  } finally {
+    setIsSubmitting(false); // Re-enable the button in either case
+}
+  };
 
 
 
@@ -104,8 +129,9 @@ const VoterForm = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Title variant='h5' align='center' gutterBottom>VOTER REGISTRATION</Title>
-        <Title variant='h6' sx={{ marginTop: '20px' }}>Personal Information</Title>
         <DividerStyle />
+
+        <Title variant='h6' sx={{ marginTop: '20px' }}>Personal Information</Title>
         <Box display='flex' alignItems='center' gap='1rem'>
 
           <NameField
@@ -192,15 +218,17 @@ const VoterForm = () => {
 
         </Box>
 
+        {/* Voting Information Section */}
         <Box sx={{ marginTop: '20px' }}>
           <Title variant='h6'>Voting Information</Title>
           <DividerStyle />
           <Box display='flex' alignItems='center' gap='2.5rem'>
-            <PartyField name='partyId' control={control} label={'Select Name'} />
+            <PartyField name='partyId' control={control} label={'Select Party'} />
             <HasVotedBefore name='hasVotedBefore' control={control} label='Has Voted Before' />
-            <FirstVoterYear name='firstVotedYear' control={control} label='First Voter Year' />
-
-
+            <FirstVoterYear name='firstVoterYear' control={control} label='First Voter Year' />
+          </Box>
+          <Box display='flex' alignItems='center' sx={{ marginTop: '20px' }}>
+          <StatusField label='status: ' name='statusId' control={control} />
           </Box>
         </Box>
 
@@ -265,13 +293,17 @@ const VoterForm = () => {
           />
         </Box>
         <Box display='flex' alignItems='center' justifyContent='center' gap='2rem' sx={{ marginTop: '20px' }}>
-          <Button variant="contained"
-            type="submit"
-          >
-            Submit</Button>
-          <Button variant="contained" type='reset'>Reset</Button>
+          <StyledButton variant="contained" type="submit" disabled={isSubmitting}> {isSubmitting ? "Submitting..." : "Submit"} </StyledButton>
+          <StyledButton variant="contained" type="reset">Reset</StyledButton>
         </Box>
       </form >
+
+            {/* Snackbar Component */}
+      <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+          Form submitted successfully!
+        </Alert>
+      </Snackbar>
     </>
 
   )

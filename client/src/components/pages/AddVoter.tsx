@@ -1,8 +1,8 @@
 import Model from "../ui/Model"
 import { useState } from "react"
 import VoterForm from "../ui/VoterForm"
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover, TextField, InputAdornment, Button, IconButton } from "@mui/material"
-import SearchComponent from "../ui/Search"
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover, TextField, InputAdornment, Button, IconButton, TablePagination } from "@mui/material"
+import SearchComponent from "../ui/SearchVoter"
 import { searchVoters } from "../../api/voterApi/VoterApi"
 import useQuery from "../../hooks/usequery";
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CandidateForm from "../ui/CandidateForm"
 
-const columns =[ "SSN", 'DMV' ,'FirstName', 'MiddleName', 'LastName', 'Gender','DOB','Email Id', 'Action'  ];
+const columns =[ "Status", "SSN", 'DMV' ,'FirstName', 'MiddleName', 'LastName', 'Gender','DOB','Email Id', 'Action' ];
 
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({
@@ -24,8 +24,14 @@ const AddVoter = () => {
   const [selectedVoter, setSelectedVoter] = useState(null); // Store selected voter
   const [formMode,setFormMode]= useState()
   const [isModelOpen,setIsModelOpen] = useState(false)
+  const [actionType, setActionType] = useState<"view" | "edit">("edit");
+
   
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (type: "view" | "edit") => {
+    setActionType(type);
+    setOpen(true);
+  };  
+ 
   const handleClose = () => setOpen(false);
 
   const {data ,isLoading , error } = useQuery(searchVoters, searchParams)
@@ -43,18 +49,27 @@ const AddVoter = () => {
     setSelectedVoter(null); // Reset selected voter
   };
 
-  const handleAction = (action:'Delete' | 'Edit' | 'View', voter: any) => {
+  const handleAction = (action: "view" | "edit" | "delete", voter: any) => {
     console.log(`Performing ${action} on voter`, voter);
-    setSelectedVoter(voter);
-        setFormMode(action);
-        setIsModelOpen(true);
-        setAnchorEl(null);
+    // You can implement your edit, view, delete logic here
   };
- 
-  const handleClick = (event, voter) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedVoter(voter); 
+
+ const handleClick = (event: React.MouseEvent, voter: any) => {
+    setAnchorEl(event.currentTarget as HTMLElement);
+    setSelectedVoter(voter); // Set the voter whose actions are clicked
   };
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
+    setSearchParams((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParams((prev) => ({ ...prev, size: parseInt(event.target.value, 10), page: 0 })); // Reset page
+  };
+
+
+  const totalElements = data?.totalElements || 0;
+
  
   return (
     <>
@@ -94,6 +109,7 @@ const AddVoter = () => {
               {data.length > 0 ? (
                 data.map((voter:any) => (
                   <TableRow key={voter.ssnNumber}>
+                    <TableCell>{voter.statusId}</TableCell>
                     <TableCell>{voter.ssnNumber}</TableCell>
                     <TableCell>{voter.dmvNumber}</TableCell>
                     <TableCell>{voter.firstName}</TableCell>
@@ -119,6 +135,15 @@ const AddVoter = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+        component="div" // Use div for better styling control
+        count={totalElements}
+        page={searchParams.page}
+        onPageChange={handlePageChange}
+        rowsPerPage={searchParams.size}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]} // More options
+      />
       </Box>
  
       <Popover
