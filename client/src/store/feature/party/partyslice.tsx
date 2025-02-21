@@ -40,9 +40,6 @@ return response?.data
         }
     )
     
-    
-
-
     const partySlice = createSlice({
         name: 'party',
         initialState: {

@@ -1,9 +1,9 @@
 
 import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel } from '@mui/material';
-import { useCallback, useEffect } from 'react';
+
 import { Controller } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { patythunk } from '../../../store/feature/formFields/partyslice';
+
+import { usePartyListQuery } from '../../../store/feature/party/partyAction';
 
 
 
@@ -184,43 +184,46 @@ export const GenderField = ({ control, name }: FieldProps) => {
 // Party Selector Field
 export const PartyField = ({ control, name, label }: FieldProps) => {
 
-    const dispatch = useDispatch();
+    const {data ,isError ,isLoading } = usePartyListQuery({})
+    console.log( 'party ',data, isError, isLoading)
+   
+   
+   
+    if(isLoading){
+       return <div>loading...</div>
+    }
+   
+    if(isError){
+       return <div>something else</div>
+    }
+   
 
-    const fetchParties = useCallback(() => {
-        dispatch(patythunk());
-    }, [dispatch])
-
-
-    useEffect(() => {
-        fetchParties()
-    }, [fetchParties])
-
-    const parties = useSelector((state: any) => state.party.parties)
-    console.log(parties)
+    
     return (
         <Controller
-            name={name}
-            control={control}
-            rules={{
-                required: "Party selection is required"
-            }}
-            defaultValue={parties.length > 0 ? parties[0].partyId : ''}
-            render={({ field, fieldState }) => (
-                <FormControl fullWidth>
-                    <InputLabel>Select Party</InputLabel>
-                    <Select
-                        label={label}
+        name={name}
+        control={control}
+        rules={{
+            required: "Party selection is required"
+        }}
+        render={({ field, fieldState }) => (
+            <FormControl fullWidth>
+                <InputLabel>Select Party</InputLabel>
+                <Select
+                    label={label}
 
-                        {...field}>
-                        {parties.map((party: any) => (
-                            <MenuItem key={party.partyId} value={party.partyId}>
-                                {party.partyName}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                    {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
-                </FormControl>
-            )}
+                    {...field}>
+                    {data?.map((party:any) => (
+                        <MenuItem  key={party.partyId} value={party.partyId}>
+                            {party.partyName} 
+                        </MenuItem>
+                    ))}
+
+                    
+                </Select>
+                {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
+            </FormControl>
+        )}
         />
     );
 }
@@ -320,3 +323,27 @@ export const HasVotedBefore = ({ control, name, label }: FieldProps) => {
         />
     );
 }
+
+export const StatusField = ({ control, name }: FieldProps) => {
+    return (
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required: "Status is required" }}
+        defaultValue={1} // Provide a default value!  This is the key fix
+        render={({ field, fieldState }) => (
+          <>
+            <FormLabel>Status</FormLabel>
+            <RadioGroup {...field} row>
+              <FormControlLabel value={1} control={<Radio />} label="Active" />
+              <FormControlLabel value={2} control={<Radio />} label="Inactive" />
+              <FormControlLabel value={3} control={<Radio />} label="Reject" />
+              <FormControlLabel value={4} control={<Radio />} label="Under Review" /> 
+              <FormControlLabel value={5} control={<Radio />} label="Cancel" />
+            </RadioGroup>
+            {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
+          </>
+        )}
+      />
+    );
+  };

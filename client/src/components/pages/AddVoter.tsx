@@ -1,14 +1,17 @@
 import Model from "../ui/Model"
 import { useState } from "react"
 import VoterForm from "../ui/VoterForm"
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover, Button, IconButton, TablePagination } from "@mui/material"
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Popover, Button, IconButton, TablePagination, Typography } from "@mui/material"
 import SearchComponent from "../ui/SearchVoter"
 import { searchVoters } from "../../api/voterApi/VoterApi"
-import useQuery from "../../hooks/usequery";
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CandidateForm from "../ui/CandidateForm"
+import CandidateForm from "../ui/CandidateForm";
+import { useSearchVotersQuery } from "../../store/feature/voter/VoterAction"
+
+
 
 const columns =[ "Status", "SSN", 'DMV' ,'FirstName', 'MiddleName', 'LastName', 'Gender','DOB','Email Id', 'Action' ];
 
@@ -34,9 +37,11 @@ const AddVoter = () => {
  
   const handleClose = () => setOpen(false);
 
-  const {data ,isLoading , error } = useQuery(searchVoters, searchParams)
-
-  console.log(data, "lodiang" , isLoading , "err", error)
+  const { data, isError, isLoading } = useSearchVotersQuery({
+    page: searchParams?.page,
+    size: searchParams?.size,
+    ssnNumber: searchParams?.ssnNumber
+  })
 
   const handleSearchChange = (value: string) => {
     setSearchParams((prev) => ({
@@ -56,7 +61,7 @@ const AddVoter = () => {
 
  const handleClick = (event: React.MouseEvent, voter: any) => {
     setAnchorEl(event.currentTarget as HTMLElement);
-    setSelectedVoter(voter); // Set the voter whose actions are clicked
+    setSelectedVoter(voter); 
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -66,6 +71,26 @@ const AddVoter = () => {
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams((prev) => ({ ...prev, size: parseInt(event.target.value, 10), page: 0 })); // Reset page
   };
+
+  if(isLoading){
+    return(
+      <>
+      <Typography>
+      loading...
+      
+      </Typography>
+      </>
+    )
+  }
+  if(isError){
+    return(
+      <>
+      <Typography>
+        someThing went wrong....
+      </Typography>
+      </>
+    )
+  }
 
 
   const totalElements = data?.totalElements || 0;
@@ -88,7 +113,7 @@ const AddVoter = () => {
       />
     </Box>
         <Box>
-          {data.length ==  0 && (searchParams?.ssnNumber) && (
+          {!data && (searchParams?.ssnNumber) && (
             <Model open={open} handleClose={handleClose}>
               <VoterForm />
             </Model>
@@ -106,7 +131,8 @@ const AddVoter = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.length > 0 ? (
+      
+              {data ? (
                 data.map((voter:any) => (
                   <TableRow key={voter.ssnNumber}>
                     <TableCell>{voter.statusId}</TableCell>
@@ -160,17 +186,17 @@ const AddVoter = () => {
                 }}
             >
                 <Box sx={{ padding: 1 }}>
-                    <IconButton onClick={() => handleAction('Edit', selectedVoter)} color="primary">
+                    <IconButton onClick={() => handleAction('edit', selectedVoter)} color="primary">
                         <EditIcon />
                         <Model open={open} actionType="edit" handleOpen={handleOpen} handleClose={handleClose}>
                         <CandidateForm />
                       </Model>
 
                     </IconButton>
-                    <IconButton onClick={() => handleAction('View', selectedVoter)} color="primary">
+                    <IconButton onClick={() => handleAction('view', selectedVoter)} color="primary">
                         <VisibilityIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleAction('Delete', selectedVoter)} color="secondary">
+                    <IconButton onClick={() => handleAction('delete', selectedVoter)} color="secondary">
                         <DeleteIcon />
                     </IconButton>
                 </Box>
