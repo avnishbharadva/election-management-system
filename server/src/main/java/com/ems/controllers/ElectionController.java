@@ -1,14 +1,15 @@
     package com.ems.controllers;
-
     import com.ems.dtos.ElectionDTO;
     import com.ems.dtos.ElectionSortDTO;
+    import com.ems.dtos.ErrorResponse;
     import com.ems.entities.Election;
     import com.ems.services.ElectionService;
     import jakarta.validation.Valid;
     import lombok.Data;
+    import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
-
+    import java.time.LocalDateTime;
     import java.util.List;
 
     @RestController
@@ -32,10 +33,13 @@
             return electionService.getElectionsSorted(order);
         }
         @DeleteMapping("/delete/{electionId}")
-        public ResponseEntity<String> deleteById(@PathVariable Long electionId) {
+        public ResponseEntity<ErrorResponse> deleteById(@PathVariable Long electionId) {
             electionService.deleteElectionById(electionId);
-            return ResponseEntity.ok("Election with id: " + electionId + " deleted successfully");
+            ErrorResponse errorResponse=new ErrorResponse();
+            errorResponse.setMessage("Election with id:"+electionId+" is deleted");
+            errorResponse.setRequestTime(LocalDateTime.now());
+            errorResponse.setStatus(HttpStatus.OK.value());
+            return ResponseEntity.ok(errorResponse);
+
         }
-
-
     }
