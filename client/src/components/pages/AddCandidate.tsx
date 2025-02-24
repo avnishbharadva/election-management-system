@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CandidateForm from "../ui/CandidateForm";
 import Model from "../ui/Model";
-import SearchComponent from "../ui/Search";
+import SearchComponent from "../ui/SearchVoter";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box } from "@mui/material";
 
 const mockCandidates = [

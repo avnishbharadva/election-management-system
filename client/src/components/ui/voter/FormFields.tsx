@@ -169,7 +169,7 @@ export const GenderField = ({ control, name }: FieldProps) => {
             }}
             render={({ field, fieldState }) => (
                 <>
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel sx={{ marginRight: '10px' }}>Gender: </FormLabel>
                     <RadioGroup {...field} row>
                         <FormControlLabel value="MALE" control={<Radio />} label="Male" />
                         <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
