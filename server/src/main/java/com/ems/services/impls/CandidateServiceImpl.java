@@ -1,58 +1,54 @@
 package com.ems.services.impls;
-
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
-import com.ems.entities.Election;
-import com.ems.exceptions.*;
+import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
-
-    @Slf4j
-    @Service
-    @RequiredArgsConstructor
-    public class CandidateServiceImpl implements CandidateService {
-        private final CandidateRepository candidateRepository;
-        private final CandidateMapper candidateMapper;
-        private final ElectionRepository electionRepository;
-        private final PartyRepository partyRepository;
-        private final JavaMailSender mailSender;
-        @Value("${file.upload-dir}")
-        private String uploadDir;
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CandidateServiceImpl implements CandidateService {
+    private final CandidateRepository candidateRepository;
+    private final CandidateMapper candidateMapper;
+    private final ElectionRepository electionRepository;
+    private final PartyRepository partyRepository;
+    private final JavaMailSender mailSender;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @Override
     public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
@@ -64,12 +60,11 @@ import jakarta.mail.internet.MimeMessage;
     @Override
     @Transactional
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
-//        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new DataNotFoundException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
-        Path candidateImagePath=Path.of(uploadDir,"candidateImage");
-        Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+        Path candidateImagePath = Path.of(uploadDir, "candidateImage");
+        Path candidateSignaturePath = Path.of(uploadDir, "candidateSignature");
         Files.createDirectories(candidateImagePath);
         Files.createDirectories(candidateSignaturePath);
 
@@ -97,155 +92,151 @@ import jakarta.mail.internet.MimeMessage;
                 ? residentialAddress
                 : candidateDTO.getMailingAddress();
 
-            candidate.setResidentialAddress(residentialAddress);
-            candidate.setMailingAddress(mailingAddress);
+        candidate.setResidentialAddress(residentialAddress);
+        candidate.setMailingAddress(mailingAddress);
 
-            String fullName = candidate.getCandidateName().getFirstName() + " " +
-                    (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
-                    candidate.getCandidateName().getLastName();
+        String fullName = candidate.getCandidateName().getFirstName() + " " +
+                (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
+                candidate.getCandidateName().getLastName();
 
-            sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate Registration Successful – Welcome to the Election!",
-                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
-                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
-                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
-                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+        sendEmail(candidateDTO.getCandidateEmail(),
+                "Candidate Registration Successful – Welcome to the Election!",
+                "<div style='font-family: Arial, sans-serif; color: #333;'>" +
+                        "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+                        "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+                        "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+                        "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
 
-                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
-                            "<ul>" +
-                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
-                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
-                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
-                            "</ul>" +
+                        "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+                        "<ul>" +
+                        "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+                        "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+                        "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+                        "</ul>" +
 
-                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
-                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
+                        "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+                        "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
 
-                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+                        "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
 
-                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
-                            "<b>Election Commission Team</b></p>" +
-                            "</div>"
-            );
-            return candidateRepository.save(candidate);
+                        "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+                        "<b>Election Commission Team</b></p>" +
+                        "</div>"
+        );
+        return candidateRepository.save(candidate);
+    }
+
+    private void sendEmail(String to, String subject, String content) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+
+            ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
+
+            helper.addInline("companyLogo", image);
+            mailSender.send(message);
+            log.info("Email sent successfully to {}", to);
+        } catch (MessagingException e) {
+            log.error("Failed to send email to {}: {}", to, e.getMessage());
         }
-        private void sendEmail(String to, String subject, String content) {
-            try {
-                MimeMessage message = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
+    }
 
-                helper.setTo(to);
-                helper.setSubject(subject);
-                helper.setText(content, true);
-
-                ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
-
-                helper.addInline("companyLogo", image);
-                mailSender.send(message);
-                log.info("Email sent successfully to {}", to);
-            } catch (MessagingException e) {
-                log.error("Failed to send email to {}: {}", to, e.getMessage());
-            }
-        }
-
-
-        @Override
-        public Map<String,Object> findById(Long candidateId) {
-            var candidateImagePath=Path.of(uploadDir,"candidateImage");
-            var candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
-            var candidate=candidateRepository.findById(candidateId).get();
-            var candidateDto=candidateMapper.toCandidateDTO(candidate);
-            var imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
-            var signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
-            var candidateImageResource=encodeFileToBase64(imagepath);
-            String signatureResource=encodeFileToBase64(signaturepath);
-            System.out.println(signatureResource+"//////////////////");
-            return Map.of("candidate",candidateDto,
-                   "candidateImage",candidateImageResource,
-                   "candidateSignature",signatureResource);
-        }
+    @Override
+    public Map<String, Object> findById(Long candidateId) {
+        Path candidateImagePath = Path.of(uploadDir, "candidateImage");
+        Path candidateSignaturePath = Path.of(uploadDir, "candidateSignature");
+        Candidate candidate = candidateRepository.findById(candidateId).get();
+        var candidateDto = candidateMapper.toCandidateDTO(candidate);
+        Path imagepath = candidateImagePath.resolve(candidate.getCandidateImage());
+        Path signaturepath = candidateSignaturePath.resolve(candidate.getCandidateSignature());
+        System.out.println(signaturepath + "-------------------------------");
+        String candidateImageResouce = encodeFileToBase64(imagepath);
+        String signatureResourse = encodeFileToBase64(signaturepath);
+        System.out.println(signatureResourse + "//////////////////");
+        return Map.of("candidate", candidateDto,
+                "candidateImage", candidateImageResouce,
+                "candidateSignature", signatureResourse);
+    }
 
     private String encodeFileToBase64(Path filePath) {
         try {
             if (Files.exists(filePath)) {
                 byte[] fileContent = Files.readAllBytes(filePath);
-                System.out.println(Base64.getEncoder().encodeToString(fileContent)+"****************");
+                System.out.println(Base64.getEncoder().encodeToString(fileContent) + "****************");
                 return Base64.getEncoder().encodeToString(fileContent);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
-        Candidate existingCandidate = candidateRepository.findById(candidateId)
+        Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
 
-            // Update basic candidate details
-            candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
+        candidateMapper.updateCandidateFromDTO(candidateDTO, candidate);
 
-            // Update party if provided
-            if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
-                existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
-                        .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
-            }
-
-            // Update election if provided
-            if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
-                existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
-                        .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
-            }
-
-            Path candidateImagePath = Path.of(uploadDir, "candidateImage");
-            Path candidateSignaturePath = Path.of(uploadDir, "candidateSignature");
-            Files.createDirectories(candidateImagePath);
-            Files.createDirectories(candidateSignaturePath);
-
-            // Update image if provided
-            if (candidateImage != null && !candidateImage.isEmpty()) {
-                String imageFileName = UUID.randomUUID() + "_" + candidateImage.getOriginalFilename();
-                Path imagePath = candidateImagePath.resolve(imageFileName);
-                Files.copy(candidateImage.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-                existingCandidate.setCandidateImage(imageFileName);
-            }
-
-            // Update signature if provided
-            if (candidateSignature != null && !candidateSignature.isEmpty()) {
-                String signatureFileName = UUID.randomUUID() + "_" + candidateSignature.getOriginalFilename();
-                Path signaturePath = candidateSignaturePath.resolve(signatureFileName);
-                Files.copy(candidateSignature.getInputStream(), signaturePath, StandardCopyOption.REPLACE_EXISTING);
-                existingCandidate.setCandidateSignature(signatureFileName);
-            }
-
-            // Update addresses
-            var residentialAddress = candidateDTO.getResidentialAddress();
-            var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
-                    ? residentialAddress
-                    : candidateDTO.getMailingAddress();
-
-            existingCandidate.setResidentialAddress(residentialAddress);
-            existingCandidate.setMailingAddress(mailingAddress);
-
-
-            String fullName = existingCandidate.getCandidateName().getFirstName() + " " +
-                    (existingCandidate.getCandidateName().getMiddleName() != null ? existingCandidate.getCandidateName().getMiddleName() + " " : "") +
-                    existingCandidate.getCandidateName().getLastName();
-            sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate updation Successfully",
-                    "<div>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
-                            "<h3>Dear " + fullName + ",</h3>" +
-                            "<p>Your data is successfully updated!</p>" +
-                            "<b>Party:</b> " + existingCandidate.getParty().getPartyName() + "<br>" +
-                            "<b>Election Type:</b> " + existingCandidate.getElection().getElectionType() + "<br>" +
-                            "</div>"
-            );
-
-            return candidateRepository.save(existingCandidate);
+        if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
+            candidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
+                    .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
         }
+
+        if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
+            candidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
+                    .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
+        }
+
+        if (candidateDTO.getResidentialAddress() != null) {
+            candidate.setResidentialAddress(candidateDTO.getResidentialAddress());
+        }
+
+        if (candidateDTO.getMailingAddress() == null || Objects.equals(candidateDTO.getMailingAddress(), candidateDTO.getResidentialAddress())) {
+            candidate.setMailingAddress(candidate.getResidentialAddress());
+        } else {
+            candidate.setMailingAddress(candidateDTO.getMailingAddress());
+        }
+
+        Path uploadPath = Path.of(uploadDir);
+        Files.createDirectories(uploadPath);
+
+        if (candidateImage != null && !candidateImage.isEmpty()) {
+            candidate.setCandidateImage(saveFile(candidateImage, uploadPath.resolve("candidateImage"), candidate.getCandidateImage()));
+        }
+        if (candidateSignature != null && !candidateSignature.isEmpty()) {
+            candidate.setCandidateSignature(saveFile(candidateSignature, uploadPath.resolve("candidateSignature"), candidate.getCandidateSignature()));
+        }
+        candidate = entityManager.merge(candidate);
+
+
+        return candidate;
+    }
+
+
+
+    private String saveFile(MultipartFile file, Path folderPath, String oldFileName) throws IOException {
+        Files.createDirectories(folderPath);
+
+        if (oldFileName != null) {
+            Files.deleteIfExists(folderPath.resolve(oldFileName));
+        }
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, folderPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+        }
+        return fileName;
+    }
+
 
 
     @Override
@@ -263,8 +254,12 @@ import jakarta.mail.internet.MimeMessage;
 
     @Override
     public void deleteCandidateByCandidateId(Long candidateId) {
+        if (!candidateRepository.existsById(candidateId)) {
+            throw new DataNotFoundException("Candidate with id " + candidateId + " not found");
+        }
         candidateRepository.deleteById(candidateId);
     }
+
 
     @Override
     public Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort) {
@@ -275,8 +270,8 @@ import jakarta.mail.internet.MimeMessage;
 
     @Override
     public CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage) {
-        Election election = electionRepository.findById(electionId)
-                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + electionId));
+//        Election election = electionRepository.findById(electionId)
+//                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + electionId));
         Pageable pageable = PageRequest.of(page, perPage);
         Page<Candidate> candidatePage = candidateRepository.findByElection_electionId(electionId, pageable);
 
@@ -311,7 +306,7 @@ import jakarta.mail.internet.MimeMessage;
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Specification<Candidate> spec = buildSearchSpecification(searchCriteria);
         Page<Candidate> candidatePage = candidateRepository.findAll(spec, pageable);
-        if(candidatePage.isEmpty()){
+        if (candidatePage.isEmpty()) {
             throw new DataNotFoundException("No such candidate with this filters");
         }
         return candidatePage.map(candidateMapper::toCandidateDTO);
@@ -345,11 +340,11 @@ import jakarta.mail.internet.MimeMessage;
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateEmail"), "%" + searchCriteria.getCandidateEmail() + "%"));
             }
 
-            if (searchCriteria.getPartyId()!=null && searchCriteria.getPartyId() != 0 ) {
+            if (searchCriteria.getPartyId() != null && searchCriteria.getPartyId() != 0) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("party").get("partyId"), searchCriteria.getPartyId()));
             }
 
-            if (searchCriteria.getElectionId()!=null && searchCriteria.getElectionId() != 0) {
+            if (searchCriteria.getElectionId() != null && searchCriteria.getElectionId() != 0) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("election").get("electionId"), searchCriteria.getElectionId()));
             }
 
@@ -364,6 +359,4 @@ import jakarta.mail.internet.MimeMessage;
             return predicate;
         };
     }
-
-
 }

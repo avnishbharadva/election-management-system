@@ -16,50 +16,50 @@ public class CandidateDTO {
 
     private Long candidateId; // Optional, assuming it's auto-generated
 
-    @NotNull(message = "Candidate name cannot be null")
+//    @NotNull(message = "Candidate name cannot be null")
     private CandidateName candidateName;
 
-    @NotNull(message = "SSN cannot be null")
-    @Pattern(regexp = "^\\d{9}$", message = "SSN must contain exactly 9 digits")
+//    @NotNull(message = "SSN cannot be null")
+//    @Pattern(regexp = "^\\d{9}$", message = "SSN must contain exactly 9 digits")
     private String candidateSSN;
 
-    @NotNull(message = "Date of birth cannot be null")
-    @Past(message = "Date of birth must be in the past")
+//    @NotNull(message = "Date of birth cannot be null")
+//    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
-    @NotNull(message = "Gender cannot be null")
+//    @NotNull(message = "Gender cannot be null")
     private Gender gender;
 
-    @NotNull(message = "Marital status cannot be null")
+//    @NotNull(message = "Marital status cannot be null")
     private MaritialStatus maritialStatus;
 
-    @Min(value = 0, message = "Number of children cannot be negative")
+//    @Min(value = 0, message = "Number of children cannot be negative")
     private int noOfChildren;
 
-    @Pattern(regexp = "^[A-Za-z ]*$", message = "Spouse name must contain only alphabets and spaces")
+//    @Pattern(regexp = "^[A-Za-z ]*$", message = "Spouse name must contain only alphabets and spaces")
     private String spouseName;
 
-    @NotNull(message = "Party ID cannot be null")
+//    @NotNull(message = "Party ID cannot be null")
     private Long partyId;
 
-    @NotNull(message = "Residential address cannot be null")
+//    @NotNull(message = "Residential address cannot be null")
     private CandidateAddress residentialAddress;
 
-    @NotNull(message = "Mailing address cannot be null")
+//    @NotNull(message = "Mailing address cannot be null")
     private CandidateAddress mailingAddress;
 
-    @NotBlank(message = "State name cannot be blank")
-    @Pattern(regexp = "^[A-Za-z ]+$", message = "State name must contain only alphabets and spaces")
+//    @NotBlank(message = "State name cannot be blank")
+//    @Pattern(regexp = "^[A-Za-z ]+$", message = "State name must contain only alphabets and spaces")
     private String stateName;
 
-    @NotNull(message = "Candidate email cannot be null")
-    @NotBlank(message = "Candidate email cannot be blank")
-    @Email(message = "Must be a valid email format")
+//    @NotNull(message = "Candidate email cannot be null")
+//    @NotBlank(message = "Candidate email cannot be blank")
+//    @Email(message = "Must be a valid email format")
     private String candidateEmail;
 
-    @NotNull(message = "Election ID cannot be null")
+//    @NotNull(message = "Election ID cannot be null")
     private Long electionId;
 
-    @NotNull(message = "Bank details cannot be null")
+//    @NotNull(message = "Bank details cannot be null")
     private BankDetails bankDetails;
 }

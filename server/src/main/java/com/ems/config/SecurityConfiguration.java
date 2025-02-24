@@ -28,19 +28,14 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/create/**", "/authenticate/**").permitAll();
-                    registry.requestMatchers("/getAllRoles/**","/api/voters/**","/api/candidate/**","/api/elections/**","/api/party/**").hasRole("STATE_OFFICER");
-                    registry.requestMatchers("/api/voters/**","/api/candidate/**").hasRole("DISTRICT_OFFICER");
-                    registry.anyRequest().authenticated();
-                })
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // Allow all requests
+                .formLogin(AbstractHttpConfigurer::disable)  // Disable login form
+                .httpBasic(AbstractHttpConfigurer::disable); // Disable basic authentication
+
+        return http.build();
     }
 
     @Bean

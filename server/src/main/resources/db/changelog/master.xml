@@ -7,7 +7,5 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- Include other changeset files -->
-    <include file="classpath:db/changelog/cahngelogset-001.xml"/>
-    <include file="classpath:db/changelog/cahngelogset-002.xml"/>
 
 </databaseChangeLog>

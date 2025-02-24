@@ -10,8 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CandidatePageResponse {
     private List<CandidateDTO> candidates;
-    private int currentPage;
-    private int totalPages;
-    private long totalRecords;
-    private int perPage;
+    private Integer currentPage;
+    private Integer totalPages;
+    private Long totalRecords;
+    private Integer perPage;
+
 }

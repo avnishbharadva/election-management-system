@@ -17,7 +17,7 @@ public class CandidateAddress {
 
     private String street;
     private String city;
-    private int zipcode;
+    private Integer zipcode;
 
     @Override
     public boolean equals(Object o) {

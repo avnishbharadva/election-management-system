@@ -11,5 +11,5 @@ import lombok.Setter;
 public class VoterSequence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 }

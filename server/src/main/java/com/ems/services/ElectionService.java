@@ -11,5 +11,6 @@ public interface ElectionService {
     Election saveElection(ElectionDTO electionDTO);
     Election updateElection(Long electionId,ElectionDTO electionDTO);
     List<ElectionSortDTO> getElectionsSorted(String order);
+    void deleteElectionById(Long electionId);
 
 }

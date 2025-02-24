@@ -25,6 +25,8 @@ public interface CandidateMapper {
     @Mapping(target = "electionName", source = "election.electionName")
     CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate);
 
+
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCandidateFromDTO(CandidateDTO candidateDTO, @MappingTarget Candidate candidate);
 
@@ -32,6 +34,8 @@ public interface CandidateMapper {
     void updateCandidateNameFromDTO(CandidateName newName, @MappingTarget CandidateName existingName);
 
     Election toElection(ElectionSortDTO electionSortDTO);
+
+    @Mapping(target = "electionId", source = "election")
     ElectionSortDTO toElectionSortDTO(Election election);
 
     default Long mapPartyToId(Party party) {

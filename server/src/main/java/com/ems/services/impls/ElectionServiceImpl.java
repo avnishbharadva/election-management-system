@@ -22,11 +22,17 @@ public class ElectionServiceImpl implements ElectionService {
     private final GlobalMapper globalMapper;
     private final CandidateMapper candidateMapper;
 
+
     @Override
     public Election saveElection(ElectionDTO electionDTO) {
-        var election=globalMapper.toElectionDTO(electionDTO);
+        if (electionDTO.getTotalSeats() == null || electionDTO.getTotalSeats() < 1) {
+            throw new IllegalArgumentException("Total seats cannot be null or less than 1");
+        }
+
+        Election election = globalMapper.toElectionDTO(electionDTO);
         return electionRepository.save(election);
     }
+
 
     @Override
     public Election updateElection(Long electionId, ElectionDTO electionDTO) {
@@ -55,6 +61,14 @@ public class ElectionServiceImpl implements ElectionService {
             elections = electionRepository.findAllByOrderByElectionDateAsc();
         }
         return elections.stream().map(candidateMapper::toElectionSortDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteElectionById(Long electionId) {
+        if(!electionRepository.existsById(electionId))
+            throw new DataNotFoundException("Election not found");
+        electionRepository.deleteById(electionId);
+
     }
 
 }

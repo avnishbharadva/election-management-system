@@ -1,4 +1,5 @@
 package com.ems.controllers;
+
 import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataNotFoundException;
@@ -26,18 +27,13 @@ public class CandidateController {
 
     @GetMapping("/getAllDetails")
     public ResponseEntity<List<CandidateDetailsDTO>> getAllCandidateDetails() {
-        try {
-            List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
-
-            if (candidateDetailsList.isEmpty()) {
-                throw new DataNotFoundException("No candidates found");
-            }
-
-            return ResponseEntity.ok(candidateDetailsList);
-        } catch (DataNotFoundException ex) {
-            throw new DataNotFoundException("No such candidate is found");
+        List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
+        if (candidateDetailsList.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(candidateDetailsList);
     }
+
 
 
     @GetMapping("/ssn/{candidateSSN}")
@@ -80,10 +76,13 @@ public class CandidateController {
     @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Candidate> updateCandidate(
             @PathVariable Long candidateId,
-            @RequestPart("candidate") CandidateDTO candidateDTO,
+            @ModelAttribute CandidateDTO candidateDTO,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
             @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
 
+        if(candidateDTO==null){
+            throw new IllegalArgumentException("Candidate data must be provided");
+        }
         Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
         return ResponseEntity.ok(updatedCandidate);
     }
@@ -93,7 +92,7 @@ public class CandidateController {
     {
         return candidateService.findByPartyName(candidatePartyName);
     }
-    @GetMapping
+    @GetMapping("/paged")
     public ResponseEntity<CandidatePageResponse> getCandidates(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "perPage",defaultValue = "10") int perPage,
@@ -132,16 +131,11 @@ public class CandidateController {
     }
 
     @DeleteMapping("/delete/{candidateId}")
-    ResponseEntity<?> deleteById(@PathVariable Long candidateId)
-    {
-        if (candidateService.findById(candidateId)!=null) {
-            return ResponseEntity.ok("Candidate with id:"+candidateId);
-
-        } else {
-            throw new DataNotFoundException("No candidate with id:"+candidateId+" is found");
-        }
-
+    public ResponseEntity<String> deleteById(@PathVariable Long candidateId) {
+        candidateService.deleteCandidateByCandidateId(candidateId);
+        return ResponseEntity.ok("Candidate with id: " + candidateId + " deleted successfully");
     }
+
 
     @GetMapping("/search")
     public Page<CandidateDTO> searchCandidates(@RequestBody CandidateDTO searchCriteria,

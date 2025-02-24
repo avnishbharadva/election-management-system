@@ -6,6 +6,7 @@
     import com.ems.services.ElectionService;
     import jakarta.validation.Valid;
     import lombok.Data;
+    import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
@@ -21,7 +22,6 @@
         Election createElection(@RequestBody ElectionDTO electionDTO){
             return electionService.saveElection(electionDTO);
         }
-
         @PutMapping("/update/{electionId}")
         Election updateElection(@PathVariable Long electionId,@Valid  @RequestBody ElectionDTO electionDTO)
         {
@@ -31,5 +31,11 @@
         public List<ElectionSortDTO> getSortedElections(@RequestParam(defaultValue = "asc") String order) {
             return electionService.getElectionsSorted(order);
         }
+        @DeleteMapping("/delete/{electionId}")
+        public ResponseEntity<String> deleteById(@PathVariable Long electionId) {
+            electionService.deleteElectionById(electionId);
+            return ResponseEntity.ok("Election with id: " + electionId + " deleted successfully");
+        }
+
 
     }
