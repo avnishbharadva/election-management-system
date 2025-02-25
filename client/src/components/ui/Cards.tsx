@@ -11,7 +11,7 @@ import {CardsContainerLeft} from '../../style/CardCss'
 import {StyledCard} from '../../style/CardCss'
 import {ChartContainer} from '../../style/CardCss'
 interface CardData {
-  id: number;
+  id: number; 
   title: string;
   count: number;
   icon: JSX.Element;

@@ -1,258 +1,161 @@
-import React, { useState } from "react";
-import { TextField, Button, Box, Paper, RadioGroup, FormControlLabel, Radio, FormLabel, FormControl, InputLabel, Select, MenuItem, Typography } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import { Button, Typography, RadioGroup, FormControlLabel, Radio, Select, MenuItem, Box, TextField, FormLabel, FormControl, InputLabel } from "@mui/material";
+import { useDropzone } from "react-dropzone";
+import {DropzoneContainer, Title} from '../../style/CandidateFormCss';
+import {Section} from '../../style/CandidateFormCss';
+import {Row} from '../../style/CandidateFormCss';
+import {DocumentContainer} from '../../style/CandidateFormCss';
+import {FlexCenter} from '../../style/CandidateFormCss';
+import {DividerStyle} from '../../style/CandidateFormCss';
+import CloseIcon from '@mui/icons-material/Close';
 
-const CandidateForm: React.FC = () => {
-    const [profilePic, setProfilePic] = useState<string | null>(null);
-    const [signature, setSignature] = useState<string | null>(null);
-  
-    const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files && event.target.files[0]) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setProfilePic(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-  
-    const handleSignatureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files && event.target.files[0]) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setSignature(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
+const CandidateForm: React.FC = ()=> {
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | null>(null);
+
+  const onDropProfile = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = () => setProfilePic(reader.result as string);
+    reader.readAsDataURL(file);
+  }, []);
+
+  const onDropSignature = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = () => setSignature(reader.result as string);
+    reader.readAsDataURL(file);
+  }, []);
+
+  const { getRootProps: getProfileProps, getInputProps: getProfileInputProps } = useDropzone({ onDrop: onDropProfile });
+  const { getRootProps: getSignatureProps, getInputProps: getSignatureInputProps } = useDropzone({ onDrop: onDropSignature });
+
   return (
-   <>
-     <Box sx={{display: 'flex', justifyContent: 'center', alignItems:"center"}}>
-      <Paper elevation={3} sx={{ padding: 4 , width:'auto'}}>
-        <Typography variant="h5" textAlign="center" mb={2}>
-          Register Candidate
-        </Typography>
-        <form>
-          {/* First Row */}
-          <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-            <TextField fullWidth label="First Name" name="firstname" />
-            <TextField fullWidth label="Middle Name" name="middlename" />
-            <TextField fullWidth label="Last Name" name="lastname" />
+    <>
+      <Box>
+          <Box sx={{display:'flex', justifyContent:'flex-end'}}>
+            <CloseIcon/>
           </Box>
+          <Title variant="h5" align="center" gutterBottom>
+            CANDIDATE REGISTRATION
+          </Title>
 
-          {/* Second Row */}
-          <FormLabel>Date of Birth</FormLabel>
-          <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-            <TextField
-              fullWidth
-              name="dob"
-              type="date"
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-            />
-            <TextField
-              fullWidth
-              label="State Name"
-              name="state_name"
-              value="New York"
-              aria-readonly
-            />
-            
-          </Box>
-
-          {/*Third Row */}
-            <Box sx={{ display: 'flex', gap: '2rem', mb: 2, alignItems:'center' }}>
-                <FormLabel>Gender:</FormLabel>
-                <RadioGroup
-                    name="Gender"
-                    row >
-                    <FormControlLabel value="option1" control={<Radio />} label="Male" />
-                    <FormControlLabel value="option2" control={<Radio />} label="Female" />
-                </RadioGroup>
-            </Box>
-
-            {/* Fourth Row */}
-            <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-            <FormControl fullWidth>
+          <Section>
+            <Title variant="h6">Personal Information</Title>
+            <DividerStyle />
+            <Row>
+              <TextField fullWidth label="First Name" />
+              <TextField fullWidth label="Middle Name" />
+              <TextField fullWidth label="Last Name" />
+            </Row>
+            <Row>
+              <TextField fullWidth type="date" label="Date of Birth" InputLabelProps={{ shrink: true }} />
+              <TextField fullWidth label="Email" type="email" />
+            </Row>
+            <Row>
+              <FormLabel>Gender:</FormLabel>
+              <RadioGroup name="Gender" row>
+                <FormControlLabel value="option1" control={<Radio />} label="Male" />
+                <FormControlLabel value="option2" control={<Radio />} label="Female" />
+              </RadioGroup>
+            </Row>
+            <Row>
+              <FormControl fullWidth>
                 <InputLabel>Marital Status</InputLabel>
-                <Select
-                label="Choose Status"
-                >
-                <MenuItem value="option1">Single</MenuItem>
-                <MenuItem value="option2">Married</MenuItem>
-                <MenuItem value="option3">Divorced</MenuItem>
-                <MenuItem value="option4">Widowed</MenuItem>
+                <Select label="Marital Status">
+                  <MenuItem value="option1">Single</MenuItem>
+                  <MenuItem value="option2">Married</MenuItem>
+                  <MenuItem value="option3">Divorced</MenuItem>
+                  <MenuItem value="option4">Widowed</MenuItem>
                 </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              label="Spouse Name"
-              name="spouse_name"
-            />
-            <TextField
-              fullWidth
-              label="No of Children"
-              name="no_of_children"
-              type="number"
-            />
-            </Box>
+              </FormControl>
+              <TextField fullWidth label="Spouse Name" name="spouse_name" />
+              <TextField fullWidth label="No of Children" name="no_of_children" type="number" onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
+            </Row>
+          </Section>
 
-            {/*Fifth Row */}
-            <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-                <TextField fullWidth label="Candidate SSN" name="candidate_ssn"/>
-                <FormControl fullWidth>
-                    <InputLabel>Party Name</InputLabel>
-                    <Select
-                    label="Choose Status"
-                    >
-                    <MenuItem value="option1">BJP</MenuItem>
-                    <MenuItem value="option2">Congress</MenuItem>
-                    <MenuItem value="option3">AAP</MenuItem>
-                    <MenuItem value="option4">Others</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth>
-                    <InputLabel>Election Type</InputLabel>
-                    <Select
-                    label="Choose Election"
-                    >
-                    <MenuItem value="option1">State</MenuItem>
-                    <MenuItem value="option2">Country</MenuItem>
-                    </Select>
-                </FormControl>  
-            </Box>
+          <Section>
+            <Title variant="h6">Election Details</Title>
+            <DividerStyle />
+            <Row>
+              <FormControl fullWidth>
+                <InputLabel>Election Name</InputLabel>
+                <Select fullWidth label="Choose Election">
+                  <MenuItem value="Presidential Election 2024">Presidential Election 2024</MenuItem>
+                  <MenuItem value="State Senate Election">State Senate Election</MenuItem>
+                  <MenuItem value="Mayoral Election">Mayoral Election</MenuItem>
+                  <MenuItem value="Congressional Election">Congressional Election</MenuItem>
+                  <MenuItem value="Senate Election">Senate Election</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <FormControl fullWidth>
+                <InputLabel>Choose Party</InputLabel>
+                <Select fullWidth label="Choose Party">
+                  <MenuItem value="Republican">Republican Party</MenuItem>
+                  <MenuItem value="Democratic">Democratic Party</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField fullWidth label="State" value={"New York"} />
+            </Row>
+          </Section>
 
-            {/*Sixth Row */}
-            <FormLabel>Residencial Address</FormLabel>
-            <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-                <TextField
-                    fullWidth
-                    label="Street"
-                    name="street"
-                />
-                <TextField
-                    fullWidth
-                    label="City"
-                    name="city"
-                />
-                <TextField
-                    fullWidth
-                    label="Zipcode"
-                    name="zipcode"
-                />
-            </Box>
+          <Section>
+            <Title variant="h6">Residential Address</Title>
+            <DividerStyle />
+            <Row>
+              <TextField fullWidth label="Street" />
+              <TextField fullWidth label="City" />
+              <TextField fullWidth label="Zipcode" />
+            </Row>
+          </Section>
 
-             {/*Seventh Row */}
-            <FormLabel>Mailing Address</FormLabel>
-            <Box sx={{ display: 'flex', gap: '2rem', mb: 2 }}>
-                <TextField
-                    fullWidth
-                    label="Street"
-                    name="street"
-                />
-                <TextField
-                    fullWidth
-                    label="City"
-                    name="city"
-                />
-                <TextField
-                    fullWidth
-                    label="Zipcode"
-                    name="zipcode"
-                />
-            </Box>
+          <Section>
+            <Title variant="h6">Mailing Address</Title>
+            <DividerStyle />
+            <Row>
+              <TextField fullWidth label="Street" />
+              <TextField fullWidth label="City" />
+              <TextField fullWidth label="Zipcode" />
+            </Row>
+          </Section>
 
-            {/*Eigth row */}
-            <FormLabel>Bank Details</FormLabel>
-            <Box sx={{display: "flex", gap: "2rem", mb: 2 }}>
-                <TextField
-                    label="Bank Name"
-                    name="bank_name"
-                />
-                <TextField
-                    fullWidth
-                    label="Bank Address"
-                    name="bank_address"
-                />
-            </Box>
+          <Section>
+            <Title variant="h6">Bank Details</Title>
+            <DividerStyle />
+            <Row>
+              <TextField fullWidth label="Bank Name" />
+              <TextField fullWidth label="Bank Address" />
+            </Row>
+          </Section>
 
-            {/*Nineth row */}
-            <Box sx={{display: "flex", gap: "2rem", mb: 2 }}>
-            <Box sx={{ display: "flex", gap: "2rem", mb: 2, alignItems: "center" }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePicChange}
-                style={{ display: "none" }}
-                id="profilePicUpload"
-              />
-              <label htmlFor="profilePicUpload">
-                <Button variant="contained" component="span">
-                  Upload Profile Picture
-                </Button>
-              </label>
-              {profilePic && (
-                <Box sx={{ marginLeft: "1rem" }}>
-                  <img
-                    src={profilePic}
-                    alt="Profile"
-                    style={{ width: "100px", height: "100px", borderRadius: "50%" }}
-                  />
-                </Box>
-              )}
-            </Box>
+          <Section>
+            <Title variant="h6">Upload Documents</Title>
+            <DividerStyle />
+            <DocumentContainer>
+              <Box>
+                <Typography variant="subtitle1">Candidate Image</Typography>
+                <DropzoneContainer {...getProfileProps()}>
+                  <input {...getProfileInputProps()} />
+                  {profilePic ? <img src={profilePic} alt="Profile" width="100" height="100" style={{ borderRadius: "50%" }} /> : <Typography>Drag & Drop or Click</Typography>}
+                </DropzoneContainer>
+              </Box>
+              <Box>
+                <Typography variant="subtitle1">Signature</Typography>
+                <DropzoneContainer {...getSignatureProps()}>
+                  <input {...getSignatureInputProps()} />
+                  {signature ? <img src={signature} alt="Signature" width="200" height="50" /> : <Typography>Drag & Drop or Click</Typography>}
+                </DropzoneContainer>
+              </Box>
+            </DocumentContainer>
+          </Section>
 
-            {/* Signature Upload */}
-            <Box sx={{ display: "flex", gap: "2rem", mb: 2, alignItems: "center" }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleSignatureChange}
-                style={{ display: "none" }}
-                id="signatureUpload"
-              />
-              <label htmlFor="signatureUpload">
-                <Button variant="contained" component="span">
-                  Upload Signature
-                </Button>
-              </label>
-              {signature && (
-                <Box sx={{ marginLeft: "1rem" }}>
-                  <img
-                    src={signature}
-                    alt="Signature"
-                    style={{ width: "200px", height: "50px", objectFit: "contain" }}
-                  />
-                </Box>
-              )}
-            </Box>
-            </Box>
-
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            sx={{
-              background: "linear-gradient(90deg, #1E90FF, rgb(29, 38, 154))",
-              color: "white",
-              padding: "0.8rem",
-              textTransform: "none",
-              "&:hover": {
-                background: "linear-gradient(90deg, #007BFF, #0056b3)",
-              },
-            }}
-          >
-            Submit
-          </Button>
-        </form>
-      </Paper>
-    </Box>
-   </>
+          <FlexCenter>
+            <Button variant="contained">Submit</Button>
+            <Button variant="contained">Cancel</Button>
+          </FlexCenter>
+      </Box>
+  </>
   );
 };
 
