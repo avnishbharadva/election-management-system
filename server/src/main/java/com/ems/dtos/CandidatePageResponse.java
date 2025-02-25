@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class CandidatePageResponse {
-    private List<CandidateDTO> candidates;
+    private List<CandidateDetailsDTO> candidates;
     private Integer currentPage;
     private Integer totalPages;
     private Long totalRecords;

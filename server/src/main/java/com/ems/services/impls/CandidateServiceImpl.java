@@ -1,8 +1,5 @@
 package com.ems.services.impls;
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
@@ -146,7 +143,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Map<String, Object> findById(Long candidateId) {
+    public CandidateDataDTO findById(Long candidateId) {
         Path candidateImagePath = Path.of(uploadDir, "candidateImage");
         Path candidateSignaturePath = Path.of(uploadDir, "candidateSignature");
         Candidate candidate = candidateRepository.findById(candidateId).get();
@@ -157,9 +154,7 @@ public class CandidateServiceImpl implements CandidateService {
         String candidateImageResouce = encodeFileToBase64(imagepath);
         String signatureResourse = encodeFileToBase64(signaturepath);
         System.out.println(signatureResourse + "//////////////////");
-        return Map.of("candidate", candidateDto,
-                "candidateImage", candidateImageResouce,
-                "candidateSignature", signatureResourse);
+        return new CandidateDataDTO(candidateDto,candidateImageResouce,signatureResourse);
     }
 
     private String encodeFileToBase64(Path filePath) {
@@ -262,24 +257,22 @@ public class CandidateServiceImpl implements CandidateService {
 
 
     @Override
-    public Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort) {
+    public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
-        return candidatePage.map(candidateMapper::toCandidateDTO);
+        return candidatePage.map(candidateMapper::toCandidateDetailsDTO);
     }
 
     @Override
     public CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage) {
-//        Election election = electionRepository.findById(electionId)
-//                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + electionId));
-        Pageable pageable = PageRequest.of(page, perPage);
+      Pageable pageable = PageRequest.of(page, perPage);
         Page<Candidate> candidatePage = candidateRepository.findByElection_electionId(electionId, pageable);
 
         if (candidatePage.isEmpty()) {
             throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
         }
 
-        Page<CandidateDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDTO);
+        Page<CandidateDetailsDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDetailsDTO);
         return new CandidatePageResponse(
                 candidateDTOPage.getContent(),
                 candidateDTOPage.getNumber(),
