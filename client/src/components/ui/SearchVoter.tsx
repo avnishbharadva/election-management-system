@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextField, Button, InputAdornment, IconButton, Tooltip, FormHelperText } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+<<<<<<< Updated upstream
 import '../../style/Search.css';
+=======
+import '../../style/SearchCss';
+>>>>>>> Stashed changes
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 type SearchProps = {
