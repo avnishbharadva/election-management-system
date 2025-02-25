@@ -5,7 +5,6 @@ import com.ems.entities.*;
 import com.ems.entities.constants.AddressType;
 import org.mapstruct.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -98,4 +97,8 @@ public interface GlobalMapper {
                 .map(this::toAddressDTO)
                 .orElse(null);
     }
+
+    Officers toRole(OfficersRegisterDTO officersRegisterDTO);
+    OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
+    List<OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
 }

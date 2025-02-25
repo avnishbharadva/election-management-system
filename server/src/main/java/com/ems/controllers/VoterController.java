@@ -1,7 +1,8 @@
 package com.ems.controllers;
 
-import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterDTO;
+import com.ems.dtos.VoterRegisterDTO;
+import com.ems.dtos.VoterSearchDTO;
 import com.ems.dtos.VoterStatusDTO;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.VoterService;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequestMapping("/api/voters")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
-public class VoterController {
+public class    VoterController {
     private final VoterService voterService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -45,8 +46,13 @@ public class VoterController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
             @RequestParam(required = false) String dmvNumber,
             @RequestParam(required = false) String ssnNumber,
-            @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String[] sort) {
-        Page<VoterDTO> result = voterService.searchVoters(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, page, size, sort);
+            @RequestParam(required = false) String city,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String[] sort) {
+
+        VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, city);
+        Page<VoterDTO> result = voterService.searchVoters(searchDTO, page, size, sort);
         return ResponseEntity.ok(result);
     }
 
@@ -59,9 +65,9 @@ public class VoterController {
         return ResponseEntity.ok(voterService.updateVoter(voterId, voterDTO, profileImg, signImg));
     }
 
-
     @GetMapping("/status")
-    public ResponseEntity<List<VoterStatusDTO>> getAllStatus(){
+    public ResponseEntity<List<VoterStatusDTO>> getAllStatus() {
         return ResponseEntity.ok(voterService.getAllStatus());
     }
+
 }

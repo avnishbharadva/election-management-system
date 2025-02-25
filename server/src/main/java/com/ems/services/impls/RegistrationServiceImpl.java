@@ -1,7 +1,7 @@
 package com.ems.services.impls;
 
 import com.ems.config.MyUserDetailService;
-import com.ems.entities.Role;
+import com.ems.entities.Officers;
 import com.ems.jwt.JwtService;
 import com.ems.jwt.LoginForm;
 import com.ems.repositories.RoleRepository;
@@ -12,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -24,16 +27,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 
     @Override
-    public String doAuthenticate(LoginForm loginForm) {
+    public Map<String, String> doAuthenticate(LoginForm loginForm) {
         Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword()));
 
         if (authenticate.isAuthenticated()) {
-            Role user = roleRepository.findByUsername(loginForm.getUsername())
+            Officers user = roleRepository.findByEmail(loginForm.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            return jwtService.generateToken(myUserDetailService.loadUserByUsername(user.getUsername()), user.getRoleId(), user.getRole().name());
+            String token = jwtService.generateToken(myUserDetailService.loadUserByUsername(user.getEmail()), user.getOfficerId(), user.getRole().name());
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return response;
+
         } else {
             throw new UsernameNotFoundException("Invalid Credentials");
         }
     }
+
 }

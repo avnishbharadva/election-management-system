@@ -2,14 +2,20 @@ package com.ems.mappers;
 
 import com.ems.dtos.AddressDTO;
 import com.ems.dtos.ElectionDTO;
+import com.ems.dtos.OfficersRegisterDTO;
+import com.ems.dtos.OfficersResponseDTO;
 import com.ems.dtos.PartyDTO;
 import com.ems.dtos.VoterDTO;
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.dtos.VoterStatusDTO;
 import com.ems.entities.Address;
 import com.ems.entities.Election;
+import com.ems.entities.Officers;
 import com.ems.entities.Party;
 import com.ems.entities.Voter;
+import com.ems.entities.VoterStatus;
+import com.ems.entities.constants.RoleType;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -17,8 +23,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-14T13:31:06+0530",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
+    date = "2025-02-25T12:08:56+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
 public class GlobalMapperImpl implements GlobalMapper {
@@ -45,7 +51,6 @@ public class GlobalMapperImpl implements GlobalMapper {
             voter.setHasVotedBefore( voterRegisterDTO.getHasVotedBefore() );
         }
         voter.setFirstVotedYear( voterRegisterDTO.getFirstVotedYear() );
-        voter.setAddress( toAddressList( voterRegisterDTO.getAddress() ) );
 
         return voter;
     }
@@ -177,7 +182,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         voterRegisterDTO.setPhoneNumber( voter.getPhoneNumber() );
         voterRegisterDTO.setHasVotedBefore( voter.isHasVotedBefore() );
         voterRegisterDTO.setFirstVotedYear( voter.getFirstVotedYear() );
-        voterRegisterDTO.setAddress( toAddressDTOList( voter.getAddress() ) );
 
         return voterRegisterDTO;
     }
@@ -190,6 +194,8 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         VoterDTO voterDTO = new VoterDTO();
 
+        voterDTO.setPartyId( voterPartyPartyId( voter ) );
+        voterDTO.setStatusId( voterVoterStatusStatusId( voter ) );
         voterDTO.setVoterId( voter.getVoterId() );
         voterDTO.setFirstName( voter.getFirstName() );
         voterDTO.setMiddleName( voter.getMiddleName() );
@@ -206,6 +212,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         voterDTO.setImage( voter.getImage() );
         voterDTO.setSignature( voter.getSignature() );
 
+        voterDTO.setResidentialAddress( getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.RESIDENTIAL) );
+        voterDTO.setMailingAddress( getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.MAILING) );
+
         return voterDTO;
     }
 
@@ -220,7 +229,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         party.setPartyId( partyDTO.getPartyId() );
         party.setPartyName( partyDTO.getPartyName() );
         party.setPartyAbbreviation( partyDTO.getPartyAbbreviation() );
-        party.setPartySymbol( partyDTO.getPartySymbol() );
         party.setPartyFoundationYear( partyDTO.getPartyFoundationYear() );
         party.setPartyWebSite( partyDTO.getPartyWebSite() );
         party.setHeadQuarters( partyDTO.getHeadQuarters() );
@@ -240,7 +248,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         partyDTO.setPartyId( party.getPartyId() );
         partyDTO.setPartyName( party.getPartyName() );
         partyDTO.setPartyAbbreviation( party.getPartyAbbreviation() );
-        partyDTO.setPartySymbol( party.getPartySymbol() );
         partyDTO.setPartyFoundationYear( party.getPartyFoundationYear() );
         partyDTO.setPartyWebSite( party.getPartyWebSite() );
         partyDTO.setHeadQuarters( party.getHeadQuarters() );
@@ -257,7 +264,6 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         Address address = new Address();
 
-        address.setAddressId( addressDTO.getAddressId() );
         address.setAddressLine( addressDTO.getAddressLine() );
         address.setAptNumber( addressDTO.getAptNumber() );
         address.setCity( addressDTO.getCity() );
@@ -277,6 +283,10 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         AddressDTO addressDTO = new AddressDTO();
 
+        String voterId = addressVoterVoterId( address );
+        if ( voterId != null ) {
+            addressDTO.setVoterId( Long.parseLong( voterId ) );
+        }
         addressDTO.setAddressId( address.getAddressId() );
         addressDTO.setAddressLine( address.getAddressLine() );
         addressDTO.setAptNumber( address.getAptNumber() );
@@ -353,11 +363,122 @@ public class GlobalMapperImpl implements GlobalMapper {
         return electionDTO;
     }
 
+    @Override
+    public List<VoterStatusDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList) {
+        if ( voterStatusList == null ) {
+            return null;
+        }
+
+        List<VoterStatusDTO> list = new ArrayList<VoterStatusDTO>( voterStatusList.size() );
+        for ( VoterStatus voterStatus : voterStatusList ) {
+            list.add( voterStatusToVoterStatusDTO( voterStatus ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Officers toRole(OfficersRegisterDTO officersRegisterDTO) {
+        if ( officersRegisterDTO == null ) {
+            return null;
+        }
+
+        Officers officers = new Officers();
+
+        officers.setSsnNumber( officersRegisterDTO.getSsnNumber() );
+        if ( officersRegisterDTO.getRole() != null ) {
+            officers.setRole( Enum.valueOf( RoleType.class, officersRegisterDTO.getRole() ) );
+        }
+        officers.setPassword( officersRegisterDTO.getPassword() );
+        officers.setEmail( officersRegisterDTO.getEmail() );
+
+        return officers;
+    }
+
+    @Override
+    public OfficersRegisterDTO toRoleRegisterDTO(Officers officers) {
+        if ( officers == null ) {
+            return null;
+        }
+
+        OfficersRegisterDTO officersRegisterDTO = new OfficersRegisterDTO();
+
+        officersRegisterDTO.setSsnNumber( officers.getSsnNumber() );
+        if ( officers.getRole() != null ) {
+            officersRegisterDTO.setRole( officers.getRole().name() );
+        }
+        officersRegisterDTO.setEmail( officers.getEmail() );
+        officersRegisterDTO.setPassword( officers.getPassword() );
+
+        return officersRegisterDTO;
+    }
+
+    @Override
+    public List<OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers) {
+        if ( officers == null ) {
+            return null;
+        }
+
+        List<OfficersResponseDTO> list = new ArrayList<OfficersResponseDTO>( officers.size() );
+        for ( Officers officers1 : officers ) {
+            list.add( officersToOfficersResponseDTO( officers1 ) );
+        }
+
+        return list;
+    }
+
     private Long voterPartyPartyId(Voter voter) {
         Party party = voter.getParty();
         if ( party == null ) {
             return null;
         }
         return party.getPartyId();
+    }
+
+    private Long voterVoterStatusStatusId(Voter voter) {
+        VoterStatus voterStatus = voter.getVoterStatus();
+        if ( voterStatus == null ) {
+            return null;
+        }
+        return voterStatus.getStatusId();
+    }
+
+    private String addressVoterVoterId(Address address) {
+        Voter voter = address.getVoter();
+        if ( voter == null ) {
+            return null;
+        }
+        return voter.getVoterId();
+    }
+
+    protected VoterStatusDTO voterStatusToVoterStatusDTO(VoterStatus voterStatus) {
+        if ( voterStatus == null ) {
+            return null;
+        }
+
+        VoterStatusDTO voterStatusDTO = new VoterStatusDTO();
+
+        voterStatusDTO.setStatusId( voterStatus.getStatusId() );
+        voterStatusDTO.setStatusDesc( voterStatus.getStatusDesc() );
+
+        return voterStatusDTO;
+    }
+
+    protected OfficersResponseDTO officersToOfficersResponseDTO(Officers officers) {
+        if ( officers == null ) {
+            return null;
+        }
+
+        OfficersResponseDTO officersResponseDTO = new OfficersResponseDTO();
+
+        officersResponseDTO.setOfficerId( officers.getOfficerId() );
+        officersResponseDTO.setSsnNumber( officers.getSsnNumber() );
+        if ( officers.getRole() != null ) {
+            officersResponseDTO.setRole( officers.getRole().name() );
+        }
+        officersResponseDTO.setEmail( officers.getEmail() );
+        officersResponseDTO.setPassword( officers.getPassword() );
+
+        return officersResponseDTO;
     }
 }

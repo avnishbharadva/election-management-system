@@ -3,7 +3,6 @@ package com.ems.services.impls;
 import com.ems.dtos.*;
 import com.ems.entities.Address;
 import com.ems.entities.NameHistory;
-import com.ems.entities.Party;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.events.VoterUpdateEvent;
@@ -11,7 +10,6 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.*;
-import com.ems.services.AuditService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +17,13 @@ import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -37,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
 
-    private static final String DIRECTORY = "E:/bright_peers/projects/new/election-management-system/server/uploads";
+    private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/photos";
     private static final String SIGNATURE_DIR = DIRECTORY + "/signatures";
 
@@ -92,15 +86,21 @@ public class VoterServiceImpl implements VoterService {
         addressRepo.saveAll(addressList);
 
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
-
         return globalMapper.toVoterDTO(savedVoter);
     }
 
     @Override
-    public Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
-        VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber);
-        log.info("searching started for criteria : {}", searchDTO);
-        return voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)), query -> query.sortBy(getSort(sort)).page(PageRequest.of(page, size, getSort(sort)))).map(globalMapper::toVoterDTO);
+    public Page<VoterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
+        log.info("Searching voters with filters: {}", searchDTO);
+        Pageable pageable = PageRequest.of(page, size, getSort(sort));
+        return  voterRepo.searchVoters(
+                searchDTO.getFirstName(),
+                searchDTO.getLastName(),
+                searchDTO.getDateOfBirth(),
+                searchDTO.getDmvNumber(),
+                searchDTO.getSsnNumber(),
+                searchDTO.getCity(),
+                pageable).map(globalMapper::toVoterDTO);
     }
 
     private Sort getSort(String[] sort) {
@@ -132,7 +132,7 @@ public class VoterServiceImpl implements VoterService {
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
 
-        log.info("updatedVoter party : {},",updatedVoter.getParty().getPartyId());
+        log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
 
         updateProfileImage(updatedVoter, profileImg);
         updateSignatureImage(updatedVoter, signImg);

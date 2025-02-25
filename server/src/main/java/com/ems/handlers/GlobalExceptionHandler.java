@@ -41,7 +41,18 @@ public class GlobalExceptionHandler {
         errorResponse.setMessage(dataAlreadyExistException.getMessage());
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-
     }
+
+    @ExceptionHandler({IllegalCredentials.class})
+    public ResponseEntity<ErrorResponse> illegalCredentials(IllegalCredentials illegalCredentials)
+    {
+        var errorResponse=new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setMessage(illegalCredentials.getMessage());
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+
 
 }
