@@ -10,6 +10,7 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.*;
+import com.ems.services.AuditService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +18,17 @@ import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
 
-    private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
+    private static final String DIRECTORY = "E:/bright_peers/projects/new/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/photos";
     private static final String SIGNATURE_DIR = DIRECTORY + "/signatures";
 
@@ -45,7 +50,7 @@ public class VoterServiceImpl implements VoterService {
 
     @Override
     @Transactional
-    public VoterDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws DataNotFoundException, IOException {
+    public VoterDTO register(VoterRegisterDTO voterRegisterDTO, MultipartFile image, MultipartFile signature) throws IOException {
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
 
         if (voterRepo.existsBySsnNumber(voterRegisterDTO.getSsnNumber()))
@@ -56,22 +61,10 @@ public class VoterServiceImpl implements VoterService {
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
-        Files.createDirectories(Paths.get(PHOTO_DIR));
-        Files.createDirectories(Paths.get(SIGNATURE_DIR));
-
-        if (!image.isEmpty()) {
-            var imageFileName = voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
-            var imagePath = Paths.get(DIRECTORY, "/photos").resolve(imageFileName);
-            Files.write(imagePath, image.getBytes());
-            voter.setImage(imageFileName);
-        }
-
-        if (!signature.isEmpty()) {
-            var signatureFileName = voterRegisterDTO.getSsnNumber() + "_" + signature.getOriginalFilename();
-            var signaturePath = Paths.get(DIRECTORY, "/signatures").resolve(signatureFileName);
-            Files.write(signaturePath, signature.getBytes());
-            voter.setSignature(signatureFileName);
-        }
+        if(image!=null)
+            voter.setImage(getImage(voterRegisterDTO, image));
+        if(signature!=null)
+            voter.setSignature(getSignature(voterRegisterDTO, signature));
 
         var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(() -> new DataNotFoundException("Voter Status Not Found"));
         voter.setVoterStatus(voterStatus);
@@ -79,7 +72,9 @@ public class VoterServiceImpl implements VoterService {
         var savedVoter = voterRepo.save(voter);
 
         var residentialAddress = globalMapper.toAddress(voterRegisterDTO.getResidentialAddress());
+        residentialAddress.setAddressType(AddressType.RESIDENTIAL);
         var mailingAddress = globalMapper.toAddress(voterRegisterDTO.getMailingAddress());
+        mailingAddress.setAddressType(AddressType.MAILING);
 
         var addressList = List.of(residentialAddress, mailingAddress);
         addressList.forEach(address -> address.setVoter(savedVoter));
@@ -87,6 +82,30 @@ public class VoterServiceImpl implements VoterService {
 
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
         return globalMapper.toVoterDTO(savedVoter);
+    }
+
+    private String getImage(VoterRegisterDTO voterRegisterDTO, MultipartFile image) throws IOException {
+        Files.createDirectories(Paths.get(PHOTO_DIR));
+
+        String imageFileName = null;
+        if (!image.isEmpty()) {
+            imageFileName = voterRegisterDTO.getSsnNumber() + "_" + image.getOriginalFilename();
+            var imagePath = Paths.get(DIRECTORY, "/photos").resolve(imageFileName);
+            Files.write(imagePath, image.getBytes());
+        }
+        return imageFileName;
+    }
+
+    private String getSignature(VoterRegisterDTO voterRegisterDTO, MultipartFile signature) throws IOException {
+        Files.createDirectories(Paths.get(SIGNATURE_DIR));
+
+        String signatureFileName = null;
+        if (!signature.isEmpty()) {
+            signatureFileName = voterRegisterDTO.getSsnNumber() + "_" + signature.getOriginalFilename();
+            var signaturePath = Paths.get(DIRECTORY, "/signatures").resolve(signatureFileName);
+            Files.write(signaturePath, signature.getBytes());
+        }
+        return signatureFileName;
     }
 
     @Override
@@ -124,11 +143,7 @@ public class VoterServiceImpl implements VoterService {
 
         var oldVoter = new Voter();
         BeanUtils.copyProperties(existingVoter, oldVoter);
-        var oldResidentialAddress = new Address();
-        BeanUtils.copyProperties(existingVoter.getAddress().getFirst(), oldResidentialAddress);
-        var oldMailingAddress = new Address();
-        BeanUtils.copyProperties(existingVoter.getAddress().stream().filter(address -> address.getAddressType().equals(AddressType.MAILING)).findFirst().orElseThrow(), oldMailingAddress);
-        var oldAddressList = List.of(oldResidentialAddress, oldMailingAddress);
+        var oldAddressList = getOldAddressList(existingVoter);
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
 
@@ -157,6 +172,14 @@ public class VoterServiceImpl implements VoterService {
 
         eventPublisher.publishEvent(new VoterUpdateEvent(this, oldVoter, updatedVoter, oldAddressList, updatedVoter.getAddress()));
         return globalMapper.toVoterDTO(updatedVoter);
+    }
+
+    private List<Address> getOldAddressList(Voter existingVoter){
+        var oldResidentialAddress = new Address();
+        BeanUtils.copyProperties(existingVoter.getAddress().getFirst(), oldResidentialAddress);
+        var oldMailingAddress = new Address();
+        BeanUtils.copyProperties(existingVoter.getAddress().stream().filter(address -> address.getAddressType().equals(AddressType.MAILING)).findFirst().orElseThrow(), oldMailingAddress);
+        return List.of(oldResidentialAddress, oldMailingAddress);
     }
 
     private void updateVoterStatus(Voter updatedVoter, VoterDTO voterDTO) {
@@ -223,12 +246,8 @@ public class VoterServiceImpl implements VoterService {
         return globalMapper.toVoterStatusDTOList(voterStatusRepo.findAll());
     }
 
-    private void addHistory(VoterDTO voterUpdateDTO, Voter voter) {
-        if (voterUpdateDTO.getFirstName() != null || voterUpdateDTO.getMiddleName() != null || voterUpdateDTO.getLastName() != null || voterUpdateDTO.getSuffixName() != null) {
-            NameHistory nameHistory = new NameHistory();
-            BeanUtils.copyProperties(voter, nameHistory);
-            log.info("history saved for voter id : {}", voter.getVoterId());
-            nameHistoryRepo.save(nameHistory);
-        }
+    @Override
+    public VoterResponseDTO findBySsnNumber(String ssnNumber) {
+        return voterRepo.findBySsnNumber(ssnNumber).orElseThrow(()->new DataNotFoundException("Voter not fount with ssn number : " + ssnNumber));
     }
 }

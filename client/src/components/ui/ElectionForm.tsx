@@ -33,7 +33,7 @@ const ElectionForm = () => {
   const { register, handleSubmit, reset,control } = useForm<FormValues>({
     defaultValues: {
       election_name: "",
-      election_type: "",
+      election_type: "State",
       election_date: "",
       state: "New York",
       total_seats: 0,
@@ -91,25 +91,13 @@ const ElectionForm = () => {
                 helperText={error?.election_name?.message}
               />
 
-              <FormControl fullWidth error={!!error?.election_type}>
-                <InputLabel id="election-type-label">Election Type</InputLabel>
-                <Controller
-                  name="election_type"
-                  control={control}
-                  rules={{ required: "Election type is required" }}
-                  render={({ field }) => (
-                    <Select {...field} labelId="election-type-label" label="Election Type">
-                      <MenuItem value="General">General</MenuItem>
-                      <MenuItem value="Primary">Primary</MenuItem>
-                      <MenuItem value="Runoff">Runoff</MenuItem>
-                      <MenuItem value="Special">Special</MenuItem>
-                    </Select>
-                  )}
-                />
-                {error?.election_type && (
-                  <FormHelperText>{error?.election_type?.message}</FormHelperText>
-                )}
-              </FormControl>
+              <TextField
+                fullWidth
+                label="Election Type"
+                value="State"
+                InputProps={{ readOnly: true }}
+                {...register("election_type")}
+              />
             </Box>
 
             <Box display="flex" gap={2}>

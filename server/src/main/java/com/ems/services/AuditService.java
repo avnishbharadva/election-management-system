@@ -9,6 +9,4 @@ public interface AuditService {
 
     @EventListener
     void voterAudit(VoterUpdateEvent event);
-
-    void addressAudit(Voter voter, Address oldAddress, Address newAddress);
 }

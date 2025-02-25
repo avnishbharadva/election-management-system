@@ -1,8 +1,7 @@
 package com.ems.controllers;
 
-import com.ems.dtos.VoterDTO;
 import com.ems.dtos.VoterRegisterDTO;
-import com.ems.dtos.VoterSearchDTO;
+import com.ems.dtos.VoterDTO;
 import com.ems.dtos.VoterStatusDTO;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.VoterService;
@@ -26,7 +25,7 @@ import java.util.List;
 @RequestMapping("/api/voters")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
-public class    VoterController {
+public class VoterController {
     private final VoterService voterService;
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -65,9 +64,9 @@ public class    VoterController {
         return ResponseEntity.ok(voterService.updateVoter(voterId, voterDTO, profileImg, signImg));
     }
 
+
     @GetMapping("/status")
-    public ResponseEntity<List<VoterStatusDTO>> getAllStatus() {
+    public ResponseEntity<List<VoterStatusDTO>> getAllStatus(){
         return ResponseEntity.ok(voterService.getAllStatus());
     }
-
 }

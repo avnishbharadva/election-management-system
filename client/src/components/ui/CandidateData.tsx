@@ -108,7 +108,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  ListItemIcon
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
 import { fetchCandidates, fetchCandidateUpdateDetails } from "../../store/feature/candidate/candidateAPI";
@@ -118,6 +119,9 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { StyledButton } from "../../style/CommanStyle";
 import { IFormInput } from "../../store/feature/candidate/types";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ToastContainer } from "react-toastify";
 
 const CandidateData = () => {
   const [open, setOpen] = useState(false);
@@ -191,7 +195,8 @@ const CandidateData = () => {
     dispatch(fetchCandidates());
   }, [dispatch]);
 
-  return (
+  return (<>
+    <ToastContainer position="top-right" autoClose={3000} />
     <TableContainer component={Paper} sx={{ marginTop: 2, width: "90%", boxShadow: '0px 4px 10px rgba(128, 128, 128, 0.5)' }}>
       <Table>
         <TableHead>
@@ -337,6 +342,7 @@ const CandidateData = () => {
         </DialogActions>
       </Dialog>
     </TableContainer>
+    </>
   );
 };
 
