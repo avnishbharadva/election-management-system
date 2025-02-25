@@ -176,7 +176,7 @@ public class VoterServiceImpl implements VoterService {
 
     private List<Address> getOldAddressList(Voter existingVoter){
         var oldResidentialAddress = new Address();
-        BeanUtils.copyProperties(existingVoter.getAddress().getFirst(), oldResidentialAddress);
+        BeanUtils.copyProperties(existingVoter.getAddress().get(0), oldResidentialAddress);
         var oldMailingAddress = new Address();
         BeanUtils.copyProperties(existingVoter.getAddress().stream().filter(address -> address.getAddressType().equals(AddressType.MAILING)).findFirst().orElseThrow(), oldMailingAddress);
         return List.of(oldResidentialAddress, oldMailingAddress);

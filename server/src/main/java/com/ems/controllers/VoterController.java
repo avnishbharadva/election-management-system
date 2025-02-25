@@ -2,6 +2,7 @@ package com.ems.controllers;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterDTO;
+import com.ems.dtos.VoterSearchDTO;
 import com.ems.dtos.VoterStatusDTO;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.VoterService;

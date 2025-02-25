@@ -86,14 +86,14 @@ public class AuditServiceImpl implements AuditService {
             if (!addressFields.isEmpty()) {
 
                 eventPublisher.publishEvent(new AddressUpdateEvent(this,newAddress));
-                if(i==0 && !addressFields.getFirst().isEmpty()){
-                    oldField.put("residentialAddress", addressFields.getFirst());
-                    updateField.put("residentialAddress", addressFields.getLast());
+                if(i==0 && !addressFields.get(0).isEmpty()){
+                    oldField.put("residentialAddress", addressFields.get(0));
+                    updateField.put("residentialAddress", addressFields.get(1));
                     log.info("residential address change : {}", addressFields);
                 }
-                if(i==1 && !addressFields.getFirst().isEmpty()){
-                    oldField.put("mailingAddress", addressFields.getFirst());
-                    updateField.put("mailingAddress", addressFields.getLast());
+                if(i==1 && !addressFields.get(0).isEmpty()){
+                    oldField.put("mailingAddress", addressFields.get(0));
+                    updateField.put("mailingAddress", addressFields.get(1));
                     log.info("mailing address change : {}",addressFields);
                 }
             }
