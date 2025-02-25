@@ -107,4 +107,10 @@ public interface GlobalMapper {
     Role toRole(RoleRegisterDTO roleRegisterDTO);
     RoleRegisterDTO toRoleRegisterDTO(Role role);
     List<RoleResponseDTO> toRoleResponseDTO(List<Role> role);
+
+    @Mapping(target = "partySymbol", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Party toPartyUpdate(PartyDTO partyDTO, @MappingTarget Party party);
+    @Mapping(target = "partySymbol", ignore = true)
+    PartyDTO toPartyDTOUpdate(Party party,@MappingTarget PartyDTO partyDTO);
 }
