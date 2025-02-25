@@ -2,10 +2,9 @@ package com.ems.controllers;
 
 import com.ems.dtos.VoterRegisterDTO;
 import com.ems.dtos.VoterDTO;
-import com.ems.dtos.VoterResponseDTO;
+import com.ems.dtos.VoterSearchDTO;
 import com.ems.dtos.VoterStatusDTO;
 import com.ems.exceptions.DataNotFoundException;
-import com.ems.projections.VoterView;
 import com.ems.services.VoterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/voters")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class VoterController {
     private final VoterService voterService;
 
@@ -46,8 +46,13 @@ public class VoterController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
             @RequestParam(required = false) String dmvNumber,
             @RequestParam(required = false) String ssnNumber,
-            @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String[] sort) {
-        Page<VoterDTO> result = voterService.searchVoters(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, page, size, sort);
+            @RequestParam(required = false) String city,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String[] sort) {
+
+        VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, city);
+        Page<VoterDTO> result = voterService.searchVoters(searchDTO, page, size, sort);
         return ResponseEntity.ok(result);
     }
 
@@ -64,10 +69,5 @@ public class VoterController {
     @GetMapping("/status")
     public ResponseEntity<List<VoterStatusDTO>> getAllStatus(){
         return ResponseEntity.ok(voterService.getAllStatus());
-    }
-
-    @GetMapping("/{ssnNumber}")
-    public ResponseEntity<VoterResponseDTO> findBySsnNumber(@PathVariable String ssnNumber){
-        return ResponseEntity.ok(voterService.findBySsnNumber(ssnNumber));
     }
 }

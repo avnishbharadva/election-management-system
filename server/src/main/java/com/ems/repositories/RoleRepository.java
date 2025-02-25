@@ -1,11 +1,12 @@
 package com.ems.repositories;
 
-import com.ems.entities.Role;
+import com.ems.entities.Officers;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> findByUsername(String username);}
+public interface RoleRepository extends JpaRepository<Officers, Long> {
+    Optional<Officers> findByEmail(String email);
+}

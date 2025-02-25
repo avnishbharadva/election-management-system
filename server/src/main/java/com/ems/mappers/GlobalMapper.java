@@ -104,7 +104,8 @@ public interface GlobalMapper {
                 .map(this::toAddressDTO)
                 .orElse(null);
     }
-    Role toRole(RoleRegisterDTO roleRegisterDTO);
-    RoleRegisterDTO toRoleRegisterDTO(Role role);
-    List<RoleResponseDTO> toRoleResponseDTO(List<Role> role);
+
+    Officers toRole(OfficersRegisterDTO officersRegisterDTO);
+    OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
+    List<OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
 }

@@ -12,4 +12,5 @@ public class VoterSearchDTO {
     private LocalDate dateOfBirth;
     private String dmvNumber;
     private String ssnNumber;
+    private String city;
 }

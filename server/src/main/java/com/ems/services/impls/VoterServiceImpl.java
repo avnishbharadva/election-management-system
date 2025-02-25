@@ -2,6 +2,7 @@ package com.ems.services.impls;
 
 import com.ems.dtos.*;
 import com.ems.entities.Address;
+import com.ems.entities.NameHistory;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.events.VoterUpdateEvent;
@@ -9,6 +10,7 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.*;
+import com.ems.services.AuditService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,11 +109,17 @@ public class VoterServiceImpl implements VoterService {
     }
 
     @Override
-    public
-    Page<VoterDTO> searchVoters(String firstName, String lastName, LocalDate dateOfBirth, String dmvNumber, String ssnNumber, int page, int size, String[] sort) {
-        VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber);
-        log.info("searching starts for : {}", searchDTO);
-        return voterRepo.findBy(Example.of(globalMapper.toVoter(searchDTO), ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)), query -> query.sortBy(getSort(sort)).page(PageRequest.of(page, size, getSort(sort)))).map(globalMapper::toVoterDTO);
+    public Page<VoterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
+        log.info("Searching voters with filters: {}", searchDTO);
+        Pageable pageable = PageRequest.of(page, size, getSort(sort));
+        return  voterRepo.searchVoters(
+                searchDTO.getFirstName(),
+                searchDTO.getLastName(),
+                searchDTO.getDateOfBirth(),
+                searchDTO.getDmvNumber(),
+                searchDTO.getSsnNumber(),
+                searchDTO.getCity(),
+                pageable).map(globalMapper::toVoterDTO);
     }
 
     private Sort getSort(String[] sort) {
@@ -151,6 +159,7 @@ public class VoterServiceImpl implements VoterService {
                         .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + voterDTO.getPartyId()));
                 updatedVoter.setParty(party);
             }
+
             updateVoterStatus(updatedVoter, voterDTO);
         }
 
@@ -167,7 +176,7 @@ public class VoterServiceImpl implements VoterService {
 
     private List<Address> getOldAddressList(Voter existingVoter){
         var oldResidentialAddress = new Address();
-        BeanUtils.copyProperties(existingVoter.getAddress().getFirst(), oldResidentialAddress);
+        BeanUtils.copyProperties(existingVoter.getAddress().get(0), oldResidentialAddress);
         var oldMailingAddress = new Address();
         BeanUtils.copyProperties(existingVoter.getAddress().stream().filter(address -> address.getAddressType().equals(AddressType.MAILING)).findFirst().orElseThrow(), oldMailingAddress);
         return List.of(oldResidentialAddress, oldMailingAddress);
@@ -230,6 +239,7 @@ public class VoterServiceImpl implements VoterService {
         globalMapper.addressDTOToAddress(addressDTO, address);
         addressRepo.save(address);
     }
+
 
     @Override
     public List<VoterStatusDTO> getAllStatus() {
