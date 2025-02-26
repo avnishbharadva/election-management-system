@@ -7,6 +7,7 @@ const voterApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://172.16.16.67:8081",
     }),
+    tagTypes: ['Voters'],
     endpoints: (builder) => ({
         searchVoters: builder.query({
             query: ({ page = 0, size = 10, firstName, lastName, dateOfBirth, dmvNumber, ssnNumber }) => {
@@ -18,8 +19,15 @@ const voterApi = createApi({
                 console.log(queryParams)
                 return `/api/voters/search?${queryParams}`;
             },
-            transformResponse: (response: any) => response.content,
-
+            transformResponse: (response: any) => {
+                console.log('Raw Response:', response); // Log the response from the server
+                return {
+                  data: response.content,
+                  totalElements: response.totalElements,
+                };
+              },
+              
+             
         }),
 
         registerVoter: builder.mutation({
@@ -47,7 +55,7 @@ const voterApi = createApi({
 
 
             },
-
+       
         }),
 
 
@@ -80,6 +88,7 @@ const voterApi = createApi({
 
                 }
             },
+          
 
 
         })

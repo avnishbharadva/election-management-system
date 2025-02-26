@@ -85,8 +85,9 @@ const AddVoter = () => {
     page: searchParams.page,
     size: searchParams.size,
     ssnNumber: searchParams.ssnNumber,
-  } as any);
+  } );
 
+  const voters = data?.data || [];
 
 
 
@@ -106,14 +107,14 @@ const AddVoter = () => {
   };
 
   const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setSearchParams((prev) => ({ ...prev, page: newPage }));
+    setSearchParams((prev) => ({ ...prev, page: newPage,size: searchParams.size }));
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParams((prev) => ({
       ...prev,
       size: parseInt(event.target.value, 10),
-      page: 0,
+      page: searchParams.page,
     }));
   };
 
@@ -142,7 +143,7 @@ const AddVoter = () => {
         <Box>
 
 
-          {data && (searchParams?.ssnNumber) && (
+          {voters && (searchParams?.ssnNumber) && (
             <Model open={open} handleClose={handleClose}>
               <VoterForm />
             </Model>
@@ -150,7 +151,7 @@ const AddVoter = () => {
         </Box>
 
         <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-          <Table sx={{ minWidth: "max-content", tableLayout: "auto", whiteSpace: "nowrap" }}>
+          <Table stickyHeader sx={{ minWidth: "max-content", tableLayout: "auto", whiteSpace: "nowrap" }}>
             <TableHead>
               <TableRow>
                 {columns.map((col) => {
@@ -162,9 +163,17 @@ const AddVoter = () => {
                 })}
               </TableRow>
             </TableHead>
-            <TableBody>
-              {data ? (
-                data.map((voter: any) => (
+            <TableBody> 
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={10} align="center">Loading...</TableCell>
+              </TableRow>
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={10} align="center">Error loading voters</TableCell>
+              </TableRow>
+            ) :voters? (
+                voters.map((voter: any) => (
                   <TableRow key={voter.ssnNumber}>
                     <TableCell>{voter.statusId}</TableCell>
                     <TableCell>{voter.ssnNumber}</TableCell>

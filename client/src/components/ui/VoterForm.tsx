@@ -265,7 +265,7 @@ const VoterForm = ({ voter }: any) => {
 
         {/* Submit and Reset Buttons */}
         <Box display='flex' alignItems='center' justifyContent='center' gap='2rem' sx={{ marginTop: '20px' }}>
-          <StyledButton variant="contained" type="submit" disabled={isSubmitting || !isValid}> {isSubmitting ? "Submitting..." : "Submit"} </StyledButton>
+          <StyledButton variant="contained" type="submit" disabled={isSubmitting || !isValid}>  { `${voter?.voterId ? 'Update Voter' : 'Add Voter'}` } </StyledButton>
           <StyledButton variant="contained" type="reset">Reset</StyledButton>
         </Box>
       </form>
