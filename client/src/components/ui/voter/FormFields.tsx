@@ -17,7 +17,11 @@ type FieldProps = {
     isRequired?: boolean;
     rules?: any;
     isdesabled?: boolean;
-    customfield?: {}
+    customfield?: {
+        readOnly?: boolean;
+        [key: string]: any;
+
+    }
 
 }
 
@@ -28,7 +32,8 @@ export const NumberField = ({
     minLength = 5,
     maxLength = 11,
     fixedLength,
-    customfield={}
+    customfield={
+    }
 }: FieldProps) => {
 
     const validationRules: any = {
@@ -75,7 +80,8 @@ export const NumberField = ({
                     helperText={fieldState?.error?.message}
 
                     inputProps={{
-                        maxLength: fixedLength || maxLength, // Limit the number of characters based on fixedLength or maxLength
+                        maxLength: fixedLength || maxLength,
+                        readOnly: customfield?.readOnly|| false,  
                     }}
                     onInput={(e: any) => {
                         let value = e.target.value;

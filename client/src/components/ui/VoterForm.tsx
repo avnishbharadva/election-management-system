@@ -40,11 +40,10 @@ type FormData = {
 }
 
 
-const VoterForm = ({ voter,ssnNumber }: any) => {
+const VoterForm = ({ voter,ssnNumber  }: any) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [sameAddress, setSameAddress] = useState(false);
-
 
   const defaultValues: FormData = {
 
@@ -52,7 +51,7 @@ const VoterForm = ({ voter,ssnNumber }: any) => {
     middleName: "",
     lastName: "",
     email: "",
-    ssnNumber: ssnNumber || "",
+    ssnNumber:" ",
     phoneNumber: "",
     dmvNumber: "",
     gender: "",
@@ -89,6 +88,8 @@ const VoterForm = ({ voter,ssnNumber }: any) => {
 
 
   useEffect(() => {
+
+    ssnNumber && reset((prv)=>({...prv,ssnNumber:ssnNumber}))
     if (voter) {
       reset({
         firstName: voter.firstName || "",
@@ -136,6 +137,7 @@ const VoterForm = ({ voter,ssnNumber }: any) => {
       return;
     }
     if (!signature) { toast.error("Please upload signature"); return; } 
+    console.log(data ,ssnNumber)
 
     try {
       const result: any = await toast.promise(
@@ -191,7 +193,7 @@ const VoterForm = ({ voter,ssnNumber }: any) => {
 
         <Box display='flex' alignItems='center' gap='1rem' sx={{ marginTop: '20px' }}>
           <NameField control={control} name="suffixName" label="Suffix Name" minLength={0} maxLength={10} />
-          <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{ disabled: true,}}  />
+          <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{readOnly:true}}  />
           <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
 
         </Box>
