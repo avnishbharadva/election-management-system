@@ -10,7 +10,7 @@ import dataURLtoFile  from "../../../helper/dataURLtoFile";
             query: () => '/api/party'
         }),
 
-        PaetyById:builder.query({
+        PartyById:builder.query({
             query: (partyId) => `/api/party/${partyId}`
         }),
 
@@ -22,22 +22,20 @@ import dataURLtoFile  from "../../../helper/dataURLtoFile";
                     "party",    
                     new Blob([JSON.stringify(post)], { type: "application/json" })
                 )
-
-                img ? formData.append('image', dataURLtoFile(img, 'profile.jpg')) : console.error(" voter image is not defined");
-
+                if (img) {
+                    const profileFile = dataURLtoFile(img, "profile.jpg");
+                    formData.append('image', profileFile);
+                }
                 return {
                     url: '/api/party',
                     method: 'POST',
-                    body: formData,
-                    header: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    body: formData,        
                 }
             }
         })
     })
 })
 
-export const {useRegisterPartyMutation, usePartyListQuery} = partyApi
+export const {useRegisterPartyMutation,  usePartyListQuery , usePartyByIdQuery} = partyApi;
 
 export default partyApi

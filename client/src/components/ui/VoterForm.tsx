@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, useFormContext } from 'react-hook-form';
-import { Box, Button, Checkbox, FormControlLabel, Snackbar, Alert } from '@mui/material';
-import {voterPost} from '../../store/feature/voter/VoterAPI'
+import { Box, Button, Checkbox, FormControlLabel, Snackbar, Alert, Typography } from '@mui/material';
+
 import { Title, DividerStyle } from '../../style/CandidateFormCss';
 import ImageUpload from './voter/ImageUpload';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore, StatusField } from './voter/VoterDetails';
+import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore, StatusField } from './voter/FormFields';
 import { StyledButton } from '../../style/CommanStyle';
+import { useEditVoterMutation, useRegisterVoterMutation } from '../../store/feature/voter/VoterAction';
+import { toast } from 'react-toastify';
+
+
 
 type Address = {
   addressLine: string;
@@ -13,95 +17,168 @@ type Address = {
   city: string;
   county: string;
   zipCode: number | string;
-  addressType:string;
-};
+  adressType: string
+}
 
 type FormData = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  suffixName: string;
-  email: string;
-  ssnNumber: string;
-  phoneNumber: number;
-  dmvNumber: number;
-  gender: string;
-  partyId: number;
-  dateOfBirth: string;
-  firstVoterYear: number;
-  hasVotedBefore: boolean;
+  statusId: number | string
+  firstName: string
+  middleName: string
+  lastName: string
+  suffixName: string
+  email: string
+  ssnNumber: string
+  phoneNumber: number | string
+  dmvNumber: number | string
+  gender: string
+  partyId: number | string
+  dateOfBirth: string
+  firstVotedYear: number | string
+  hasVotedBefore: boolean
   residentialAddress: Address;
   mailingAddress: Address;
-  statusId: number | null
-};
+}
 
-const VoterForm = () => {
+
+const VoterForm = ({ voter }: any) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [sameAddress, setSameAddress] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [openSnackbar, setOpenSnackbar] = useState(false); // State for Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+
+
+
   const defaultValues: FormData = {
+
     firstName: "",
     middleName: "",
     lastName: "",
     email: "",
     ssnNumber: "",
-    phoneNumber: 0,
-    dmvNumber: 0,
+    phoneNumber: "",
+    dmvNumber: "",
     gender: "",
     suffixName: "",
-    partyId: 1,
+    partyId: "",
     dateOfBirth: "",
-    firstVoterYear: 0,
+    firstVotedYear: "",
     hasVotedBefore: false,
-    residentialAddress: { addressLine: "", aptNumber: "", city: "", county: "", zipCode: "", addressType:"RESIDENTIAL" },
-    mailingAddress: { addressLine: "", aptNumber: "", city: "", county: "", zipCode: "", addressType:"MAILING" },
-    statusId: null
+    statusId: "",
+    residentialAddress: {
+      addressLine: "",
+      aptNumber: "",
+      city: "",
+      county: "",
+      zipCode: "",
+      adressType: "RESIDENTIAL"
+    },
+    mailingAddress: {
+      addressLine: "",
+      aptNumber: "",
+      city: "",
+      county: "",
+      zipCode: "",
+      adressType: "MAILING"
+    }
+  }
 
-  };
+  const { control, handleSubmit, formState, reset } = useForm<FormData>({
+    defaultValues,
+    mode: "onTouched",
+  })
+  const { isSubmitting, isSubmitSuccessful, isValid } = formState
 
-  const { control, handleSubmit, formState: { errors }, reset } = useForm<FormData>({ defaultValues });
+
+
+  useEffect(() => {
+    if (voter) {
+      reset({
+        firstName: voter.firstName || "",
+        middleName: voter.middleName || "",
+        lastName: voter.lastName || "",
+        email: voter.email || "",
+        ssnNumber: voter.ssnNumber || "",
+        phoneNumber: voter.phoneNumber || "",
+        dmvNumber: voter.dmvNumber || "",
+        gender: voter.gender || "",
+        suffixName: voter.suffixName || "",
+        partyId: voter.partyId || "",
+        dateOfBirth: voter.dateOfBirth || "",
+        firstVotedYear: voter.firstVotedYear || "",
+        hasVotedBefore: voter.hasVotedBefore || false,
+        statusId: voter.statusId || "",
+        residentialAddress: {
+          addressLine: voter.residentialAddress?.addressLine || "",
+          aptNumber: voter.residentialAddress?.aptNumber || "",
+          city: voter.residentialAddress?.city || "",
+          county: voter.residentialAddress?.county || "",
+          zipCode: voter.residentialAddress?.zipCode || "",
+          adressType: voter.residentialAddress?.adressType
+        },
+        mailingAddress: {
+          addressLine: voter.mailingAddress?.addressLine || "",
+          aptNumber: voter.mailingAddress?.aptNumber || "",
+          city: voter.mailingAddress?.city || "",
+          county: voter.mailingAddress?.county || "",
+          zipCode: voter.mailingAddress?.zipCode || "",
+          adressType: voter.mailingAddress?.adressType
+        }
+      });
+    }
+  }, [voter, reset]);
+
+
+  const [voterPost, ] = useRegisterVoterMutation()
+  const [voterEdit] = useEditVoterMutation()
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    setIsSubmitting(true); // this will disable the voter
-    console.log("Form Data:", data);
+
+    if (!profilePic) {
+      toast.error("Please upload profile picture");
+      return;
+    }
+    if (!signature) { toast.error("Please upload signature"); return; } 
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)) 
-      const response = await voterPost({ post: data, img: profilePic, sign: signature });
-      console.log('Response',response);
-      console.log("Snackbar should open");
-      setSnackbarOpen(true); // Show Snackbar when form is successfully submitted
+      const result: any = await toast.promise(
+        voter?.voterId ? voterEdit({ voterId: voter?.voterId, post: data, img: profilePic, sign: signature }).unwrap()
+          : voterPost({ post: data, img: profilePic, sign: signature }).unwrap(),
+        {
+          pending: "Submitting...",
+          success: "Successfull!",
+        
+        },
+      )
+     
+      if(result){
+        reset(defaultValues)
+        setProfilePic(null)   
+        setSignature(null)
+      }
 
-      //Reset after successfull
-      reset();
-      setProfilePic(null);
-      setSignature(null);
-      setSameAddress(false);
+    }
+    catch (err:any) {
+      console.log(err)
+      toast.error(`Error: ${err.data?.message || err.message || 'An unexpected error occurred'}`);
+    }
+  }
 
-    } catch (error) {
-       console.error("Error registering voter:", error);
-            setSnackbarMessage("Error registering voter. Please try again.");
-            setSnackbarSeverity("error");
-            setOpenSnackbar(true);
-    
-  } finally {
-    setIsSubmitting(false); // Re-enable the button in either case
-}
-  };
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Title variant='h5' align='center' gutterBottom>VOTER REGISTRATION</Title>
+        {voter?.voterId && <Typography variant='overline' gutterBottom>voterId:{voter?.voterId}</Typography>}
         <DividerStyle />
 
         {/* Personal Information Section */}
-        <Title variant='h6' sx={{ marginTop: '20px' }}>Personal Information</Title>
+        <Title variant='h6' sx={{ marginTop: '20px' , marginBottom:'20px'  
+        }}>Personal Information</Title>
         <Box display='flex' alignItems='center' gap='1rem'>
           <NameField control={control} name="firstName" label="First Name" minLength={3} maxLength={100} />
           <NameField control={control} name="middleName" label="Middle Name" minLength={3} maxLength={100} />
@@ -118,11 +195,11 @@ const VoterForm = () => {
           <GenderField label='Gender: ' name='gender' control={control} />
         </Box>
 
-        
+
         <Box display='flex' alignItems='center' gap='1rem' sx={{ marginTop: '20px' }}>
-        <NameField control={control} name="suffixName" label="Suffix Name" minLength={3} maxLength={7} />
-        <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} />
-        <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
+          <NameField control={control} name="suffixName" label="Suffix Name" minLength={0} maxLength={10} />
+          <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} />
+          <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
 
         </Box>
 
@@ -136,7 +213,7 @@ const VoterForm = () => {
             <FirstVoterYear name='firstVoterYear' control={control} label='First Voter Year' />
           </Box>
           <Box display='flex' alignItems='center' sx={{ marginTop: '20px' }}>
-          <StatusField label='status: ' name='statusId' control={control} />
+            <StatusField label='status: ' name='statusId' control={control} />
           </Box>
         </Box>
 
@@ -167,13 +244,13 @@ const VoterForm = () => {
             <Title variant='h6'>Mailing Address</Title>
             <DividerStyle />
             <Box display='flex' alignItems='center' gap='1rem'>
-              <NameField label='Address Line' name='mailingAddress.addressLine' control={control} />
-              <NameField label='Apt Number' name='mailingAddress.aptNumber' control={control} />
+              <NameField label='Address Line' name='mailingAddress.addressLine' control={control} isRequired={false} />
+              <NameField label='Apt Number' name='mailingAddress.aptNumber' control={control} isRequired={false} />
             </Box>
             <Box display='flex' alignItems='center' gap='1rem' sx={{ marginTop: '20px' }}>
-              <NameField label='City' name="mailingAddress.city" control={control} />
-              <NameField label='County' name='mailingAddress.county' control={control} />
-              <NameField label="Zipcode" name='mailingAddress.zipCode' control={control} />
+              <NameField label='City' name="mailingAddress.city" control={control} isRequired={false} />
+              <NameField label='County' name='mailingAddress.county' control={control} isRequired={false} />
+              <NameField label="Zipcode" name='mailingAddress.zipCode' control={control} isRequired={false} />
             </Box>
           </Box>
         )}
@@ -188,17 +265,10 @@ const VoterForm = () => {
 
         {/* Submit and Reset Buttons */}
         <Box display='flex' alignItems='center' justifyContent='center' gap='2rem' sx={{ marginTop: '20px' }}>
-          <StyledButton variant="contained" type="submit" disabled={isSubmitting}> {isSubmitting ? "Submitting..." : "Submit"} </StyledButton>
+          <StyledButton variant="contained" type="submit" disabled={isSubmitting || !isValid}> {isSubmitting ? "Submitting..." : "Submit"} </StyledButton>
           <StyledButton variant="contained" type="reset">Reset</StyledButton>
         </Box>
       </form>
-
-      {/* Snackbar Component */}
-      <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
-          Form submitted successfully!
-        </Alert>
-      </Snackbar>
     </>
   );
 };

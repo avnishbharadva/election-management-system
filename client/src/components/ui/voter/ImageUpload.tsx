@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { DropzoneContainer } from '../../../style/CandidateFormCss';
+import { Controller } from "react-hook-form";
  
 interface ImageUploadProps {
   label: string; // The label for the upload (e.g., "Profile Picture", "Signature")
@@ -23,6 +24,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ label, onImageUpload, imagePr
   return (
     <Box>
       <Typography variant="subtitle1">{label}</Typography>
+      
       <DropzoneContainer {...getRootProps()}>
         <input {...getInputProps()} />
         {imagePreview ? (

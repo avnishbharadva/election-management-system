@@ -68,7 +68,7 @@ export const NumberField = ({
                     fullWidth
                     error={!!fieldState?.error}
                     helperText={fieldState?.error?.message}
-                    
+
                     inputProps={{
                         maxLength: fixedLength || maxLength, // Limit the number of characters based on fixedLength or maxLength
                     }}
@@ -184,46 +184,38 @@ export const GenderField = ({ control, name }: FieldProps) => {
 // Party Selector Field
 export const PartyField = ({ control, name, label }: FieldProps) => {
 
-    const {data ,isError ,isLoading } = usePartyListQuery({})
-    console.log( 'party ',data, isError, isLoading)
-   
-   
-   
-    if(isLoading){
-       return <div>loading...</div>
-    }
-   
-    if(isError){
-       return <div>something else</div>
-    }
-   
+    const { data, isError, isLoading }: any = usePartyListQuery({})
 
-    
+
+
+
     return (
         <Controller
-        name={name}
-        control={control}
-        rules={{
-            required: "Party selection is required"
-        }}
-        render={({ field, fieldState }) => (
-            <FormControl fullWidth>
-                <InputLabel>Select Party</InputLabel>
-                <Select
-                    label={label}
+            name={name}
+            control={control}
+            rules={{
+                required: "Party selection is required"
+            }}
+            render={({ field, fieldState }) => (
+                <FormControl fullWidth>
+                    <InputLabel>Select Party</InputLabel>
+                    <Select
+                        label={label}
 
-                    {...field}>
-                    {data?.map((party:any) => (
-                        <MenuItem  key={party.partyId} value={party.partyId}>
-                            {party.partyName} 
-                        </MenuItem>
-                    ))}
+                        {...field}>
+                     
+                        {data?.map((party: any) => (
+                            
+                            <MenuItem key={party.partyId} value={party.partyId}>
+                                {party.partyName}
+                            </MenuItem>
+                        ))}
 
-                    
-                </Select>
-                {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
-            </FormControl>
-        )}
+
+                    </Select>
+                    {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
+                </FormControl>
+            )}
         />
     );
 }
@@ -326,24 +318,24 @@ export const HasVotedBefore = ({ control, name, label }: FieldProps) => {
 
 export const StatusField = ({ control, name }: FieldProps) => {
     return (
-      <Controller
-        name={name}
-        control={control}
-        rules={{ required: "Status is required" }}
-        defaultValue={1} // Provide a default value!  This is the key fix
-        render={({ field, fieldState }) => (
-          <>
-            <FormLabel>Status</FormLabel>
-            <RadioGroup {...field} row>
-              <FormControlLabel value={1} control={<Radio />} label="Active" />
-              <FormControlLabel value={2} control={<Radio />} label="Inactive" />
-              <FormControlLabel value={3} control={<Radio />} label="Reject" />
-              <FormControlLabel value={4} control={<Radio />} label="Under Review" /> 
-              <FormControlLabel value={5} control={<Radio />} label="Cancel" />
-            </RadioGroup>
-            {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
-          </>
-        )}
-      />
+        <Controller
+            name={name}
+            control={control}
+            rules={{ required: "Status is required" }}
+            defaultValue={1} 
+            render={({ field, fieldState }) => (
+                <>
+                    <FormLabel sx={{ marginRight: '10px' }} >Status</FormLabel>
+                    <RadioGroup {...field} row>
+                        <FormControlLabel value={1} control={<Radio />} label="Active" />
+                        <FormControlLabel value={2} control={<Radio />} label="Inactive" />
+                        <FormControlLabel value={3} control={<Radio />} label="Reject" />
+                        <FormControlLabel value={4} control={<Radio />} label="Under Review" />
+                        <FormControlLabel value={5} control={<Radio />} label="Cancel" />
+                    </RadioGroup>
+                    {fieldState?.error && <p style={{ color: 'red' }}>{fieldState?.error.message}</p>}
+                </>
+            )}
+        />
     );
-  };
+};

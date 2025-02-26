@@ -1,18 +1,3 @@
-<<<<<<< Updated upstream
-import Model from "../ui/Model"
-import { useState } from "react"
-import VoterForm from "../ui/VoterForm"
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Popover, Button, TablePagination } from "@mui/material"
-import SearchComponent from "../ui/SearchVoter"
-import { searchVoters } from "../../store/feature/voter/VoterAPI"
-import useQuery from "../../Hook/usequery"
-import ViewVoter from '../ui/ViewVoter'
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-const columns =[ "Status", "SSN", 'DMV' ,'FirstName', 'MiddleName', 'LastName', 'Gender','DOB','Email Id', 'Action' ];
-=======
 import Model from "../ui/Model";
 import { useState } from "react";
 import VoterForm from "../ui/VoterForm";
@@ -32,53 +17,57 @@ import {
   TablePagination,
 } from "@mui/material";
 import SearchComponent from "../ui/SearchVoter";
-import { searchVoters } from "../../store/feature/voter/VoterAPI";
-import useQuery from "../../Hook/usequery";
+
+
 import ViewVoter from "../ui/ViewVoter";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
+
+import { useSearchVotersQuery } from "../../store/feature/voter/VoterAction";
 
 const columns = ["Status", "SSN", "DMV", "FirstName", "MiddleName", "LastName", "Gender", "DOB", "Email Id", "Action"];
->>>>>>> Stashed changes
 
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({
     page: 0,
     size: 10,
-<<<<<<< Updated upstream
-    ssnNumber:""
-  
+    ssnNumber: ""
   });
-  const [open, setOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // for Popover
-  const [selectedVoter, setSelectedVoter] = useState<any>(null); // Store selected voter
-  const [actionType, setActionType] = useState<"view" | "edit">("edit");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  
-=======
-    ssnNumber: "",
-  });
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // for Menu
   const [selectedVoter, setSelectedVoter] = useState<any>(null); // Store selected voter
   const [actionType, setActionType] = useState<"view" | "edit">("edit");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editModel, setEditModel] = useState(false);
   const menuOpen = Boolean(anchorEl);
+  const [editOpen, setEditOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
 
->>>>>>> Stashed changes
+
+
+
+
+
+
   const handleOpen = (type: "view" | "edit", voter: any) => {
+    if (type === "edit") {
+      setEditOpen(true);
+      setViewOpen(false); // Ensure view is closed
+    }
     setActionType(type);
     setSelectedVoter(voter);
     setOpen(true);
-<<<<<<< Updated upstream
-  };  
- 
-=======
   };
 
->>>>>>> Stashed changes
+
+  const handleEditClose = () => {
+    setSelectedVoter(null);
+    setEditOpen(false);
+  };
+
+
+
   const handleClose = () => {
     setSelectedVoter(null);
     setOpen(false);
@@ -90,28 +79,24 @@ const AddVoter = () => {
       ssnNumber: value,
     }));
   };
-<<<<<<< Updated upstream
-  const handleClosePopover = () => {
-=======
+
+
+  const { data, isError, isLoading }: any = useSearchVotersQuery({
+    page: searchParams.page,
+    size: searchParams.size,
+    ssnNumber: searchParams.ssnNumber,
+  } as any);
+
+
+
 
   const handleCloseMenu = () => {
->>>>>>> Stashed changes
     setAnchorEl(null);
     setSelectedVoter(null); // Reset selected voter
   };
 
-<<<<<<< Updated upstream
-  // const handleAction = (action: "view" | "edit" | "delete", voter: any) => {
-  //   console.log(`Performing ${action} on voter`, voter);
-  //   // You can implement your edit, view, delete logic here
-  // };
-
- const handleClick = (event: React.MouseEvent, voter: any) => {
-    setAnchorEl(event.currentTarget as HTMLElement);
-=======
   const handleClick = (event: React.MouseEvent<HTMLElement>, voter: any) => {
     setAnchorEl(event.currentTarget);
->>>>>>> Stashed changes
     setSelectedVoter(voter); // Set the voter whose actions are clicked
   };
 
@@ -124,55 +109,18 @@ const AddVoter = () => {
     setSearchParams((prev) => ({ ...prev, page: newPage }));
   };
 
-<<<<<<< Updated upstream
-  // const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchParams((prev) => ({ ...prev, size: parseInt(event.target.value, 10), page: 1 })); // Reset page
-  // };
-  const handleRowsPerPageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-=======
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
->>>>>>> Stashed changes
     setSearchParams((prev) => ({
       ...prev,
       size: parseInt(event.target.value, 10),
-      page: 0, // Reset page to 0
+      page: 0,
     }));
   };
 
-<<<<<<< Updated upstream
 
-  const {data ,isLoading , error } = useQuery(searchVoters, searchParams)
-
-  const totalElements = data?.totalElements || 0 ;
-  console.log("Data from Query", data);
-  console.log("SearchParams:", searchParams);
- 
-  return (
-    <>
-<Box>
-<Box className="search-container">
-
-<SearchComponent 
-        name="SSN Number"
-        input={searchParams.ssnNumber} 
-        length={9} 
-        onChange={handleSearchChange} 
-        onReload={()=>{  setSearchParams((prev) => ({
-          ...prev,
-          ssnNumber:"",
-        }));}}
-      />
-    </Box>
-        <Box>
-          {data && (searchParams?.ssnNumber) && (
-=======
-  const { data, isLoading, error } = useQuery(searchVoters, searchParams);
 
   const totalElements = data?.totalElements || 0;
-  console.log("Data from Query", data);
-  console.log("SearchParams:", searchParams);
+
 
   return (
     <>
@@ -192,29 +140,19 @@ const AddVoter = () => {
           />
         </Box>
         <Box>
-          {data && searchParams?.ssnNumber && (
->>>>>>> Stashed changes
+
+
+          {data && (searchParams?.ssnNumber) && (
             <Model open={open} handleClose={handleClose}>
               <VoterForm />
             </Model>
           )}
         </Box>
-<<<<<<< Updated upstream
-        
- 
-=======
 
->>>>>>> Stashed changes
         <TableContainer component={Paper} sx={{ marginTop: 2 }}>
           <Table sx={{ minWidth: "max-content", tableLayout: "auto", whiteSpace: "nowrap" }}>
             <TableHead>
               <TableRow>
-<<<<<<< Updated upstream
-                {columns.map((col)=>{
-                  return <TableCell key={col} align="left"><b>{col}</b></TableCell>
-                })}
-               
-=======
                 {columns.map((col) => {
                   return (
                     <TableCell key={col} align="left">
@@ -222,17 +160,11 @@ const AddVoter = () => {
                     </TableCell>
                   );
                 })}
->>>>>>> Stashed changes
               </TableRow>
             </TableHead>
             <TableBody>
               {data ? (
-<<<<<<< Updated upstream
-                data.map((voter:any) => (
-                  
-=======
                 data.map((voter: any) => (
->>>>>>> Stashed changes
                   <TableRow key={voter.ssnNumber}>
                     <TableCell>{voter.statusId}</TableCell>
                     <TableCell>{voter.ssnNumber}</TableCell>
@@ -245,10 +177,6 @@ const AddVoter = () => {
                     <TableCell>{voter.email}</TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => handleClick(e, voter)} color="primary">
-<<<<<<< Updated upstream
-                        <Button variant="text">...</Button>
-                      </IconButton>
-=======
                         ...
                       </IconButton>
                       <Menu
@@ -257,26 +185,24 @@ const AddVoter = () => {
                         open={menuOpen && selectedVoter?.ssnNumber === voter.ssnNumber}
                         onClose={handleCloseMenu}
                       >
-                        <MenuItem onClick={() => handleOpen("edit", voter)}>
+                        <MenuItem >
                           <ListItemIcon>
                             <EditIcon fontSize="small" />
                           </ListItemIcon>
                           Edit
+                          <Model open={editModel} handleClose={handleEditClose}>
+                            <VoterForm voter={selectedVoter} />
+                          </Model>
                         </MenuItem>
+
                         <MenuItem onClick={() => handleOpen("view", voter)}>
                           <ListItemIcon>
                             <VisibilityIcon fontSize="small" />
                           </ListItemIcon>
                           View
-                          <ViewVoter
-                            open={open}
-                            handleClose={handleCloseDialog}
-                            voter={selectedVoter}
-                            handleOpen={setIsDialogOpen}
-                          />
+                          <ViewVoter open={open} handleClose={handleCloseDialog} voter={selectedVoter} handleOpen={setIsDialogOpen} />
                         </MenuItem>
                       </Menu>
->>>>>>> Stashed changes
                     </TableCell>
                   </TableRow>
                 ))
@@ -288,73 +214,26 @@ const AddVoter = () => {
                 </TableRow>
               )}
             </TableBody>
-<<<<<<< Updated upstream
-          </Table>       
-        </TableContainer>        
-        <TablePagination
-        component="div" // Use div for better styling control
-        count={totalElements}
-        page={searchParams.page}
-        onPageChange={handlePageChange}
-        rowsPerPage={searchParams.size}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        rowsPerPageOptions={[5, 10, 25, 50, 100]} // More options
-      />
-      </Box>
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClosePopover}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        
-         <Box sx={{ padding: 1, display:'flex', flexDirection:'column' }}>
-          <IconButton color="primary">
-          <Model  open={open} handleClose={handleClose} actionType="edit" voter={selectedVoter} >
-              <VoterForm />
-          </Model> 
-          </IconButton>
-
-          <IconButton onClick={() => handleOpen('view', selectedVoter)} color='primary'>
-          <Button variant="text" startIcon={<VisibilityIcon />} size='small'>View
-          <ViewVoter open={open} handleClose={handleCloseDialog} voter={selectedVoter} handleOpen={setIsDialogOpen}/>
-          </Button>
-          </IconButton>
-
-          {/* <IconButton color="primary" size='small' variant='text'>
-            <DeleteIcon />Delete
-          </IconButton> */}
-         </Box>  
-      </Popover>
-      
-    </>
-  );
-};
- 
-export default AddVoter;
-=======
           </Table>
         </TableContainer>
+
+
         <TablePagination
-          component="div" // Use div for better styling control
+          component="div"
           count={totalElements}
           page={searchParams.page}
           onPageChange={handlePageChange}
           rowsPerPage={searchParams.size}
           onRowsPerPageChange={handleRowsPerPageChange}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]} // More options
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
         />
+
       </Box>
+
+
+
     </>
   );
 };
 
 export default AddVoter;
->>>>>>> Stashed changes
