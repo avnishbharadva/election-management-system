@@ -145,7 +145,7 @@ const AddVoter = () => {
 
           {voters && (searchParams?.ssnNumber) && (
             <Model open={open} handleClose={handleClose}>
-              <VoterForm />
+              <VoterForm ssnNumber={searchParams.ssnNumber} />
             </Model>
           )}
         </Box>

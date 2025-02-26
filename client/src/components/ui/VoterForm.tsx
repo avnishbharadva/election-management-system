@@ -40,17 +40,10 @@ type FormData = {
 }
 
 
-const VoterForm = ({ voter }: any) => {
+const VoterForm = ({ voter,ssnNumber }: any) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [sameAddress, setSameAddress] = useState(false);
-
-  const [openSnackbar, setOpenSnackbar] = useState(false); // State for Snackbar
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
-
 
 
   const defaultValues: FormData = {
@@ -59,7 +52,7 @@ const VoterForm = ({ voter }: any) => {
     middleName: "",
     lastName: "",
     email: "",
-    ssnNumber: "",
+    ssnNumber: ssnNumber || "",
     phoneNumber: "",
     dmvNumber: "",
     gender: "",
@@ -198,7 +191,7 @@ const VoterForm = ({ voter }: any) => {
 
         <Box display='flex' alignItems='center' gap='1rem' sx={{ marginTop: '20px' }}>
           <NameField control={control} name="suffixName" label="Suffix Name" minLength={0} maxLength={10} />
-          <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} />
+          <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{ disabled: true,}}  />
           <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
 
         </Box>

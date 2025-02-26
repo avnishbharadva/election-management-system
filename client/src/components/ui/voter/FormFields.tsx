@@ -16,6 +16,9 @@ type FieldProps = {
     maxLength?: number;
     isRequired?: boolean;
     rules?: any;
+    isdesabled?: boolean;
+    customfield?: {}
+
 }
 
 export const NumberField = ({
@@ -25,6 +28,7 @@ export const NumberField = ({
     minLength = 5,
     maxLength = 11,
     fixedLength,
+    customfield={}
 }: FieldProps) => {
 
     const validationRules: any = {
@@ -60,6 +64,7 @@ export const NumberField = ({
             name={name}
             control={control}
             rules={validationRules}
+            
             render={({ field, fieldState }) => (
                 <TextField
                     {...field}
@@ -89,6 +94,7 @@ export const NumberField = ({
                     }}
                 />
             )}
+            {...customfield}
         />
     );
 }
@@ -99,7 +105,8 @@ export const NameField = ({
     label,
     isRequired = true,
     minLength = 0,
-    maxLength = 1000
+    maxLength = 1000,
+    customfield={}
 }: FieldProps) => {
     return (
         <Controller
@@ -124,6 +131,7 @@ export const NameField = ({
                     fullWidth
                     error={!!fieldState?.error}
                     helperText={fieldState?.error?.message}
+                    {...customfield}
                 />
             )}
         />
@@ -131,7 +139,7 @@ export const NameField = ({
 }
 
 // Email Field
-export const EmailField = ({ control, name, label }: FieldProps) => {
+export const EmailField = ({ control, name, label,customfield={} }: FieldProps) => {
     return (
         <Controller
             name={name}
@@ -151,6 +159,7 @@ export const EmailField = ({ control, name, label }: FieldProps) => {
                     fullWidth
                     error={!!fieldState?.error}
                     helperText={fieldState?.error?.message}
+                    {...customfield}
                 />
             )}
         />
@@ -224,13 +233,19 @@ export const PartyField = ({ control, name, label }: FieldProps) => {
 export const DateOfBirthField = ({ control, name, label, rules }: FieldProps) => {
     // Custom validation for date of birth: ensure it is not in the future
     const validateDateOfBirth = (value: string) => {
-        const today = new Date();
-        const birthDate = new Date(value);
-        if (birthDate >= today) {
-            return 'Date of birth cannot be in the future.';
-        }
-        return true;
-    };
+       
+            const today = new Date();
+            const birthDate = new Date(value);
+            const age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            return (
+              (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())
+                ? age - 1
+                : age) >= 18 || "Candidate must be at least 18 years old"
+            );
+          }
+    
+    
 
     return (
         <Controller
