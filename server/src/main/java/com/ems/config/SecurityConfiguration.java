@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,8 +32,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/create/**", "/authenticate/**").permitAll();
-                    registry.requestMatchers("/getAllRoles/**","/api/voters/**","/api/candidate/**","/api/elections/**","/api/party/**").hasRole("STATE_OFFICER");
-                    registry.requestMatchers("/api/voters/**","/api/candidate/**").hasRole("DISTRICT_OFFICER");
+                    registry.requestMatchers("/getAllRoles/**","/api/voters/**","/api/candidate/**","/api/elections/**","/api/party/**").permitAll();
+                    registry.requestMatchers("/api/voters/**","/api/candidate/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .formLogin(Customizer.withDefaults())

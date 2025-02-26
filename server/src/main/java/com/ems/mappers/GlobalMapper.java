@@ -22,38 +22,6 @@ public interface GlobalMapper {
 //    @Mapping(target = "address", ignore = true) // Ignore address field in direct mapping
     Voter voterDTOtoVoter(VoterDTO voterDTO, @MappingTarget Voter voter);
 
-//    @AfterMapping
-//    default void mapAddresses(VoterDTO voterDTO, @MappingTarget Voter voter) {
-//
-//        List<Address> addresses = new ArrayList<>();
-//
-//        if (voterDTO.getResidentialAddress() != null) {
-//            Address residentialAddress = mapAddressDTO(voterDTO.getResidentialAddress(), voter);
-//            residentialAddress.setAddressType(AddressType.RESIDENTIAL);
-//            addresses.add(residentialAddress);
-//        }
-//
-//        if (voterDTO.getMailingAddress() != null) {
-//            Address mailingAddress = mapAddressDTO(voterDTO.getMailingAddress(), voter);
-//            mailingAddress.setAddressType(AddressType.MAILING);
-//            addresses.add(mailingAddress);
-//        }
-//
-//        voter.setAddress(addresses);
-//    }
-
-//    default Address mapAddressDTO(AddressDTO addressDTO, Voter voter) {
-//        Address address = new Address();
-//        address.setAddressLine(addressDTO.getAddressLine());
-//        address.setAptNumber(addressDTO.getAptNumber());
-//        address.setCity(addressDTO.getCity());
-//        address.setCounty(addressDTO.getCounty());
-//        address.setState(addressDTO.getState());
-//        address.setZipCode(addressDTO.getZipCode());
-//        address.setVoter(voter);
-//        return address;
-//    }
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Address addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
 
@@ -107,4 +75,10 @@ public interface GlobalMapper {
     Role toRole(RoleRegisterDTO roleRegisterDTO);
     RoleRegisterDTO toRoleRegisterDTO(Role role);
     List<RoleResponseDTO> toRoleResponseDTO(List<Role> role);
+
+    @Mapping(target = "partySymbol", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Party toPartyUpdate(PartyDTO partyDTO, @MappingTarget Party party);
+    @Mapping(target = "partySymbol", ignore = true)
+    PartyDTO toPartyDTOUpdate(Party party,@MappingTarget PartyDTO partyDTO);
 }

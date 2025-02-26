@@ -26,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/voters")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class VoterController {
     private final VoterService voterService;
 
@@ -46,8 +47,9 @@ public class VoterController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
             @RequestParam(required = false) String dmvNumber,
             @RequestParam(required = false) String ssnNumber,
+            @RequestParam(required = false) Long partyId,
             @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String[] sort) {
-        Page<VoterDTO> result = voterService.searchVoters(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, page, size, sort);
+        Page<VoterDTO> result = voterService.searchVoters(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, partyId, page, size, sort);
         return ResponseEntity.ok(result);
     }
 

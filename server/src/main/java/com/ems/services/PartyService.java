@@ -14,4 +14,5 @@ public interface PartyService {
     PartyDTO partyById(long id);
     PartyDTO saveParty(PartyDTO partyDTO, MultipartFile image) throws IOException;
     List<PartyDTO> findAll();
+    PartyDTO updateParty(Long partyId, PartyDTO partyDTO, MultipartFile symbolImg) throws IOException;
 }

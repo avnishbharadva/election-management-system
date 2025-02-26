@@ -4,6 +4,7 @@ import com.ems.dtos.PartyDTO;
 import com.ems.services.PartyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,5 +33,13 @@ public class PartyController {
     @GetMapping
     public ResponseEntity<List<PartyDTO>> findAllParties(){
         return ResponseEntity.ok(partyService.findAll());
+    }
+
+    @PatchMapping(value = "/{partyId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PartyDTO> updateVoterImage(
+            @PathVariable Long partyId,
+            @RequestPart(value = "party", required = false) PartyDTO partyDTO,
+            @RequestPart(value = "symbol", required = false) MultipartFile symbolImg)throws IOException {
+        return ResponseEntity.ok(partyService.updateParty(partyId,partyDTO, symbolImg));
     }
 }

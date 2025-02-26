@@ -2,7 +2,7 @@ package com.ems.config;
 
 import com.ems.entities.Role;
 import com.ems.repositories.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MyUserDetailService implements UserDetailsService {
 
-	@Autowired
-	private RoleRepository myUserRepository;
+	private final RoleRepository myUserRepository;
 
 	@Override
 
