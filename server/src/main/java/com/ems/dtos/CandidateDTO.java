@@ -9,6 +9,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 public class CandidateDTO {
@@ -61,10 +62,6 @@ public class CandidateDTO {
     private String electionName;
     private String partyName;
 //    @NotNull
-
-
-    private String electionName;
-    private String partyName;
 
     @NotNull(message = "Bank details cannot be null")
     private BankDetails bankDetails;

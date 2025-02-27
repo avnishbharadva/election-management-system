@@ -13,8 +13,8 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
 
-    @Mapping(target = "partyName", source = "party.partyName")
-    @Mapping(target = "electionName", source = "election.electionName")
+    @Mapping(target = "partyId", source = "party")
+    @Mapping(target = "electionId", source = "election")
     @Mapping(target = "bankDetails", source = "bankDetails")
 
     @Mapping(target = "partyName", source = "party.partyName")
@@ -27,8 +27,6 @@ public interface CandidateMapper {
     @Mapping(target = "electionName", source = "election.electionName")
     CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate);
 
-
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCandidateFromDTO(CandidateDTO candidateDTO, @MappingTarget Candidate candidate);
 
@@ -36,8 +34,6 @@ public interface CandidateMapper {
     void updateCandidateNameFromDTO(CandidateName newName, @MappingTarget CandidateName existingName);
 
     Election toElection(ElectionSortDTO electionSortDTO);
-
-    @Mapping(target = "electionId", source = "election")
     ElectionSortDTO toElectionSortDTO(Election election);
 
     default Long mapPartyToId(Party party) {
