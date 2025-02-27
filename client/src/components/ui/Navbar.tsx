@@ -2,7 +2,15 @@ import { Toolbar, Typography } from "@mui/material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { StyledAppBar } from "../../style/NavbarCss";
 import { StyledButton } from "../../style/NavbarCss";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 export default function Navbar() {
+  const navigate = useNavigate()
+  const logout = ()=>{
+    localStorage.removeItem('token')
+    toast.success("Signout Successfully");
+    navigate("/");
+  }
   return (
     <StyledAppBar position="static">
       <Toolbar>
@@ -12,7 +20,7 @@ export default function Navbar() {
         <Typography variant="h4">
           <AccountCircleIcon/>
         </Typography>
-        <StyledButton>Logout</StyledButton>
+        <StyledButton onClick={logout}>Logout</StyledButton>
       </Toolbar>
     </StyledAppBar>
   );

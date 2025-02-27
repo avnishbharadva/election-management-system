@@ -12,7 +12,7 @@ interface ModelProps {
   open: boolean;
   handleClose: () => void;
   actionType: "add" | "edit";
-  selectedCandidate?: any;
+  candidate?: any;
   children: React.ReactNode;
 }
 
@@ -20,7 +20,7 @@ const Model: React.FC<ModelProps> = ({
   open,
   handleClose,
   actionType,
-  selectedCandidate,
+  candidate,
   children,
 }) => {
   const getButtonProps = () => {
@@ -28,7 +28,7 @@ const Model: React.FC<ModelProps> = ({
       case "add":
         return { };
       case "edit":
-        return { };
+        return { actionType:"edit"};
       default:
         return { };
     }
@@ -37,7 +37,7 @@ const Model: React.FC<ModelProps> = ({
   const { label, icon } = getButtonProps();
 
   return (
-    <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title">
+    <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title" >
       <ModelBox>
         {/* Close Icon */}
         <Box
@@ -57,7 +57,7 @@ const Model: React.FC<ModelProps> = ({
           {icon} {label}
         </h2>
         {React.isValidElement(children) &&
-          React.cloneElement(children, { handleClose, selectedCandidate } as any)}
+          React.cloneElement(children, { handleClose, candidate } as any)}
       </ModelBox>
     </Modal>
   );

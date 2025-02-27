@@ -1,5 +1,10 @@
 import { Box, Button, styled } from "@mui/material";
-
+export const FlexBoxColumn = styled(Box)({
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+flexDirection:"column"
+})
 
 
 
