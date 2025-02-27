@@ -51,6 +51,8 @@ public class CandidateDTO {
 
 //    @NotNull
     private Long electionId;
+    private String electionName;
+    private String partyName;
 //    @NotNull
     private BankDetails bankDetails;
 

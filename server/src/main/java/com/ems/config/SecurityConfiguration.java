@@ -33,8 +33,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/create/**", "/authenticate/**").permitAll();
-                    registry.requestMatchers("/getAllRoles/**","/api/voters/**","/api/candidate/**","/api/elections/**","/api/party/**").hasRole("STATE_OFFICER");
-                    registry.requestMatchers("/api/voters/**","/api/candidate/**").hasRole("DISTRICT_OFFICER");
+                    registry.requestMatchers("/getAllRoles/**","/api/voters/**","/api/candidate/**","/api/elections/**","/api/party/**","/api/candidate/candidateId/*").permitAll();
+                    registry.requestMatchers("/api/voters/**","/api/candidate/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .formLogin(Customizer.withDefaults())

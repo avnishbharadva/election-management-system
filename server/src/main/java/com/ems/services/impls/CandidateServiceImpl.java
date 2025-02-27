@@ -1,9 +1,6 @@
 package com.ems.services.impls;
 
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
 import com.ems.exceptions.*;
@@ -18,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +56,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
 //        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
@@ -98,7 +98,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public Map<String,Object> findById(Long candidateId) {
+    public CandidateDataDTO findById(Long candidateId) {
         Path candidateImagePath=Path.of(uploadDir,"candidateImage");
         Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
         Candidate candidate=candidateRepository.findById(candidateId).get();
@@ -111,9 +111,7 @@ public class CandidateServiceImpl implements CandidateService {
         String candidateImageResouce=encodeFileToBase64(imagepath);
         String signatureResourse=encodeFileToBase64(signaturepath);
         System.out.println(signatureResourse+"//////////////////");
-        return Map.of("candidate",candidateDto,
-               "candidateImage",candidateImageResouce,
-               "candidateSignature",signatureResourse);
+        return new CandidateDataDTO(candidateDto,candidateImageResouce,signatureResourse);
     }
 
     private String encodeFileToBase64(Path filePath) {
@@ -129,6 +127,7 @@ public class CandidateServiceImpl implements CandidateService {
         return null;
     }
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
@@ -165,15 +164,17 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     public void deleteCandidateByCandidateId(Long candidateId) {
         candidateRepository.deleteById(candidateId);
     }
 
     @Override
-    public Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort) {
+    @Cacheable(value = "candidateCache")
+    public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
-        return candidatePage.map(candidateMapper::toCandidateDTO);
+        return candidatePage.map(candidateMapper::toCandidateDetailsDTO);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class CandidateServiceImpl implements CandidateService {
             throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
         }
 
-        Page<CandidateDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDTO);
+        Page<CandidateDetailsDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDetailsDTO);
         return new CandidatePageResponse(
                 candidateDTOPage.getContent(),
                 candidateDTOPage.getNumber(),

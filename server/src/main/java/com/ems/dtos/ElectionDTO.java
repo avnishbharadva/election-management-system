@@ -26,7 +26,7 @@ public class ElectionDTO {
     private String electionState;
 
     @Min(value = 1, message = "Total seats must be at least 1")
-    private int totalSeats;
+    private Integer totalSeats;
 
     private List<Long> candidateIds;
 }
