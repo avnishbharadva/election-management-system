@@ -28,9 +28,9 @@ public class SecurityConfiguration {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity q) throws Exception {
 
-        return httpSecurity
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
