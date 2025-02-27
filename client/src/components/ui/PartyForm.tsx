@@ -91,7 +91,6 @@ const PartyForm = () => {
   } = useForm<FormValues>({ resolver });
 
   const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
   });
 
   const [file, setFile] = useState<File | null>(null);

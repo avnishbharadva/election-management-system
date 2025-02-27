@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addCandidate, fetchCandidateBySSN, fetchCandidates, fetchCandidateUpdateDetails, updateCandidateById } from './candidateAPI';
+import { addCandidate, fetchCandidateById, fetchCandidateBySSN, fetchCandidates, fetchCandidateUpdateDetails, updateCandidateById, updateCandidateData } from './candidateAPI';
 import {  CandidateState } from './types';
  
   const initialState: CandidateState = {
@@ -11,7 +11,7 @@ import {  CandidateState } from './types';
     loading: false,
     error: null,
     success: false,
-    candidates: [],
+    candidate:null
     
   };
  
@@ -94,30 +94,33 @@ const candidateSlice = createSlice({
           state.success = false;
           state.error = action.payload as string;
         })
-        .addCase(fetchCandidateUpdateDetails.fulfilled, (state, action) => {
-          state.candidates = action.payload; // Store candidate data in candidateData
-        })
-        .addCase(fetchCandidateUpdateDetails.rejected, (state, action) => {
-          state.error = action.payload as string; // Handle error
-        })
- 
-        // Update candidate
-        .addCase(updateCandidateById.pending, (state) => {
+        .addCase(fetchCandidateById.pending, (state) => {
           state.loading = true;
-          state.success = false;
+          state.error = null;
         })
-        .addCase(updateCandidateById.fulfilled, (state, action) => {
-          state.success = true;
-          state.allCandidates = state.allCandidates.map((candidate) =>
-            candidate.candidateId === action.payload.candidateId ? action.payload : candidate
-          );
+        .addCase(fetchCandidateById.fulfilled, (state, action) => {
           state.loading = false;
+          state.candidate = action.payload;
+          state.error = null;
+          state.notFound = false;
         })
-        .addCase(updateCandidateById.rejected, (state, action) => {
+        .addCase(fetchCandidateById.rejected, (state, action) => {
           state.loading = false;
-          state.success = false;
-          state.error = action.payload as string;
-        });
+          state.error = action.payload as string || "Error fetching candidate";
+        })
+        .addCase(updateCandidateData.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(updateCandidateData.fulfilled, (state, action) => {
+          state.loading = false;
+          state.candidate = action.payload;
+          state.error = null;
+        })
+        .addCase(updateCandidateData.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string || "Error updating candidate";
+        })
     },
   });
  

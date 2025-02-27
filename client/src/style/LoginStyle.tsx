@@ -42,6 +42,8 @@ export const LoginForm = styled("form")({
 export const LoginField = styled(Box)({
   margin: "10px",
   width: "320px",
+  backgroundColor: "#fff",
+  borderRadius: "5px",
 });
 
 export const ErrorMsg = styled("p")({
@@ -49,3 +51,8 @@ export const ErrorMsg = styled("p")({
   fontSize: "0.875rem",
   marginTop: "5px",
 });
+// const StyledTextField = styled(TextField)(({ theme }) => ({
+//   marginTop: "20px",
+//   backgroundColor: "#fff",
+//   borderRadius: "5px",
+// }));

@@ -58,6 +58,9 @@ public class CandidateDTO {
 
     @NotNull(message = "Election ID cannot be null")
     private Long electionId;
+    private String electionName;
+    private String partyName;
+//    @NotNull
 
 
     private String electionName;

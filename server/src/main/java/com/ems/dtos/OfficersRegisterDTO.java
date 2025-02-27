@@ -6,9 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleRegisterDTO {
-
-    private String username;
+public class OfficersRegisterDTO {
     private String ssnNumber;
     private String role;
     private String email;

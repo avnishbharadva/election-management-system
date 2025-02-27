@@ -17,6 +17,8 @@ public interface CandidateMapper {
     @Mapping(target = "electionName", source = "election.electionName")
     @Mapping(target = "bankDetails", source = "bankDetails")
 
+    @Mapping(target = "partyName", source = "party.partyName")
+    @Mapping(target = "electionName", source = "election.electionName")
     CandidateDTO toCandidateDTO(Candidate candidate);
 
     Candidate toCandidate(CandidateDTO candidateDTO);

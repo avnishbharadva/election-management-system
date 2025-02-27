@@ -13,7 +13,6 @@ const SearchComponent: React.FC = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
-console.log(query)
     
     if (/^\d{0,9}$/.test(query)) {
       dispatch(setSearchQuery(query));

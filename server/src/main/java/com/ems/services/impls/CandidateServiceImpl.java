@@ -16,6 +16,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -62,6 +64,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @Transactional
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
+//        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new DataNotFoundException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
@@ -179,6 +182,7 @@ public class CandidateServiceImpl implements CandidateService {
     private EntityManager entityManager;
 
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
         Candidate candidate = candidateRepository.findById(candidateId)
@@ -251,6 +255,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     public void deleteCandidateByCandidateId(Long candidateId) {
         if (!candidateRepository.existsById(candidateId)) {
             throw new DataNotFoundException("Candidate with id " + candidateId + " not found");
@@ -260,6 +265,7 @@ public class CandidateServiceImpl implements CandidateService {
 
 
     @Override
+    @Cacheable(value = "candidateCache")
     public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
@@ -355,4 +361,6 @@ public class CandidateServiceImpl implements CandidateService {
             return predicate;
         };
     }
+
+
 }

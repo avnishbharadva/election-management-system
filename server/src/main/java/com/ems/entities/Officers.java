@@ -5,19 +5,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "officers")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Officers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roleId;
-
-    @Column(nullable = false, length = 30, unique = true)
-    private String username;
+    private Long officerId;
 
     @Column(length = 9, unique = true, nullable = false)
     private String ssnNumber;

@@ -6,9 +6,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleResponseDTO {
-    private Long roleId;
-    private String username;
+public class OfficersResponseDTO {
+    private Long officerId;
     private String ssnNumber;
     private String role;
     private String email;
