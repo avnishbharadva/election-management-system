@@ -103,7 +103,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     setValue,
     formState: { errors },
   } = useForm<IFormInput>();
-  const maritalStatus = watch("maritialStatus", editId ? candidate?.candidate?.maritialStatus || "" : "");
+  const maritalStatus = watch("maritalStatus", editId ? candidate?.candidate?.maritialStatus || "" : "");
 
   const isSingle = maritalStatus === "SINGLE";
   React.useEffect(() => {
@@ -153,7 +153,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
             candidateSSN: data.candidateSSN,
             dateOfBirth: data.dateOfBirth,
             gender: data.gender,
-            maritialStatus: data.maritialStatus,
+            maritialStatus: data.maritalStatus,
             noOfChildren: data.noOfChildren,
             spouseName: data.spouseName,
             partyId: data.partyId,
@@ -176,18 +176,22 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     try {
       if (candidate && editId !== "") {
         
-        await dispatch(updateCandidateData({ candidateId: editId, candidateData: formData }));
+        if (editId) {
+          await dispatch(updateCandidateData({ candidateId: editId, candidateData: formData }));
+        } else {
+          toast.error("Invalid candidate ID.");
+        }
         clearSearch();
         handleClose();
         reset();
-        dispatch(fetchCandidates());
+        dispatch(fetchCandidates({ page: 0, perPage: 10 }));
       } else {
        
         await dispatch(addCandidate(formData));
         clearSearch();
         handleClose();
         reset();
-        dispatch(fetchCandidates());
+        dispatch(fetchCandidates({ page: 0, perPage: 10 }));
         
       }
     } catch (error) {
@@ -231,7 +235,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
           partyId:candidate?.candidate?.partyName,
           candidateEmail: candidate?.candidate?.candidateEmail,
     candidateSSN: candidate?.candidate?.candidateSSN,
-          maritialStatus:candidate?.candidate?.maritialStatus,
+          maritalStatus:candidate?.candidate?.maritialStatus,
           noOfChildren: candidate?.candidate?.noOfChildren ,
       spouseName: candidate?.candidate?.spouseName ,
          
@@ -408,10 +412,10 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             </FormControl>
           </Row>
           <Row>
-          <FormControl fullWidth error={!!errors.maritialStatus}>
+          <FormControl fullWidth error={!!errors.maritalStatus}>
         <InputLabel id="marital-status-label">Marital Status</InputLabel>
         <Controller
-          name="maritialStatus"
+          name="maritalStatus"
           control={control}
           rules={{ required: "Marital status is required" }}
           defaultValue={editId ? candidate?.candidate?.maritialStatus || "" : ""}
@@ -424,8 +428,8 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             </Select>
           )}
         />
-        {!!errors.maritialStatus && (
-          <FormHelperText>{errors.maritialStatus.message}</FormHelperText>
+        {!!errors.maritalStatus && (
+          <FormHelperText>{errors.maritalStatus.message}</FormHelperText>
         )}
       </FormControl>
 
@@ -450,8 +454,8 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
         }
       />
           </Row>
-          {errors.maritialStatus && (
-            <FormHelperText>{errors.maritialStatus.message}</FormHelperText>
+          {errors.maritalStatus && (
+            <FormHelperText>{errors.maritalStatus.message}</FormHelperText>
           )}
         </Section>
 
@@ -561,7 +565,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               {...register("residentialAddress.zipcode", {
                 required: "Zipcode is required",
                 validate: (value: unknown) =>
-                  /^\d{5}$/.test(value) || "Zipcode must be 5 digits",
+                  /^\d{5}$/.test(value as string) || "Zipcode must be 5 digits",
               })}
               defaultValue={editId ? candidate?.candidate?.residentialAddress.zipcode : ""}
               InputLabelProps={{ shrink: true }}

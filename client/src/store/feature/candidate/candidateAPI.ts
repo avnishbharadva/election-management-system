@@ -6,14 +6,15 @@ import { toast } from "react-toastify";
 
 // Fetch all candidates initially
 export const fetchCandidates = createAsyncThunk(
-  "candidate/fetchAll",
-  async (_, { rejectWithValue }) => { 
+  "candidates/fetchCandidates",
+  async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/candidate/getAllDetails");
+      const response = await axiosInstance.get(
+        `/candidate/paged?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
+      );
       return response.data;
     } catch (error: any) {
-      console.log(error);
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch candidates");
+      return rejectWithValue(error.response?.data || "Error fetching data");
     }
   }
 );
@@ -112,6 +113,20 @@ export const updateCandidateData = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message || "Error updating candidate");
+    }
+  }
+);
+
+export const deleteCandidateById = createAsyncThunk(
+  "candidate/deleteCandidate",
+  async (candidateId: number, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8082/api/candidate/delete/${candidateId}`
+      );
+      return response.data;
+    } catch (error: any) { 
+      return rejectWithValue(error.response?.data || error.message || "Error deleting candidate");
     }
   }
 );
