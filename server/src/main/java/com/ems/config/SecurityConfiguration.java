@@ -29,7 +29,8 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       return http
+
+        return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
@@ -42,24 +43,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        String secretKeyString = "AA76607118989F533AB2D769EB89D882FF30F3B5BFF23097E0B5452D4C80E1F47F2E62ADFCEF528518F93ECADE5E9BB72EB22653011388D5CF89253AE0238B2D";
-//        SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());  // <-- FIXED
-//        return NimbusJwtDecoder.withSecretKey(secretKey).build();
-//    }
-//
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-//        return jwtAuthenticationConverter;
-//    }
 
     @Bean
     public UserDetailsService userDetailsService() {

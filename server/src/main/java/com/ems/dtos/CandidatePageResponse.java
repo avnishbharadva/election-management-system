@@ -14,5 +14,4 @@ public class CandidatePageResponse {
     private Integer totalPages;
     private Long totalRecords;
     private Integer perPage;
-
 }

@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>23</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -152,12 +152,6 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-envers</artifactId>
 			<version>6.5.2.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>openapi-generator-maven-plugin</artifactId>
-			<version>7.6.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

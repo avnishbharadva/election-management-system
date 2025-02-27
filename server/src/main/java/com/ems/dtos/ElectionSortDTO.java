@@ -11,7 +11,6 @@ import java.util.Date;
 public class ElectionSortDTO {
 
 
-    private Long electionId;
     @Size(max = 255, message = "Election name too long")
     private String electionName;
 
@@ -25,5 +24,5 @@ public class ElectionSortDTO {
     private String electionState;
 
     @Min(value = 1, message = "Total seats must be at least 1")
-    private Long totalSeats;
+    private int totalSeats;
 }
