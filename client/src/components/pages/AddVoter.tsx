@@ -45,11 +45,6 @@ const AddVoter = () => {
   const [viewOpen, setViewOpen] = useState(false);
 
 
-
-
-
-
-
   const handleOpen = (type: "view" | "edit", voter: any) => {
     if (type === "edit") {
       setEditOpen(true);
@@ -118,8 +113,6 @@ const AddVoter = () => {
     }));
   };
 
-
-
   const totalElements = data?.totalElements || 0;
 
 
@@ -141,8 +134,6 @@ const AddVoter = () => {
           />
         </Box>
         <Box>
-
-
           {voters && (searchParams?.ssnNumber) && (
             <Model open={open} handleClose={handleClose}>
               <VoterForm ssnNumber={searchParams.ssnNumber} />
@@ -151,7 +142,7 @@ const AddVoter = () => {
         </Box>
 
         <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-          <Table stickyHeader sx={{ minWidth: "max-content", tableLayout: "auto", whiteSpace: "nowrap" }}>
+          <Table  sx={{ minWidth: "max-content", tableLayout: "auto", whiteSpace: "nowrap" }}>
             <TableHead>
               <TableRow>
                 {columns.map((col) => {
@@ -225,8 +216,6 @@ const AddVoter = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-
         <TablePagination
           component="div"
           count={totalElements}
@@ -238,9 +227,6 @@ const AddVoter = () => {
         />
 
       </Box>
-
-
-
     </>
   );
 };

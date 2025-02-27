@@ -1,226 +1,183 @@
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { Dropzone, Imagepreview } from "../../style/PartyStyle";
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+
+import { Box, Stack, Typography } from "@mui/material";
 import { Form, StyledButton } from "../../style/CommanStyle";
-import { Resolver, useForm } from "react-hook-form";
-import { ErrorMsg } from "../../style/LoginStyle";
+import { NameField, NumberField } from "./voter/FormFields";
+import ImageUpload from "./voter/ImageUpload";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useEditPartyMutation, useRegisterPartyMutation } from "../../store/feature/party/partyAction";
+import { toast } from "react-toastify";
 
-type FormValues = {
-  party_name: string;
-  leader: string;
-  founder_name: string;
-  found_year: string;
+
+
+interface FormData {
+  partyName: string;
+  partyAbbreviation: string;
+  partyFoundationYear: string;
+  founderName: string;
+  partyWebSite: string;
   party_ideology: string;
-  headquarters: string;
-  website: string;
-  file: File | null;
+  headQuarters: string;
+}
+
+
+const defaultValues: FormData = {
+  partyName: "",
+  partyAbbreviation: "",
+  partyFoundationYear: "",
+  founderName: "",
+  partyWebSite: "",
+  party_ideology: "",
+  headQuarters: "",
 };
 
-const resolver: Resolver<FormValues> = async (values) => {
-  const errors: Record<string, object> = {};
+const PartyForm = ({ party }: any) => {
+  const [logo, setlogo] = useState<any>(party?.image || null);
 
-  if (!values.party_name) {
-    errors.party_name = {
-      type: "required",
-      message: "Party Name is required.",
-    };
-  }
-
-  if (!values.leader) {
-    errors.leader = {
-      type: "required",
-      message: "Leader Name is required.",
-    };
-  }
-
-  if (!values.founder_name) {
-    errors.founder_name = {
-      type: "required",
-      message: "Founder Name is required.",
-    };
-  }
-
-  if (!values.found_year) {
-    errors.found_year = {
-      type: "required",
-      message: "Found Year is required.",
-    };
-  }
-
-  if (!values.party_ideology) {
-    errors.party_ideology = {
-      type: "required",
-      message: "Party Ideology is required.",
-    };
-  }
-
-  if (!values.headquarters) {
-    errors.headquarters = {
-      type: "required",
-      message: "Headquarters is required.",
-    };
-  }
-
-  if (!values.website) {
-    errors.website = {
-      type: "required",
-      message: "Website is required.",
-    };
-  }
-
-  if (!values.file) {
-    errors.file = {
-      type: "required",
-      message: "Party Symbol is required.",
-    };
-  }
-
-  return {
-    values: Object.keys(errors).length === 0 ? values : {},
-    errors,
-  };
-};
-
-const PartyForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<FormValues>({ resolver });
-
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const { control, handleSubmit, formState, reset } = useForm<FormData>({
+    defaultValues,
+    mode: "onTouched",
   });
 
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        const selectedFile = acceptedFiles[0];
-        setFile(selectedFile);
-        setValue("file", selectedFile, { shouldValidate: true });
-        setError("");
-      } else {
-        setError("No file selected.");
+  const { isSubmitting, isValid } = formState
+
+  console.log("PartyForm: Party Data:", party);
+
+  useEffect(() => {
+    if (party) {
+      reset({
+        partyName: party.partyName || "",
+        partyAbbreviation: party.partyAbbreviation || "",
+        partyFoundationYear: party.partyFoundationYear || "",
+        founderName: party.founderName || "",
+        partyWebSite: party.partyWebSite || "",
+        headQuarters: party.headQuarters || "",
+      });
+    }
+  }, [party, reset]);
+
+  const [registerParty] = useRegisterPartyMutation();
+  const [editParty] = useEditPartyMutation();
+
+
+  const onSubmit = async (data: FormData) => {
+
+    if(!logo){
+      toast.error("Please upload Party Logo")
+      return
+    }
+    try {
+      const result = await toast.promise(
+        party?.partyId ? editParty({post:data, img:logo,partyId:party?.partyId}).unwrap()
+          : registerParty({post:data, img:logo}).unwrap(),
+        {
+          pending: "please wait ..." ,
+          success: " Successfull",
+
+        }
+      )
+      if (result) {
+        reset(defaultValues)
+        setlogo(null)
       }
-    },
-    [setValue]
-  );
+    } catch (error) {
+      console.log("PartyForm: Error on Party Submit:", error);
+      toast.error("Error Submitting Party");
+    }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "image/*": [] },
-    multiple: false,
-  });
+
+  };
 
   return (
     <Box>
       <Typography align="center" variant="h5" mb="15px">
-        Register Party
+        {party?.partyId ? "Update Party" : "Register Party"}
       </Typography>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" flexDirection="column" gap={2}>
           <Box display="flex" flexDirection="row" gap={2}>
             <Box>
-              <TextField
-                fullWidth
+              <NameField
+                control={control}
+                name="partyName"
                 label="Party Name"
-                {...register("party_name", { required: true })}
+                minLength={2}
+                maxLength={50}
               />
-              {errors?.party_name && <ErrorMsg>{errors.party_name.message}</ErrorMsg>}
             </Box>
             <Box>
-              <TextField
-                fullWidth
+
+              <NameField
+                control={control}
+                name="leader"
                 label="Leader Name"
-                {...register("leader", { required: true })}
+                minLength={3}
+                maxLength={100}
               />
-              {errors?.leader && <ErrorMsg>{errors.leader.message}</ErrorMsg>}
             </Box>
           </Box>
           <Box display="flex" flexDirection="row" gap={2}>
             <Box>
-              <TextField
-                fullWidth
+              <NameField
+                control={control}
+                name="founderName"
                 label="Founder Name"
-                {...register("founder_name", { required: true })}
+                minLength={3}
+                maxLength={100}
               />
-              {errors?.founder_name && <ErrorMsg>{errors.founder_name.message}</ErrorMsg>}
             </Box>
             <Box>
-              <TextField
-                fullWidth
-                label="Found Year"
-                {...register("found_year", { required: true })}
+              <NumberField
+                control={control}
+                name="partyFoundationYear"
+                label="Foundation Year"
+                fixedLength={4}
+
               />
-              {errors?.found_year && <ErrorMsg>{errors.found_year.message}</ErrorMsg>}
+
             </Box>
           </Box>
           <Box display="flex" flexDirection="row" gap={2}>
             <Box>
-              <TextField
-                fullWidth
-                label="Party Ideology"
-                {...register("party_ideology", { required: true })}
+              <NameField
+                control={control}
+                name="partyAbbreviation"
+                label="Party Abbreviation"
+                minLength={2}
+                maxLength={7}
               />
-              {errors?.party_ideology && (
-                <ErrorMsg>{errors.party_ideology.message}</ErrorMsg>
-              )}
             </Box>
             <Box>
-              <TextField
-                fullWidth
+              <NameField
+                control={control}
+                name="headQuarters"
                 label="Headquarters"
-                {...register("headquarters", { required: true })}
+                minLength={3}
+                maxLength={1000}
               />
-              {errors?.headquarters && (
-                <ErrorMsg>{errors.headquarters.message}</ErrorMsg>
-              )}
             </Box>
           </Box>
           <Box>
-            <TextField
-              fullWidth
+            <NameField
+              control={control}
+              name="partyWebSite"
               label="Website"
-              {...register("website", { required: true })}
+              minLength={3}
+              maxLength={100}
             />
-            {errors?.website && <ErrorMsg>{errors.website.message}</ErrorMsg>}
+
           </Box>
-          <Stack>
-            <Dropzone {...getRootProps()}>
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <Typography>Drop the Party Symbol here ...</Typography>
-              ) : (
-                <Typography>
-                  Drag &apos;n&apos; drop a Party Symbol here, or click to select one
-                </Typography>
-              )}
-              {file && (
-                <Imagepreview>
-                  <Typography component="h4">File Preview:</Typography>
-                  <Typography component="p">File Name: {file.name}</Typography>
-                  <Typography component="p">
-                    File Size: {(file.size / 1024).toFixed(2)} KB
-                  </Typography>
-                  {file.type.startsWith("image/") && (
-                    <img
-                      height="200px"
-                      width="200px"
-                      src={URL.createObjectURL(file)}
-                      alt="Preview"
-                      style={{ borderRadius: "50%" }}
-                    />
-                  )}
-                </Imagepreview>
-              )}
-              {error && <Box>{error}</Box>}
-            </Dropzone>
-            {errors?.file && <ErrorMsg>{errors.file.message}</ErrorMsg>}
+          <Stack direction='column'  >
+            <Typography variant="body1" color="text.secondary" align="left">
+              Party Logo
+            </Typography>
+            <ImageUpload
+              label=""
+              onImageUpload={setlogo}
+              imagePreview={logo}
+              borderRadius="0%"
+            />
           </Stack>
           <Box
             display="flex"
@@ -229,7 +186,7 @@ const PartyForm = () => {
             flexDirection="row"
             gap={2}
           >
-            <StyledButton type="submit" variant="contained">
+            <StyledButton type="submit" variant="contained" disabled={isSubmitting || !isValid}>
               Submit
             </StyledButton>
           </Box>

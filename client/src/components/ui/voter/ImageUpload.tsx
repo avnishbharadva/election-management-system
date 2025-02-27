@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { DropzoneContainer } from '../../../style/CandidateFormCss';
-import { Controller } from "react-hook-form";
+
  
 interface ImageUploadProps {
   label: string; // The label for the upload (e.g., "Profile Picture", "Signature")

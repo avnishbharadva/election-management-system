@@ -20,14 +20,13 @@ const voterApi = createApi({
                 return `/api/voters/search?${queryParams}`;
             },
             transformResponse: (response: any) => {
-                console.log('Raw Response:', response); // Log the response from the server
+                
                 return {
-                  data: response.content,
-                  totalElements: response.totalElements,
+                    data: response.content,
+                    totalElements: response.totalElements,
                 };
-              },
-              
-             
+            },
+            providesTags: ['Voters'],
         }),
 
         registerVoter: builder.mutation({
@@ -52,10 +51,9 @@ const voterApi = createApi({
                     method: 'POST',
                     body: formData,
                 }
-
-
             },
-       
+            invalidatesTags: ['Voters']
+
         }),
 
 
@@ -75,8 +73,6 @@ const voterApi = createApi({
                     const profileFile = dataURLtoFile(img, "profile.jpg");
                     formData.append('image', profileFile);
                 }
-
-                // If signature is provided, convert it and append it to the formData
                 if (sign) {
                     const signatureFile = dataURLtoFile(sign, "signature.jpg");
                     formData.append('signature', signatureFile);
@@ -85,12 +81,9 @@ const voterApi = createApi({
                     url: `api/voters/${voterId}`,
                     method: "PATCH",
                     body: formData,
-
                 }
             },
-          
-
-
+            invalidatesTags: ['Voters']
         })
     })
 })

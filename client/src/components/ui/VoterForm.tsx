@@ -83,7 +83,7 @@ const VoterForm = ({ voter,ssnNumber  }: any) => {
     defaultValues,
     mode: "onTouched",
   })
-  const { isSubmitting, isSubmitSuccessful, isValid } = formState
+  const { isSubmitting,  isValid } = formState
 
 
 
@@ -144,12 +144,11 @@ const VoterForm = ({ voter,ssnNumber  }: any) => {
         voter?.voterId ? voterEdit({ voterId: voter?.voterId, post: data, img: profilePic, sign: signature }).unwrap()
           : voterPost({ post: data, img: profilePic, sign: signature }).unwrap(),
         {
-          pending: "Submitting...",
+          pending: "please wait...",
           success: "Successfull!",
         
         },
       )
-     
       if(result){
         reset(defaultValues)
         setProfilePic(null)   
@@ -167,7 +166,7 @@ const VoterForm = ({ voter,ssnNumber  }: any) => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Title variant='h5' align='center' gutterBottom>VOTER REGISTRATION</Title>
+        <Title variant='h5' align='center' gutterBottom>{voter?.voterId ? "Update Voter " : "Register Voter"}</Title>
         {voter?.voterId && <Typography variant='overline' gutterBottom>voterId:{voter?.voterId}</Typography>}
         <DividerStyle />
 
@@ -261,7 +260,7 @@ const VoterForm = ({ voter,ssnNumber  }: any) => {
         {/* Submit and Reset Buttons */}
         <Box display='flex' alignItems='center' justifyContent='center' gap='2rem' sx={{ marginTop: '20px' }}>
           <StyledButton variant="contained" type="submit" disabled={isSubmitting || !isValid}>  { `${voter?.voterId ? 'Update Voter' : 'Add Voter'}` } </StyledButton>
-          <StyledButton variant="contained" type="reset">Reset</StyledButton>
+          <StyledButton variant="contained" type="reset" onClick={()=>reset()}>Reset</StyledButton>
         </Box>
       </form>
     </>
