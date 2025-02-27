@@ -1,9 +1,6 @@
 package com.ems.services.impls;
 
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
 import com.ems.exceptions.*;
@@ -18,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,6 +62,7 @@ import jakarta.mail.internet.MimeMessage;
 
     @Override
     @Transactional
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
 //        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
@@ -103,8 +103,7 @@ import jakarta.mail.internet.MimeMessage;
             String fullName = candidate.getCandidateName().getFirstName() + " " +
                     (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
                     candidate.getCandidateName().getLastName();
-
-            sendEmail(candidateDTO.getCandidateEmail(),
+                    sendEmail(candidateDTO.getCandidateEmail(),
                     "Candidate Registration Successful – Welcome to the Election!",
                     "<div style='font-family: Arial, sans-serif; color: #333;'>" +
                             "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
@@ -148,24 +147,22 @@ import jakarta.mail.internet.MimeMessage;
                 log.error("Failed to send email to {}: {}", to, e.getMessage());
             }
         }
-
-
-        @Override
-        public Map<String,Object> findById(Long candidateId) {
-            var candidateImagePath=Path.of(uploadDir,"candidateImage");
-            var candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
-            var candidate=candidateRepository.findById(candidateId).get();
-            var candidateDto=candidateMapper.toCandidateDTO(candidate);
-            var imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
-            var signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
-            var candidateImageResource=encodeFileToBase64(imagepath);
-            String signatureResource=encodeFileToBase64(signaturepath);
-            System.out.println(signatureResource+"//////////////////");
-            return Map.of("candidate",candidateDto,
-                   "candidateImage",candidateImageResource,
-                   "candidateSignature",signatureResource);
-        }
-
+    @Override
+    public CandidateDataDTO findById(Long candidateId) {
+        Path candidateImagePath=Path.of(uploadDir,"candidateImage");
+        Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
+        Candidate candidate=candidateRepository.findById(candidateId).get();
+        var candidateDto=candidateMapper.toCandidateDTO(candidate);
+        Path imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
+        Path signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
+        System.out.println(signaturepath+"-------------------------------");
+//        Resource candidateImageResouce=imagepath.toFile().exists()?new FileSystemResource(imagepath):null;
+//        Resource signatureResourse=signaturepath.toFile().exists()?new FileSystemResource(signaturepath):null;
+        String candidateImageResouce=encodeFileToBase64(imagepath);
+        String signatureResourse=encodeFileToBase64(signaturepath);
+        System.out.println(signatureResourse+"//////////////////");
+        return new CandidateDataDTO(candidateDto,candidateImageResouce,signatureResourse);
+    }
     private String encodeFileToBase64(Path filePath) {
         try {
             if (Files.exists(filePath)) {
@@ -179,6 +176,7 @@ import jakarta.mail.internet.MimeMessage;
         return null;
     }
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
@@ -262,15 +260,17 @@ import jakarta.mail.internet.MimeMessage;
     }
 
     @Override
+    @CacheEvict(value = "candidatesCache", allEntries = true)
     public void deleteCandidateByCandidateId(Long candidateId) {
         candidateRepository.deleteById(candidateId);
     }
 
     @Override
-    public Page<CandidateDTO> getPagedCandidate(int page, int perPage, Sort sort) {
+    @Cacheable(value = "candidateCache")
+    public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
-        return candidatePage.map(candidateMapper::toCandidateDTO);
+        return candidatePage.map(candidateMapper::toCandidateDetailsDTO);
     }
 
     @Override
@@ -284,7 +284,7 @@ import jakarta.mail.internet.MimeMessage;
             throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
         }
 
-        Page<CandidateDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDTO);
+        Page<CandidateDetailsDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDetailsDTO);
         return new CandidatePageResponse(
                 candidateDTOPage.getContent(),
                 candidateDTOPage.getNumber(),

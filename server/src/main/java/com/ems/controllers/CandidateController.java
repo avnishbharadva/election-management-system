@@ -73,7 +73,7 @@ public class CandidateController {
     }
 
     @GetMapping("/candidateId/{candidateId}")
-    ResponseEntity<Map<String,Object>> getCandidateById(@PathVariable Long candidateId){
+    ResponseEntity<CandidateDataDTO> getCandidateById(@PathVariable Long candidateId){
         return ResponseEntity.ok().body( candidateService.findById(candidateId));
     }
 
@@ -93,7 +93,7 @@ public class CandidateController {
     {
         return candidateService.findByPartyName(candidatePartyName);
     }
-    @GetMapping
+    @GetMapping("/paged")
     public ResponseEntity<CandidatePageResponse> getCandidates(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "perPage",defaultValue = "10") int perPage,
@@ -105,7 +105,7 @@ public class CandidateController {
         }
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
-        Page<CandidateDTO> candidatePage = candidateService.getPagedCandidate(page, perPage, sort);
+        Page<CandidateDetailsDTO> candidatePage = candidateService.getPagedCandidate(page, perPage, sort);
 
         if (candidatePage.isEmpty()) {
             throw new DataNotFoundException("No candidates found.");
