@@ -1,6 +1,6 @@
 package com.ems.controllers;
 
-import  com.ems.dtos.*;
+import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.CandidateService;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
