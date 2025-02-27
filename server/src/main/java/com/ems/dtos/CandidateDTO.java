@@ -61,7 +61,6 @@ public class CandidateDTO {
     private Long electionId;
     private String electionName;
     private String partyName;
-//    @NotNull
 
     @NotNull(message = "Bank details cannot be null")
     private BankDetails bankDetails;
