@@ -24,7 +24,7 @@ public class Election {
 
     private String electionState;
 
-    private int totalSeats;
+    private Integer totalSeats;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
