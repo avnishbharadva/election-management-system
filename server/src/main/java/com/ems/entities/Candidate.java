@@ -45,7 +45,7 @@ public class Candidate extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private MaritialStatus maritialStatus;
 
-    private Integer noOfChildren;
+    private int noOfChildren;
     private String spouseName;
 
     @ManyToOne
