@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   FormHelperText,
+  Checkbox,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { DropzoneContainer, Title } from "../../style/CandidateFormCss";
@@ -34,15 +35,16 @@ import { Form } from "../../style/CommanStyle";
 import { IFormInput } from "../../store/feature/candidate/types";
 import { clearSearchQuery } from "../../store/feature/candidate/candidateSlice";
 import { AppDispatch } from "../../store/app/store";
-import { RootState } from '../../store/app/store'; 
-
+import { RootState } from '../../store/app/store';
+import axios from "axios";
+ 
 interface CandidateFormProps {
   handleClose: () => void;
   selectedCandidate: any;
 }
-
+ 
 const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
-  const dispatch = useDispatch<AppDispatch>(); 
+  const dispatch = useDispatch<AppDispatch>();
   const [editId, seteditId] = useState<string| null>('')
   const [profilePic, setProfilePic] = useState<string | null>('');
   const [signature, setSignature] = useState<string | null>('');
@@ -55,7 +57,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
       toast.error("Invalid profile picture file.");
       return;
     }
-  
+ 
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
@@ -66,14 +68,14 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     };
     reader.readAsDataURL(file);
   }, []);
-
+ 
   const onDropSignature = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) {
       toast.error("Invalid signature file.");
       return;
     }
-  
+ 
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
@@ -84,16 +86,16 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     };
     reader.readAsDataURL(file);
   }, []);
-
+ 
   const { getRootProps: getProfileProps, getInputProps: getProfileInputProps } =
     useDropzone({ onDrop: onDropProfile });
   const {
     getRootProps: getSignatureProps,
     getInputProps: getSignatureInputProps,
   } = useDropzone({ onDrop: onDropSignature });
-
+ 
   // const dispatch = useDispatch();
-
+ 
   const {
     register,
     handleSubmit,
@@ -104,7 +106,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     formState: { errors },
   } = useForm<IFormInput>();
   const maritalStatus = watch("maritalStatus", editId ? candidate?.candidate?.maritialStatus || "" : "");
-
+ 
   const isSingle = maritalStatus === "SINGLE";
   React.useEffect(() => {
     if (searchQuery) {
@@ -128,18 +130,18 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
       setSignature(candidate?.candidateSignature );
     }
   }, [candidate,editId,setValue])
-  
+ 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     if (!profilePic) {
       toast.error("Profile picture is required!");
       return;
     }
-  
+ 
     if (!signature) {
       toast.error("Signature is required!");
       return;
     }
-  
+ 
     const formData = new FormData();
     formData.append(
       "candidate",
@@ -165,21 +167,19 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
         { type: "application/json" }
       )
     );
-  
+ 
     const profileFile = dataURLtoFile(profilePic, "profile.jpg");
     console.log(profileFile)
     formData.append("candidateImage", profileFile);
-  
+ 
     const signatureFile = dataURLtoFile(signature, "signature.jpg");
     formData.append("candidateSignature", signatureFile);
-  
+ 
     try {
       if (candidate && editId !== "") {
-        
+       
         if (editId) {
           await dispatch(updateCandidateData({ candidateId: editId, candidateData: formData }));
-        } else {
-          toast.error("Invalid candidate ID.");
         }
         clearSearch();
         handleClose();
@@ -192,13 +192,13 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
         handleClose();
         reset();
         dispatch(fetchCandidates({ page: 0, perPage: 10 }));
-        
+       
       }
     } catch (error) {
       toast.error(candidate ? "Failed to update candidate." : "Failed to add candidate.");
     }
   };
-  
+ 
   const clearSearch = () => {
       dispatch(clearSearchQuery());
     };
@@ -206,14 +206,14 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
       if (!dataURL || !dataURL.includes(',')) {
         throw new Error("Invalid data URL format");
       }
-    
+   
       const [mimePart, base64Data] = dataURL.split(",");
       const mimeMatch = mimePart.match(/:(.*?);/);
-    
+   
       if (!mimeMatch || !mimeMatch[1]) {
         throw new Error("Invalid data URL format");
       }
-    
+   
       const mime = mimeMatch[1];
       const byteString = atob(base64Data);
       const arrayBuffer = new Uint8Array(byteString.length);
@@ -255,10 +255,10 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
         bankAddress: candidate?.candidate?.bankDetails?.bankAddress
       },
      
-
+ 
         });
         if (candidate?.candidateImage) {
-          
+         
           if (candidate?.candidateImage) {
             setProfilePic(`data:image/png;base64,${candidate?.candidateImage}`);
           } else {
@@ -267,12 +267,12 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
         } else {
           setProfilePic(null); // Clear profile picture if not provided
         }
-    
+   
         // Only set signature if signature exists
         if (candidate?.candidateSignature) {
-          
          
-          
+         
+         
           if (candidate.candidateSignature) {
             setSignature(`data:image/png;base64,${candidate.candidateSignature}`);
           } else {
@@ -281,19 +281,72 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
         } else {
           setSignature(null); // Clear signature if not provided
         }
-      
+     
       }
     }, [editId, candidate, reset,setProfilePic, setSignature]);
     console.log("hiiii"+profilePic)
+    const election = useSelector((state: any) => state.election.election || []);
+    const elections = election?.data || [];
+    useEffect(() => {
+      dispatch(fetchAllElection());
+    }, [dispatch]);
+  
+    interface Party {
+      partyId: number;
+      partyName: string;
+    }
+   
+    const [parties, setParties] = useState<Party[]>([]);
+    const sameMailingAddress = watch("sameMailingAddress");
+   
+  // Watch individual fields inside residentialAddress
+  const residentialStreet = watch("residentialAddress.street");
+  const residentialCity = watch("residentialAddress.city");
+  const residentialZipcode = watch("residentialAddress.zipcode");
+  console.log("Checkbox state:", sameMailingAddress);
+  console.log("Residential Address:", {
+    street: residentialStreet,
+    city: residentialCity,
+    zipcode: residentialZipcode,
+  });
+   
+  useEffect(() => {
+    console.log("Checkbox state:", sameMailingAddress);
+    console.log("Residential Address:", {
+      street: residentialStreet,
+      city: residentialCity,
+      zipcode: residentialZipcode,
+    });
+   
+    if (sameMailingAddress) {
+      setValue("mailingAddress.street", residentialStreet || "");
+      setValue("mailingAddress.city", residentialCity || "");
+      setValue("mailingAddress.zipcode", residentialZipcode);
+    }
+  }, [sameMailingAddress, residentialStreet, residentialCity, residentialZipcode, setValue]);
+   
+    useEffect(() => {
+      // Fetch party data from API
+      const fetchParties = async () => {
+        try {
+          const response = await axios.get("http://localhost:8082/api/party");
+          setParties(response.data); // Assuming response.data is an array of party objects
+        } catch (error) {
+          console.error("Error fetching parties:", error);
+        }
+      };
+   
+      fetchParties();
+    }, []);
   return (
     <>
      
       <Form onSubmit={handleSubmit(onSubmit)}>
-        
+       
         <Title variant="h5" align="center" gutterBottom>
         {candidate ? "EDIT CANDIDATE" : "ADD CANDIDATE"}
         </Title>
-
+ 
         <Section>
           <Title variant="h6">Personal Information</Title>
           <DividerStyle />
@@ -338,7 +391,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               type="date"
               label="Date of Birth"
               defaultValue={editId ? candidate?.candidate?.dateOfBirth : ""}
-
+ 
               {...register("dateOfBirth", {
                 required: "Date of Birth is required",
                 validate: (value) => {
@@ -390,7 +443,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
                 control={control}
                 rules={{ required: "Please select a gender." }}
                 defaultValue={editId ? candidate?.candidate?.gender : ""}
-
+ 
                 render={({ field }) => (
                   <RadioGroup {...field} row>
                     <FormControlLabel
@@ -432,7 +485,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
           <FormHelperText>{errors.maritalStatus.message}</FormHelperText>
         )}
       </FormControl>
-
+ 
       <TextField
         fullWidth
         label="Spouse Name"
@@ -458,64 +511,66 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             <FormHelperText>{errors.maritalStatus.message}</FormHelperText>
           )}
         </Section>
-
+ 
         <Section>
           <Title variant="h6">Election Details</Title>
           <DividerStyle />
           <Row>
-          <FormControl fullWidth error={!!errors.electionId}>
-  <InputLabel id="election-type-label">Election Type</InputLabel>
-  <Controller
-    name="electionId"
-    control={control}
-    rules={{ required: "Election type is required" }}
-    defaultValue={editId ? candidate?.candidate?.electionId || "" : ""} // Dynamically set default value
-    render={({ field }) => (
-      <Select
-        {...field}
-        labelId="election-type-label"
-        label="Election Type"
-      >
-        <MenuItem value="1">General</MenuItem>
-        <MenuItem value="2">Primary</MenuItem>
-        <MenuItem value="3">Runoff</MenuItem>
-        <MenuItem value="4">Special</MenuItem>
-      </Select>
-    )}
-  />
-  {errors.electionId && (
-    <FormHelperText>{errors.electionId.message}</FormHelperText>
-  )}
-</FormControl>
-
-
-<FormControl fullWidth error={!!errors.partyId}>
-  <InputLabel id="party-label">Party</InputLabel>
-  <Controller
-    name="partyId"
-    control={control}
-    rules={{ required: "Party selection is required" }}
-    render={({ field }) => (
-      <Select
-        {...field}
-        labelId="party-label"
-        label="Party"
-        value={field.value || (editId ? candidate?.candidate?.partyId || "" : "")} // Dynamically set value
-      >
-        <MenuItem value="1">Democratic</MenuItem>
-        <MenuItem value="2">Republican</MenuItem>
-        <MenuItem value="3">Independent</MenuItem>
-      </Select>
-    )}
-  />
-  {errors.partyId && (
-    <FormHelperText>{errors.partyId.message}</FormHelperText>
-  )}
-</FormControl>
-
-
-
-
+            <FormControl fullWidth error={!!errors.electionId}>
+              <InputLabel id="election-type-label">Election Type</InputLabel>
+              <Controller
+                name="electionId"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    labelId="election-type-label"
+                    value={field.value ?? ""}
+                    onChange={(event) => field.onChange(event.target.value)}
+                  >
+                    {Array.isArray(elections) && elections.map((election: any) => (
+                      <MenuItem key={election.electionId} value={election.electionId}>
+                        {election.electionName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.electionId && <FormHelperText>{errors.electionId.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth error={!!errors.partyId}>
+                <InputLabel id="party-label">Party</InputLabel>
+                <Controller
+                    name="partyId"
+                    control={control}
+                    rules={{ required: "Party selection is required" }}
+                    render={({ field }) => (
+                      <Select
+                      {...field}
+                      labelId="party-label"
+                      label="Party"
+                      value={field.value ?? ""} // Ensures the value is controlled
+                      onChange={(event) => field.onChange(event.target.value)}
+                    >
+                      {parties.length === 0 ? (
+                        <MenuItem disabled>No parties found</MenuItem>
+                      ) : (
+                       
+                        parties.map((party) => (
+                          <MenuItem key={party.partyId} value={party.partyId}>
+                            {party.partyName}
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                    )}
+                  />
+                {errors.partyId && <FormHelperText>{errors.partyId.message}</FormHelperText>}
+              </FormControl>
+ 
+ 
+ 
+ 
 <TextField
   fullWidth
   label="State"
@@ -532,7 +587,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
 />
           </Row>
         </Section>
-
+ 
         <Section>
           <Title variant="h6">Residential Address</Title>
           <DividerStyle />
@@ -574,7 +629,12 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             />
           </Row>
         </Section>
-
+        <Section>
+          <Typography>
+          <FormControlLabel control={<Checkbox {...register("sameMailingAddress")} />} label="Same as Residential Address" />
+ 
+          </Typography>
+        </Section>
         <Section>
           <Title variant="h6">Mailing Address</Title>
           <DividerStyle />
@@ -590,7 +650,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               error={!!errors.mailingAddress?.street}
               helperText={errors.mailingAddress?.street?.message}
             />
-
+ 
             <TextField
               fullWidth
               label="City"
@@ -602,7 +662,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               error={!!errors.mailingAddress?.city}
               helperText={errors.mailingAddress?.city?.message}
             />
-
+ 
             <TextField
               fullWidth
               label="Zipcode"
@@ -620,7 +680,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             />
           </Row>
         </Section>
-
+ 
         <Section>
           <Title variant="h6">Bank Details</Title>
           <DividerStyle />
@@ -636,7 +696,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               error={!!errors.bankDetails?.bankName}
               helperText={errors.bankDetails?.bankName?.message}
             />
-
+ 
             <TextField
               fullWidth
               label="Bank Address"
@@ -650,7 +710,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
             />
           </Row>
         </Section>
-
+ 
        {editId ? <Section>
           <Title variant="h6">Upload Documents</Title>
           <DividerStyle />
@@ -659,7 +719,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               <Typography variant="subtitle1">Candidate Image</Typography>
               <DropzoneContainer {...getProfileProps()}>
                 <input {...getProfileInputProps()} />
-               {profilePic ? ( 
+               {profilePic ? (
                   <img
                   src={typeof profilePic === "string" ? profilePic : URL.createObjectURL(profilePic)}
                     alt="Profile"
@@ -667,7 +727,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
                     height="100"
                     style={{ borderRadius: "50%" }}
                   />
-                 ) 
+                 )
                  : (
                   <Typography>Drag & Drop or Click</Typography>
                 )}
@@ -728,8 +788,8 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
               </DropzoneContainer>
             </Box>
           </FlexCenter>
-        </Section> } 
-
+        </Section> }
+ 
         <FlexCenter>
           <Button variant="contained" type="submit">
           {candidate ? "Update" : "Submit"}
@@ -740,5 +800,6 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
     </>
   );
 };
-
+ 
 export default CandidateForm;
+ 
