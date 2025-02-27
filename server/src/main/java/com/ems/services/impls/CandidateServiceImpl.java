@@ -15,8 +15,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+=======
+import org.springframework.core.io.ClassPathResource;
+>>>>>>> fb0f99d2645d4b0a3614934de5b2eec7714da71a
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,18 +38,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class CandidateServiceImpl implements CandidateService {
-    private final CandidateRepository candidateRepository;
-    private final CandidateMapper candidateMapper;
-    private final ElectionRepository electionRepository;
-    private final PartyRepository partyRepository;
-    private final ObjectMapper objectMapper;
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+
+    @Slf4j
+    @Service
+    @RequiredArgsConstructor
+    public class CandidateServiceImpl implements CandidateService {
+        private final CandidateRepository candidateRepository;
+        private final CandidateMapper candidateMapper;
+        private final ElectionRepository electionRepository;
+        private final PartyRepository partyRepository;
+        private final JavaMailSender mailSender;
+        @Value("${file.upload-dir}")
+        private String uploadDir;
 
     @Override
     public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
@@ -91,12 +100,56 @@ public class CandidateServiceImpl implements CandidateService {
                 ? residentialAddress
                 : candidateDTO.getMailingAddress();
 
-        candidate.setResidentialAddress(residentialAddress);
-        candidate.setMailingAddress(mailingAddress);
+            candidate.setResidentialAddress(residentialAddress);
+            candidate.setMailingAddress(mailingAddress);
 
-        return candidateRepository.save(candidate);
-    }
+            String fullName = candidate.getCandidateName().getFirstName() + " " +
+                    (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
+                    candidate.getCandidateName().getLastName();
+                    sendEmail(candidateDTO.getCandidateEmail(),
+                    "Candidate Registration Successful – Welcome to the Election!",
+                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
+                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
 
+                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+                            "<ul>" +
+                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+                            "</ul>" +
+
+                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
+
+                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+
+                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+                            "<b>Election Commission Team</b></p>" +
+                            "</div>"
+            );
+            return candidateRepository.save(candidate);
+        }
+        private void sendEmail(String to, String subject, String content) {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
+
+                helper.setTo(to);
+                helper.setSubject(subject);
+                helper.setText(content, true);
+
+                ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
+
+                helper.addInline("companyLogo", image);
+                mailSender.send(message);
+                log.info("Email sent successfully to {}", to);
+            } catch (MessagingException e) {
+                log.error("Failed to send email to {}: {}", to, e.getMessage());
+            }
+        }
     @Override
     public CandidateDataDTO findById(Long candidateId) {
         Path candidateImagePath=Path.of(uploadDir,"candidateImage");
@@ -113,7 +166,6 @@ public class CandidateServiceImpl implements CandidateService {
         System.out.println(signatureResourse+"//////////////////");
         return new CandidateDataDTO(candidateDto,candidateImageResouce,signatureResourse);
     }
-
     private String encodeFileToBase64(Path filePath) {
         try {
             if (Files.exists(filePath)) {
@@ -129,25 +181,72 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     @CacheEvict(value = "candidatesCache", allEntries = true)
     @Transactional
-    public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
+    public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
 
-        candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
+            // Update basic candidate details
+            candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
+
+            // Update party if provided
+            if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
+                existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
+                        .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
+            }
+
+            // Update election if provided
+            if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
+                existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
+                        .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
+            }
+
+            Path candidateImagePath = Path.of(uploadDir, "candidateImage");
+            Path candidateSignaturePath = Path.of(uploadDir, "candidateSignature");
+            Files.createDirectories(candidateImagePath);
+            Files.createDirectories(candidateSignaturePath);
+
+            // Update image if provided
+            if (candidateImage != null && !candidateImage.isEmpty()) {
+                String imageFileName = UUID.randomUUID() + "_" + candidateImage.getOriginalFilename();
+                Path imagePath = candidateImagePath.resolve(imageFileName);
+                Files.copy(candidateImage.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+                existingCandidate.setCandidateImage(imageFileName);
+            }
+
+            // Update signature if provided
+            if (candidateSignature != null && !candidateSignature.isEmpty()) {
+                String signatureFileName = UUID.randomUUID() + "_" + candidateSignature.getOriginalFilename();
+                Path signaturePath = candidateSignaturePath.resolve(signatureFileName);
+                Files.copy(candidateSignature.getInputStream(), signaturePath, StandardCopyOption.REPLACE_EXISTING);
+                existingCandidate.setCandidateSignature(signatureFileName);
+            }
+
+            // Update addresses
+            var residentialAddress = candidateDTO.getResidentialAddress();
+            var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
+                    ? residentialAddress
+                    : candidateDTO.getMailingAddress();
+
+            existingCandidate.setResidentialAddress(residentialAddress);
+            existingCandidate.setMailingAddress(mailingAddress);
 
 
-        if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
-            existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
-                    .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
+            String fullName = existingCandidate.getCandidateName().getFirstName() + " " +
+                    (existingCandidate.getCandidateName().getMiddleName() != null ? existingCandidate.getCandidateName().getMiddleName() + " " : "") +
+                    existingCandidate.getCandidateName().getLastName();
+            sendEmail(candidateDTO.getCandidateEmail(),
+                    "Candidate updation Successfully",
+                    "<div>" +
+                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
+                            "<h3>Dear " + fullName + ",</h3>" +
+                            "<p>Your data is successfully updated!</p>" +
+                            "<b>Party:</b> " + existingCandidate.getParty().getPartyName() + "<br>" +
+                            "<b>Election Type:</b> " + existingCandidate.getElection().getElectionType() + "<br>" +
+                            "</div>"
+            );
+
+            return candidateRepository.save(existingCandidate);
         }
-
-        if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
-            existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
-                    .orElseThrow(() -> new RuntimeException("Election not found with ID: " + candidateDTO.getElectionId())));
-        }
-
-        return candidateRepository.save(existingCandidate);
-    }
 
 
     @Override

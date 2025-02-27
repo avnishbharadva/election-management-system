@@ -18,7 +18,7 @@ export interface Address {
   }
   
   export interface Candidate {
-    candidateId: number;  // ✅ Added candidateId field
+    candidateId: string;  // ✅ Added candidateId field
     candidateName: CandidateName;
     candidateSSN: string;
     dateOfBirth: string;
@@ -33,10 +33,11 @@ export interface Address {
     candidateEmail: string;
     electionId: number;
     bankDetails: BankDetails;
-    candidateSignature?: string | null;  
-    candidateImage?: string | null;      
+    // candidateSignature?: string | null;  
+    // candidateImage?: string | null;      
   }
   export interface IFormInput {
+    candidateId?:string
     candidateName: CandidateName;
     candidateSSN: string;
     dateOfBirth: string;
@@ -51,16 +52,11 @@ export interface Address {
     candidateEmail: string;
     electionName: string;
     bankDetails: BankDetails;
-    candidateImage: string;
-    candidateSignature: string;
+    // candidateImage: string;
+    // candidateSignature: string;
   }
   
-//  export interface CandidateState {
-//     searchQuery: string; // ✅ Added searchQuery inside candidate state
-//     candidate: Candidate | null;
-//     loading: boolean;
-//     error: string | null;
-//   }
+
   
   export interface CandidateState {
     searchQuery: string;
@@ -70,5 +66,7 @@ export interface Address {
     loading: boolean;
     error: string | null;
     success: boolean;
+    searchedSSN: string,
+    candidate:any |null;
   }
   

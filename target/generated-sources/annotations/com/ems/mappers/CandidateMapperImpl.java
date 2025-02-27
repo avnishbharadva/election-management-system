@@ -2,17 +2,19 @@ package com.ems.mappers;
 
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.dtos.ElectionSortDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
 import com.ems.entities.Election;
+import com.ems.entities.Party;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-14T13:31:07+0530",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
+    date = "2025-02-25T12:08:56+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
 public class CandidateMapperImpl implements CandidateMapper {
@@ -26,7 +28,7 @@ public class CandidateMapperImpl implements CandidateMapper {
         CandidateDTO candidateDTO = new CandidateDTO();
 
         candidateDTO.setPartyId( mapPartyToId( candidate.getParty() ) );
-        candidateDTO.setElectionId( mapElectionTOElectionId( candidate.getElection() ) );
+        candidateDTO.setElectionId( mapElectionToElectionId( candidate.getElection() ) );
         candidateDTO.setBankDetails( candidate.getBankDetails() );
         candidateDTO.setCandidateId( candidate.getCandidateId() );
         candidateDTO.setCandidateName( candidate.getCandidateName() );
@@ -40,8 +42,6 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidateDTO.setMailingAddress( candidate.getMailingAddress() );
         candidateDTO.setStateName( candidate.getStateName() );
         candidateDTO.setCandidateEmail( candidate.getCandidateEmail() );
-        candidateDTO.setCandidateSignature( candidate.getCandidateSignature() );
-        candidateDTO.setCandidateImage( candidate.getCandidateImage() );
 
         return candidateDTO;
     }
@@ -59,7 +59,6 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidate.setCandidateSSN( candidateDTO.getCandidateSSN() );
         candidate.setDateOfBirth( candidateDTO.getDateOfBirth() );
         candidate.setGender( candidateDTO.getGender() );
-        candidate.setCandidateImage( candidateDTO.getCandidateImage() );
         candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
         candidate.setNoOfChildren( candidateDTO.getNoOfChildren() );
         candidate.setSpouseName( candidateDTO.getSpouseName() );
@@ -68,9 +67,29 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidate.setResidentialAddress( candidateDTO.getResidentialAddress() );
         candidate.setMailingAddress( candidateDTO.getMailingAddress() );
         candidate.setBankDetails( candidateDTO.getBankDetails() );
-        candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
 
         return candidate;
+    }
+
+    @Override
+    public CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate) {
+        if ( candidate == null ) {
+            return null;
+        }
+
+        CandidateDetailsDTO candidateDetailsDTO = new CandidateDetailsDTO();
+
+        candidateDetailsDTO.setPartyName( candidatePartyPartyName( candidate ) );
+        candidateDetailsDTO.setElectionName( candidateElectionElectionName( candidate ) );
+        candidateDetailsDTO.setCandidateId( candidate.getCandidateId() );
+        candidateDetailsDTO.setCandidateName( candidate.getCandidateName() );
+        candidateDetailsDTO.setCandidateSSN( candidate.getCandidateSSN() );
+        candidateDetailsDTO.setGender( candidate.getGender() );
+        candidateDetailsDTO.setSpouseName( candidate.getSpouseName() );
+        candidateDetailsDTO.setStateName( candidate.getStateName() );
+        candidateDetailsDTO.setCandidateEmail( candidate.getCandidateEmail() );
+
+        return candidateDetailsDTO;
     }
 
     @Override
@@ -97,9 +116,6 @@ public class CandidateMapperImpl implements CandidateMapper {
         if ( candidateDTO.getGender() != null ) {
             candidate.setGender( candidateDTO.getGender() );
         }
-        if ( candidateDTO.getCandidateImage() != null ) {
-            candidate.setCandidateImage( candidateDTO.getCandidateImage() );
-        }
         if ( candidateDTO.getMaritialStatus() != null ) {
             candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
         }
@@ -121,9 +137,6 @@ public class CandidateMapperImpl implements CandidateMapper {
         }
         if ( candidateDTO.getBankDetails() != null ) {
             candidate.setBankDetails( candidateDTO.getBankDetails() );
-        }
-        if ( candidateDTO.getCandidateSignature() != null ) {
-            candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
         }
     }
 
@@ -192,5 +205,21 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidateByPartyDTO.setGender( candidate.getGender() );
 
         return candidateByPartyDTO;
+    }
+
+    private String candidatePartyPartyName(Candidate candidate) {
+        Party party = candidate.getParty();
+        if ( party == null ) {
+            return null;
+        }
+        return party.getPartyName();
+    }
+
+    private String candidateElectionElectionName(Candidate candidate) {
+        Election election = candidate.getElection();
+        if ( election == null ) {
+            return null;
+        }
+        return election.getElectionName();
     }
 }

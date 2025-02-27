@@ -1,92 +1,4 @@
-// import  { useEffect } from "react";
-// import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from "@mui/material";
-// import { useDispatch, useSelector } from "react-redux";
-// import { AppDispatch } from "../store/app/store"; // Fixed incorrect import from redux-toolkit/query
-// import { fetchCandidates } from "../store/feature/candidate/candidateAPI";
 
-// export default function CandidateData() {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const { allCandidates, filteredCandidate, loading, error } = useSelector(
-//     (state: any) => state.candidate
-//   );
-
-//   // Fetch all candidates when the component mounts
-//   useEffect(() => {
-//     dispatch(fetchCandidates());
-//   }, [dispatch]);
-
-//   // Display searched candidate or all candidates
-//   const candidatesToDisplay = filteredCandidate ? [filteredCandidate] : allCandidates;
-
-//   return (
-//     <>
-//        {/* Candidate Table */}
-//       <TableContainer component={Paper} sx={{ marginTop: 2, width: "80%" }}>
-//         <Table>
-//           <TableHead>
-//             <TableRow>
-//               <TableCell><b>SSN</b></TableCell>
-//               <TableCell><b>First Name</b></TableCell>
-//               <TableCell><b>Middle Name</b></TableCell>
-//               <TableCell><b>Last Name</b></TableCell>
-//               <TableCell><b>Date of Birth</b></TableCell>
-//               <TableCell><b>Email</b></TableCell>
-//               <TableCell><b>Gender</b></TableCell>
-//               <TableCell><b>Marital Status</b></TableCell>
-//               <TableCell><b>Spouse Name</b></TableCell>
-//               <TableCell><b>No. of Children</b></TableCell>
-//               <TableCell><b>Election</b></TableCell>
-//               <TableCell><b>Party Name</b></TableCell>
-//               <TableCell><b>Residential Address</b></TableCell>
-//               <TableCell><b>Mailing Address</b></TableCell>
-//               <TableCell><b>Bank Details</b></TableCell>
-//               <TableCell>Action</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {loading ? (
-//               <TableRow>
-//                 <TableCell colSpan={6} align="center">Loading...</TableCell>
-//               </TableRow>
-//             ) : error ? (
-//               <TableRow>
-//                 <TableCell colSpan={6} align="center">{error}</TableCell>
-//               </TableRow>
-//             ) : candidatesToDisplay.length > 0 ? (
-//               candidatesToDisplay.map((candidate) => (
-//                 <TableRow key={candidate.candidateSSN}>
-//                   <TableCell>{candidate.candidateSSN}</TableCell>
-//                   <TableCell>{`${candidate.candidateName.firstName}`}</TableCell>
-//                   <TableCell>{`${candidate.candidateName.middleName || ""}`}</TableCell>
-//                   <TableCell>{`${candidate.candidateName.lastName}`}</TableCell>
-//                   <TableCell>{candidate.dateOfBirth}</TableCell>
-//                   <TableCell>{candidate.candidateEmail}</TableCell>
-//                   <TableCell>{candidate.gender}</TableCell>
-//                   <TableCell>{candidate.maritialStatus}</TableCell>
-//                   <TableCell>{candidate.noOfChildren || "N/A"}</TableCell>
-//                   <TableCell>{candidate.spouseName || "N/A"}</TableCell>
-//                   <TableCell>{candidate.electionId}</TableCell>
-//                   <TableCell>{candidate.partyId}</TableCell>
-//                   <TableCell>{`${candidate.residentialAddress.street}`} {`${candidate.residentialAddress.city}`} {`${candidate.residentialAddress.zipcode}`}</TableCell>
-//                   <TableCell>{`${candidate.residentialAddress.street}`} {`${candidate.residentialAddress.city}`} {`${candidate.residentialAddress.zipcode}`}</TableCell>
-//                   <TableCell>{`${candidate.bankDetails.bankName}`} {`${candidate.bankDetails.bankAddress}`}</TableCell>
-//                   <TableCell>
-//                     <Button>Edit</Button>
-//                     <Button>Delete</Button>
-//                   </TableCell>
-//                 </TableRow>
-//               ))
-//             ) : (
-//               <TableRow>
-//                 <TableCell colSpan={6} align="center">No Candidates Found!</TableCell>
-//               </TableRow>
-//             )}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-//     </>
-//   );
-// }
 
 
 import React, { useEffect, useState } from "react";
@@ -108,38 +20,41 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  ListItemIcon
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
-import { fetchCandidates, fetchCandidateUpdateDetails } from "../../store/feature/candidate/candidateAPI";
+import { fetchCandidateById, fetchCandidates, fetchCandidateUpdateDetails } from '../../store/feature/candidate/candidateAPI';
 import Model from "./Model";
 import CandidateForm from "./CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { StyledButton } from "../../style/CommanStyle";
 import { IFormInput } from "../../store/feature/candidate/types";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ToastContainer } from "react-toastify";
 
 const CandidateData = () => {
   const [open, setOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { allCandidates, filteredCandidate, loading, error, notFound } = useSelector(
+  const { allCandidates, filteredCandidate, loading, error, notFound,candidate } = useSelector(
     (state: RootState) => state.candidate
   );
-
   const ITEM_HEIGHT = 48;
-  const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
+  const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; candidate?: any }>({
     open: false,
     actionType: "add",
-    selectedCandidate: null,
+    candidate: null,
   });
 
   const handleOpenModal = (actionType: "add" | "edit", candidate?: any) => {
-    setModalData({ open: true, actionType, selectedCandidate: candidate || null });
+    setModalData({ open: true, actionType, candidate: candidate || null });
   };
 
   const handleCloseModal = () => {
-    setModalData({ open: false, actionType: "add", selectedCandidate: null });
+    setModalData({ open: false, actionType: "add", candidate: null });
   };
 
   const handleOpenDialog = (candidate: any) => {
@@ -167,8 +82,7 @@ const CandidateData = () => {
 
   const handleView = async (candidateId: number) => {
     try {
-      console.log("Viewing candidate:", candidateId);
-      const data = await dispatch(fetchCandidateUpdateDetails(candidateId)).unwrap();
+      const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       handleOpenDialog(data);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
@@ -178,8 +92,7 @@ const CandidateData = () => {
 
   const handleEditCandidate = async (candidateId: number) => {
     try {
-      console.log("Editing candidate:", candidateId);
-      const data = await dispatch(fetchCandidateUpdateDetails(candidateId)).unwrap();
+      const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       handleOpenModal("edit", data);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
@@ -191,7 +104,7 @@ const CandidateData = () => {
     dispatch(fetchCandidates());
   }, [dispatch]);
 
-  return (
+  return (<>
     <TableContainer component={Paper} sx={{ marginTop: 2, width: "90%", boxShadow: '0px 4px 10px rgba(128, 128, 128, 0.5)' }}>
       <Table>
         <TableHead>
@@ -268,7 +181,7 @@ const CandidateData = () => {
                       </ListItemIcon>
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={() => console.log("Delete clicked")}>
+                    <MenuItem>
                       <ListItemIcon>
                         <DeleteIcon />
                       </ListItemIcon>
@@ -282,8 +195,8 @@ const CandidateData = () => {
         </TableBody>
       </Table>
 
-      <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
-        <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
+      <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.candidate}>
+        <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.candidate} />
       </Model>
 
       {/* Candidate View Dialog */}
@@ -337,6 +250,7 @@ const CandidateData = () => {
         </DialogActions>
       </Dialog>
     </TableContainer>
+    </>
   );
 };
 

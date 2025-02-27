@@ -14,7 +14,7 @@ public interface CandidateService {
     CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
     Candidate saveCandidate(CandidateDTO candidateData, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     CandidateDataDTO findById(Long id);
-    Candidate update(Long candidateId,CandidateDTO candidateDTO);
+    Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException;
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
     void deleteCandidateByCandidateId(Long candidateId);
     Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort);

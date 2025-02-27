@@ -33,4 +33,10 @@ public class PartyController {
     public ResponseEntity<List<PartyDTO>> findAllParties(){
         return ResponseEntity.ok(partyService.findAll());
     }
+
+    @GetMapping("/hello")
+    public String hello()
+    {
+        return "hello";
+    }
 }

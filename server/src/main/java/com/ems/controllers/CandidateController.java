@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/candidate")
-@CrossOrigin(origins = "http://localhost:5173")
 public class CandidateController {
 
     private final CandidateService candidateService;
@@ -52,15 +52,21 @@ public class CandidateController {
         }
     }
 
-    @PostMapping(value = "/addCandidate",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Candidate> createCandidate(
+    @PostMapping(value = "/addCandidate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> createCandidate(
             @RequestPart("candidate") CandidateDTO candidateData,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
+
         try {
             Candidate savedCandidate = candidateService.saveCandidate(candidateData, candidateImage, candidateSignature);
-            return ResponseEntity.ok(savedCandidate);
 
+            ResponseDTO responseDTO = new ResponseDTO();
+            responseDTO.setMessage("Candidate added successfully");
+            responseDTO.setData(savedCandidate);
+            responseDTO.setTimeStamp(LocalDateTime.now());
+
+            return ResponseEntity.ok(responseDTO);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,9 +77,15 @@ public class CandidateController {
         return ResponseEntity.ok().body( candidateService.findById(candidateId));
     }
 
-    @PutMapping("/updateCandidate/{candidateId}")
-    Candidate updateCandidate(@PathVariable Long candidateId,@Valid @RequestBody CandidateDTO candidateDTO){
-       return candidateService.update(candidateId,candidateDTO);
+    @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Candidate> updateCandidate(
+            @PathVariable Long candidateId,
+            @RequestPart("candidate") CandidateDTO candidateDTO,
+            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+
+        Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
+        return ResponseEntity.ok(updatedCandidate);
     }
 
     @GetMapping("/partyName/{candidatePartyName}")
@@ -134,8 +146,8 @@ public class CandidateController {
     @GetMapping("/search")
     public Page<CandidateDTO> searchCandidates(@RequestBody CandidateDTO searchCriteria,
                                                @RequestParam int page,
-                                               @RequestParam int perPage,
                                                @RequestParam(defaultValue = "candidateId") String sortBy,
+                                               @RequestParam int perPage,
                                                @RequestParam(defaultValue = "ASC") String sortOrder) {
         Sort sort = Sort.by(Sort.Order.by(sortBy).with(Sort.Direction.fromString(sortOrder)));
         return candidateService.searchCandidates(searchCriteria, page, perPage, sort);

@@ -6,6 +6,6 @@ import lombok.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class LoginForm {
-    private String username;
+    private String email;
     private String password;
 }

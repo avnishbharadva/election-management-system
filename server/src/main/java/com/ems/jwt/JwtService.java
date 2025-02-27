@@ -13,17 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-
 @Service
 public class JwtService {
 
     public static final String SECRET = "AA76607118989F533AB2D769EB89D882FF30F3B5BFF23097E0B5452D4C80E1F47F2E62ADFCEF528518F93ECADE5E9BB72EB22653011388D5CF89253AE0238B2D";
-    public static final long VALIDITY = TimeUnit.MINUTES.toMillis(30);
+    public static final long VALIDITY = TimeUnit.MINUTES.toMillis(300);
 
     public String generateToken(UserDetails userDetails, Long userId, String role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userId); // Add User ID
-        claims.put("role", role); // Add Role
+        claims.put("id", userId);
+        claims.put("role", role);
 
         return Jwts.builder()
                 .addClaims(claims)
@@ -42,17 +41,16 @@ public class JwtService {
         return getClaims(jwt).get("id", Long.class);
     }
 
-
-
     private SecretKey generateKey() {
         byte[] decodedKey = Base64.getDecoder().decode(SECRET);
         return Keys.hmacShaKeyFor(decodedKey);
     }
 
-    public String extractUsername(String jwt) {
+    public String extractEmail(String jwt) { // Updated method name
         Claims claims = getClaims(jwt);
         return claims.getSubject();
     }
+
 
     private Claims getClaims(String jwt) {
         return Jwts.parserBuilder()
