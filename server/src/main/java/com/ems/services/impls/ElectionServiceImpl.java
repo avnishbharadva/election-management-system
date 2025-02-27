@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Data
 @Service
@@ -70,6 +69,17 @@ public class ElectionServiceImpl implements ElectionService {
             throw new DataNotFoundException("Election not found");
         electionRepository.deleteById(electionId);
 
+    }
+
+    @Override
+    public List<ElectionDTO> getAllElection() {
+        List<Election> elections= electionRepository.findAll();
+
+        if (elections.isEmpty()) {
+            throw new DataNotFoundException("No candidates found");
+        }
+        return elections.stream().map(globalMapper::toElection).
+                toList();
     }
 
 }

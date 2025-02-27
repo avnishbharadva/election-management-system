@@ -36,6 +36,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+
     @Bean
     public UserDetailsService userDetailsService() {
         return userDetailService;

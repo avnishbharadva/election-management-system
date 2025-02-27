@@ -1,4 +1,5 @@
 package com.ems.services.impls;
+
 import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +34,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -122,7 +127,7 @@ public class CandidateServiceImpl implements CandidateService {
         );
         return candidateRepository.save(candidate);
     }
-
+    @Async
     private void sendEmail(String to, String subject, String content) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -231,8 +236,6 @@ public class CandidateServiceImpl implements CandidateService {
         }
         return fileName;
     }
-
-
 
     @Override
     public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {

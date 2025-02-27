@@ -1,8 +1,6 @@
     package com.ems.controllers;
 
-    import com.ems.dtos.ElectionDTO;
-    import com.ems.dtos.ElectionSortDTO;
-    import com.ems.dtos.ErrorResponse;
+    import com.ems.dtos.*;
     import com.ems.entities.Election;
     import com.ems.services.ElectionService;
     import jakarta.validation.Valid;
@@ -13,6 +11,8 @@
     import org.springframework.web.bind.annotation.*;
 
     import java.time.LocalDateTime;
+    import java.util.Collections;
+    import java.util.List;
 
     @RestController
     @Data
@@ -47,5 +47,16 @@
             errorResponse.setStatus(HttpStatus.OK.value());
             return ResponseEntity.ok(errorResponse);
 
+        }
+        @GetMapping("/getAllElection")
+        public ResponseEntity<ResponseDTO> getAllElection() {
+            List<ElectionDTO> electionDetailsList = electionService.getAllElection();
+            if (electionDetailsList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseDTO("No Election details found", Collections.emptyList(), LocalDateTime.now(), false));
+            }
+            return ResponseEntity.ok(
+                    new ResponseDTO("Election details retrieved successfully", electionDetailsList, LocalDateTime.now(), true)
+            );
         }
     }

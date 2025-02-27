@@ -13,8 +13,8 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
 
-    @Mapping(target = "partyId", source = "party")
-    @Mapping(target = "electionId", source = "election")
+    @Mapping(target = "partyName", source = "party.partyName")
+    @Mapping(target = "electionName", source = "election.electionName")
     @Mapping(target = "bankDetails", source = "bankDetails")
 
     CandidateDTO toCandidateDTO(Candidate candidate);
