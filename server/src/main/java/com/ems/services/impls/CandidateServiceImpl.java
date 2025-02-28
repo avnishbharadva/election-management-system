@@ -16,8 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,7 +58,6 @@ import java.util.stream.Collectors;
 
     @Override
     @Transactional
-    @CacheEvict(value = "candidatesCache", allEntries = true)
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
 //        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
@@ -174,7 +171,6 @@ import java.util.stream.Collectors;
         return null;
     }
     @Override
-    @CacheEvict(value = "candidatesCache", allEntries = true)
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
@@ -258,13 +254,11 @@ import java.util.stream.Collectors;
     }
 
     @Override
-    @CacheEvict(value = "candidatesCache", allEntries = true)
     public void deleteCandidateByCandidateId(Long candidateId) {
         candidateRepository.deleteById(candidateId);
     }
 
     @Override
-    @Cacheable(value = "candidateCache")
     public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
