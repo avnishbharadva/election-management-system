@@ -11,6 +11,7 @@ import java.util.Date;
 public class ElectionSortDTO {
 
 
+    private Long electionId;
     @Size(max = 255, message = "Election name too long")
     private String electionName;
 
