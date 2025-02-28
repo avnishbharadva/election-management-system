@@ -1,12 +1,16 @@
-
+import React from 'react';
 import { Modal, Box, Typography, Button, Card, CardContent, Grid, Divider } from '@mui/material';
 import { ModelBox } from '../../style/ModelCss'; // Assuming you have ModelBox styles
- 
 
- 
-const ViewParty = ({ party, open, handleClose }:any) => {
-  if (!party) return;
- 
+interface ViewPartyProps {
+  party: any;
+  open: boolean;
+  handleClose: () => void;
+}
+
+const ViewParty: React.FC<ViewPartyProps> = ({ party, open, handleClose }) => {
+  if (!party) return null;
+
   return (
     <Modal
       open={open}
@@ -25,14 +29,14 @@ const ViewParty = ({ party, open, handleClose }:any) => {
         >
           Party Details
         </Typography>
- 
+
         <Card sx={{ boxShadow: 2, borderRadius: 2, margin: '20px' }}>
           <CardContent>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
               Party Information
             </Typography>
             <Divider sx={{ marginBottom: 2 }} />
- 
+
             <Grid container>
               <Grid item xs={12}>
                 <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Party Id: </Typography>
@@ -42,7 +46,7 @@ const ViewParty = ({ party, open, handleClose }:any) => {
                 <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Party Name: </Typography>
                 <Typography sx={{ display: 'inline' }}>{party.partyName}</Typography>
               </Grid>
- 
+
               <Grid item xs={12}>
                 <Grid container alignItems="center" justifyContent="space-between">
                   <Grid item>
@@ -61,7 +65,7 @@ const ViewParty = ({ party, open, handleClose }:any) => {
                   </Grid>
                 </Grid>
               </Grid>
- 
+
               <Grid item xs={12}>
                 <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Foundation Year: </Typography>
                 <Typography sx={{ display: 'inline' }}>{party.partyFoundationYear}</Typography>
@@ -70,7 +74,7 @@ const ViewParty = ({ party, open, handleClose }:any) => {
                 <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Website: </Typography>
                 <Typography sx={{ display: 'inline' }}>{party.partyWebSite}</Typography>
               </Grid>
- 
+
               <Grid item xs={12}>
                 <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Headquarters: </Typography>
                 <Typography sx={{ display: 'inline' }}>{party.headQuarters}</Typography>
@@ -82,7 +86,7 @@ const ViewParty = ({ party, open, handleClose }:any) => {
             </Grid>
           </CardContent>
         </Card>
- 
+
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', padding: '0 20px 20px 20px' }}>
           <Button onClick={handleClose} variant="outlined">
             Close
@@ -92,6 +96,5 @@ const ViewParty = ({ party, open, handleClose }:any) => {
     </Modal>
   );
 };
- 
+
 export default ViewParty;
- 

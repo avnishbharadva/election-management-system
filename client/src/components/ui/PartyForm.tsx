@@ -1,102 +1,66 @@
-
 import { Box, Stack, Typography } from "@mui/material";
 import { Form, StyledButton } from "../../style/CommanStyle";
 import { NameField, NumberField } from "./voter/FormFields";
 import ImageUpload from "./voter/ImageUpload";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useEditPartyMutation, useRegisterPartyMutation } from "../../store/feature/party/partyAction";
-import { toast } from "react-toastify";
-
+import { formStyles } from '../../style/PartyStyle'; // Import styles
 
 
 interface FormData {
   partyName: string;
-  partyAbbreviation: string;
-  partyFoundationYear: string;
+  partyAbbreviation: string | null;
+  partyFoundationYear: string | null;
   founderName: string;
   partyWebSite: string;
-  party_ideology: string;
   headQuarters: string;
+  image: string | null;
 }
 
+interface PartyFormProps {
+  onPartySubmit: (data: FormData, image: string | null) => void;
+  initialValues?: FormData;
+}
 
-const defaultValues: FormData = {
-  partyName: "",
-  partyAbbreviation: "",
-  partyFoundationYear: "",
-  founderName: "",
-  partyWebSite: "",
-  party_ideology: "",
-  headQuarters: "",
-};
+const PartyForm: React.FC<PartyFormProps> = ({ onPartySubmit, initialValues }) => {
+  const [logo, setlogo] = useState<string | null>(initialValues?.image || null);
 
-const PartyForm = ({ party }: any) => {
-  const [logo, setlogo] = useState<any>(party?.image || null);
-
-  const { control, handleSubmit, formState, reset } = useForm<FormData>({
-    defaultValues,
+  const { control, handleSubmit, formState, reset, setValue } = useForm<FormData>({
+    defaultValues: initialValues || {
+      partyName: "",
+      partyAbbreviation: "",
+      partyFoundationYear: null,
+      founderName: "",
+      partyWebSite: "",
+      headQuarters: "",
+      image: null,
+    },
     mode: "onTouched",
   });
 
-
-  const { isSubmitting, isValid } = formState
-
-  console.log("PartyForm: Party Data:", party);
-
   useEffect(() => {
-    if (party) {
-      reset({
-        partyName: party.partyName || "",
-        partyAbbreviation: party.partyAbbreviation || "",
-        partyFoundationYear: party.partyFoundationYear || "",
-        founderName: party.founderName || "",
-        partyWebSite: party.partyWebSite || "",
-        headQuarters: party.headQuarters || "",
+    if (initialValues) {
+      Object.entries(initialValues).forEach(([name, value]) => {
+        setValue(name as keyof FormData, value);
       });
     }
-  }, [party, reset]);
-
-  const [registerParty] = useRegisterPartyMutation();
-  const [editParty] = useEditPartyMutation();
-
+  }, [initialValues, setValue]);
 
   const onSubmit = async (data: FormData) => {
-
-    if(!logo){
-      toast.error("Please upload Party Logo")
-      return
-    }
-    try {
-      const result = await toast.promise(
-        party?.partyId ? editParty({post:data, img:logo,partyId:party?.partyId}).unwrap()
-          : registerParty({post:data, img:logo}).unwrap(),
-        {
-          pending: "please wait ..." ,
-          success: " Successfull",
-
-        }
-      )
-      if (result) {
-        reset(defaultValues)
-        setlogo(null)
-      }
-    } catch (error) {
-      console.log("PartyForm: Error on Party Submit:", error);
-      toast.error("Error Submitting Party");
-    }
-
-
+    console.log("PartyForm: Data before onPartySubmit:", data);
+    onPartySubmit(data, logo);
+    reset();
+    setlogo(null);
   };
 
   return (
     <Box>
       <Typography align="center" variant="h5" mb="15px">
-        {party?.partyId ? "Update Party" : "Register Party"}
+        {initialValues ? "Edit Party" : "Register Party"}
       </Typography>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box display="flex" flexDirection="row" gap={2}>
+        <Box sx={formStyles.container}>
+          <Box sx={formStyles.row}>
             <Box>
               <NameField
                 control={control}
@@ -104,20 +68,21 @@ const PartyForm = ({ party }: any) => {
                 label="Party Name"
                 minLength={2}
                 maxLength={50}
+                isRequired
               />
             </Box>
             <Box>
-
               <NameField
                 control={control}
                 name="leader"
                 label="Leader Name"
                 minLength={3}
                 maxLength={100}
+                isRequired
               />
             </Box>
           </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
+          <Box sx={formStyles.row}>
             <Box>
               <NameField
                 control={control}
@@ -125,6 +90,7 @@ const PartyForm = ({ party }: any) => {
                 label="Founder Name"
                 minLength={3}
                 maxLength={100}
+                isRequired
               />
             </Box>
             <Box>
@@ -133,12 +99,11 @@ const PartyForm = ({ party }: any) => {
                 name="partyFoundationYear"
                 label="Foundation Year"
                 fixedLength={4}
-
+                isRequired
               />
-
             </Box>
           </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
+          <Box sx={formStyles.row}>
             <Box>
               <NameField
                 control={control}
@@ -146,6 +111,7 @@ const PartyForm = ({ party }: any) => {
                 label="Party Abbreviation"
                 minLength={2}
                 maxLength={7}
+                isRequired
               />
             </Box>
             <Box>
@@ -155,38 +121,35 @@ const PartyForm = ({ party }: any) => {
                 label="Headquarters"
                 minLength={3}
                 maxLength={1000}
+                isRequired
               />
             </Box>
           </Box>
-          <Box>
+          <Box sx={formStyles.gridContainer}>
             <NameField
               control={control}
               name="partyWebSite"
               label="Website"
               minLength={3}
               maxLength={100}
+              isRequired
             />
-
           </Box>
-          <Stack direction='column'  >
+          <Stack direction="column" sx={{ margin: '0 auto'}} >
             <Typography variant="body1" color="text.secondary" align="left">
               Party Logo
             </Typography>
+            <Box sx={{width:'100%'}}>
             <ImageUpload
               label=""
               onImageUpload={setlogo}
               imagePreview={logo}
               borderRadius="0%"
             />
+            </Box>
           </Stack>
-          <Box
-            display="flex"
-            alignContent="center"
-            justifyContent="center"
-            flexDirection="row"
-            gap={2}
-          >
-            <StyledButton type="submit" variant="contained" disabled={isSubmitting || !isValid}>
+          <Box sx={formStyles.submitButtonContainer}>
+            <StyledButton type="submit" variant="contained">
               Submit
             </StyledButton>
           </Box>

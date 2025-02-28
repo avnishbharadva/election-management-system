@@ -1,9 +1,4 @@
-
-
-
- 
- 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TableContainer,
   Table,
@@ -18,14 +13,16 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Box,
+  TablePagination,
 } from '@mui/material';
 import { Edit, Visibility } from '@mui/icons-material';
 import Model from '../ui/Model';
 import PartyForm from '../ui/PartyForm';
 import { usePartyListQuery, useRegisterPartyMutation } from '../../store/feature/party/partyAction';
 import ViewParty from '../ui/ViewParty';
- 
- 
+import { tableStyles } from '../../style/PartyStyle'; // Import table styles
+
 interface Party {
   id: string;
   partyName: string;
@@ -37,17 +34,9 @@ interface Party {
   founderName: string;
 }
 
-const tableHeaders = [
-  "PartyName",
-  "Abbreviation",
-  "FoundationYear",
-  "PartyWebsite",
-  "HeadQuarters",
-  "FounderName",
-  "Actions"
-];
-
 const AddParty = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const { data, isError, isLoading, refetch } = usePartyListQuery({});
   const [addParty] = useRegisterPartyMutation();
   const [isModelOpen, setIsModelOpen] = useState(true);
@@ -56,122 +45,127 @@ const AddParty = () => {
   const [selectedPartyId, setSelectedPartyId] = useState<string | null>(null);
   const [viewPartyOpen, setViewPartyOpen] = useState(false);
   const [selectedParty, setSelectedParty] = useState<Party | null>(null);
-  const [editModel, setEditModel] = useState(false);
- 
+
   const handleCloseModel = () => {
     setIsModelOpen(false);
     setSelectedParty(null);
   };
- 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, party:any,partyId :string) => {
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, partyId: string, party:any) => {
     setAnchorEl(event.currentTarget);
     setSelectedPartyId(partyId);
     setSelectedParty(party)
   };
- 
+
   const handleClose = () => {
     setAnchorEl(null);
     setSelectedPartyId(null);
   };
- 
+
   const handleView = () => {
-    console.log("handleView selectedPartyId:", selectedPartyId);
- 
-    const party = data?.find((p: any) => p.partyId === selectedPartyId); // Change p.id to p.partyId
+    const party = data?.find((p: any) => p.partyId === selectedPartyId);
     if (party) {
       setSelectedParty(party);
       setViewPartyOpen(true);
     }
     handleClose();
   };
- 
+
   const handleEditClose = () => {
     setSelectedParty(null);
     setEditModel(false);
   };
 
- 
   const handleCloseViewParty = () => {
     setViewPartyOpen(false);
     setSelectedParty(null);
   };
- 
- 
+
   const handlePartySubmit = async (partyData: any, image: string | null) => {
-    console.log("AddParty: Image parameter received:", image); // Debugging
     try {
       await addParty({ post: partyData, img: image }).unwrap();
       refetch();
     } catch (error) {
       console.error("Error adding party:", error);
-      console.log("Error data", error.data);
     }
   };
- 
+
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); 
+  };
+
+  const visibleParties = data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) || [];
+
   return (
     <>
-      <Model
-        open={isModelOpen}
-        handleClose={handleCloseModel}
-        actionType="add"
-        handleOpen={() => setIsModelOpen(true)}
-      >
-        <PartyForm onPartySubmit={handlePartySubmit} />
-      </Model>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-       
- 
- 
-        <Table sx={{ minWidth: 'max-content', tableLayout: 'auto', whiteSpace: 'nowrap' }}>
-                 <TableHead>
-                     <TableRow>
-                      {
-                        tableHeaders.map((header) => (
-                          <TableCell key={header}><b>{header}</b></TableCell>
-                        ))
-}
-                      </TableRow>
-                    </TableHead>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow>
-                         <TableCell colSpan={7} align="center">
-                           <CircularProgress />
-                         </TableCell>
-                       </TableRow>
-                  ) : isError ? (
-                    <TableRow>
-                         <TableCell colSpan={7} align="center">
-                           <Typography color="error">Error loading data.</Typography>
-                         </TableCell>
-                       </TableRow>
-                  ) : data && data.length > 0 ? (
-                    data.map((party: any) => (
-                      <TableRow key={party.id}>
-                        <TableCell>{party.partyName}</TableCell>
-                        <TableCell>{party.partyAbbreviation}</TableCell>
-                        <TableCell>{party.partyFoundationYear}</TableCell>
-                        <TableCell>{party.partyWebSite}</TableCell>
-                        <TableCell>{party.headQuarters}</TableCell>
-                        <TableCell>{party.founderName}</TableCell>
-                        <TableCell>
-                          <IconButton
-                          aria-label="more"
-                          aria-controls={`party-menu-${party.partyId}`}
-                          aria-haspopup="true"
-                          onClick={(event) => {
-                            handleClick(event, party,party.partyId) }}
-                          color="primary"
-                        >
-                          ...
-                        </IconButton>
-                        <Menu
-                          id={`party-menu-${party.partyId}`}
-                          anchorEl={anchorEl}
-                          open={open && selectedPartyId === party.partyId}
-                          onClose={handleClose}
-                        >
-                          <MenuItem >
+      <Box sx={tableStyles.addButtonContainer}>
+        <Model
+          open={isModelOpen}
+          color="primary"
+          handleClose={handleCloseModel}
+          actionType="add"
+          handleOpen={() => setIsModelOpen(true)}
+        >
+          <PartyForm onPartySubmit={handlePartySubmit} />
+        </Model>
+      </Box>
+      <TableContainer component={Paper} sx={tableStyles.tableContainer}>
+        <Table sx={tableStyles.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={tableStyles.tableCellSticky}><b>PartyName</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>Abbreviation</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>FoundationYear</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>PartyWebsite</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>HeadQuarters</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>FounderName</b></TableCell>
+              <TableCell sx={tableStyles.tableCellSticky}><b>Actions</b></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <Typography color="error">Error loading data.</Typography>
+                </TableCell>
+              </TableRow>
+            ) : visibleParties.length > 0 ? (
+              visibleParties.map((party: any) => (
+                <TableRow key={party.id}>
+                  <TableCell>{party.partyName}</TableCell>
+                  <TableCell>{party.partyAbbreviation}</TableCell>
+                  <TableCell>{party.partyFoundationYear}</TableCell>
+                  <TableCell>{party.partyWebSite}</TableCell>
+                  <TableCell>{party.headQuarters}</TableCell>
+                  <TableCell>{party.founderName}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="more"
+                      aria-controls={`party-menu-${party.partyId}`}
+                      aria-haspopup="true"
+                      onClick={(event) => {handleClick(event, party, party.partyId) }}
+                      color="primary"
+                    >
+                      ...
+                    </IconButton>
+                    <Menu
+                      id={`party-menu-${party.partyId}`}
+                      anchorEl={anchorEl}
+                      open={open && selectedPartyId === party.partyId}
+                      onClose={handleClose}
+                    >
+                     <MenuItem >
                             <ListItemIcon>
                               <Edit fontSize="small" />
                             </ListItemIcon>
@@ -181,31 +175,38 @@ const AddParty = () => {
                           </Model>
 
                           </MenuItem>
-                          <MenuItem onClick={handleView}>
-                            <ListItemIcon>
-                              <Visibility fontSize="small" />
-                            </ListItemIcon>
-                            View
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                  ) : (
-                    <TableRow>
-                           <TableCell colSpan={7} align="center">
-                             <Typography>No party data available.</Typography>
-                           </TableCell>
-                         </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-                      </TableContainer>
-              <ViewParty party={selectedParty} open={viewPartyOpen} handleClose={handleCloseViewParty} />
+                      <MenuItem onClick={handleView}>
+                        <ListItemIcon>
+                          <Visibility fontSize="small" />
+                        </ListItemIcon>
+                        View
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <Typography>No party data available.</Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={data?.length || 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <ViewParty party={selectedParty} open={viewPartyOpen} handleClose={handleCloseViewParty} />
     </>
   );
 };
- 
+
 export default AddParty;
- 
- 

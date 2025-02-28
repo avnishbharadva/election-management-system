@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, useFormContext } from 'react-hook-form';
 import { Box, Button, Checkbox, FormControlLabel, Snackbar, Alert, Typography } from '@mui/material';
-
 import { Title, DividerStyle } from '../../style/CandidateFormCss';
 import ImageUpload from './voter/ImageUpload';
 import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVoterYear, HasVotedBefore, StatusField } from './voter/FormFields';
 import { StyledButton } from '../../style/CommanStyle';
 import { useEditVoterMutation, useRegisterVoterMutation } from '../../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-
-
 
 type Address = {
   addressLine: string;
@@ -204,7 +201,7 @@ const VoterForm = ({ voter,ssnNumber  }: any) => {
           <Box display='flex' alignItems='center' gap='2.5rem'>
             <PartyField name='partyId' control={control} label={'Select Party'} />
             <HasVotedBefore name='hasVotedBefore' control={control} label='Has Voted Before' />
-            <FirstVoterYear name='firstVoterYear' control={control} label='First Voter Year' />
+            <FirstVoterYear name='firstVoterYear' control={control} label='First Voter Year' rules={{required:false}}/>
           </Box>
           <Box display='flex' alignItems='center' sx={{ marginTop: '20px' }}>
             <StatusField label='status: ' name='statusId' control={control} />
