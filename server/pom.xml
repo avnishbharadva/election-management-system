@@ -199,27 +199,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.6.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<generatorName>spring</generatorName>
-					<inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
-					<output>${project.build.directory}/generated-sources/openapi</output>
-					<configOptions>
-						<interfaceOnly>true</interfaceOnly>
-						<useSpringBoot3>true</useSpringBoot3>
-					</configOptions>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
