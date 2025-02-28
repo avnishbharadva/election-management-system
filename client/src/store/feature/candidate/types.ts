@@ -1,72 +1,77 @@
-export interface Address {
-    addressId: number;
-    street: string;
-    city: string;
-    zipcode: number;
-  }
-  
-  export interface CandidateName {
-    firstName: string;
-    middleName?: string;
-    lastName: string;
-  }
-  
-  export interface BankDetails {
-    bankDetailsId: number;
-    bankName: string;
-    bankAddress: string;
-  }
-  
-  export interface Candidate {
-    candidateId: string;  // ✅ Added candidateId field
-    candidateName: CandidateName;
-    candidateSSN: string;
-    dateOfBirth: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
-    maritialStatus: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
-    noOfChildren: number;
-    spouseName?: string;
-    partyId: number;
-    residentialAddress: Address;
-    mailingAddress: Address;
-    stateName: string;
-    candidateEmail: string;
-    electionId: number;
-    bankDetails: BankDetails;
-    // candidateSignature?: string | null;  
-    // candidateImage?: string | null;      
-  }
-  export interface IFormInput {
-    candidateId?:string
-    candidateName: CandidateName;
-    candidateSSN: string;
-    dateOfBirth: string;
-    gender: string;
-    maritialStatus: string;
-    noOfChildren: number;
-    spouseName: string;
-    partyName: string;
-    residentialAddress: Address;
-    mailingAddress: Address;
-    stateName: string;
-    candidateEmail: string;
-    electionName: string;
-    bankDetails: BankDetails;
-    // candidateImage: string;
-    // candidateSignature: string;
-  }
-  
+interface Address {
+  addressId: number;
+  street: string;
+  city: string;
+  zipcode: number;
+}
 
-  
-  export interface CandidateState {
-    searchQuery: string;
-    allCandidates: any[]; // Store all candidates
-    filteredCandidate: any | null; // Store searched candidate
-    notFound: boolean;
-    loading: boolean;
-    error: string | null;
-    success: boolean;
-    searchedSSN: string,
-    candidate:any |null;
+interface CandidateName {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+}
+
+interface BankDetails {
+  bankDetailsId: number;
+  bankName: string;
+  bankAddress: string;
+}
+
+export interface Candidate {
+  candidateId: number;  // ✅ Added candidateId field
+  candidateName: CandidateName;
+  candidateSSN: string;
+  dateOfBirth: string;
+  gender: "MALE" | "FEMALE" | "OTHER";
+  maritalStatus: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
+  noOfChildren: number;
+  spouseName?: string;
+  partyId: number;
+  residentialAddress: Address;
+  mailingAddress: Address;
+  stateName: string;
+  candidateEmail: string;
+  electionId: number;
+  bankDetails: BankDetails;
+  candidateSignature?: string | null; 
+  candidateImage?: string | null;      
+}
+
+export interface CandidateState {
+  searchQuery: string;
+  allCandidates: any[]; 
+  filteredCandidate: any | null; 
+  notFound: boolean;
+  loading: boolean;
+  error: string | null;
+  success: boolean;
+  candidate: any | null;
+  searchedSSN:string | null;
+  currentPage: number,
+  totalPages:number,
+  totalRecords:number,
+  perPage:5,
+  sortBy: string;
+  sortDir: string;
   }
-  
+
+export interface IFormInput {
+candidateId?: number;
+candidateName: CandidateName;
+candidateSSN: string;
+dateOfBirth: string;
+gender: string;
+maritalStatus: string;
+noOfChildren: number;
+spouseName: string;
+partyId: number;
+residentialAddress: Address;
+mailingAddress: Address;
+stateName: string;
+candidateEmail: string;
+electionId: number;
+bankDetails: BankDetails;
+candidateImage: string;
+candidateSignature: string;
+sameMailingAddress: boolean;
+}
