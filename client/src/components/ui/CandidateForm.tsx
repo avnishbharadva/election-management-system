@@ -37,6 +37,7 @@ import { clearSearchQuery } from "../../store/feature/candidate/candidateSlice";
 import { AppDispatch } from "../../store/app/store";
 import { RootState } from '../../store/app/store';
 import axios from "axios";
+import { fetchAllElection } from "../../store/feature/election/electionApi";
  
 interface CandidateFormProps {
   handleClose: () => void;
