@@ -15,6 +15,7 @@ interface ModelProps {
   actionType: "add" | "edit";
   candidate?: any;
   children: React.ReactNode;
+  selectedCandidate: any;
 }
 
 const Model: React.FC<ModelProps> = ({
@@ -35,7 +36,7 @@ const Model: React.FC<ModelProps> = ({
     }
   };
 
-  const { label, icon } = getButtonProps();
+  const { } = getButtonProps();
 
   return (
     <Modal keepMounted  open={open}  aria-labelledby="modal-title" BackdropProps={{
@@ -57,7 +58,7 @@ const Model: React.FC<ModelProps> = ({
 
         {/* Modal Content */}
         <h2>
-          {icon} {label}
+          
         </h2>
         {React.isValidElement(children) &&
           React.cloneElement(children, { handleClose, candidate } as any)}
