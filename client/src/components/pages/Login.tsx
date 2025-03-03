@@ -1,83 +1,92 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
-import dummy from "../../assets/images/NYC_Flag.jpg";
-import { Resolver, useForm } from "react-hook-form";
+import { Button, TextField, Typography } from "@mui/material";
+import bgImg from "../../assets/images/NYC_Flag.jpg";
+import { Resolver, useForm,SubmitHandler } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
+import {
+ 
+  FormCard,
+  LoginBox,
+  LoginField,
+  LoginForm,
+  LoginImg,
+} from "../../style/LoginStyle";
+import { AppDispatch } from "../../store/app/store";
+import { useDispatch } from "react-redux";
+import { officerLogin } from "../../store/feature/officers/officerApi";
 
 type FormValues = {
   email: string;
   password: string;
 };
 
-const resolver: Resolver<FormValues> = async (values) => {
-  const errors: Record<string, object> = {};
 
-  if (!values.email) {
-    errors.email = {
-      type: "required",
-      message: "Email is required.",
-    };
-  }
-
-  if (!values.password) {
-    errors.password = {
-      type: "required",
-      message: "Password is required.",
-    };
-  }
-
-  return {
-    values: Object.keys(errors).length === 0 ? values : {},
-    errors,
-  };
-};
 
 const Login = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({ resolver });
+  } = useForm<FormValues>();
 
-  const onSubmit = handleSubmit((data: object) => console.log(data));
+  const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
+    await dispatch(officerLogin(officerData));
+    navigate("/app/dashboard");
+  };
+
   return (
     <>
-      <Box className="loginBox">
-        <img src={dummy} className="loginImg" alt="" />
-        <Box className="formCard">
-          <form className="loginform" onSubmit={handleSubmit(onSubmit)}>
-            <Typography variant="h5">Sign In Here!</Typography>
-            <Box className="loginField">
-              <TextField
-                fullWidth
-                sx={{ mt: "20px" }}
-                {...register("email", { required: true })}
-                label="Email"
-              />
-              {errors?.email && (
-                <p className="errorMsg">{errors.email.message}</p>
-              )}
-            </Box>
-            <Box className="loginField">
-              <TextField
-                fullWidth
-                {...register("password", { required: true })}
-                label="Password"
-              />
-              {errors?.password && (
-                <p className="errorMsg">{errors.password.message}</p>
-              )}
-            </Box>
+     <LoginBox>
+  <LoginImg src={bgImg} alt="" />
+  <FormCard>
+    <LoginForm onSubmit={handleSubmit(onSubmit)}>
+      <Typography variant="h5">Sign In Here!</Typography>
+      <LoginField>
+        <TextField
+          fullWidth
+          
+          {...register("email", { 
+            required: "Email is required", 
+            pattern: { 
+              value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, 
+              message: "Invalid email format" 
+            } 
+          })}
+          label="Email"
+          error={!!errors?.email}
+          helperText={errors?.email?.message}
+        />
+      </LoginField>
+      <LoginField>
+        <TextField
+          fullWidth
+         type="password"
+          {...register("password", { 
+            required: "Password is required", 
+            minLength: { 
+              value: 8, 
+              message: "Password must be at least 8 characters long" 
+            } 
+          })}
+          label="Password"
+          error={!!errors?.password}
+          helperText={errors?.password?.message}
+        />
+      </LoginField>
+      <Button
+        type="submit"
+        sx={{ mt: "20px" }}
+        fullWidth
+        variant="contained"
+      >
+        Login
+      </Button>
+    </LoginForm>
+  </FormCard>
+</LoginBox>
 
-            <Button
-              type="submit"
-              sx={{ mt: "20px" }}
-              fullWidth
-              variant="contained"
-            >
-              Login
-            </Button>
-          </form>
-        </Box>
-      </Box>
     </>
   );
 };
