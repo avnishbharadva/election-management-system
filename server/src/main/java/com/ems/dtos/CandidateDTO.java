@@ -9,7 +9,6 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 public class CandidateDTO {
@@ -64,4 +63,7 @@ public class CandidateDTO {
 
     @NotNull(message = "Bank details cannot be null")
     private BankDetails bankDetails;
+
+    private String candidateImage;
+    private String candidateSignature;
 }

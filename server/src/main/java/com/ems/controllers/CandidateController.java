@@ -5,6 +5,7 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -12,20 +13,21 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+
+@Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/candidate")
+@RequestMapping("/api/candidates")
 public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @GetMapping("/getAllDetails")
+    @GetMapping("/cand")
     public ResponseEntity<ResponseDTO> getAllCandidateDetails() {
         List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
 
@@ -39,31 +41,20 @@ public class CandidateController {
         );
     }
 
-
-
-
-
-    @GetMapping("/ssn/{candidateSSN}")
-    ResponseEntity<CandidateDetailsDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN)
-    {
-        try{
-            var candidateDTO= candidateService.findByCandidateSSN(candidateSSN);
+    @GetMapping("/by-ssn/{candidateSSN}")
+    ResponseEntity<CandidateDetailsDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN) {
+        try {
+            var candidateDTO = candidateService.findByCandidateSSN(candidateSSN);
             return ResponseEntity.ok(candidateDTO);
-        }
-        catch (DataNotFoundException e){
+        } catch (DataNotFoundException e) {
             throw new DataNotFoundException("No candidate found");
         }
     }
 
-    @PostMapping(value = "/addCandidate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> createCandidate(
-            @RequestPart("candidate") CandidateDTO candidateData,
-            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
-
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> createCandidate(@RequestBody CandidateDTO candidateData) {
         try {
-            Candidate savedCandidate = candidateService.saveCandidate(candidateData, candidateImage, candidateSignature);
-
+            Candidate savedCandidate = candidateService.saveCandidate(candidateData);
             return ResponseEntity.ok(
                     new ResponseDTO("Candidate added successfully", savedCandidate, LocalDateTime.now(), true)
             );
@@ -74,17 +65,16 @@ public class CandidateController {
     }
 
 
-    @GetMapping("/candidateId/{candidateId}")
-    ResponseEntity<CandidateDataDTO> getCandidateById(@PathVariable Long candidateId){
-        return ResponseEntity.ok().body( candidateService.findById(candidateId));
+
+    @GetMapping("/{candidateId}")
+    ResponseEntity<CandidateDataDTO> getCandidateById(@PathVariable Long candidateId) {
+        return ResponseEntity.ok().body(candidateService.findById(candidateId));
     }
 
-    @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{candidateId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> updateCandidate(
             @PathVariable Long candidateId,
-            @ModelAttribute CandidateDTO candidateDTO,
-            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
+            @RequestBody CandidateDTO candidateDTO) {
 
         if (candidateDTO == null) {
             return ResponseEntity.badRequest()
@@ -92,18 +82,24 @@ public class CandidateController {
         }
 
         try {
-            Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
+            Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO);
             return ResponseEntity.ok(
                     new ResponseDTO("Candidate updated successfully", updatedCandidate, LocalDateTime.now(), true)
             );
-        } catch (IOException e) {
+        } catch (DataNotFoundException e) {
+            log.error("Candidate not found: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(e.getMessage(), null, LocalDateTime.now(), false));
+        } catch (Exception e) {
+            log.error("Unexpected error: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO("Error while updating candidate", null, LocalDateTime.now(), false));
         }
     }
 
 
-    @GetMapping("/partyName/{candidatePartyName}")
+
+    @GetMapping("/by-party/{candidatePartyName}")
     public ResponseEntity<ResponseDTO> getCandidateByPartyName(@PathVariable String candidatePartyName) {
         List<CandidateByPartyDTO> candidates = candidateService.findByPartyName(candidatePartyName);
         if (candidates.isEmpty()) {
@@ -116,12 +112,12 @@ public class CandidateController {
         );
     }
 
-    @GetMapping("/paged")
+    @GetMapping
     public ResponseEntity<CandidatePageResponse> getCandidates(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "perPage",defaultValue = "10") int perPage,
-            @RequestParam(value = "sortBy",defaultValue = "candidateId") String sortBy,
-            @RequestParam(value = "sortDir",defaultValue = "asc") String sortDir
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "perPage", defaultValue = "10") int perPage,
+            @RequestParam(value = "sortBy", defaultValue = "candidateId") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir
     ) {
         if (page < 0 || perPage <= 0) {
             throw new IllegalArgumentException("Page and perPage must be positive.");
@@ -142,10 +138,11 @@ public class CandidateController {
                 candidatePage.getSize()
         ));
     }
+
     @GetMapping("election/{electionId}")
     public ResponseEntity<CandidatePageResponse> getCandidateByElection(@PathVariable Long electionId,
-                                                     @RequestParam(value = "page", defaultValue = "0") int page,
-                                                     @RequestParam(value = "perPage", defaultValue = "10") int perPage){
+                                                                        @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                        @RequestParam(value = "perPage", defaultValue = "10") int perPage) {
         if (page < 0 || perPage <= 0) {
             throw new IllegalArgumentException("Page and perPage must be non-negative and greater than zero.");
         }
@@ -154,7 +151,7 @@ public class CandidateController {
         return ResponseEntity.ok(candidates);
     }
 
-    @DeleteMapping("/delete/{candidateId}")
+    @DeleteMapping("/{candidateId}")
     public ResponseEntity<ResponseDTO> deleteById(@PathVariable Long candidateId) {
         try {
             candidateService.deleteCandidateByCandidateId(candidateId);
