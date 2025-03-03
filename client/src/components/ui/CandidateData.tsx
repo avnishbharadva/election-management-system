@@ -42,7 +42,7 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
-  
+  console.log(allCandidates?.candidates?.candidateSSN)
   const ITEM_HEIGHT = 48;
   const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
     open: false,
@@ -136,7 +136,11 @@ const CandidateData = () => {
   const candidatesToDisplay = (searchedSSN?.length === 9 && filteredCandidate?.length > 0)
     ? filteredCandidate 
     : Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
-
+    console.log(candidatesToDisplay.candidateSSN)
+    // const maskSSN = (ssnNumber) => {
+    //   if (!ssnNumber || ssnNumber.length !== 9) return ssn; // Ensure it's a valid SSN
+    //   return `*****${ssn.slice(5)}`;
+    // };
   return (
     <>
       <TableContainer component={Paper} sx={{ marginTop: 2, width: "100%", boxShadow: '0px 4px 10px rgba(128, 128, 128, 0.5)', textWrap:'wrap' }}>
@@ -298,7 +302,7 @@ const CandidateData = () => {
             ) : (
               candidatesToDisplay.map((candidate: any) => (
                 <TableRow key={candidate?.candidateId}>
-                  <TableCell>{candidate?.candidateSSN}</TableCell>
+                   <TableCell>{(candidate?.candidateSSN)}</TableCell>
                   <TableCell>{candidate?.candidateName?.firstName}</TableCell>
                   <TableCell>{candidate?.candidateName?.middleName || ""}</TableCell>
                   <TableCell>{candidate?.candidateName?.lastName}</TableCell>

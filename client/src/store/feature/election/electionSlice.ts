@@ -1,18 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addElection, deleteElectionById, fetchAllElection, fetchElection, updateElectionById } from "./electionApi";
 import { ElectionState } from "./types";
-
+ 
 const initialState: ElectionState = {
     loading: false,
     error: null,
     success: false,
-    election:[],
     elections: [],
     currentPage: 0,
-    rowsPerPage: 5,
-    totalElements: 0,
+    totalPages:0,
+    totalRecords:0,
+    perPage:5,
+    sortDir: "desc",
   };
-
+ 
   const electionSlice = createSlice({
     name: "election",
     initialState,
@@ -26,7 +27,10 @@ const initialState: ElectionState = {
         state.currentPage = action.payload;
       },
       setPerPage: (state, action) => {
-        state.rowsPerPage = action.payload;
+        state.perPage = action.payload;
+      },
+      setSort: (state, action) => {
+        state.sortDir = action.payload.sortDir;
       },
     },
     extraReducers: (builder) => {
@@ -37,6 +41,7 @@ const initialState: ElectionState = {
           state.success = false;
         })
         .addCase(addElection.fulfilled, (state) => {
+          state.currentPage= 0;
           state.loading = false;
           state.success = true;
         })
@@ -44,15 +49,19 @@ const initialState: ElectionState = {
           state.loading = false;
           state.error = action.payload as string;
         })
-
+ 
         //Fetch Election
+        .addCase(fetchElection.fulfilled, (state, action) => {
+          console.log("API Response:", action.payload);
+          state.elections = action.payload;  // Ensure `content` exists
+          state.currentPage = action.payload.currentPage;
+          state.totalPages = action.payload.totalPages;
+          state.totalRecords = action.payload.totalRecords;
+          state.perPage = action.payload.perPage;
+          state.loading = false;
+        })
         .addCase(fetchElection.pending, (state) => {
           state.loading = true;
-        })
-        .addCase(fetchElection.fulfilled, (state, action) => {
-          state.loading = false;
-          state.election = action.payload.content; // ✅ Ensure this is correctly assigned
-          state.totalElements = action.payload.totalElements;
         })
         .addCase(fetchElection.rejected, (state) => {
           state.loading = false;
@@ -67,9 +76,9 @@ const initialState: ElectionState = {
           state.loading = false;
           state.success = true;
             // Find and update the election in the array
-          const index = state.election.findIndex((e: any) => e.id === action.payload.id);
+          const index = state.elections.findIndex((e: any) => e.id === action.payload.id);
           if (index !== -1) {
-            state.election[index] = action.payload;
+            state.elections[index] = action.payload;
           }
         })
         .addCase(updateElectionById.rejected, (state, action: PayloadAction<any>) => {
@@ -82,8 +91,8 @@ const initialState: ElectionState = {
           state.success = false;
         })
         .addCase(deleteElectionById.fulfilled, (state,  action: PayloadAction<any>)=>{
-          if (state.election) {
-            state.election = state.election.filter((election: any) => election.id !== action.payload);
+          if (state.elections) {
+            state.elections = state.elections.filter((elections: any) => elections.id !== action.payload);
           }
           state.loading = false;
           state.success = true;
@@ -97,13 +106,13 @@ const initialState: ElectionState = {
         })
         .addCase(fetchAllElection.fulfilled, (state, action) => {
           state.loading = false;
-          state.election = action.payload;
+          state.elections = action.payload;
         })
         .addCase(fetchAllElection.rejected, (state) => {
           state.loading = false;
         });
     },
   });
-  
+ 
   export const { resetState , setPage, setPerPage} = electionSlice.actions;
   export default electionSlice.reducer;

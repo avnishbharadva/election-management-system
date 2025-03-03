@@ -17,18 +17,17 @@ interface CardData {
   count: number;
   icon: JSX.Element;
 }
-
-
-
 const Cards: React.FC = () => {
-  const { allCandidates, filteredCandidate, loading, error, notFound } = useSelector(
+  const { allCandidates } = useSelector(
     (state: any) => state.candidate
   );
+  // console.log(allCandidates.candidates.length)
+  useef
   const cards: CardData[] = [
     {
       id: 1,
       title: "Candidate",
-      count:  allCandidates.length,
+      // count:  allCandidates.candidates.length,
       icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
     },
     {
@@ -79,7 +78,7 @@ const Cards: React.FC = () => {
             ))}
           </CardsContainerLeft>
 
-          {/* Chart on Right */}
+         
           <ChartContainer>
             <Graph
               xAxis={[{ id: "barCategories", data: chartLabels, scaleType: "band" }]}

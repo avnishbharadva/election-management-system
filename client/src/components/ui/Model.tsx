@@ -7,6 +7,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import { StyledButton } from "../../style/CommanStyle";
 import { ModelBox } from "../../style/ModelCss";
+import { Backdrop } from "@mui/material";
 
 interface ModelProps {
   open: boolean;
@@ -37,7 +38,9 @@ const Model: React.FC<ModelProps> = ({
   const { label, icon } = getButtonProps();
 
   return (
-    <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title" >
+    <Modal keepMounted  open={open}  aria-labelledby="modal-title" BackdropProps={{
+      onClick: (e) => e.stopPropagation(), 
+    }}>
       <ModelBox>
         {/* Close Icon */}
         <Box
