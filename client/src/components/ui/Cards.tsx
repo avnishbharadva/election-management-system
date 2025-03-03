@@ -22,7 +22,7 @@ const Cards: React.FC = () => {
     (state: any) => state.candidate
   );
   // console.log(allCandidates.candidates.length)
-  useef
+  
   const cards: CardData[] = [
     {
       id: 1,

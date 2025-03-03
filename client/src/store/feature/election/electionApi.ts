@@ -27,7 +27,7 @@ export const addElection = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.get(`http://localhost:8082/api/elections/sorted?page=${page}&size=${perPage}&order=${order}`);
+      const response = await axiosInstance.get(`/elections/sorted?page=${page}&size=${perPage}&order=${order}`);
       console.log("sorted Election:", response.data);
 
       // Map response to only necessary data
