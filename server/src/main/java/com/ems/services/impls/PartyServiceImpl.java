@@ -1,13 +1,13 @@
 package com.ems.services.impls;
 
 import com.ems.entities.Party;
+import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.PartyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.PartyDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,7 +26,6 @@ public class PartyServiceImpl implements PartyService {
 
     private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/symbols";
-
 
     @Override
     public PartyDTO saveParty(org.openapitools.model.PartyDTO partyDTO) {
@@ -77,16 +76,11 @@ public class PartyServiceImpl implements PartyService {
         return imgName;
     }
 
-
-
-
-
-//    @Override
-//    public PartyDTO partyById(long id) {
-//        var party = partyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Party not found with id : " + id));
-//        return globalMapper.toPartyDTO(party);
-//    }
-
+    @Override
+    public PartyDTO partyById(long id) {
+        var party = partyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Party not found with id : " + id));
+        return globalMapper.toPartyDTO(party);
+    }
 
 //    @Override
 //    public List<PartyDTO> findAll() {

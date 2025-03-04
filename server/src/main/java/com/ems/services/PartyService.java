@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface PartyService {
 
-//    PartyDTO partyById(long id);
+    PartyDTO partyById(long id);
     PartyDTO saveParty(org.openapitools.model.PartyDTO partyDTO);
 //    List<PartyDTO> findAll();
 }
