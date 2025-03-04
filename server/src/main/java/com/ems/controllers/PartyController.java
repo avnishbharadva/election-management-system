@@ -17,26 +17,20 @@ import java.util.List;
 public class PartyController {
     private final PartyService partyService;
 
-    @PostMapping
-    public ResponseEntity<PartyDTO> createParty(@Valid @RequestPart(value = "party") PartyDTO partyDTO,
-                                                @RequestPart(value = "image", required = false)MultipartFile image) throws IOException
-    {
-        return ResponseEntity.ok(partyService.saveParty(partyDTO, image));
-    }
+//    @PostMapping
+//    public ResponseEntity<Party> createParty(@Valid @RequestBody PartyDTO partyDTO) throws IOException {
+//        return ResponseEntity.ok(partyService.saveParty(partyDTO));
+//    }
 
-    @GetMapping("/{partyId}")
-    public ResponseEntity<PartyDTO> findByPartyId(@PathVariable long partyId){
-        return ResponseEntity.ok(partyService.partyById(partyId));
-    }
 
-    @GetMapping
-    public ResponseEntity<List<PartyDTO>> findAllParties(){
-        return ResponseEntity.ok(partyService.findAll());
-    }
+//    @GetMapping("/{partyId}")
+//    public ResponseEntity<PartyDTO> findByPartyId(@PathVariable long partyId){
+//        return ResponseEntity.ok(partyService.partyById(partyId));
+//    }
 
-    @GetMapping("/hello")
-    public String hello()
-    {
-        return "hello";
-    }
+//    @GetMapping
+//    public ResponseEntity<List<PartyDTO>> findAllParties(){
+//        return ResponseEntity.ok(partyService.findAll());
+//    }
+
 }

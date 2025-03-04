@@ -117,6 +117,55 @@ paths:
         "500":
           description: Server error
 
+  /voters/status:
+    get:
+      summary: Get all voter statuses
+      operationId: getAllStatus
+      tags:
+        - Voter
+      responses:
+        "200":
+          description: Successfully retrieved voter statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VoterStatusDTO'
+        "500":
+          description: Internal Server Error
+
+  /voters/{voterId}:
+    patch:
+      summary: Update voter details
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoterDTO'
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoterDTO'
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
 components:
   schemas:
     PaginatedVoterDTO:
@@ -223,17 +272,6 @@ components:
 
     VoterDTO:
       type: object
-      required:
-        - voterId
-        - firstName
-        - lastName
-        - dateOfBirth
-        - gender
-        - dmvNumber
-        - ssnNumber
-        - email
-        - phoneNumber
-        - residentialAddress
       properties:
         voterId:
           type: string
@@ -298,12 +336,6 @@ components:
 
     AddressDTO:
       type: object
-      required:
-        - addressLine
-        - city
-        - county
-        - zipCode
-        - addressType
       properties:
         addressLine:
           type: string
@@ -332,4 +364,13 @@ components:
           type: string
           example: "000123456"
 
-
+    VoterStatusDTO:
+      type: object
+      properties:
+        statusId:
+          type: integer
+          format: int64
+          example: 1
+        statusDesc:
+          type: string
+          example: "Active"

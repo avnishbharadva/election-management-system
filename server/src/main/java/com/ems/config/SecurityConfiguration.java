@@ -33,13 +33,11 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
-                    registry.requestMatchers("/api/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
+                    registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
+                    registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.anyRequest().authenticated();
                 })
-
-
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

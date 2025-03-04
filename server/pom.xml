@@ -39,18 +39,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>openapi-generator-maven-plugin</artifactId>
-			<version>7.6.0</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -98,17 +86,35 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.11.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.11.4</version>
+			<scope>test</scope>
+		</dependency>
 
+		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>1.6.2</version>
+			<version>1.5.5.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<version>1.6.2</version>
+			<version>1.5.5.Final</version>
 		</dependency>
 
 		<dependency>
@@ -117,25 +123,6 @@
 			<version>0.2.0</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- Hibernate Second-Level Cache -->
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-jcache</artifactId>
-		</dependency>
-
-		<!-- Ehcache Implementation -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>3.10.8</version>
-		</dependency>
-
-		<!-- JCache API -->
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -143,11 +130,6 @@
 			<version>3.4.2</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -174,6 +156,22 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>4.23.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+		<!--  <dependency>-->
+		<!--   <groupId>org.hibernate</groupId>-->
+		<!--   <artifactId>hibernate-validator</artifactId>-->
+		<!--   <version>8.0.1.Final</version>-->
+		<!--  </dependency>-->
 	</dependencies>
 	<build>
 		<plugins>
@@ -202,23 +200,49 @@
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.6.0</version>
+				<version>7.10.0</version>
 				<executions>
 					<execution>
+						<id>generate-voter-api</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/api.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<!--suppress UnresolvedMavenProperty -->
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor @lombok.Data</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-party-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/party.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<!--suppress UnresolvedMavenProperty -->
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor @lombok.Data</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<generatorName>spring</generatorName>
-					<inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
-					<output>${project.build.directory}/generated-sources/openapi</output>
-					<configOptions>
-						<interfaceOnly>true</interfaceOnly>
-						<useSpringBoot3>true</useSpringBoot3>
-					</configOptions>
-				</configuration>
 			</plugin>
 
 			<plugin>
