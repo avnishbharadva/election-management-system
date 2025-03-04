@@ -9,6 +9,9 @@ import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
+
+ 
+import com.ems.dtos.ElectionPageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -73,17 +76,42 @@ public class ElectionServiceImpl implements ElectionService {
     }
 
 
-    @Override
+     @Override
 
-    public Page<ElectionSortDTO> getElectionsSorted(String order, int page, int size) {
+    public ElectionPageResponse getElectionsSorted(String order, int page, int size) {
 
-        Pageable pageable = PageRequest.of(page, size, "desc".equalsIgnoreCase(order) ? Sort.by("electionDate").descending() : Sort.by("electionDate").ascending());
+        Pageable pageable = PageRequest.of(page, size, "desc".equalsIgnoreCase(order)
+
+                ? Sort.by("electionDate").descending()
+
+                : Sort.by("electionDate").ascending());
 
         Page<Election> electionsPage = electionRepository.findAll(pageable);
 
-        return electionsPage.map(candidateMapper::toElectionSortDTO);
+        List<ElectionSortDTO> electionDTOs = electionsPage.getContent()
+
+                .stream()
+
+                .map(candidateMapper::toElectionSortDTO)
+
+                .toList();
+
+        ElectionPageResponse response = new ElectionPageResponse();
+
+        response.setElection(electionDTOs);
+
+        response.setCurrentPage(electionsPage.getNumber());
+
+        response.setPerPage(electionsPage.getSize());
+
+        response.setTotalPages(electionsPage.getTotalPages());
+
+        response.setTotalRecords(electionsPage.getTotalElements());
+
+        return response;
 
     }
+ 
 
 
     @Override

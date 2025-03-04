@@ -1,4 +1,4 @@
-import * as React from "react";
+// import * as React from "react";
 import {
   Table,
   TableBody,
@@ -23,22 +23,26 @@ import { AppDispatch, RootState } from "../../store/app/store";
 import { fetchElection, deleteElectionById } from "../../store/feature/election/electionApi";
 import { setPage, setPerPage } from "../../store/feature/election/electionSlice";
 import { toast, ToastContainer } from "react-toastify";
+import {useEffect, useState} from 'react';
 
 const ElectionData = ({ handleOpenModel }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { election = [], loading, currentPage, rowsPerPage, totalElements } = useSelector(
+  const { elections, loading, currentPage, perPage, totalRecords } = useSelector(
     (state: RootState) => state.election
   );
-
+console.log("formdata"+perPage)
   // Menu state
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedElection, setSelectedElection] = React.useState<any>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedElection, setSelectedElection] = useState<any>(null);
 
   // Fetch elections on mount & pagination change
-  React.useEffect(() => {
-    dispatch(fetchElection({ page: currentPage, perPage: rowsPerPage, order: "desc" }));
-  }, [dispatch, currentPage, rowsPerPage]);
-
+  useEffect(() => {
+    if(!loading){
+      dispatch(fetchElection({ page: currentPage, perPage: perPage, order: "desc" }));
+    }
+  }, [dispatch, currentPage, perPage]);
+  // const electionsToDisplay =  Array.isArray(elections) ? elections : elections.elections || [];
+// console.log(electionsToDisplay)
   // Open menu
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, electionData: any) => {
     setAnchorEl(event.currentTarget);
@@ -53,7 +57,7 @@ const ElectionData = ({ handleOpenModel }: any) => {
   // Edit button: Pass selected election data to modal
   const handleEditClick = () => {
     if (selectedElection) {
-      console.log("Editing election:", election);
+      console.log("Editing election:", elections);
       handleOpenModel(selectedElection); // Pass correct data to modal
     }
     handleMenuClose();
@@ -62,9 +66,13 @@ const ElectionData = ({ handleOpenModel }: any) => {
   // Delete function
   const handleDeleteClick = async () => {
     if (selectedElection?.electionId) {
-      await dispatch(deleteElectionById(selectedElection.electionId));
-      dispatch(fetchElection({ page: currentPage, perPage: rowsPerPage, order: "desc" }));
-      toast.success("Election deleted successfully");
+      try {
+        await dispatch(deleteElectionById(selectedElection.electionId)).unwrap();
+        dispatch(fetchElection({ page: currentPage, perPage: perPage, order: "desc" }));
+        toast.success("Election deleted successfully");
+      } catch (error) {
+        toast.error("Failed to delete election");
+      }
     }
     handleMenuClose();
   };
@@ -89,7 +97,7 @@ const ElectionData = ({ handleOpenModel }: any) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {election.map((election: any, index: number) => (
+              {elections?.election?.map((election: any, index: number) => (
                 <TableRow key={election?.electionId ?? `election-${index}`}>
                   <TableCell>{election?.electionName}</TableCell>
                   <TableCell>{election?.electionType}</TableCell>
@@ -138,8 +146,8 @@ const ElectionData = ({ handleOpenModel }: any) => {
           <TablePagination
             rowsPerPageOptions={[2, 5, 10, 25]}
             component="div"
-            count={totalElements}
-            rowsPerPage={rowsPerPage}
+            count={totalRecords}
+            rowsPerPage={perPage}
             page={currentPage}
             onPageChange={(_event, newPage) => dispatch(setPage(newPage))}
             onRowsPerPageChange={(event) => dispatch(setPerPage(parseInt(event.target.value, 10)))}

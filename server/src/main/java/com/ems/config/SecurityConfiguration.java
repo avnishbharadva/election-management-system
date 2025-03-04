@@ -38,6 +38,8 @@ public class SecurityConfiguration {
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.anyRequest().authenticated();
                 })
+
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

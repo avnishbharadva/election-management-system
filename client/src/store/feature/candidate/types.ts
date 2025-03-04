@@ -47,10 +47,10 @@ export interface CandidateState {
   success: boolean;
   candidate: any | null;
   searchedSSN:string | null;
-  currentPage: number,
-  totalPages:number,
-  totalRecords:number,
-  perPage:5,
+  currentPage: number;
+  totalPages:number;
+  totalRecords:number;
+  perPage:5;
   sortBy: string;
   sortDir: string;
   }

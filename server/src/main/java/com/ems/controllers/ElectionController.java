@@ -27,12 +27,14 @@ public class ElectionController {
 
     }
 
-    @GetMapping("/sorted")
-    public Page<ElectionSortDTO> getSortedElections(
+   @GetMapping("/sorted")
+    public ResponseEntity<ElectionPageResponse> getSortedElections(
             @RequestParam(defaultValue = "asc") String order,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return electionService.getElectionsSorted(order, page, size);
+            @RequestParam(defaultValue = "0") int page,  // Page index should start from 0
+            @RequestParam(name="size",defaultValue = "5") int size) {
+ 
+        ElectionPageResponse response = electionService.getElectionsSorted(order, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{electionId}")

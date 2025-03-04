@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
@@ -15,7 +15,8 @@ import {
   ListItemIcon,
   TablePagination,
   Box,
-  Typography
+  Typography,
+  CircularProgress
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
 import { fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
@@ -31,6 +32,7 @@ import { setPage, setPerPage , setSort} from "../../store/feature/candidate/cand
 import DeleteCandidateDialog from "./DeleteDialog";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { BoxTableContainer } from "../../style/TableContainerCss";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -73,7 +75,7 @@ const CandidateData = () => {
       console.log("Viewing candidate:", candidateId);
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       setSelectedCandidate(data);
-      setOpenViewDialog(true); // Open the ViewCandidate dialog
+      setOpenViewDialog(true);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
     }
@@ -118,130 +120,50 @@ const CandidateData = () => {
 
   const handleSort = (column: string) => {
     const isAsc = sortBy === column && sortDir === "asc";
-    const newOrder = isAsc ? "desc" : "asc";
-    
+    const newOrder = isAsc ? "desc" : "asc";  
     dispatch(setSort({ sortBy: column, sortDir: newOrder }));
-    dispatch(fetchCandidates({ page: currentPage, perPage, sortBy: column, sortDir: newOrder }));
   };
 
   useEffect(() => {
-    if (!loading) {
-      dispatch(fetchCandidates({ page: currentPage, perPage ,sortBy, sortDir }));
-    }
-  }, [ dispatch,currentPage, perPage,  sortBy, sortDir]);
+    dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
+  }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
 
   const {searchedSSN} = useSelector((state: RootState) => state.candidate);
 
-  const candidatesToDisplay = (searchedSSN?.length === 9 && filteredCandidate?.length > 0)
-    ? filteredCandidate 
-    : Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
+  const candidatesToDisplay = useMemo(() => {
+    if (searchedSSN?.length === 9 && filteredCandidate?.length > 0) {
+      return filteredCandidate;
+    }
+    return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
+  }, [searchedSSN, filteredCandidate, allCandidates]);
 
+  const renderSortableColumn = (label: string, field: string) => (
+    <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      <b>{label}</b>
+      <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
+      <ArrowDropUpIcon sx={{ fontSize: 18, cursor: "pointer", marginBottom:'-4px' }} onClick={() => handleSort(field)} />
+      <ArrowDropDownIcon sx={{ fontSize: 18, cursor: "pointer", marginTop:'-4px' }} onClick={() => handleSort(field)} />
+      </Box>
+    </Box>
+  );
   return (
     <>
-      <TableContainer component={Paper} sx={{ marginTop: 2, width: "100%", boxShadow: '0px 4px 10px rgba(128, 128, 128, 0.5)', textWrap:'wrap' }}>
-        <Table>
+      <BoxTableContainer>
+        <Table stickyHeader>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-            <TableCell sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "2px" }}>
-                <b>SSN</b>
-                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 0.8 }}>
-                  <ArrowDropUpIcon 
-                    sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }} 
-                    onClick={() => handleSort("candidateSSN")}
-                    />
-                  <ArrowDropDownIcon 
-                    sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }} 
-                    onClick={() => handleSort("candidateSSN")}
-                    />
-                </Box>
-              </TableCell>
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <b>First Name</b>
-                  <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-                  <ArrowDropUpIcon
-                    sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
-                    onClick={() => handleSort("candidateName.firstName")}
-                  />
-                  <ArrowDropDownIcon
-                    sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
-                    onClick={() => handleSort("candidateName.firstName")}
-                  />
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <b>Middle Name</b>
-                  <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-                    <ArrowDropUpIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
-                      onClick={() => handleSort("candidateName.middleName")}
-                    />
-                    <ArrowDropDownIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
-                      onClick={() => handleSort("candidateName.middleName")}
-                    />
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <b>Last Name</b>
-                  <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-                    <ArrowDropUpIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
-                      onClick={() => handleSort("candidateName.lastName")}
-                    />
-                    <ArrowDropDownIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
-                      onClick={() => handleSort("candidateName.lastName")}
-                    />
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <b>Email</b>
-                  <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-                    <ArrowDropUpIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
-                      onClick={() => handleSort("candidateEmail")}
-                    />
-                    <ArrowDropDownIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
-                      onClick={() => handleSort("candidateEmail")}
-                    />
-                  </Box>
-                </Box>
-              </TableCell>
-
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                  <b>Gender</b>
-                  <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-                    <ArrowDropUpIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
-                      onClick={() => handleSort("gender")}
-                    />
-                    <ArrowDropDownIcon
-                      sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
-                      onClick={() => handleSort("gender")}
-                    />
-                  </Box>
-                </Box>
-              </TableCell>
-
+              <TableCell>{renderSortableColumn("SSN", "candidateSSN")}</TableCell>
+              <TableCell>{renderSortableColumn("First Name", "candidateName.firstName")}</TableCell>
+              <TableCell>{renderSortableColumn("Middle Name", "candidateName.middleName")}</TableCell>
+              <TableCell>{renderSortableColumn("Last Name", "candidateName.lastName")}</TableCell>
+              <TableCell>{renderSortableColumn("Email", "candidateEmail")}</TableCell>
+              <TableCell>{renderSortableColumn("Gender", "gender")}</TableCell>
               <TableCell>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
                   <b>Election</b>
                 </Box>
               </TableCell>
-
               <TableCell>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
                   <b>Party Name</b>
@@ -253,7 +175,10 @@ const CandidateData = () => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={9} align="center">Loading...</TableCell>
+                <TableCell colSpan={9} align="center">
+                  Loading...
+                  <CircularProgress size={24} />
+                </TableCell>
               </TableRow>
             ) : error ? (
               <TableRow>
@@ -351,21 +276,26 @@ const CandidateData = () => {
             )}
           </TableBody>
         </Table>
-
-        <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType}>
+        
+        <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
           <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
         </Model>
-        {/* Pagination Controls */}
-      <TablePagination
+        <TablePagination
+          sx={{
+            position: "sticky", 
+            bottom: 0, 
+            backgroundColor: "white", 
+            zIndex: 10,
+          }}
           component="div"
-          count={totalRecords} // Total candidates from API
-          page={currentPage} // Zero-based indexing
+          count={totalRecords} 
+          page={currentPage} 
           rowsPerPage={perPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
           rowsPerPageOptions={[5, 10, 20]}
         />
-      </TableContainer>
+      </BoxTableContainer>
         <ViewCandidate
           open={openViewDialog}
           handleClose={handleCloseViewDialog}

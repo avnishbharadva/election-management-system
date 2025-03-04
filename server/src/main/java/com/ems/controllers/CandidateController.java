@@ -82,7 +82,7 @@ public class CandidateController {
     @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> updateCandidate(
             @PathVariable Long candidateId,
-            @ModelAttribute CandidateDTO candidateDTO,
+            @RequestPart(value = "candidate", required = false) CandidateDTO candidateDTO,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
             @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
 

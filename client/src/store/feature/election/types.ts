@@ -10,11 +10,13 @@ export interface ElectionState {
   loading: boolean;
   error: string | null;
   success: boolean;
-  election?: any[];
-  elections: [], 
-  currentPage: 0;
-  rowsPerPage: 5;
-  totalElements: 0;
+  // election?: any[];
+  elections?: any[], 
+  currentPage: number;
+  totalPages:number;
+  totalRecords:number;
+  perPage:number;
+  sortDir: string;
 }
 
 export interface FormValues {
