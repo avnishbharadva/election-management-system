@@ -3,10 +3,9 @@ package com.ems.mappers;
 import com.ems.dtos.*;
 import com.ems.entities.*;
 import com.ems.entities.constants.AddressType;
-import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
+import org.openapitools.model.ElectionDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -86,7 +85,7 @@ public interface GlobalMapper {
     List<AddressDTO> toAddressDTOList(List<Address> addressList);
 
 
-    Election toElectionDTO(ElectionDTO electionDTO);
+    Election toElectionDTO(org.openapitools.model.ElectionDTO electionDTO);
     ElectionDTO toElection(Election election);
 
     List<VoterStatusDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);

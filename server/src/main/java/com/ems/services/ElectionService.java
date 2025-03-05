@@ -1,22 +1,19 @@
 package com.ems.services;
 
-import com.ems.dtos.ElectionDTO;
-import com.ems.dtos.ElectionPageResponse;
-import com.ems.entities.Election;
-
-import java.util.List;
+import org.openapitools.model.ElectionDTO;
+import org.openapitools.model.ElectionPageResponse;
+import org.openapitools.model.ModelApiResponse;
 
 public interface ElectionService {
 
-    Election saveElection(ElectionDTO electionDTO);
+    ModelApiResponse saveElection(ElectionDTO electionDTO);
 
-    Election updateElection(Long electionId,ElectionDTO electionDTO);
+    ModelApiResponse updateElection(Long electionId,ElectionDTO electionDTO);
     ElectionPageResponse getElectionsSorted(String order, int page, int size);
+    ModelApiResponse getElectionById(Long electionId);
 
+    ModelApiResponse deleteElectionById(Long electionId);
 
-    void deleteElectionById(Long electionId);
-
-    List<ElectionDTO> getAllElection();
+    ModelApiResponse getAllElection();
 
 }
-

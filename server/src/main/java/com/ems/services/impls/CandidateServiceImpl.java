@@ -141,7 +141,7 @@ public class CandidateServiceImpl implements CandidateService {
                             "</div>"
             );
         } else {
-            log.debug("Skipping email notification: Candidate email is null or empty.");
+            log.info("Skipping email notification: Candidate email is null or empty.");
         }
 
 

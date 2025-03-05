@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Election {
     private String electionType;
 
     @Temporal(TemporalType.DATE)
-    private Date electionDate;
+    private LocalDate electionDate;
 
     private String electionState;
 
