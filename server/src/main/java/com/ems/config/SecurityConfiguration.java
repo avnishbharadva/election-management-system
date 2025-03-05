@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers(
                             "/authenticate/**", "/email/**", "/api/password/**",
-                            "/v3/api-docs/**", "/swagger-ui/**","/redoc.html"
+                            "/v3/api-docs/**", "/swagger-ui/**","/redoc.html","/api/counts"
                     ).permitAll();
                     registry.requestMatchers("/api/voters/**", "/api/candidate/**").hasAnyRole("STATE", "COUNTY");
                     registry.requestMatchers("/officers/register/**", "/getAllRoles/**", "/api/elections/**", "/api/party/**").hasRole("STATE");
@@ -55,7 +55,8 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
                 "http://172.16.16.66:5173",
                 "http://localhost:8082",
-                "http://localhost:8080"
+                "http://localhost:8080",
+                "http://172.16.16.63:8082"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
