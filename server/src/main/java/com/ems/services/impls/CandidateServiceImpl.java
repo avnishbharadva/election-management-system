@@ -3,26 +3,30 @@ package com.ems.services.impls;
 import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
-import com.ems.exceptions.*;
+import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,13 +36,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
 
     @Slf4j
@@ -62,7 +61,8 @@ import jakarta.mail.internet.MimeMessage;
 
     @Override
     @Transactional
-    @CacheEvict(value = "candidatesCache", allEntries = true)
+    @Caching(evict = { @CacheEvict(value = "candidatesCache", allEntries = true) })
+//    @CacheEvict(value = "candidateCache", allEntries = true)
     public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
 //        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
@@ -176,7 +176,7 @@ import jakarta.mail.internet.MimeMessage;
         return null;
     }
     @Override
-    @CacheEvict(value = "candidatesCache", allEntries = true)
+//    @CacheEvict(value = "candidateCache", allEntries = true)
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
@@ -260,13 +260,15 @@ import jakarta.mail.internet.MimeMessage;
     }
 
     @Override
-    @CacheEvict(value = "candidatesCache", allEntries = true)
+//    @CacheEvict(value = "candidateCache", allEntries = true)
     public void deleteCandidateByCandidateId(Long candidateId) {
         candidateRepository.deleteById(candidateId);
     }
 
     @Override
-    @Cacheable(value = "candidateCache")
+//    @PreAuthorize("hasAuthority('ROLE_STATE') or hasAuthority('ROLE_COUNTY')")
+//    @Cacheable(value = "candidateCache")
+
     public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
         Pageable pageable = PageRequest.of(page, perPage, sort);
         Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
@@ -296,6 +298,7 @@ import jakarta.mail.internet.MimeMessage;
 
 
     @Override
+    @Cacheable(value = "candidatesCache")
     public List<CandidateDetailsDTO> getCandidateInfo() {
         List<Candidate> candidates = candidateRepository.findAll();
 
