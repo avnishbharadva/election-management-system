@@ -6,14 +6,16 @@ import { toast } from "react-toastify";
 
 // Fetch all candidates initially
 export const fetchCandidates = createAsyncThunk(
-  "candidate/fetchAll",
-  async (_, { rejectWithValue }) => { 
+  "candidates/fetchCandidates",
+  async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/candidate/getAllDetails");
+      const response = await axiosInstance.get(
+        `/candidate/paged?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
+      );
+      console.log(response.data)
       return response.data;
     } catch (error: any) {
-      console.log(error);
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch candidates");
+      return rejectWithValue(error.response?.data || "Error fetching data");
     }
   }
 );
@@ -45,6 +47,7 @@ export const addCandidate = createAsyncThunk(
       if (response.status === 200) {
         // Success status
         toast.success("Candidate added successfully!");
+        toast.success("Registration Mail Sent successFully!")
         return response.data;
       } else {
         // Handle unexpected success statuses
@@ -101,17 +104,29 @@ export const updateCandidateData = createAsyncThunk(
       const response = await axiosInstance.put(
         `/candidate/updateCandidate/${candidateId}`,
         candidateData, 
-        {
-          headers: {
-          "Content-Type": "multipart/form-data",
-          },
-          
-        }
+       
       );
       toast.success("Candidate Updated successfully!");
       return response.data;
     } catch (error: any) {
+      toast.error("Something Went Wrong!");
       return rejectWithValue(error.response?.data || error.message || "Error updating candidate");
+    }
+  }
+);
+
+export const deleteCandidateById = createAsyncThunk(
+  "candidate/deleteCandidate",
+  async (candidateId: number, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(
+        `http://localhost:8082/api/candidate/delete/${candidateId}`
+      );
+      toast.success("Candidate Deleted successfully!");
+      
+      return response.data;
+    } catch (error: any) { 
+      return rejectWithValue(error.response?.data || error.message || "Error deleting candidate");
     }
   }
 );

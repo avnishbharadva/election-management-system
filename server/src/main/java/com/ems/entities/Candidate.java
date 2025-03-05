@@ -1,4 +1,5 @@
 package com.ems.entities;
+
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -9,9 +10,6 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
-import java.util.Date;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,7 +25,6 @@ public class Candidate extends TimeStamp {
     @Embedded
     private CandidateName candidateName;
 
-//    @Column(unique = true)
     @Column(name = "candidatessn")
     private String candidateSSN;
 

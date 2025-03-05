@@ -12,7 +12,7 @@ export default function Navbar() {
     navigate("/");
   }
   return (
-    <StyledAppBar position="static">
+    <StyledAppBar  position="fixed" sx={{ width: `calc(100% - 250px)`, ml: "250px" }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Election Management System

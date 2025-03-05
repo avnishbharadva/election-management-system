@@ -3,7 +3,7 @@ import bgImg from "../../assets/images/NYC_Flag.jpg";
 import { Resolver, useForm,SubmitHandler } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import {
-  ErrorMsg,
+ 
   FormCard,
   LoginBox,
   LoginField,
@@ -62,7 +62,7 @@ const Login = () => {
       <LoginField>
         <TextField
           fullWidth
-         
+         type="password"
           {...register("password", { 
             required: "Password is required", 
             minLength: { 

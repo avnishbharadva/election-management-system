@@ -1,179 +1,126 @@
-import React from "react";
+import { useEffect } from "react";
 import {
   Box,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
   Button,
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { addElection } from "../../store/feature/election/electionApi";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { Form } from "../../style/CommanStyle";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { addElection, fetchElection, updateElectionById } from "../../store/feature/election/electionApi";
+import { resetState } from "../../store/feature/election/electionSlice";
+import { AppDispatch } from "../../store/app/store";
+import { toast, ToastContainer } from "react-toastify";
+import { Row, Section } from "../../style/CandidateFormCss";
 
 type FormValues = {
-  election_name: string;
-  election_type: string;
-  election_date: string;
-  state: string;
-  total_seats: number;
-  status: string;
+  electionId: number;
+  electionName: string;
+  electionType: string;
+  electionDate: string;
+  electionState: string;
+  totalSeats: number;
 };
 
-const ElectionForm = () => {
-  const dispatch = useDispatch()
+const ElectionForm = ({ selectedElection, closeModal }: any) => {
+  const dispatch = useDispatch<AppDispatch>();
   const { loading, error, success } = useSelector((state: any) => state.election);
-  const { register, handleSubmit, reset,control } = useForm<FormValues>({
+
+  const { register, handleSubmit, reset, setValue } = useForm<FormValues>({
     defaultValues: {
-      election_name: "",
-      election_type: "State",
-      election_date: "",
-      state: "New York",
-      total_seats: 0,
-      status: "Upcoming",
+      electionName: "",
+      electionType: "State",
+      electionDate: "",
+      electionState: "New York",
+      totalSeats: 1,
     },
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    dispatch(addElection(data));
-  };
+  // Populate form when editing
+  useEffect(() => {
+    if (selectedElection) {
+      setValue("electionName", selectedElection.electionName);
+      setValue("electionType", selectedElection.electionType);
+      setValue("electionDate", selectedElection.electionDate);
+      setValue("electionState", selectedElection.electionState);
+      setValue("totalSeats", selectedElection.totalSeats);
+    } else {
+      reset();
+    }
+  }, [selectedElection, setValue, reset]);
 
-  const handleReset = () => {
-    reset();
-    dispatch(resetState());
+  useEffect(() => {
+    if (success) {
+      toast.success(selectedElection ? "Election updated successfully!" : "Election added successfully!");
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+      dispatch(resetState()); 
+    }
+  }, [success, dispatch, closeModal]);
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (selectedElection) {
+      await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: data }));
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+
+    } else {
+      await dispatch(addElection(data));
+      // toast.success("Election Registered SuccessFully")
+      alert("hi")
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+    }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        // height: "100vh",
-        // backgroundColor: "#f5f5f5",
-      }}
-    >
-      <Box
-        sx={{
-          width: "400px",
-          padding: "20px",
-          borderRadius: "8px",
-          // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-          backgroundColor: "#fff",
-        }}
-      > {loading && <CircularProgress />}
-      {error && <Alert severity="error">{error}</Alert>}
-      {success && <Alert severity="success">Election added successfully!</Alert>}
-        <Typography align="center" variant="h5" mb={3}>
-          Add Election
-        </Typography>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex" flexDirection="column" gap={2}>
-            <Box display="flex" gap={2}>
-              <TextField
-                fullWidth
-                label="Election Name"
-                {...register("election_name", {
-                  required: "Election name is required",
-                  minLength: {
-                    value: 3,
-                    message: "Election name must be at least 3 characters",
-                  },
-                })}
-                error={!!error?.election_name}
-                helperText={error?.election_name?.message}
-              />
+    <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
+      {loading && <CircularProgress />}
+     
+      
 
-              <TextField
-                fullWidth
-                label="Election Type"
-                value="State"
-                InputProps={{ readOnly: true }}
-                {...register("election_type")}
-              />
-            </Box>
+      <Typography align="center" variant="h5" mb={3}>
+        {selectedElection ? "Edit Election" : "Add Election"}
+      </Typography>
 
-            <Box display="flex" gap={2}>
-              <TextField
-                type="date"
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                label="Election Date"
-                {...register("election_date", {
-                  required: "Election date is required",
-                  validate: (value) =>
-                    new Date(value) > new Date() || "Election date must be in the future",
-                })}
-                error={!!error?.election_date}
-                helperText={error?.election_date?.message}
-              />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box display="flex" flexDirection="column" >
+          <Section>
+            <Row>
+            <TextField fullWidth label="Election Name" {...register("electionName", { required: "Required" })} />
+            <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
+            </Row>
+          </Section>
 
-              <TextField
-                fullWidth
-                label="State"
-                value="New York"
-                InputProps={{ readOnly: true }}
-                {...register("state")}
-              />
-            </Box>
+          <Section>
+            <Row>
+            <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
+            <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
+            </Row>  
+          </Section>
 
-            <Box display="flex" gap={2}>
-              <TextField
-                fullWidth
-                label="Total Seats"
-                type="number"
-                {...register("total_seats", {
-                  required: "Total seats are required",
-                  min: {
-                    value: 1,
-                    message: "Total seats must be at least 1",
-                  },
-                })}
-                error={!!error?.total_seats}
-                helperText={error?.total_seats?.message}
-              />
-
-              {/* <TextField
-                fullWidth
-                label="Status"
-                {...register("status", {
-                  required: "Status is required",
-                  minLength: {
-                    value: 3,
-                    message: "Status must be at least 3 characters",
-                  },
-                })}
-                error={!!error.status}
-                helperText={error?.status?.message}
-              /> */}
-            </Box>
-
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{
-                mt: 2,
-                bgcolor: "#1976d2",
-                color: "#fff",
-                "&:hover": {
-                  bgcolor: "#1565c0",
-                },
-              }}
-              // onClick={handleReset}
-            >
-              Submit
+          <Section sx={{width: "10.5rem"}}>
+          <TextField 
+            fullWidth 
+            label="Total Seats" 
+            type="number" 
+            {...register("totalSeats", 
+              { required: "Required", 
+                min: { value: 1, message: "Seats must be at least 1" } 
+              })
+            } 
+            />
+          </Section>
+          <Section sx={{display:'flex',alignItems:'center', justifyContent:'center'}}>
+            <Button type="submit" variant="contained" sx={{ mt: 2, bgcolor: "#1976d2" , width:'10.5rem', }}>
+              {selectedElection ? "Update Election" : "Add Election"}
             </Button>
-          </Box>
-        </Form>
-      </Box>
+          </Section>
+        </Box>
+      </form>
+      <ToastContainer position="top-right" autoClose={3000} />
     </Box>
   );
 };

@@ -7,6 +7,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import { StyledButton } from "../../style/CommanStyle";
 import { ModelBox } from "../../style/ModelCss";
+import { Backdrop } from "@mui/material";
 
 interface ModelProps {
   open: boolean;
@@ -14,6 +15,7 @@ interface ModelProps {
   actionType: "add" | "edit";
   candidate?: any;
   children: React.ReactNode;
+  selectedCandidate: any;
 }
 
 const Model: React.FC<ModelProps> = ({
@@ -34,10 +36,12 @@ const Model: React.FC<ModelProps> = ({
     }
   };
 
-  const { label, icon } = getButtonProps();
+  const { } = getButtonProps();
 
   return (
-    <Modal keepMounted open={open} onClose={handleClose} aria-labelledby="modal-title" >
+    <Modal keepMounted  open={open}  aria-labelledby="modal-title" BackdropProps={{
+      onClick: (e) => e.stopPropagation(), 
+    }}>
       <ModelBox>
         {/* Close Icon */}
         <Box
@@ -54,7 +58,7 @@ const Model: React.FC<ModelProps> = ({
 
         {/* Modal Content */}
         <h2>
-          {icon} {label}
+          
         </h2>
         {React.isValidElement(children) &&
           React.cloneElement(children, { handleClose, candidate } as any)}

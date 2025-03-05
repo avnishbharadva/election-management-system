@@ -1,37 +1,37 @@
-
-import Model from '../ui/Model'
-import ElectionForm from '../ui/ElectionForm'
-import { Button } from '@mui/material'
-import { useState } from 'react';
+import { useState } from "react";
+import { Button, Modal, Box } from "@mui/material";
+import ElectionForm from "../ui/ElectionForm";
+import ElectionData from "../ui/ElectionData";
 
 const AddElection = () => {
-   const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
-      open: false,
-      actionType: "add",
-      selectedCandidate: null,
-    });
-  
-    const handleOpenModal = (actionType: "add" | "edit", candidate?: any) => {
-      setModalData({ open: true, actionType, selectedCandidate: candidate || null });
-    };
-  
-    const handleCloseModal = () => {
-      setModalData({ open: false, actionType: "add", selectedCandidate: null });
-    };
-  
+  const [open, setOpen] = useState(false);
+  const [selectedElection, setSelectedElection] = useState(null);
+
+  const handleOpenModel = (election: any) => {
+    setSelectedElection(election);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedElection(null);
+  };
+
   return (
-   <>
-      <h2>Add Election</h2>
-       <Button variant="contained" onClick={() => handleOpenModal("add")}>
-                        Add Election
-                      </Button>
-                      <Model open={modalData.open} handleClose={handleCloseModal} >
+    <Box sx={{ display: "flex", flexDirection:'column', justifyContent: "center", alignItems: "center" }}>
+      <Button onClick={() => setOpen(true)} variant="contained" color="primary">
+        Add Election
+      </Button>
 
-     
-        <ElectionForm/>
-      </Model>
-      </>
-  )
-}
+      <ElectionData handleOpenModel={handleOpenModel} />
 
-export default AddElection
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
+        </Box>
+      </Modal>
+    </Box>
+  );
+};
+
+export default AddElection;

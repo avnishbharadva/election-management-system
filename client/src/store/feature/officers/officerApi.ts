@@ -17,8 +17,9 @@ export const officerLogin = createAsyncThunk('officer/login',async(offcierData:O
           }
            
     } catch (error:any) {
+      console.log(error);
         if (error.response?.status === 500) {
-            toast.error(error.response?.data?.message);
+            toast.error("Invalid Credentials");
             return rejectWithValue(error.response?.data?.message);
           }
         return rejectWithValue(error.response?.data?.message || "Failed to Login");

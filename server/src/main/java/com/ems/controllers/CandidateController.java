@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -25,19 +26,21 @@ public class CandidateController {
     private final CandidateService candidateService;
 
     @GetMapping("/getAllDetails")
-    public ResponseEntity<List<CandidateDetailsDTO>> getAllCandidateDetails() {
-        try {
-            List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
+    public ResponseEntity<ResponseDTO> getAllCandidateDetails() {
+        List<CandidateDetailsDTO> candidateDetailsList = candidateService.getCandidateInfo();
 
-            if (candidateDetailsList.isEmpty()) {
-                throw new DataNotFoundException("No candidates found");
-            }
-
-            return ResponseEntity.ok(candidateDetailsList);
-        } catch (DataNotFoundException ex) {
-            throw new DataNotFoundException("No such candidate is found");
+        if (candidateDetailsList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO("No candidate details found", Collections.emptyList(), LocalDateTime.now(), false));
         }
+
+        return ResponseEntity.ok(
+                new ResponseDTO("Candidate details retrieved successfully", candidateDetailsList, LocalDateTime.now(), true)
+        );
     }
+
+
+
 
 
     @GetMapping("/ssn/{candidateSSN}")
@@ -61,16 +64,15 @@ public class CandidateController {
         try {
             Candidate savedCandidate = candidateService.saveCandidate(candidateData, candidateImage, candidateSignature);
 
-            ResponseDTO responseDTO = new ResponseDTO();
-            responseDTO.setMessage("Candidate added successfully");
-            responseDTO.setData(savedCandidate);
-            responseDTO.setTimeStamp(LocalDateTime.now());
-
-            return ResponseEntity.ok(responseDTO);
+            return ResponseEntity.ok(
+                    new ResponseDTO("Candidate added successfully", savedCandidate, LocalDateTime.now(), true)
+            );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO("Error while adding candidate", null, LocalDateTime.now(), false));
         }
     }
+
 
     @GetMapping("/candidateId/{candidateId}")
     ResponseEntity<CandidateDataDTO> getCandidateById(@PathVariable Long candidateId){
@@ -78,21 +80,42 @@ public class CandidateController {
     }
 
     @PutMapping(value = "/updateCandidate/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Candidate> updateCandidate(
+    public ResponseEntity<ResponseDTO> updateCandidate(
             @PathVariable Long candidateId,
-            @RequestPart("candidate") CandidateDTO candidateDTO,
+            @RequestPart(value = "candidate", required = false) CandidateDTO candidateDTO,
             @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) throws IOException {
+            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
 
-        Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
-        return ResponseEntity.ok(updatedCandidate);
+        if (candidateDTO == null) {
+            return ResponseEntity.badRequest()
+                    .body(new ResponseDTO("Candidate data must be provided", null, LocalDateTime.now(), false));
+        }
+
+        try {
+            Candidate updatedCandidate = candidateService.update(candidateId, candidateDTO, candidateImage, candidateSignature);
+            return ResponseEntity.ok(
+                    new ResponseDTO("Candidate updated successfully", updatedCandidate, LocalDateTime.now(), true)
+            );
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO("Error while updating candidate", null, LocalDateTime.now(), false));
+        }
     }
+
 
     @GetMapping("/partyName/{candidatePartyName}")
-    List<CandidateByPartyDTO> getCandidateByPartyName(@PathVariable String candidatePartyName)
-    {
-        return candidateService.findByPartyName(candidatePartyName);
+    public ResponseEntity<ResponseDTO> getCandidateByPartyName(@PathVariable String candidatePartyName) {
+        List<CandidateByPartyDTO> candidates = candidateService.findByPartyName(candidatePartyName);
+        if (candidates.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO("No candidates found for the given party name", Collections.emptyList(), LocalDateTime.now(), false));
+        }
+
+        return ResponseEntity.ok(
+                new ResponseDTO("Candidates retrieved successfully", candidates, LocalDateTime.now(), true)
+        );
     }
+
     @GetMapping("/paged")
     public ResponseEntity<CandidatePageResponse> getCandidates(
             @RequestParam(value = "page",defaultValue = "0") int page,
@@ -132,25 +155,43 @@ public class CandidateController {
     }
 
     @DeleteMapping("/delete/{candidateId}")
-    ResponseEntity<?> deleteById(@PathVariable Long candidateId)
-    {
-        if (candidateService.findById(candidateId)!=null) {
-            return ResponseEntity.ok("Candidate with id:"+candidateId);
-
-        } else {
-            throw new DataNotFoundException("No candidate with id:"+candidateId+" is found");
+    public ResponseEntity<ResponseDTO> deleteById(@PathVariable Long candidateId) {
+        try {
+            candidateService.deleteCandidateByCandidateId(candidateId);
+            return ResponseEntity.ok(
+                    new ResponseDTO("Candidate deleted successfully", null, LocalDateTime.now(), true)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO("Error deleting candidate", null, LocalDateTime.now(), false));
         }
-
     }
+
 
     @GetMapping("/search")
-    public Page<CandidateDTO> searchCandidates(@RequestBody CandidateDTO searchCriteria,
-                                               @RequestParam int page,
-                                               @RequestParam(defaultValue = "candidateId") String sortBy,
-                                               @RequestParam int perPage,
-                                               @RequestParam(defaultValue = "ASC") String sortOrder) {
-        Sort sort = Sort.by(Sort.Order.by(sortBy).with(Sort.Direction.fromString(sortOrder)));
-        return candidateService.searchCandidates(searchCriteria, page, perPage, sort);
+    public ResponseEntity<ResponseDTO> searchCandidates(
+            @RequestBody CandidateDTO searchCriteria,
+            @RequestParam int page,
+            @RequestParam(defaultValue = "candidateId") String sortBy,
+            @RequestParam int perPage,
+            @RequestParam(defaultValue = "ASC") String sortOrder) {
 
+        try {
+            Sort sort = Sort.by(Sort.Order.by(sortBy).with(Sort.Direction.fromString(sortOrder)));
+            Page<CandidateDTO> candidatesPage = candidateService.searchCandidates(searchCriteria, page, perPage, sort);
+
+            if (candidatesPage.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseDTO("No candidates found matching the criteria", Collections.emptyList(), LocalDateTime.now(), false));
+            }
+
+            return ResponseEntity.ok(
+                    new ResponseDTO("Candidates retrieved successfully", candidatesPage, LocalDateTime.now(), true)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO("Error while searching candidates", null, LocalDateTime.now(), false));
+        }
     }
+
 }
