@@ -26,14 +26,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -56,7 +57,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
-        return candidateRepository.findByCandidateSSN(candidateSSN)
+        return candidateRepository.findByLast4SSN(candidateSSN)
                 .map(candidateMapper::toCandidateDetailsDTO)
                 .orElseThrow(() -> new DataNotFoundException("No Candidate found with SSN: " + candidateSSN));
     }
@@ -83,7 +84,7 @@ public class CandidateServiceImpl implements CandidateService {
             try {
                 imagePath = decodeAndSaveBase64Image(candidateDTO.getCandidateImage(), uploadDir, imageName);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new DataNotFoundException("No image is fetched");
             }
         }
 
@@ -93,7 +94,7 @@ public class CandidateServiceImpl implements CandidateService {
             try {
                 signaturePath = decodeAndSaveBase64Image(candidateDTO.getCandidateSignature(), uploadDir, signName);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new DataNotFoundException("No image is being fetched");
             }
         }
 
@@ -116,17 +117,31 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
             sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate Update Successful",
-                    "<div>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +
-                            "<h3>Dear " + fullName + ",</h3>" +
-                            "<p>Your data has been successfully updated!</p>" +
-                            "<b>Party:</b> " + candidate.getParty() + "<br>" +
-                            "<b>Election Type:</b> " + candidate.getElection() + "<br>" +
+                    "Candidate Registration Successful – Welcome to the Election!",
+                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
+                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+
+                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+                            "<ul>" +
+                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+                            "</ul>" +
+
+                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
+
+                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+
+                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+                            "<b>Election Commission Team</b></p>" +
                             "</div>"
             );
         } else {
-            System.out.println("Skipping email notification: Candidate email is null or empty.");
+            log.debug("Skipping email notification: Candidate email is null or empty.");
         }
 
 
@@ -237,7 +252,7 @@ public class CandidateServiceImpl implements CandidateService {
                 String imagePath = decodeAndSaveBase64Image(candidateDTO.getCandidateImage(), uploadDir, imageName);
                 existingCandidate.setCandidateImage(imagePath);
             } catch (IOException e) {
-                throw new RuntimeException("Error saving candidate image", e);
+                throw new DataNotFoundException("Error saving candidate image");
             }
         }
 
@@ -248,11 +263,10 @@ public class CandidateServiceImpl implements CandidateService {
                 String signaturePath = decodeAndSaveBase64Image(candidateDTO.getCandidateSignature(), uploadDir, signName);
                 existingCandidate.setCandidateSignature(signaturePath);
             } catch (IOException e) {
-                throw new RuntimeException("Error saving candidate signature", e);
+                throw new DataNotFoundException("Error saving candidate signature");
             }
         }
 
-        // Construct candidate full name safely
         StringBuilder fullName = new StringBuilder(existingCandidate.getCandidateName().getFirstName());
         if (existingCandidate.getCandidateName().getMiddleName() != null) {
             fullName.append(" ").append(existingCandidate.getCandidateName().getMiddleName());
@@ -264,17 +278,17 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
             sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate Update Successful",
+                    "Candidate updation Successfully",
                     "<div>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +
+                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
                             "<h3>Dear " + fullName + ",</h3>" +
-                            "<p>Your data has been successfully updated!</p>" +
+                            "<p>Your data is successfully updated!</p>" +
                             "<b>Party:</b> " + partyName + "<br>" +
                             "<b>Election Type:</b> " + electionType + "<br>" +
                             "</div>"
             );
         } else {
-            System.out.println("Skipping email notification: Candidate email is null or empty.");
+            log.info("Skipping email notification: Candidate email is null or empty.");
         }
 
         return candidateRepository.save(existingCandidate);

@@ -26,7 +26,4 @@ public class Election {
 
     private int totalSeats;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Candidate> candidates;
 }

@@ -1,13 +1,8 @@
 package com.ems.services;
 
 import com.ems.dtos.ElectionDTO;
-
 import com.ems.dtos.ElectionPageResponse;
-import com.ems.dtos.ElectionSortDTO;
-
 import com.ems.entities.Election;
-
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

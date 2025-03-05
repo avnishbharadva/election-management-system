@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,4 +29,8 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>, Jpa
     List<Candidate> findByParty_PartyName(String candidatePartyName);
 
     Page<Candidate> findByElection_electionId(Long electionId, Pageable pageable);
+
+    @Query("SELECT c from Candidate c where c.candidateSSN LIKE CONCAT('%', :last4DIGIT)")
+    Optional<Candidate> findByLast4SSN(@Param("last4DIGIT") String last4DIGIT);
+
 }

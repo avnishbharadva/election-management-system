@@ -39,8 +39,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers(
                             "/authenticate/**", "/email/**", "/api/password/**",
-                            "/v3/api-docs/**", "/swagger-ui/**",
-                           "/redoc.html"
+                            "/v3/api-docs/**", "/swagger-ui/**","/redoc.html"
                     ).permitAll();
                     registry.requestMatchers("/api/voters/**", "/api/candidate/**").hasAnyRole("STATE", "COUNTY");
                     registry.requestMatchers("/officers/register/**", "/getAllRoles/**", "/api/elections/**", "/api/party/**").hasRole("STATE");
