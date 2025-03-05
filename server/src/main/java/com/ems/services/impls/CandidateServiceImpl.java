@@ -288,7 +288,6 @@ import java.util.stream.Collectors;
 
 
     @Override
-    @Cacheable(value = "candidatesCache")
     public List<CandidateDetailsDTO> getCandidateInfo() {
         List<Candidate> candidates = candidateRepository.findAll();
 
