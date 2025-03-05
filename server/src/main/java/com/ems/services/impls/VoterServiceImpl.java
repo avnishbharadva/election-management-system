@@ -20,9 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.VoterStatusDTO;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
+import org.openapitools.model.VoterDTO;
+import org.openapitools.model.VoterRegisterDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,14 +49,13 @@ public class VoterServiceImpl implements VoterService {
 
     @Transactional
     @Override
-    public org.openapitools.model.VoterDTO register(org.openapitools.model.VoterRegisterDTO voterRegisterDTO){
+    public VoterDTO register(VoterRegisterDTO voterRegisterDTO){
         log.info("voter registration start for : {}", voterRegisterDTO.getSsnNumber());
 
         if (voterRepo.existsBySsnNumber(voterRegisterDTO.getSsnNumber()))
             throw new DataAlreadyExistException("Voter Already Exist with SSN Number : " + voterRegisterDTO.getSsnNumber());
 
         var party = partyRepo.findById(voterRegisterDTO.getPartyId()).orElseThrow(() -> new DataNotFoundException("Party Not Found with ID : " + voterRegisterDTO.getPartyId()));
-
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
@@ -99,7 +99,14 @@ public class VoterServiceImpl implements VoterService {
 
         var addressList = List.of(residentialAddress, mailingAddress);
         addressList.forEach(address -> address.setVoter(savedVoter));
+
+
+
+
+
         addressRepo.saveAll(addressList);
+
+
 
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
         return globalMapper.toVoterDTO(savedVoter);
@@ -107,7 +114,7 @@ public class VoterServiceImpl implements VoterService {
 
 
     @Override
-    public Page<org.openapitools.model.VoterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
+    public Page<VoterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
         log.info("Searching voters with filters: {}", searchDTO);
         Pageable pageable = PageRequest.of(page, size, getSort(sort));
         return  voterRepo.searchVoters(

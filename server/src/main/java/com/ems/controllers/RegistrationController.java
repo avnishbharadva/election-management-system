@@ -27,38 +27,37 @@ public class RegistrationController {
     private final OfficersService officersService;
     private final RegistrationServiceImpl registrationService;
 
-    @GetMapping("/getAllRoles")
-    public ResponseEntity<List<OfficersResponseDTO>> getAllRoles() {
-        try {
-            List<OfficersResponseDTO> roles = officersService.getAllRoles();
-            return ResponseEntity.ok(roles);
-        } catch (Exception e) {
-            log.error("Error fetching roles", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+//    @GetMapping("/getAllRoles")
+//    public ResponseEntity<List<OfficersResponseDTO>> getAllRoles() {
+//        try {
+//            List<OfficersResponseDTO> roles = officersService.getAllRoles();
+//            return ResponseEntity.ok(roles);
+//        } catch (Exception e) {
+//            log.error("Error fetching roles", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
 
-    @PostMapping("/officers/register")
-    public ResponseEntity<OfficersRegisterDTO> registration(@RequestBody OfficersRegisterDTO officersRegisterDTO) {
-        try {
-            OfficersRegisterDTO createdRole = officersService.createRole(officersRegisterDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
-//            return ResponseEntity.status(HttpStatus.CREATED).body();
-        } catch (Exception e) {
-            log.error("Error registering officer: {}", e.getMessage());
-            throw  new DataAlreadyExistException("Data Already Exist");
-        }
-    }
+//    @PostMapping("/officers/register")
+//    public ResponseEntity<OfficersRegisterDTO> registration(@RequestBody OfficersRegisterDTO officersRegisterDTO) {
+//        try {
+//            OfficersRegisterDTO createdRole = officersService.createRole(officersRegisterDTO);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
+//        } catch (Exception e) {
+//            log.error("Error registering officer: {}", e.getMessage());
+//            throw  new DataAlreadyExistException("Data Already Exist");
+//        }
+//    }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody LoginForm loginForm) {
-        try{
-            return ResponseEntity.ok(registrationService.doAuthenticate(loginForm));
-        }
-        catch (Exception e)
-        {
-            throw new IllegalCredentials("Invalid Credentials");
-        }
-    }
+//    @PostMapping("/authenticate")
+//    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody LoginForm loginForm) {
+//        try{
+//            return ResponseEntity.ok(registrationService.doAuthenticate(loginForm));
+//        }
+//        catch (Exception e)
+//        {
+//            throw new IllegalCredentials("Invalid Credentials");
+//        }
+//    }
 
 }   

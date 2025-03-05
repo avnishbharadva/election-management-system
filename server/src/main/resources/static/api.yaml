@@ -25,7 +25,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VoterDTO'
+                $ref: "./schemas/VoterDTO.yaml"
         "400":
           description: Invalid request data
         "409":
@@ -111,7 +111,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PaginatedVoterDTO"
+                $ref: "./schemas/PaginatedVoterDTO.yaml"
         "400":
           description: Invalid request parameters
         "500":
@@ -131,7 +131,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/VoterStatusDTO'
+                  $ref: "./schemas/VoterStatusDTO.yaml"
         "500":
           description: Internal Server Error
 
@@ -151,14 +151,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VoterDTO'
+              $ref: "./schemas/VoterDTO.yaml"
+
       responses:
         '200':
           description: Voter details updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VoterDTO'
+                $ref: "./schemas/VoterDTO.yaml"
         '400':
           description: Bad request, invalid input
         '404':
@@ -169,208 +170,17 @@ paths:
 components:
   schemas:
     PaginatedVoterDTO:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/VoterDTO"
-        totalElements:
-          type: long
-          description: Total number of voters found
-        totalPages:
-          type: integer
-          description: Total pages available
-        size:
-          type: integer
-          description: Number of voters per page
-        number:
-          type: integer
-          description: Current page number
+      $ref: './schemas/PaginatedVoterDTO.yaml'
 
     VoterRegisterDTO:
-      type: object
-      required:
-        - firstName
-        - lastName
-        - dateOfBirth
-        - gender
-        - dmvNumber
-        - ssnNumber
-        - email
-        - phoneNumber
-        - residentialAddress
-      properties:
-        firstName:
-          type: string
-          minLength: 2
-          maxLength: 50
-          example: "John"
-        middleName:
-          type: string
-          maxLength: 20
-          example: "A."
-        lastName:
-          type: string
-          minLength: 2
-          maxLength: 50
-          example: "Doe"
-        suffixName:
-          type: string
-          maxLength: 10
-          example: "Jr."
-        dateOfBirth:
-          type: string
-          format: date
-          example: "1990-05-15"
-        gender:
-          type: string
-          enum: [MALE, FEMALE]
-          example: "MALE"
-        dmvNumber:
-          type: string
-          pattern: "\\d{9}"
-          example: "123456789"
-        ssnNumber:
-          type: string
-          pattern: "\\d{9}"
-          example: "987654321"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        phoneNumber:
-          type: string
-          pattern: "\\d{11}"
-          example: "12345678901"
-        hasVotedBefore:
-          type: boolean
-          example: false
-        firstVotedYear:
-          type: integer
-          minimum: 1900
-          maximum: 2025
-          example: 2010
-        partyId:
-          type: integer
-          format: int64
-          example: 1
-        residentialAddress:
-          $ref: '#/components/schemas/AddressDTO'
-        mailingAddress:
-          $ref: '#/components/schemas/AddressDTO'
-        image:
-          type: string
-          example: "base64-encoded-image-string"
-        signature:
-          type: string
-          example: "base64-encoded-signature-string"
-        statusId:
-          type: integer
-          format: int64
-          example: 1
+      $ref: './schemas/VoterDTO.yaml'
 
     VoterDTO:
-      type: object
-      properties:
-        voterId:
-          type: string
-          example: "000123456"
-        firstName:
-          type: string
-          example: "John"
-        middleName:
-          type: string
-          example: "A."
-        lastName:
-          type: string
-          example: "Doe"
-        suffixName:
-          type: string
-          example: "Jr."
-        dateOfBirth:
-          type: string
-          format: date
-          example: "1990-05-15"
-        gender:
-          type: string
-          enum: [MALE, FEMALE]
-          example: "MALE"
-        dmvNumber:
-          type: string
-          example: "123456789"
-        ssnNumber:
-          type: string
-          example: "987654321"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        phoneNumber:
-          type: string
-          example: "12345678901"
-        hasVotedBefore:
-          type: boolean
-          example: false
-        firstVotedYear:
-          type: integer
-          example: 2010
-        partyId:
-          type: integer
-          format: int64
-          example: 1
-        residentialAddress:
-          $ref: '#/components/schemas/AddressDTO'
-        mailingAddress:
-          $ref: '#/components/schemas/AddressDTO'
-        image:
-          type: string
-          example: "base64-encoded-image-string"
-        signature:
-          type: string
-          example: "base64-encoded-signature-string"
-        statusId:
-          type: integer
-          format: int64
-          example: 1
+      $ref: './schemas/VoterDTO.yaml'
 
     AddressDTO:
-      type: object
-      properties:
-        addressLine:
-          type: string
-          example: "123 Main St"
-        aptNumber:
-          type: string
-          example: "Apt 4B"
-        city:
-          type: string
-          example: "Springfield"
-        county:
-          type: string
-          example: "Clark"
-        state:
-          type: string
-          example: "New York"
-        zipCode:
-          type: string
-          pattern: "\\d{5}"
-          example: "62704"
-        addressType:
-          type: string
-          enum: [RESIDENTIAL, MAILING]
-          example: "RESIDENTIAL"
-        voterId:
-          type: string
-          example: "000123456"
+      $ref: './schemas/AddressDTO.yaml'
 
     VoterStatusDTO:
-      type: object
-      properties:
-        statusId:
-          type: integer
-          format: int64
-          example: 1
-        statusDesc:
-          type: string
-          example: "Active"
+      $ref: './schemas/VoterStatusDTO.yaml'
+

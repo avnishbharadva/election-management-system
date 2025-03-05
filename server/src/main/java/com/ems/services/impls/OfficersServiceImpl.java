@@ -1,7 +1,5 @@
 package com.ems.services.impls;
 
-import com.ems.dtos.OfficersRegisterDTO;
-import com.ems.dtos.OfficersResponseDTO;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.IllegalCredentials;
 import com.ems.mappers.GlobalMapper;
@@ -9,9 +7,10 @@ import com.ems.repositories.RoleRepository;
 import com.ems.services.OfficersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.OfficersRegisterDTO;
+import org.openapitools.model.OfficersResponseDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class OfficersServiceImpl implements OfficersService {
     }
 
     @Override
-    public OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
+    public org.openapitools.model.OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
         try {
             officersRegisterDTO.setPassword(passwordEncoder.encode(officersRegisterDTO.getPassword()));
             var savedRole = roleRepository.save(globalMapper.toRole(officersRegisterDTO));

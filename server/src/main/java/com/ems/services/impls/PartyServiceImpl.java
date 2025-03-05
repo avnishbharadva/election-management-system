@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,23 +29,26 @@ public class PartyServiceImpl implements PartyService {
     private static final String PHOTO_DIR = DIRECTORY + "/symbols";
 
     @Override
-    public PartyDTO saveParty(org.openapitools.model.PartyDTO partyDTO) {
+    public PartyDTO saveParty(PartyDTO partyDTO) {
         Party party = globalMapper.toParty(partyDTO);
         log.info("Saving party: {}", party.getPartyName());
 
         createImageDirectory();
 
         if (partyDTO.getPartySymbol() != null && !partyDTO.getPartySymbol().isEmpty()) {
+            String imageName = partyDTO.getPartyName().replaceAll("\\s+", "_") + ".png";
             try {
-                String imgName = handlePartySymbol(party, partyDTO.getPartySymbol());
-                party.setPartySymbol(imgName);
-                log.info("Party symbol set: {}", imgName);
-            } catch (IOException | IllegalArgumentException e) {
-                log.error("Error processing party symbol for party: {}", party.getPartyName(), e);
+                String imagePath = decodeAndSaveBase64Image(partyDTO.getPartySymbol(), PHOTO_DIR, imageName);
+
+                if(partyDTO.getPartySymbol()!=null)
+                    party.setPartySymbol(imagePath);
+
+            } catch (IOException e) {
+                log.error("Error saving party symbol for {}: {}", party.getPartyName(), e.getMessage());
                 throw new RuntimeException("Failed to save party symbol", e);
             }
-        } else {
-            log.warn("Party symbol is null or empty for party: {}", party.getPartyName());
+
+
         }
 
         party = partyRepository.save(party);
@@ -59,22 +63,17 @@ public class PartyServiceImpl implements PartyService {
         }
     }
 
-    private String handlePartySymbol(Party party, String base64Symbol) throws IOException {
-        if (party.getPartySymbol() != null) {
-            File oldImg = new File(PHOTO_DIR, party.getPartySymbol());
-            if (oldImg.exists() && !oldImg.delete()) {
-                log.warn("Failed to delete old image: {}", oldImg.getAbsolutePath());
-            }
-        }
+    private String decodeAndSaveBase64Image(String base64, String directory, String fileName) throws IOException {
+        if (base64 == null || base64.isEmpty()) return null;
 
-        String imgName = party.getPartyName().replaceAll("\\s+", "_") + ".png";
-        byte[] imageBytes = Base64.getDecoder().decode(base64Symbol);
-
-        Path imagePath = Paths.get(PHOTO_DIR, imgName);
-        Files.write(imagePath, imageBytes);
-
-        return imgName;
+        byte[] decodedBytes = Base64.getDecoder().decode(base64);
+        Path filePath = Paths.get(directory, fileName);
+        Files.createDirectories(filePath.getParent()); // Ensure directory exists
+        Files.write(filePath, decodedBytes);
+        return filePath.toString();
     }
+
+
 
     @Override
     public PartyDTO partyById(long id) {
@@ -82,8 +81,8 @@ public class PartyServiceImpl implements PartyService {
         return globalMapper.toPartyDTO(party);
     }
 
-//    @Override
-//    public List<PartyDTO> findAll() {
-//        return partyRepository.findAll().stream().map(globalMapper::toPartyDTO).toList();
-//    }
+    @Override
+    public List<PartyDTO> findAll() {
+        return partyRepository.findAll().stream().map(globalMapper::toPartyDTO).toList();
+    }
 }

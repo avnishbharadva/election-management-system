@@ -14,5 +14,5 @@ public interface PartyService {
 
     PartyDTO partyById(long id);
     PartyDTO saveParty(org.openapitools.model.PartyDTO partyDTO);
-//    List<PartyDTO> findAll();
+    List<PartyDTO> findAll();
 }
