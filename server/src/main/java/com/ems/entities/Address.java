@@ -34,6 +34,6 @@ public class Address extends TimeStamp {
 
     @ManyToOne
     @JoinColumn(name = "voter_id")
-    @JsonBackReference
+    @JsonBackReference("address-voter")
     private Voter voter;
 }

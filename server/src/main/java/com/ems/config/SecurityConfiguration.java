@@ -50,6 +50,11 @@ public class SecurityConfiguration {
                     registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
                     registry.requestMatchers("/api/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
+                    registry.requestMatchers(
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html"
+                    ).permitAll();
                     registry.anyRequest().authenticated();
                 })
 //                .formLogin(Customizer.withDefaults())
@@ -61,7 +66,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-     @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Replace with your allowed origins

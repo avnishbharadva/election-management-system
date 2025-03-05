@@ -36,8 +36,4 @@ public class Party extends TimeStamp {
     @Column(length = 30,nullable = false)
     private String founderName;
 
-    @OneToMany(mappedBy = "party")
-    @JsonIgnore
-    private List<Candidate> candidates;
-
 }
