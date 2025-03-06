@@ -10,8 +10,6 @@ import org.openapitools.model.VoterStatusDTO;
 import org.openapitools.model.PartyDTO;
 import org.openapitools.model.OfficersRegisterDTO;
 
-
-
 @Mapper(componentModel = "spring")
 public interface GlobalMapper {
 

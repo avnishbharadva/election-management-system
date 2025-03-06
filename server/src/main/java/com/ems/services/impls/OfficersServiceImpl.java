@@ -1,5 +1,6 @@
 package com.ems.services.impls;
 
+import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.IllegalCredentials;
 import com.ems.mappers.GlobalMapper;
@@ -25,18 +26,25 @@ public class OfficersServiceImpl implements OfficersService {
 
     @Override
     public List<OfficersResponseDTO> getAllRoles() {
-        try {
-            List<OfficersResponseDTO> roles = globalMapper.toRoleResponseDTO(roleRepository.findAll());
-            log.info("Fetched {} roles from database", roles.size());
-            return roles;
-        } catch (Exception e) {
-            log.error("Error fetching roles: {}", e.getMessage());
-            throw new DataNotFoundException("Failed to fetch roles");
+        List<OfficersResponseDTO> roles = globalMapper.toRoleResponseDTO(roleRepository.findAll());
+
+        if (roles.isEmpty()) {
+            log.warn("No roles found in the database.");
+            throw new DataNotFoundException("No roles found.");
         }
+
+        log.info("Fetched {} roles from the database.", roles.size());
+        return roles;
     }
+
 
     @Override
     public org.openapitools.model.OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
+        if (roleRepository.existsByEmail(officersRegisterDTO.getEmail())) {
+            log.warn("Officer with email {} already exists", officersRegisterDTO.getEmail());
+            throw new DataAlreadyExistException("Officer already exists");
+        }
+
         try {
             officersRegisterDTO.setPassword(passwordEncoder.encode(officersRegisterDTO.getPassword()));
             var savedRole = roleRepository.save(globalMapper.toRole(officersRegisterDTO));
@@ -47,4 +55,5 @@ public class OfficersServiceImpl implements OfficersService {
             throw new IllegalCredentials("Role creation failed");
         }
     }
+
 }

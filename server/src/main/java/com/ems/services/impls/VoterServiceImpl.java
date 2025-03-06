@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
 import org.openapitools.model.VoterDTO;
 import org.openapitools.model.VoterRegisterDTO;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +71,6 @@ public class VoterServiceImpl implements VoterService {
             }
         }
 
-
         String signaturePath = null;
         if (voterRegisterDTO.getSignature() != null) {
             String signName = voterRegisterDTO.getSsnNumber() + "_sign.png";
@@ -86,7 +86,6 @@ public class VoterServiceImpl implements VoterService {
         if(voterRegisterDTO.getSignature()!=null)
             voter.setSignature(signaturePath);
 
-
         var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(() -> new DataNotFoundException("Voter Status Not Found"));
         voter.setVoterStatus(voterStatus);
 
@@ -100,18 +99,11 @@ public class VoterServiceImpl implements VoterService {
         var addressList = List.of(residentialAddress, mailingAddress);
         addressList.forEach(address -> address.setVoter(savedVoter));
 
-
-
-
-
         addressRepo.saveAll(addressList);
-
-
-
+        savedVoter.setAddress(addressList);
         log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
         return globalMapper.toVoterDTO(savedVoter);
     }
-
 
     @Override
     public Page<VoterDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {

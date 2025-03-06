@@ -60,3 +60,83 @@ properties:
     type: integer
     format: int64
     example: 1
+
+
+
+#type: object
+#properties:
+#  msg:
+#    type: string
+#    example: "Success"
+#  data:
+#    properties:
+#      voterId:
+#        type: string
+#        example: "000123456"
+#      firstName:
+#        type: string
+#        example: "John"
+#      middleName:
+#        type: string
+#        example: "A."
+#      lastName:
+#        type: string
+#        example: "Doe"
+#      suffixName:
+#        type: string
+#        example: "Jr."
+#      dateOfBirth:
+#        type: string
+#        format: date
+#        example: "1990-05-15"
+#      gender:
+#        type: string
+#        enum: [ MALE, FEMALE ]
+#        example: "MALE"
+#      dmvNumber:
+#        type: string
+#        example: "123456789"
+#      ssnNumber:
+#        type: string
+#        example: "987654321"
+#      email:
+#        type: string
+#        format: email
+#        example: "john.doe@example.com"
+#      phoneNumber:
+#        type: string
+#        example: "12345678901"
+#      hasVotedBefore:
+#        type: boolean
+#        example: false
+#      firstVotedYear:
+#        type: integer
+#        example: 2010
+#      partyId:
+#        type: integer
+#        format: int64
+#        example: 1
+#      residentialAddress:
+#        $ref: "./AddressDTO.yaml"
+#      mailingAddress:
+#        $ref: "./AddressDTO.yaml"
+#      image:
+#        type: string
+#        example: "base64-encoded-image-string"
+#      signature:
+#        type: string
+#        example: "base64-encoded-signature-string"
+#      statusId:
+#        type: integer
+#        format: int64
+#        example: 1
+#  error:
+#    type: object
+#    nullable: true
+#    properties:
+#      code:
+#        type: string
+#        example: "400"
+#      message:
+#        type: string
+#        example: "Invalid input data"
