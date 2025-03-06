@@ -294,9 +294,6 @@ public class CandidateServiceImpl implements CandidateService {
         return candidateRepository.save(existingCandidate);
     }
 
-
-
-
     @Override
     public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {
         if (candidatePartyName == null || candidatePartyName.isBlank()) {

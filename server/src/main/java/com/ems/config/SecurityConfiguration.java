@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -43,8 +44,14 @@ public class SecurityConfiguration {
                     registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
                     registry.requestMatchers("/api/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
+                    registry.requestMatchers(
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html"
+                    ).permitAll();
                     registry.anyRequest().authenticated();
                 })
+
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

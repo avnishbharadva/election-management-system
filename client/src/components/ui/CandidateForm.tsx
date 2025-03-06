@@ -38,6 +38,7 @@ import { AppDispatch } from "../../store/app/store";
 import { RootState } from '../../store/app/store';
 import axios from "axios";
 import { fetchAllElection } from "../../store/feature/election/electionApi";
+import axiosInstance from "../../store/app/axiosInstance";
  
 interface CandidateFormProps {
   handleClose: () => void;
@@ -125,7 +126,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
   }, [candidate, setValue]);
   useEffect(() => {
     if (candidate && editId) {
-    console.log(candidate.candidateImage)
+    
      
       setProfilePic(candidate?.candidateImage );
       setSignature(candidate?.candidateSignature );
@@ -170,7 +171,7 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
     );
  
     const profileFile = dataURLtoFile(profilePic, "profile.jpg");
-    console.log(profileFile)
+    
     formData.append("candidateImage", profileFile);
  
     const signatureFile = dataURLtoFile(signature, "signature.jpg");
@@ -185,14 +186,14 @@ const CandidateForm: React.FC<CandidateFormProps> = ({handleClose}) => {
         clearSearch();
         handleClose();
         reset();
-        dispatch(fetchCandidates({ page: 0, perPage: 10 }));
+        dispatch(fetchCandidates({ page: 0, perPage: 5 }));
       } else {
        
         await dispatch(addCandidate(formData));
-        clearSearch();
+        clearSearch();                              
         handleClose();
         reset();
-        dispatch(fetchCandidates({ page: 0, perPage: 10 }));
+        dispatch(fetchCandidates({ page: 0, perPage: 5 }));
        
       }
     } catch (error) {
@@ -285,9 +286,10 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
      
       }
     }, [editId, candidate, reset,setProfilePic, setSignature]);
-    console.log("hiiii"+profilePic)
-    const election = useSelector((state: any) => state.election.election || []);
-    const elections = election?.data || [];
+    
+    const {elections} = useSelector((state: any) => state.election || []);
+    console.log(elections.data)
+    // const elections = election?.data || [];
     useEffect(() => {
       dispatch(fetchAllElection());
     }, [dispatch]);
@@ -304,20 +306,10 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
   const residentialStreet = watch("residentialAddress.street");
   const residentialCity = watch("residentialAddress.city");
   const residentialZipcode = watch("residentialAddress.zipcode");
-  console.log("Checkbox state:", sameMailingAddress);
-  console.log("Residential Address:", {
-    street: residentialStreet,
-    city: residentialCity,
-    zipcode: residentialZipcode,
-  });
+  
    
   useEffect(() => {
-    console.log("Checkbox state:", sameMailingAddress);
-    console.log("Residential Address:", {
-      street: residentialStreet,
-      city: residentialCity,
-      zipcode: residentialZipcode,
-    });
+   
    
     if (sameMailingAddress) {
       setValue("mailingAddress.street", residentialStreet || "");
@@ -330,7 +322,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
       // Fetch party data from API
       const fetchParties = async () => {
         try {
-          const response = await axios.get("http://localhost:8082/api/party");
+          const response = await axiosInstance.get("/party");
           setParties(response.data); // Assuming response.data is an array of party objects
         } catch (error) {
           console.error("Error fetching parties:", error);
@@ -529,7 +521,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
                     value={field.value ?? ""}
                     onChange={(event) => field.onChange(event.target.value)}
                   >
-                    {Array.isArray(elections) && elections.map((election: any) => (
+                    {Array.isArray(elections.data) && elections.data.map((election: any) => (
                       <MenuItem key={election.electionId} value={election.electionId}>
                         {election.electionName}
                       </MenuItem>
@@ -572,11 +564,10 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
  
  
  
-<TextField
+              <TextField
   fullWidth
   label="State"
-  value="New York" // Always display New York
-  defaultValue="New York" // Default value for the form
+  defaultValue="New York" // Always display New York
   {...register("stateName", {
     required: "State name is required",
     validate: (value) => value === "New York" || "State name must be New York", // Validate the static value
@@ -791,7 +782,7 @@ zipcode:candidate?.candidate?.mailingAddress?.zipcode
           </FlexCenter>
         </Section> }
  
-        <FlexCenter>
+        <FlexCenter sx={{mt:"15px"}}>
           <Button variant="contained" type="submit">
           {candidate ? "Update" : "Submit"}
           </Button>

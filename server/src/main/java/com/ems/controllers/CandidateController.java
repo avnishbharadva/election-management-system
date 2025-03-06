@@ -76,6 +76,7 @@ public class CandidateController {
             @PathVariable Long candidateId,
             @RequestBody CandidateDTO candidateDTO) {
 
+
         if (candidateDTO == null) {
             return ResponseEntity.badRequest()
                     .body(new ResponseDTO("Candidate data must be provided", null, LocalDateTime.now(), false));

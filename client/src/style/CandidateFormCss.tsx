@@ -20,7 +20,7 @@ export const DropzoneContainer = styled(Box)({
   });
   
 export const Section = styled(Box)({
-    marginBottom: "3.5rem",
+    // marginBottom: "3.5rem",
   });
   
 export const Row = styled(Box)({

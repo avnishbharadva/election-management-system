@@ -33,5 +33,4 @@ public class Party extends TimeStamp {
     @Column(length = 30,nullable = false)
     private String founderName;
 
-
 }

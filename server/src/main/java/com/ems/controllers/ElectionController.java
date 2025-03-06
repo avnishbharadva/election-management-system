@@ -20,6 +20,7 @@ public class ElectionController implements ElectionsApi {
         return ResponseEntity.ok(electionService.saveElection(electionDTO));
     }
 
+
     @Override
     public ResponseEntity<ModelApiResponse> getAllElections() {
         return ResponseEntity.ok(electionService.getAllElection());

@@ -1,5 +1,4 @@
 package com.ems.services;
-
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
 import org.openapitools.model.ModelApiResponse;

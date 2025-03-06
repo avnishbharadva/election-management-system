@@ -19,11 +19,13 @@ export default function DeleteCandidateDialog({ open, handleClose, candidateId }
     setLoading(true);
     try {
       await dispatch(deleteCandidateById(candidateId)).unwrap();
-      dispatch(fetchCandidates({ page: 0, perPage: 10 }));
-      toast.success("Candidate deleted successfully");
+      dispatch(fetchCandidates({ page: 0, perPage: 5 }));
+      // toast.success("Candidate deleted successfully");
       handleClose();
     } catch (error) {
       console.error("Error deleting candidate:", error);
+      dispatch(fetchCandidates({ page: 0, perPage: 5 }));
+      handleClose();
       toast.error("Failed to delete candidate");
     } finally {
       setLoading(false);

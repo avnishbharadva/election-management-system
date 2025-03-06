@@ -12,6 +12,9 @@ import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
 import org.openapitools.model.ElectionSortDTO;
 import org.openapitools.model.ModelApiResponse;
+
+
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -84,10 +87,12 @@ public class ElectionServiceImpl implements ElectionService {
                 .success(true);
     }
 
+
     @Override
     public ElectionPageResponse getElectionsSorted(String order, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, "desc".equalsIgnoreCase(order)
                 ? Sort.by("electionDate").descending()
+
                 : Sort.by("electionDate").ascending());
 
         Page<Election> electionsPage = electionRepository.findAll(pageable);
@@ -95,7 +100,6 @@ public class ElectionServiceImpl implements ElectionService {
                 .stream()
                 .map(candidateMapper::toElectionSortDTO)
                 .toList();
-
         ElectionPageResponse response = new ElectionPageResponse();
         response.setCurrentPage(electionsPage.getNumber());
         response.setPerPage(electionsPage.getSize());
@@ -103,8 +107,10 @@ public class ElectionServiceImpl implements ElectionService {
         response.setTotalPages(electionsPage.getTotalPages());
         response.setTotalRecords((int) electionsPage.getTotalElements());
 
+
         return response;
     }
+ 
 
     @Override
     public ModelApiResponse deleteElectionById(Long electionId) {
