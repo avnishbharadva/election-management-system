@@ -20,7 +20,4 @@ public class BankDetails {
 
     private String bankAddress;
 
-    @JsonBackReference("candidate-bank")
-    @OneToMany(mappedBy = "bankDetails", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Candidate> candidates;
 }

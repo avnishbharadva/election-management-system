@@ -33,7 +33,7 @@ public interface CandidateMapper {
     void updateCandidateNameFromDTO(CandidateName newName, @MappingTarget CandidateName existingName);
 
     Election toElection(ElectionSortDTO electionSortDTO);
-    ElectionSortDTO toElectionSortDTO(Election election);
+    org.openapitools.model.ElectionSortDTO toElectionSortDTO(Election election);
 
     default Long mapPartyToId(Party party) {
         return (party != null) ? party.getPartyId() : null;

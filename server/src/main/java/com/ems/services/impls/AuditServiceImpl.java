@@ -9,26 +9,29 @@ import com.ems.mongo.repository.AuditRepository;
 import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final KafkaTemplate<String,AddressUpdateEvent> kafkaTemplate;
     private final AuditRepository auditRepository;
 
     @Async
-    @EventListener
+    @KafkaHandler
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();
@@ -65,12 +68,18 @@ public class AuditServiceImpl implements AuditService {
             oldField.put("hasVoterBefore", oldVoter.isHasVotedBefore());
         }
 
-        if (!oldVoter.getParty().equals(newVoter.getParty())) {
+        if (oldVoter.getParty() != null && newVoter.getParty() != null) {
+            if (!oldVoter.getParty().equals(newVoter.getParty())) {
+                updateField.put("party", newVoter.getParty().getPartyName());
+                oldField.put("party", oldVoter.getParty().getPartyName());
+            }
+        } else if (oldVoter.getParty() == null && newVoter.getParty() != null) {
             updateField.put("party", newVoter.getParty().getPartyName());
-            oldField.put("party", newVoter.getParty().getPartyName());
+            oldField.put("party", "None");
         }
+        if (oldVoter.getVoterStatus() != null && newVoter.getVoterStatus() != null &&
+                !oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
 
-        if (!oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
             updateField.put("status", newVoter.getVoterStatus().getStatusDesc());
             oldField.put("status", oldVoter.getVoterStatus().getStatusDesc());
         }
@@ -84,8 +93,15 @@ public class AuditServiceImpl implements AuditService {
             addressFields = getAddressUpdatedFields(oldAddress, newAddress);
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
-
-                eventPublisher.publishEvent(new AddressUpdateEvent(this,newAddress));
+                CompletableFuture<SendResult<String,AddressUpdateEvent>> future=kafkaTemplate.send("address-update-event-topic","Address",new AddressUpdateEvent(newAddress));
+                future.whenComplete((result,exception)->{
+                    if(exception!=null){
+                        log.error("Failed to send message:"+exception.getMessage());
+                    }
+                    else{
+                        log.info("Message sent successfully:"+result.getRecordMetadata());
+                    }
+                });
                 if(i==0 && !addressFields.get(0).isEmpty()){
                     oldField.put("residentialAddress", addressFields.get(0));
                     updateField.put("residentialAddress", addressFields.get(1));

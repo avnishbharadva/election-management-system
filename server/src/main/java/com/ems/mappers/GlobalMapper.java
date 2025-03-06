@@ -5,6 +5,8 @@ import org.openapitools.model.AddressDTO;
 import com.ems.entities.*;
 import com.ems.entities.constants.AddressType;
 import org.mapstruct.*;
+import org.openapitools.model.ElectionDTO;
+
 import java.util.List;
 import org.openapitools.model.VoterStatusDTO;
 import org.openapitools.model.PartyDTO;
@@ -55,7 +57,8 @@ public interface GlobalMapper {
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
     List<AddressDTO> toAddressDTOList(List<Address> addressList);
 
-    Election toElectionDTO(ElectionDTO electionDTO);
+
+    Election toElectionDTO(org.openapitools.model.ElectionDTO electionDTO);
     ElectionDTO toElection(Election election);
 
     List<VoterStatusDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
