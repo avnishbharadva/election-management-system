@@ -1,6 +1,6 @@
 package com.ems.services;
 
-import com.ems.jwt.LoginForm;
+import org.openapitools.model.LoginForm;
 
 import java.util.Map;
 

@@ -41,8 +41,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
-                    registry.requestMatchers("/api/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
+                    registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
+                    registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.requestMatchers(
                             "/swagger-ui/**",
