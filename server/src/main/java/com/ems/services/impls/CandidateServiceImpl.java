@@ -1,4 +1,5 @@
 package com.ems.services.impls;
+
 import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidateDetailsDTO;
@@ -287,6 +288,7 @@ public class CandidateServiceImpl implements CandidateService {
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
         log.info("Updating candidate with ID: {}", candidateId);
 
+        // Fetch existing candidate
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> {
                     log.error("No candidate found with ID: {}", candidateId);
@@ -295,6 +297,7 @@ public class CandidateServiceImpl implements CandidateService {
 
         log.info("Candidate found: {}", existingCandidate.getCandidateName().getFirstName());
 
+        // Map non-null values from DTO to existing entity
         candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
         log.info("Candidate details mapped from DTO.");
 
@@ -318,23 +321,22 @@ public class CandidateServiceImpl implements CandidateService {
             log.info("Updated candidate election to ID: {}", candidateDTO.getElectionId());
         }
 
-        // Handle Address Updates
-        var residentialAddress = candidateDTO.getResidentialAddress();
-        var mailingAddress = candidateDTO.getMailingAddress();
+        existingCandidate.setResidentialAddress(
+                Optional.ofNullable(candidateDTO.getResidentialAddress()).orElse(existingCandidate.getResidentialAddress())
+        );
 
-        if (residentialAddress == null) {
-            residentialAddress = mailingAddress;
-        } else if (mailingAddress == null) {
-            mailingAddress = residentialAddress;
-        } else if (residentialAddress.equals(mailingAddress)) {
-            mailingAddress = residentialAddress;
+        existingCandidate.setMailingAddress(
+                Optional.ofNullable(candidateDTO.getMailingAddress()).orElse(existingCandidate.getMailingAddress())
+        );
+
+        if (existingCandidate.getMailingAddress() == null) {
+            existingCandidate.setMailingAddress(existingCandidate.getResidentialAddress());
         }
 
-        existingCandidate.setResidentialAddress(residentialAddress);
-        existingCandidate.setMailingAddress(mailingAddress);
-        log.info("Updated candidate address. Residential: {}, Mailing: {}", residentialAddress, mailingAddress);
+        log.info("Updated candidate address. Residential: {}, Mailing: {}",
+                existingCandidate.getResidentialAddress(), existingCandidate.getMailingAddress());
 
-        // Update Candidate Image
+
         if (candidateDTO.getCandidateImage() != null && !candidateDTO.getCandidateImage().isEmpty()) {
             String imageName = candidateId + ".png";
             try {
@@ -347,7 +349,7 @@ public class CandidateServiceImpl implements CandidateService {
             }
         }
 
-        // Update Candidate Signature
+        // --- Candidate Signature Update ---
         if (candidateDTO.getCandidateSignature() != null && !candidateDTO.getCandidateSignature().isEmpty()) {
             String signName = candidateId + "_sign.png";
             try {
@@ -360,12 +362,15 @@ public class CandidateServiceImpl implements CandidateService {
             }
         }
 
+
+        // Construct full name
         StringBuilder fullName = new StringBuilder(existingCandidate.getCandidateName().getFirstName());
         if (existingCandidate.getCandidateName().getMiddleName() != null) {
             fullName.append(" ").append(existingCandidate.getCandidateName().getMiddleName());
         }
         fullName.append(" ").append(existingCandidate.getCandidateName().getLastName());
 
+        // Fetch Party and Election Details
         String partyName = (existingCandidate.getParty() != null) ? existingCandidate.getParty().getPartyName() : "N/A";
         String electionType = (existingCandidate.getElection() != null) ? existingCandidate.getElection().getElectionType() : "N/A";
 
@@ -373,7 +378,7 @@ public class CandidateServiceImpl implements CandidateService {
         log.info("Candidate party: {}", partyName);
         log.info("Candidate election type: {}", electionType);
 
-        // Send Email Notification
+        // --- Send Email Notification ---
         if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
             sendEmail(candidateDTO.getCandidateEmail(),
                     "Candidate Update Successful",
@@ -390,6 +395,7 @@ public class CandidateServiceImpl implements CandidateService {
             log.warn(EMAIL_ERROR);
         }
 
+        // Save and return updated candidate
         Candidate updatedCandidate = candidateRepository.save(existingCandidate);
         log.info("Candidate updated successfully with ID: {}", updatedCandidate.getCandidateId());
 

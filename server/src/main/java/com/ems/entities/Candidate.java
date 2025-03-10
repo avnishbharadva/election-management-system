@@ -63,8 +63,7 @@ public class Candidate extends TimeStamp {
     @JoinColumn(name = "election_id")
     private Election election;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_details_id")
     private BankDetails bankDetails;
 
