@@ -29,6 +29,8 @@ public class RegistrationApiController implements OfficersApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
+
+
     @Override
     public ResponseEntity<Map<String, String>> authenticateUser(LoginForm loginForm) {
         return ResponseEntity.ok(registrationService.doAuthenticate(loginForm));

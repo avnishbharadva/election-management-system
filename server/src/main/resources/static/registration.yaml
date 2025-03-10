@@ -62,7 +62,7 @@ paths:
         - Officers
 
   /officers/authenticate:
-    get:
+    post:
       summary: Authenticate user and get JWT token
       description: Authenticates a user with email and password and returns a JWT token.
       operationId: authenticateUser
