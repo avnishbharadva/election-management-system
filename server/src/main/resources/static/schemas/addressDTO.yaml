@@ -23,6 +23,3 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
-  voterId:
-    type: string
-    example: "000123456"

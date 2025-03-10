@@ -5,9 +5,11 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.PartyService;
+import liquibase.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.PartyDTO;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -73,12 +75,11 @@ public class PartyServiceImpl implements PartyService {
         return filePath.toString();
     }
 
-
-
     @Override
     public PartyDTO partyById(long id) {
-        var party = partyRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Party not found with id : " + id));
-        return globalMapper.toPartyDTO(party);
+    var party = partyRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + id));
+         return globalMapper.toPartyDTO(party);
     }
 
     @Override

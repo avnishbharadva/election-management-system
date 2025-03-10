@@ -58,15 +58,17 @@ public class Voter extends TimeStamp {
     @JoinColumn(name = "party_id")
     private Party party;
 
-    @OneToMany(mappedBy = "voter")
-    @JsonManagedReference("address-voter")
-    @ToString.Exclude
-    private List<Address> address;
+    @OneToOne
+    @JoinColumn(name = "residential_address")
+    private Address residentialAddress;
+
+    @OneToOne
+    @JoinColumn(name = "mailing_address")
+    private Address mailingAddress;
 
     private String image;
 
     private String signature;
-
 
     @ManyToOne
     @JoinColumn(name = "voter_status_id")

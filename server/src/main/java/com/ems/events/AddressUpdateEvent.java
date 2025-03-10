@@ -8,11 +8,13 @@ import lombok.Setter;
 @Setter
 public class AddressUpdateEvent {
 
+    private String voterId;
     private Address address;
 
     public AddressUpdateEvent(){}
     
-    public AddressUpdateEvent(Address address) {
+    public AddressUpdateEvent(String voterId, Address address) {
+        this.voterId = voterId;
         this.address = address;
     }
 }

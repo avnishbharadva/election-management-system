@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
+//@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
     private final KafkaTemplate<String,AddressUpdateEvent> kafkaTemplate;
@@ -93,7 +93,7 @@ public class AuditServiceImpl implements AuditService {
             addressFields = getAddressUpdatedFields(oldAddress, newAddress);
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
-                CompletableFuture<SendResult<String,AddressUpdateEvent>> future=kafkaTemplate.send("address-update-event-topic","Address",new AddressUpdateEvent(newAddress));
+                CompletableFuture<SendResult<String,AddressUpdateEvent>> future=kafkaTemplate.send("address-update-event-topic","Address",new AddressUpdateEvent(newVoter.getVoterId(),newAddress));
                 future.whenComplete((result,exception)->{
                     if(exception!=null){
                         log.error("Failed to send message:"+exception.getMessage());

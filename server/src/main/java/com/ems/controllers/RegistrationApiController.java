@@ -35,7 +35,7 @@ public class RegistrationApiController implements OfficersApi {
     }
 
     @Override
-    public ResponseEntity<List<OfficersResponseDTO>> getAllRoles() {
+    public ResponseEntity<List<OfficersResponseDTO>> getAllOfficers() {
         return ResponseEntity.ok(officersService.getAllRoles());
     }
 }

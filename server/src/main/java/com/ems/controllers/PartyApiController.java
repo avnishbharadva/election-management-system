@@ -22,46 +22,17 @@ public class PartyApiController implements PartyApi {
 
     @Override
     public ResponseEntity<PartyDTO> createParty(PartyDTO partyDTO) {
-        try {
-            PartyDTO createdParty = partyService.saveParty(partyDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdParty);
-        } catch (DataAlreadyExistException e) {
-            log.warn("Party already exists: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        } catch (Exception e) {
-            log.error("Error creating party: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        PartyDTO createdParty = partyService.saveParty(partyDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdParty);
     }
 
     @Override
     public ResponseEntity<PartyDTO> findByPartyId(Long partyId) {
-        try {
-            PartyDTO party = partyService.partyById(partyId);
-            return ResponseEntity.ok(party);
-        } catch (DataNotFoundException e) {
-            log.warn("Party not found for ID {}: {}", partyId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            log.error("Error retrieving party with ID {}: {}", partyId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+            return ResponseEntity.ok(partyService.partyById(partyId));
     }
 
     @Override
     public ResponseEntity<List<PartyDTO>> findAllParties() {
-        try {
-            List<PartyDTO> parties = partyService.findAll();
-            if (parties.isEmpty()) {
-                throw new DataNotFoundException("No parties found.");
-            }
-            return ResponseEntity.ok(parties);
-        } catch (DataNotFoundException e) {
-            log.warn("No parties found: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            log.error("Error fetching all parties: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return ResponseEntity.ok(partyService.findAll());
     }
 }

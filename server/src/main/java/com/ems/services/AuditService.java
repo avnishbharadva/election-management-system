@@ -7,6 +7,6 @@ import org.springframework.context.event.EventListener;
 
 public interface AuditService {
 
-    @EventListener
+//    @EventListener
     void voterAudit(VoterUpdateEvent event);
 }

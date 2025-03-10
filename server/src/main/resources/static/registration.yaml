@@ -6,7 +6,7 @@ info:
 
 
 paths:
-  /officers/register:
+  /officers:
     post:
       summary: Register a new officer
       description: Registers a new officer in the system.
@@ -43,8 +43,26 @@ paths:
       tags:
         - Officers
 
+    get:
+      summary: Get all officers
+      description: Retrieves a list of all officers.
+      operationId: getAllOfficers
+      responses:
+        "200":
+          description: Successful response with a list of officers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfficersResponseDTO'
+        "500":
+          description: Internal Server Error - Unable to fetch roles
+      tags:
+        - Officers
+
   /officers/authenticate:
-    post:
+    get:
       summary: Authenticate user and get JWT token
       description: Authenticates a user with email and password and returns a JWT token.
       operationId: authenticateUser
@@ -70,24 +88,7 @@ paths:
       tags:
         - Authentication
 
-  /officers/getAllRoles:
-    get:
-      summary: Get all officer roles
-      description: Retrieves a list of all officer roles.
-      operationId: getAllRoles
-      responses:
-        "200":
-          description: Successful response with a list of officer roles
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OfficersResponseDTO'
-        "500":
-          description: Internal Server Error - Unable to fetch roles
-      tags:
-        - Officers
+
 
 components:
   schemas:

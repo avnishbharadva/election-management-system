@@ -39,18 +39,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>openapi-generator-maven-plugin</artifactId>
-			<version>7.6.0</version>
-			<scope>provided</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -159,11 +148,7 @@
 			<artifactId>hibernate-envers</artifactId>
 			<version>6.5.2.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.15.0</version>  <!-- Ensure this is included -->
-		</dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -180,6 +165,17 @@
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka-test</artifactId>
+			<version>3.3.1</version>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
@@ -218,31 +214,51 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.10.0</version>
-                <executions>
+				<version>7.10.0</version>
+				<executions>
                     <execution>
                         <id>generate-voter-api</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/static/api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/static/voter.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
-                                <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-                                    @lombok.Data
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
+<!--								<useBeanValidation>true</useBeanValidation>-->
+<!--								<useLombok>true</useLombok>-->
                                 <useJakartaEe>true</useJakartaEe>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipApiUtil>true</skipApiUtil>
                             </configOptions>
                         </configuration>
                     </execution>
-                    <execution>
+					<execution>
+						<id>generate-contract-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/election.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
+									@lombok.Data
+								</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+
+					<execution>
                         <id>generate-registration-api</id>
                         <goals>
                             <goal>generate</goal>
@@ -252,13 +268,11 @@
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
-                                <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
                                     @lombok.Data
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipApiUtil>true</skipApiUtil>
                             </configOptions>
@@ -274,13 +288,11 @@
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
-                                <!--suppress UnresolvedMavenProperty -->
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
                                     @lombok.Data
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipApiUtil>true</skipApiUtil>
                             </configOptions>
@@ -321,3 +333,4 @@
 	</build>
 
 </project>
+

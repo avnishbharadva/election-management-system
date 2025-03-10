@@ -8,6 +8,7 @@ import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
+import org.joda.time.field.OffsetDateTimeField;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
 import org.openapitools.model.ElectionSortDTO;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.html.HTMLImageElement;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -39,12 +41,12 @@ public class ElectionServiceImpl implements ElectionService {
 
         if(electionDTO.isEmpty())
             throw new DataNotFoundException("No election found");
-        return new ModelApiResponse()
-                .success(true)
-                .message("Election retrieved successfully")
-                .timestamp(OffsetDateTime.now())
-                .data(electionDTO);
+        return new ModelApiResponse("Election retrieved successfully", electionDTO , OffsetDateTime.now(),true);
+
     }
+
+
+
 
     @Override
     public ModelApiResponse saveElection(ElectionDTO electionDTO) {
@@ -55,11 +57,8 @@ public class ElectionServiceImpl implements ElectionService {
         Election election = globalMapper.toElectionDTO(electionDTO);
         Election savedElection = electionRepository.save(election);
 
-        return new ModelApiResponse()
-                .message("Election saved successfully")
-                .data(savedElection)  // Set the saved election data
-                .timestamp(OffsetDateTime.now())  // Use OffsetDateTime for timestamp
-                .success(true);  // Set success flag
+        return new ModelApiResponse("Election saved successfully", savedElection , OffsetDateTime.now(),true);
+
     }
 
 
@@ -80,11 +79,8 @@ public class ElectionServiceImpl implements ElectionService {
         }
 
         electionRepository.save(existingElection);
+        return new ModelApiResponse("Election updated successfully", existingElection , OffsetDateTime.now(),true);
 
-        return new ModelApiResponse().message("Election updated successfully")
-                .data(existingElection) // Return the updated entity instead of DTO
-                .timestamp(OffsetDateTime.now())
-                .success(true);
     }
 
 
@@ -110,7 +106,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         return response;
     }
- 
+
 
     @Override
     public ModelApiResponse deleteElectionById(Long electionId) {
@@ -118,9 +114,8 @@ public class ElectionServiceImpl implements ElectionService {
             throw new DataNotFoundException("Election not found");
 
         electionRepository.deleteById(electionId);
-        return new ModelApiResponse().message("Election deleted successfully")
-                .success(true)
-                .timestamp(OffsetDateTime.now());
+        return new ModelApiResponse("Election deleted successfully",null , OffsetDateTime.now(),true);
+
     }
 
     @Override
@@ -130,9 +125,8 @@ public class ElectionServiceImpl implements ElectionService {
             throw new DataNotFoundException("No elections found");
         }
         List<ElectionDTO> electionDTOs = elections.stream().map(globalMapper::toElection).toList();
-        return new ModelApiResponse().message("Elections retrieved successfully")
-                .data(electionDTOs)
-                .timestamp(OffsetDateTime.now())
-                .success(true);
+        return new ModelApiResponse("Election retrieved successfully", electionDTOs , OffsetDateTime.now(),true);
+
     }
 }
+

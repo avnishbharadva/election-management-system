@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
+//@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
 public class AddressHistoryServiceImpl implements AddressHistoryService {
 
     private final GlobalMapper globalMapper;
@@ -23,7 +23,8 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     @KafkaHandler
     @Override
     public void addressHistory(AddressUpdateEvent addressUpdateEvent) {
-        log.info("history added for : {}", addressUpdateEvent.getAddress().getVoter().getVoterId());
+        log.info("history added for : {}", addressUpdateEvent.getVoterId());
+//        log.info("history added for : {}", addressUpdateEvent.getAddress().getVoter().getVoterId());
         addressHistoryRepo.save(globalMapper.toAddressHistory(addressUpdateEvent.getAddress()));
     }
 }

@@ -35,7 +35,7 @@
 
       messageElement.textContent = "Validating token...";
 
-      fetch("http://localhost:8082/api/candidates", {
+      fetch("http://localhost:8081/voters", {
           method: "GET",
           headers: { "Authorization": `Bearer ${token}` }
       })
@@ -45,7 +45,7 @@
               document.getElementById('redoc-container').style.display = 'block';
 
               // Reload Redoc with proper token handling
-              Redoc.init('http://localhost:8082/v3/api-docs', {
+              Redoc.init('http://localhost:8081/v3/api-docs', {
                   scrollYOffset: 50, // Ensures smooth scrolling
                   hideDownloadButton: false, // Allows downloading the spec
                   expandResponses: "all", // Expands all responses by default

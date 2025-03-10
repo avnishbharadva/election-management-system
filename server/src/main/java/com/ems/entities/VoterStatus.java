@@ -15,7 +15,7 @@ public class VoterStatus {
 
     private String statusDesc;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "voterStatus")
-    private List<Voter> voters;
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "voterStatus")
+//    private List<Voter> voters;
 }

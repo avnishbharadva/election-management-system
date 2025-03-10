@@ -32,8 +32,8 @@ public class Address extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
-    @ManyToOne
-    @JoinColumn(name = "voter_id")
-    @JsonBackReference("address-voter")
-    private Voter voter;
+//    @ManyToOne
+//    @JoinColumn(name = "voter_id")
+//    @JsonBackReference("address-voter")
+//    private Voter voter;
 }
