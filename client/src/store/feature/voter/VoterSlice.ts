@@ -2,11 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { searchVoters } from './VoterAPI';
 // /import {searchVoters} from './VoterAPI';
 
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
 // Async thunk to fetch voters
 export const fetchVoters = createAsyncThunk(
     'voter/fetchVoters',

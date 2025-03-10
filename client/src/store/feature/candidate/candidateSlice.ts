@@ -1,50 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addCandidate, fetchCandidateBySSN, fetchCandidates } from './candidateAPI';
-import { CandidateState } from './types';
+import { addCandidate, deleteCandidateById, fetchCandidateById, fetchCandidateBySSN, fetchCandidates, updateCandidateData } from './candidateAPI';
+import {  CandidateState } from './types';
 
   const initialState: CandidateState = {
     searchQuery: "",
+    searchedSSN: "", 
     allCandidates: [],
     filteredCandidate: null,
     notFound: false,
     loading: false,
     error: null,
     success: false,
+    candidate:null,
+    currentPage: 0,
+    totalPages:0,
+    totalRecords:0,
+    perPage:5,
+    sortBy: "candidateId",
+    sortDir: "asc",
   };
-
-//   const candidateSlice = createSlice({
-//     name: "candidate",
-//     initialState,
-//     reducers: {
-//       setSearchQuery: (state, action: PayloadAction<string>) => {
-//         state.searchQuery = action.payload;
-//       },
-//       clearSearchQuery: (state) => {
-//         state.searchQuery = "";
-//         state.candidate = null; // ✅ Clear candidate data when clearing search
-//         state.error = null;
-//       },
-//     },
-//     extraReducers: (builder) => {
-//       builder
-//         .addCase(fetchCandidateBySSN.pending, (state) => {
-//           state.loading = true;
-//           state.error = null;
-//         })
-//         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
-//           state.loading = false;
-//           state.candidate = action.payload;
-//         })
-//         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
-//           state.loading = false;
-//           state.error = action.payload as string || "Failed to fetch candidate";
-//         });
-//     },
-//   });
-  
-//   export const { setSearchQuery, clearSearchQuery } = candidateSlice.actions;
-//   export default candidateSlice.reducer;
-  
 
 const candidateSlice = createSlice({
     name: "candidate",
@@ -62,6 +36,27 @@ const candidateSlice = createSlice({
       setCandidateNotFound: (state, action: PayloadAction<boolean>) => {
         state.notFound = action.payload;
       },
+      filterCandidateBySSN: (state, action: PayloadAction<string>) => {
+        state.filteredCandidate = state.allCandidates.filter(
+          (candidate) => candidate.ssn === action.payload
+        );
+      },
+      resetFilteredCandidate: (state) => {
+        state.filteredCandidate = null;  // Reset to show full list
+      },
+      setSearchedSSN: (state, action: PayloadAction<string>) => {
+        state.searchedSSN = action.payload;
+      },
+      setPage: (state, action) => {
+        state.currentPage = action.payload;
+      },
+      setPerPage: (state, action) => {
+        state.perPage = action.payload;
+      },
+      setSort: (state, action) => {
+        state.sortBy = action.payload.sortBy;
+        state.sortDir = action.payload.sortDir;
+      },
       resetState: (state) => {
         state.loading = false;
         state.success = false;
@@ -77,6 +72,10 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidates.fulfilled, (state, action) => {
           state.allCandidates = action.payload;
+          state.currentPage = action.payload.currentPage;
+          state.totalPages = action.payload.totalPages;
+          state.totalRecords = action.payload.totalRecords;
+          state.perPage = action.payload.perPage;
           state.loading = false;
         })
         .addCase(fetchCandidates.rejected, (state, action) => {
@@ -90,10 +89,16 @@ const candidateSlice = createSlice({
           state.error = null;
         })
         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
-          state.filteredCandidate = action.payload;
-          state.notFound = false;
+          if (action.payload) {
+            state.filteredCandidate = [action.payload]; // Ensure it's an array
+          } else {
+            state.filteredCandidate = [];
+          }
+          
+          state.notFound = !action.payload;
           state.loading = false;
-        })
+          state.searchedSSN = state.searchQuery; // Make sure searched SSN is stored
+        })       
         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
           state.filteredCandidate = null;
           state.loading = false;
@@ -102,25 +107,67 @@ const candidateSlice = createSlice({
           } else {
             state.error = action.payload as string;
           }
-        });
-        builder
-      .addCase(addCandidate.pending, (state) => {
-        state.loading = true;
-        state.success = false;
-        state.error = null;
-      })
-      .addCase(addCandidate.fulfilled, (state) => {
-        state.loading = false;
-        state.success = true;
-        state.error = null;
-      })
-      .addCase(addCandidate.rejected, (state, action) => {
-        state.loading = false;
-        state.success = false;
-        state.error = action.payload as string;
-      });
+        })
+        .addCase(addCandidate.pending, (state) => {
+          state.loading = true;
+          state.success = false;
+          state.error = null;
+        })
+        .addCase(addCandidate.fulfilled, (state) => {
+          state.loading = false;
+          state.success = true;
+          state.error = null;
+        })
+        .addCase(addCandidate.rejected, (state, action) => {
+          state.loading = false;
+          state.success = false;
+          state.error = action.payload as string;
+        })
+        .addCase(fetchCandidateById.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(fetchCandidateById.fulfilled, (state, action) => {
+          state.loading = false;
+          state.candidate = action.payload;
+          state.error = null;
+          state.notFound = false;
+        })
+        .addCase(fetchCandidateById.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string || "Error fetching candidate";
+        })
+        .addCase(updateCandidateData.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(updateCandidateData.fulfilled, (state, action) => {
+          state.loading = false;
+          state.candidate = action.payload;
+          state.error = null;
+        })
+        .addCase(updateCandidateData.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string || "Error updating candidate";
+        })
+        //Delete candidate
+        .addCase(deleteCandidateById.pending, (state) =>{
+          state.loading = true;
+          state.success = false;
+          state.error = null;
+        })
+        .addCase(deleteCandidateById.fulfilled, (state, action)=>{
+          // state.allCandidates = state.allCandidates.filter((candidate) => candidate.candidateId !== action.payload);
+          state.loading = false;
+          state.success = true;
+        })
+        .addCase(deleteCandidateById.rejected, (state, action)=>{
+          state.loading = false;
+          state.success = false;
+          state.error = action.payload as string;
+        }) 
     },
   });
-  
-  export const { setSearchQuery, clearSearchQuery, setCandidateNotFound ,resetState} = candidateSlice.actions;
+
+  export const { setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
   export default candidateSlice.reducer;

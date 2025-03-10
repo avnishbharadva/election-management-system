@@ -1,119 +1,126 @@
-import { Box, TextField, Typography } from "@mui/material";
-import { Form, StyledButton } from "../../style/CommanStyle";
-import { useForm } from "react-hook-form";
-import { ErrorMsg } from "../../style/LoginStyle";
-type FormValues = {
-    election_name: string;
-    election_type: string;
-    election_date: string;
-    state: string;
-    total_seats: number;
-    status: string;
-  };
-  const resolver: Resolver<FormValues> = async (values) => {
-    const errors: Record<string, object> = {};
-  
-    if (!values.election_name) {
-      errors.election_name = {
-        type: "required",
-        message: "Election Name is required.",
-      };
-    }
-  
-    if (!values.election_type) {
-      errors.election_type = {
-        type: "required",
-        message: "Election Type is required.",
-      };
-    }
-  
-    if (!values.election_date) {
-      errors.election_date = {
-        type: "required",
-        message: "Election Date is required.",
-      };
-    }
-  
-    if (!values.state) {
-      errors.state = {
-        type: "required",
-        message: "State is required.",
-      };
-    }
-  
-    if (!values.total_seats || values.total_seats <= 0) {
-      errors.total_seats = {
-        type: "required",
-        message: "Total Seats must be greater than zero.",
-      };
-    }
-  
-    if (!values.status) {
-      errors.status = {
-        type: "required",
-        message: "Status is required.",
-      };
-    }
-  
-    return {
-      values: Object.keys(errors).length === 0 ? values : {},
-      errors,
-    };
-  };
-  
-const ElectionForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm<FormValues>({ resolver });
-    
-      const onSubmit = handleSubmit((data: FormValues) => {
-        console.log(data);
-      });
-  return (
-    <Box>
-      <Typography align="center" variant="h5" mb="15px">Add Election</Typography>
-      <Form onSubmit={onSubmit}>
-      <Box display="flex" flexDirection="column" gap={2}>
-        <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField fullWidth label="Election Name" {...register("election_name", { required: true })}/>{errors?.election_name && (
-                <ErrorMsg>{errors.election_name.message}</ErrorMsg>
-              )}</Box>
-              <Box>
-            <TextField fullWidth label="Election Type"  {...register("election_type", { required: true })}/>
-            {errors?.election_type && (
-                <ErrorMsg>{errors.election_type.message}</ErrorMsg>
-              )}
+import { useEffect } from "react";
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { addElection, fetchElection, updateElectionById } from "../../store/feature/election/electionApi";
+import { resetState } from "../../store/feature/election/electionSlice";
+import { AppDispatch } from "../../store/app/store";
+import { toast, ToastContainer } from "react-toastify";
+import { Row, Section } from "../../style/CandidateFormCss";
 
-            </Box>
-          </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField type="date" sx={{width:"224px"}} InputLabelProps={{ shrink: true }} fullWidth label="Election Date"  {...register("election_date", { required: true })}/>
-            {errors?.election_date && (
-                <ErrorMsg>{errors.election_date.message}</ErrorMsg>
-              )}</Box>
-            <Box>
-            <TextField fullWidth label="State" {...register("state", { required: true })}/>
-            {errors?.state && <ErrorMsg>{errors.state.message}</ErrorMsg>}</Box>
-          </Box>
-          <Box display="flex" flexDirection="row" gap={2}>
-            <Box>
-            <TextField fullWidth label="Total Seats" {...register("total_seats", { required: true })}/> {errors?.total_seats && (
-                <ErrorMsg>{errors.total_seats.message}</ErrorMsg>
-              )}</Box>
-            <Box>
-            <TextField fullWidth label="Status" {...register("status", { required: true })}/> {errors?.status && <ErrorMsg>{errors.status.message}</ErrorMsg>}</Box>
-          </Box>
-         
-         
-          <Box display="flex" alignContent="center" justifyContent="center" flexDirection="row" gap={2}> <StyledButton type="submit" variant="contained">
-      Submit
-    </StyledButton></Box>
-          </Box>
-      </Form>
+type FormValues = {
+  electionId: number;
+  electionName: string;
+  electionType: string;
+  electionDate: string;
+  electionState: string;
+  totalSeats: number;
+};
+
+const ElectionForm = ({ selectedElection, closeModal }: any) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error, success } = useSelector((state: any) => state.election);
+
+  const { register, handleSubmit, reset, setValue } = useForm<FormValues>({
+    defaultValues: {
+      electionName: "",
+      electionType: "State",
+      electionDate: "",
+      electionState: "New York",
+      totalSeats: 1,
+    },
+  });
+
+  // Populate form when editing
+  useEffect(() => {
+    if (selectedElection) {
+      setValue("electionName", selectedElection.electionName);
+      setValue("electionType", selectedElection.electionType);
+      setValue("electionDate", selectedElection.electionDate);
+      setValue("electionState", selectedElection.electionState);
+      setValue("totalSeats", selectedElection.totalSeats);
+    } else {
+      reset();
+    }
+  }, [selectedElection, setValue, reset]);
+
+  useEffect(() => {
+    if (success) {
+      toast.success(selectedElection ? "Election updated successfully!" : "Election added successfully!");
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+      dispatch(resetState()); 
+    }
+  }, [success, dispatch, closeModal]);
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (selectedElection) {
+      await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: data }));
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+
+    } else {
+      await dispatch(addElection(data));
+      // toast.success("Election Registered SuccessFully")
+      alert("hi")
+      closeModal();
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+    }
+  };
+
+  return (
+    <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
+      {loading && <CircularProgress />}
+     
+      
+
+      <Typography align="center" variant="h5" mb={3}>
+        {selectedElection ? "Edit Election" : "Add Election"}
+      </Typography>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box display="flex" flexDirection="column" >
+          <Section>
+            <Row>
+            <TextField fullWidth label="Election Name" {...register("electionName", { required: "Required" })} />
+            <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
+            </Row>
+          </Section>
+
+          <Section>
+            <Row>
+            <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
+            <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
+            </Row>  
+          </Section>
+
+          <Section sx={{width: "10.5rem"}}>
+          <TextField 
+            fullWidth 
+            label="Total Seats" 
+            type="number" 
+            {...register("totalSeats", 
+              { required: "Required", 
+                min: { value: 1, message: "Seats must be at least 1" } 
+              })
+            } 
+            />
+          </Section>
+          <Section sx={{display:'flex',alignItems:'center', justifyContent:'center'}}>
+            <Button type="submit" variant="contained" sx={{ mt: 2, bgcolor: "#1976d2" , width:'10.5rem', }}>
+              {selectedElection ? "Update Election" : "Add Election"}
+            </Button>
+          </Section>
+        </Box>
+      </form>
+      <ToastContainer position="top-right" autoClose={3000} />
     </Box>
   );
 };
