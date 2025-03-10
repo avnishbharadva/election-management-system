@@ -1,8 +1,14 @@
+<<<<<<< Updated upstream
 import { useState } from "react";
 import CandidateForm from "../ui/CandidateForm";
 import Model from "../ui/Model";
 import SearchComponent from "../ui/SearchVoter";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box } from "@mui/material";
+=======
+// import SearchComponent from "../ui/SearchCandidate";
+// import CandidateData from "../ui/CandidateData";
+// import { FlexBoxColumn } from "../../style/CommanStyle";
+>>>>>>> Stashed changes
 
 const mockCandidates = [
   { ssn: "12345", name: "John Doe", email: "johndoe@example.com", party: "Democratic" },
@@ -10,6 +16,7 @@ const mockCandidates = [
   { ssn: "11223", name: "Mike Johnson", email: "mikejohnson@example.com", party: "Independent" },
 ];
 
+<<<<<<< Updated upstream
 const AddCandidate = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -72,5 +79,15 @@ const AddCandidate = () => {
     </>
   );
 };
+=======
+// const AddCandidate = () => {
+//   return (
+//     <FlexBoxColumn>
+//       <SearchComponent />
+//           <CandidateData/>
+//     </FlexBoxColumn>
+//   );
+// };
+>>>>>>> Stashed changes
 
-export default AddCandidate;
+// export default AddCandidate;

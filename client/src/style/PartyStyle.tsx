@@ -1,31 +1,70 @@
-import { Box, styled } from "@mui/material";
 
+export const formStyles = {
 
+  mainHead:{
+    marginTop:'20px',
+  },
 
-// partyForm
+  form:{
+    margin: '20px',
+    zindex: 10,
+  },
 
-export const Dropzone = styled(Box)({
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center", 
-    padding: "40px",
-   
-    borderRadius: "2px", 
-    border: "2px dashed #007bff" ,
-     
-    backgroundColor: "#f0f8ff", 
-    color: "#bdbdbd",
-    outline: "none",
-    transition: "border .24s ease-in-out",
-    "&:hover": {
-        backgroundColor: "#e0f0ff",
-        borderColor: "#0056b3",
-      },
-});
-export const Imagepreview = styled(Box)({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center", 
-    justifyContent:"center"
-})
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+    flex: 1, 
+    overflowY: "auto", 
+    maxHeight: "60vh"
+  },
+  row: {
+    marginTop:'15px',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 2,
+  },
+  gridContainer: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '10px',
+  },
+  submitButtonContainer: {
+    display: 'flex',
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    position: "sticky",
+    bottom: 0,
+    background: "white",
+    padding: "16px",
+    borderTop: "1px solid #ccc",
+    zIndex: 10,
+    gap:'2rem',
+  },
+};
+
+//tableStyles
+export const tableStyles = {
+  tableContainer: {
+    marginTop: 2,
+    overflow: 'auto',
+    maxHeight: '461px',
+  },
+  table: {
+    minWidth: 'max-content',
+    tableLayout: 'auto',
+    whiteSpace: 'nowrap',
+  },
+  tableCellSticky: {
+    position: 'sticky',
+    top: 0,
+    background: 'white',
+    zIndex: 1,
+  },
+  addButtonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: 2,
+  },
+};

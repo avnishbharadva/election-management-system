@@ -1,12 +1,32 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { searchVoters } from './VoterAPI';
-// /import {searchVoters} from './VoterAPI';
-
-<<<<<<< Updated upstream
+import { searchVoters } from '../../../api/voterApi/VoterApi';
 
 
-=======
->>>>>>> Stashed changes
+
+
+
+// const voterSlice = createSlice({
+//     name: 'voter',
+//     initialState :[],
+//     reducers: {
+//      addVoter(state, action:any) {
+//         state.push(...action.payload)
+//         },
+//         removeVoter(state, action:any) {
+            
+//             state = state.filter((voter) => voter?.id !== action.payload?.id)
+//         },
+//         removeAllVoter(state) {
+//         state = []
+// }
+// }
+// })
+
+
+// export const { addVoter,removeVoter,removeAllVoter } = voterSlice.actions
+// export default voterSlice.reducer
+
+
 // Async thunk to fetch voters
 export const fetchVoters = createAsyncThunk(
     'voter/fetchVoters',
@@ -47,5 +67,5 @@ export const fetchVoters = createAsyncThunk(
     },
   });
   
-  export const { addVoter } = voterSlice.actions;
+  export const {  appendVoters, setCurrentPage } = voterSlice.actions;
   export default voterSlice.reducer;

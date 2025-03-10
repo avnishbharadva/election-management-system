@@ -10,8 +10,8 @@ export const ModelBox = styled(Box)({
         backgroundColor: "white",
         borderRadius: "10px",
         // boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)", // Modern shadow
-        overflowY: "auto", // Allow vertical scrolling
+        // overflowY: "auto", // Allow vertical scrolling
         maxHeight: "80vh", // Prevent modal from exceeding the viewport height
-        padding: "2rem",
+        // padding: "1.5rem",
 })
 

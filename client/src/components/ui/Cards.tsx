@@ -48,6 +48,43 @@ const chartData = cards.map((card) => card.count);
 const chartLabels = cards.map((card) => card.title);
 
 const Cards: React.FC = () => {
+<<<<<<< Updated upstream
+=======
+  // const { allCandidates } = useSelector(
+  //   (state: any) => state.candidate
+  // );
+  // console.log(allCandidates.candidates.length)
+  
+  const cards: CardData[] = [
+    // {
+    //   id: 1,
+    //   title: "Candidate",
+    //   // count:  allCandidates.candidates.length,
+    //   icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    // },
+    {
+      id: 2,
+      title: "Voters",
+      count: 1000,
+      icon: <HowToVoteIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+    {
+      id: 3,
+      title: "Party",
+      count: 120,
+      icon: <GroupsIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+    {
+      id: 4,
+      title: "Election",
+      count: 5,
+      icon: <BallotIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    },
+  ];
+  
+  const chartData = cards.map((card) => card.count);
+  const chartLabels = cards.map((card) => card.title);
+>>>>>>> Stashed changes
   return (
     <Container>
       <Sidebar />
