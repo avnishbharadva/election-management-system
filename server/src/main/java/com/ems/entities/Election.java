@@ -1,16 +1,13 @@
 package com.ems.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
-public class Election {
+public class Election extends TimeStamp {
 
     @Id
     @GeneratedValue

@@ -3,9 +3,12 @@ info:
   title: Election Management System Election APIs
   description: APIs for managing elections
   version: 1.0.1
+  x-logo:
+    url: C:\Users\Lenovo\Desktop\election-management-system\server\src\main\resources\static\image.png
+    altText: Logo of EMS
 
 servers:
-  - url: http://localhost:8081/api
+  - url: http://localhost:8082/api
 
 paths:
   /elections:
@@ -63,6 +66,7 @@ paths:
                 $ref: "#/components/schemas/ApiResponse"
         "404":
           description: Election not found
+
 
     put:
       summary: Update Election Details
@@ -192,9 +196,6 @@ components:
     ApiResponse:
       type: object
       properties:
-        message:
-          type: string
-          example: "Success"
         data:
           type: object
         timestamp:

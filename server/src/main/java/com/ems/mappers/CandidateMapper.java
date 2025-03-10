@@ -26,6 +26,8 @@ public interface CandidateMapper {
     @Mapping(target = "electionName", source = "election.electionName")
     CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate);
 
+
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCandidateFromDTO(CandidateDTO candidateDTO, @MappingTarget Candidate candidate);
 

@@ -11,7 +11,7 @@ import java.util.List;
 public interface CandidateService {
     CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
     Candidate saveCandidate(CandidateDTO candidateData) throws IOException;
-    CandidateDataDTO findById(Long id);
+    CandidateDTO findById(Long id);
     Candidate update(Long candidateId, CandidateDTO candidateDTO) throws IOException;
     List<CandidateByPartyDTO> findByPartyName(String candidatePartyName);
     void deleteCandidateByCandidateId(Long candidateId);
