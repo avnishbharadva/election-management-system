@@ -31,7 +31,6 @@ export const addElection = createAsyncThunk(
       console.log("sorted Election:", response.data);
  
       // Map response to only necessary data
-      console.log("api"+response.data)
       return response.data
        
     } catch (error: any) {

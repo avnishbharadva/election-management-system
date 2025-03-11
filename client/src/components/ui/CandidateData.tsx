@@ -34,6 +34,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
+import CandidateContainer from "./CandidateForm/CandidatePage";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -289,8 +290,15 @@ const CandidateData = () => {
           </TableBody>
         </Table>
         
-        <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
+        {/* <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
           <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
+        </Model> */}
+          <Model open={modalData.open} handleClose={handleCloseModal}>
+            <CandidateContainer
+              handleClose={handleCloseModal}  // Pass handleClose to CandidateContainer
+              selectedCandidate={modalData.selectedCandidate}
+              actionType={modalData.actionType}
+            />
         </Model>
         <TablePagination
           sx={{

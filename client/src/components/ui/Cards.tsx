@@ -85,7 +85,7 @@ const Cards: React.FC = () => {
 
   return (
     <Container>
-      <Sidebar />
+      {/* <Sidebar /> */}
       <ContentWrapper>
         <CardContainer>
           {/* Cards on Left */}

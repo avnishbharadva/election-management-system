@@ -18,14 +18,14 @@ const AddElection = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection:'column', justifyContent: "center", alignItems: "center" }}>
+    <Box sx={{ display: "flex", flexDirection:'column', justifyContent: "center", alignItems: "flex-end" }}>
       <Button onClick={() => setOpen(true)} variant="contained" color="primary">
         Add Election
       </Button>
 
       <ElectionData handleOpenModel={handleOpenModel} />
 
-      <Model open={open} handleClose={handleClose} actionType="add">
+      <Model open={open} handleClose={handleClose}>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
           <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
         </Box>
