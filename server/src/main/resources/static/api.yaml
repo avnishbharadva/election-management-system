@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: Voter API
+  version: 1.0.0
+  description: API for voter registration and management
+
+servers:
+  - url: http://localhost:8081/api
+
+paths:
+  /voters:
+    post:
+      summary: Register a new voter
+      description: Registers a new voter with the provided details.
+      operationId: registerVoter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoterRegisterDTO'
+      responses:
+        "201":
+          description: Voter successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/VoterDTO.yaml"
+        "400":
+          description: Invalid request data
+        "409":
+          description: Voter already exists
+        "500":
+          description: Internal server error
+      tags:
+        - Voter
+
+  /voters/search:
+    get:
+      summary: Search voters with filters and pagination
+      description: Search for voters based on various filter criteria such as first name, last name, date of birth, etc.
+      operationId: searchVoters
+      parameters:
+        - name: firstName
+          in: query
+          description: The first name of the voter.
+          required: false
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          description: The last name of the voter.
+          required: false
+          schema:
+            type: string
+        - name: dateOfBirth
+          in: query
+          description: The date of birth of the voter.
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: dmvNumber
+          in: query
+          description: The DMV number of the voter.
+          required: false
+          schema:
+            type: string
+        - name: ssnNumber
+          in: query
+          description: The SSN number of the voter.
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          description: The city where the voter resides.
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: true
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: The number of voters per page.
+          required: true
+          schema:
+            type: integer
+            default: 10
+        - name: sort
+          in: query
+          description: Sorting order of the results. Use multiple `sort` parameters to specify multiple fields (e.g., `sort=firstName,asc&sort=lastName,desc`).
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example:
+            - "firstName,asc"
+            - "lastName,desc"
+      responses:
+        "200":
+          description: Successfully retrieved paginated voter list
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/PaginatedVoterDTO.yaml"
+        "400":
+          description: Invalid request parameters
+        "500":
+          description: Server error
+
+  /voters/status:
+    get:
+      summary: Get all voter statuses
+      operationId: getAllStatus
+      tags:
+        - Voter
+      responses:
+        "200":
+          description: Successfully retrieved voter statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas/VoterStatusDTO.yaml"
+        "500":
+          description: Internal Server Error
+
+  /voters/{voterId}:
+    patch:
+      summary: Update voter details
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/VoterDTO.yaml"
+
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/VoterDTO.yaml"
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    PaginatedVoterDTO:
+      $ref: './schemas/PaginatedVoterDTO.yaml'
+
+    VoterRegisterDTO:
+      $ref: './schemas/VoterDTO.yaml'
+
+    VoterDTO:
+      $ref: './schemas/VoterDTO.yaml'
+
+    AddressDTO:
+      $ref: './schemas/AddressDTO.yaml'
+
+    VoterStatusDTO:
+      $ref: './schemas/VoterStatusDTO.yaml'
+

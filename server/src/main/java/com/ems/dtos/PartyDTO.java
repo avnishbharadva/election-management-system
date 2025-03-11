@@ -23,7 +23,7 @@ public class PartyDTO {
     @Size(max = 10, message = "Party Abbreviation must not exceed 10 characters")
     private String partyAbbreviation;
 
-    private MultipartFile partySymbol;
+    private String partySymbol;
 
     @NotNull(message = "Foundation year can not be null")
     private Integer partyFoundationYear;
