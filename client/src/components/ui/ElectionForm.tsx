@@ -63,13 +63,15 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (selectedElection) {
       await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: data }));
+      toast.success("Election Data Updated SuccessFully")
+
       closeModal();
       dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
 
     } else {
       await dispatch(addElection(data));
-      // toast.success("Election Registered SuccessFully")
-      alert("hi")
+      toast.success("Election Registered SuccessFully")
+    
       closeModal();
       dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
     }

@@ -28,11 +28,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
+import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
 import DeleteCandidateDialog from "./DeleteDialog";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
+import { Candidate, ModalData } from "../../store/feature/candidate/types";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -44,20 +45,30 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
-  
+ console.log(allCandidates)
   const ITEM_HEIGHT = 48;
-  const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
+  const [modalData, setModalData] = useState<ModalData>({
     open: false,
-    actionType: "add",
+    actionType: null,
     selectedCandidate: null,
   });
 
-  const handleOpenModal = (actionType: "add" | "edit", candidate?: any) => {
-    setModalData({ open: true, actionType, selectedCandidate: candidate || null });
+  const handleOpenModal = (actionType: "add" | "edit", candidate?: Candidate) => {
+    console.log(candidate)
+    if (actionType === "add") {
+      dispatch(resetState());
+    }
+  
+    setModalData({
+      open: true,
+      actionType,
+      selectedCandidate: candidate || null,
+    });
   };
+  
 
   const handleCloseModal = () => {
-    setModalData({ open: false, actionType: "add", selectedCandidate: null });
+    setModalData({ open: false, actionType: null, selectedCandidate: null });
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, candidateId: number) => {
@@ -66,6 +77,7 @@ const CandidateData = () => {
   };
 
   const handleClose = () => {
+    
     setAnchorEl(null);
     setSelectedCandidateId(null);
   };
@@ -114,7 +126,7 @@ const CandidateData = () => {
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPerPage = parseInt(event.target.value, 10);
     dispatch(setPerPage(newPerPage));
-    dispatch(setPage(0)); // Reset to page 0
+    dispatch(setPage(0)); 
     dispatch(fetchCandidates({ page: 0, perPage: newPerPage }));
   };
 
@@ -129,14 +141,14 @@ const CandidateData = () => {
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
 
-  const {searchedSSN} = useSelector((state: RootState) => state.candidate);
+  // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
 
   const candidatesToDisplay = useMemo(() => {
-    if (searchedSSN?.length === 9 && filteredCandidate?.length > 0) {
+    if (filteredCandidate?.length > 0) {
       return filteredCandidate;
     }
     return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
-  }, [searchedSSN, filteredCandidate, allCandidates]);
+  }, [ filteredCandidate, allCandidates]);
 
   const renderSortableColumn = (label: string, field: string) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -182,7 +194,7 @@ const CandidateData = () => {
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={9} align="center">{error}</TableCell>
+                <TableCell colSpan={9} align="center">No candidates Found !</TableCell>
               </TableRow>
             ) : notFound ? (
               <TableRow>

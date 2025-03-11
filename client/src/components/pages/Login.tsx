@@ -32,9 +32,18 @@ const Login = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
-    await dispatch(officerLogin(officerData));
-    navigate("/app/dashboard");
+    try {
+      // Dispatch the login thunk and wait for the result
+       await dispatch(officerLogin(officerData)).unwrap()
+      // If successful, navigate to the dashboard
+      navigate("/dashboard");
+    } catch (error) {
+      
+      // console.error("Login failed:", error);
+     
+    }
   };
+  
 
   return (
     <>

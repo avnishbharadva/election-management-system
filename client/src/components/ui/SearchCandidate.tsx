@@ -39,7 +39,7 @@ const SearchComponent: React.FC = () => {
       <StyledSearchInput
         fullWidth
         variant="outlined"
-        placeholder="Enter 9-digit SSN..."
+        placeholder="Enter Last 9-digit SSN..."
         value={searchQuery}
         onChange={handleChange}
         type="text"

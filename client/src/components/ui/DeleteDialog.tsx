@@ -37,7 +37,7 @@ export default function DeleteCandidateDialog({ open, handleClose, candidateId }
       <DialogTitle>Confirm Deletion</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to delete this candidate? This action cannot be undone.
+          Do You Want Delete this candidate?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

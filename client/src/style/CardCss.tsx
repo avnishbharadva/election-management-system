@@ -5,7 +5,7 @@ import { BarChart } from "@mui/x-charts";
 
 export const Container = styled(Box)({
     display: "flex",
-    minHeight: "100vh",
+    // minHeight: "100vh",
   });
   
 export  const ContentWrapper = styled(Box)({

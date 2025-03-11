@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button, Modal, Box } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import ElectionForm from "../ui/ElectionForm";
 import ElectionData from "../ui/ElectionData";
-
+import Model from "../ui/Model";
 const AddElection = () => {
   const [open, setOpen] = useState(false);
   const [selectedElection, setSelectedElection] = useState(null);
@@ -25,11 +25,11 @@ const AddElection = () => {
 
       <ElectionData handleOpenModel={handleOpenModel} />
 
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Model open={open} handleClose={handleClose} actionType="add">
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
           <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
         </Box>
-      </Modal>
+      </Model>
     </Box>
   );
 };

@@ -97,7 +97,7 @@ console.log("formdata"+perPage)
               </TableRow>
             </TableHead>
             <TableBody>
-              {elections?.election?.map((election: any, index: number) => (
+              {elections?.elections?.map((election: any, index: number) => (
                 <TableRow key={election?.electionId ?? `election-${index}`}>
                   <TableCell>{election?.electionName}</TableCell>
                   <TableCell>{election?.electionType}</TableCell>

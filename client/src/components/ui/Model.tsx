@@ -3,11 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import EditIcon from "@mui/icons-material/Edit";
-import { StyledButton } from "../../style/CommanStyle";
 import { ModelBox } from "../../style/ModelCss";
-import { Backdrop } from "@mui/material";
 
 interface ModelProps {
   open: boolean;
@@ -15,7 +11,6 @@ interface ModelProps {
   actionType: "add" | "edit";
   candidate?: any;
   children: React.ReactNode;
-  selectedCandidate: any;
 }
 
 const Model: React.FC<ModelProps> = ({
@@ -25,23 +20,16 @@ const Model: React.FC<ModelProps> = ({
   candidate,
   children,
 }) => {
-  const getButtonProps = () => {
-    switch (actionType) {
-      case "add":
-        return { };
-      case "edit":
-        return { actionType:"edit"};
-      default:
-        return { };
-    }
-  };
-
-  const { } = getButtonProps();
-
   return (
-    <Modal keepMounted  open={open}  aria-labelledby="modal-title" BackdropProps={{
-      onClick: (e) => e.stopPropagation(), 
-    }}>
+    <Modal
+      keepMounted
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-title"
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation(), // Prevent closing modal on backdrop click
+      }}
+    >
       <ModelBox>
         {/* Close Icon */}
         <Box
@@ -51,17 +39,13 @@ const Model: React.FC<ModelProps> = ({
             right: "10px",
           }}
         >
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
+          
         </Box>
 
         {/* Modal Content */}
-        <h2>
-          
-        </h2>
+        {/* <h2>{actionType === "add" ? "Add Candidate" : "Edit Candidate"}</h2> */}
         {React.isValidElement(children) &&
-          React.cloneElement(children, { handleClose, candidate } as any)}
+          React.cloneElement(children, { handleClose, candidate })}
       </ModelBox>
     </Modal>
   );

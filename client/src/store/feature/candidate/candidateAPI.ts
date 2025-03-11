@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { setCandidateNotFound } from "./candidateSlice";
 import axiosInstance from "../../app/axiosInstance";
 import { toast } from "react-toastify";
@@ -10,11 +9,19 @@ export const fetchCandidates = createAsyncThunk(
   async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `/candidate/paged?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
+        `/api/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
       );
-      console.log(response.data)
-      return response.data;
+      if(response.status === 200){
+
+        return response.data;
+      }
+      if(response.status === 404){
+        console.log(response.data)
+        console.log(response.data.message)
+        return response.data.message;
+      }
     } catch (error: any) {
+      
       return rejectWithValue(error.response?.data || "Error fetching data");
     }
   }
@@ -26,7 +33,7 @@ export const fetchCandidateBySSN = createAsyncThunk(
   "candidate/fetchBySSN",
   async (candidateSSN: string, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/candidate/ssn/${candidateSSN}`);
+      const response = await axiosInstance.get(`/api/candidates/by-ssn/${candidateSSN}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
@@ -41,29 +48,20 @@ export const addCandidate = createAsyncThunk(
   "candidate/addCandidate",
   async (formData: FormData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/candidate/addCandidate", formData);
-
-      // Check response status
+      const response = await axiosInstance.post("/api/candidates", formData);
       if (response.status === 200) {
-        // Success status
-        toast.success("Candidate added successfully!");
-        toast.success("Registration Mail Sent successFully!")
         return response.data;
-      } else {
-        // Handle unexpected success statuses
-        toast.warning("Candidate added, but with warnings. Please verify.");
-        return response.data;
-      }
+      } 
     } catch (error: any) {
-      // Check for specific status codes
       if (error.response?.status === 400) {
         toast.error("Invalid input. Please check the form fields.");
-      } else if (error.response?.status === 409) {
-        toast.error("Candidate already exists.");
+      
       } else if (error.response?.status === 500) {
         toast.error("Server error. Please try again later.");
-      } else {
-        // Generic error message
+      } else if (error.response?.status === 403) {
+        toast.error("Forbidden");
+      }else {
+        
         toast.error("Failed to add candidate. Please try again.");
       }
 
@@ -79,7 +77,7 @@ export const fetchCandidateById = createAsyncThunk(
     try {
       
       const response = await axiosInstance.get(
-        `/candidate/candidateId/${candidateId}`
+        `api/candidates/${candidateId}`
       );
       return response.data;  // This will return the candidate's details including `candidateId`
     } catch (error: any) {
@@ -102,11 +100,11 @@ export const updateCandidateData = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.put(
-        `/candidate/updateCandidate/${candidateId}`,
+        `api/candidates/${candidateId}`,
         candidateData, 
        
       );
-      toast.success("Candidate Updated successfully!");
+      
       return response.data;
     } catch (error: any) {
       toast.error("Something Went Wrong!");
@@ -120,12 +118,14 @@ export const deleteCandidateById = createAsyncThunk(
   async (candidateId: number, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `http://localhost:8082/api/candidate/delete/${candidateId}`
+        `/api/candidates/${candidateId}`
       );
       toast.success("Candidate Deleted successfully!");
       
       return response.data;
     } catch (error: any) { 
+      toast.error("Something Went Wrong!");
+
       return rejectWithValue(error.response?.data || error.message || "Error deleting candidate");
     }
   }

@@ -76,10 +76,10 @@ const initialState: ElectionState = {
           state.loading = false;
           state.success = true;
             // Find and update the election in the array
-          const index = state.elections.findIndex((e: any) => e.id === action.payload.id);
-          if (index !== -1) {
-            state.elections[index] = action.payload;
-          }
+          // const index = state.elections.findIndex((e: any) => e.id === action.payload.id);
+          // if (index !== -1) {
+          //   state.elections[index] = action.payload;
+          // }
         })
         .addCase(updateElectionById.rejected, (state, action: PayloadAction<any>) => {
           state.loading = false;
@@ -91,10 +91,10 @@ const initialState: ElectionState = {
           state.success = false;
         })
         .addCase(deleteElectionById.fulfilled, (state,  action: PayloadAction<any>)=>{
-          if (state.elections) {
-            state.elections = state.elections.filter((elections: any) => elections.id !== action.payload);
-          }
-          state.loading = false;
+          // if (state.elections) {
+          //   state.elections = state.elections.filter((elections: any) => elections.id !== action.payload);
+          // }
+          state.loading = false
           state.success = true;
         })
         .addCase(deleteElectionById.rejected, (state,  action: PayloadAction<any>)=>{
@@ -116,3 +116,4 @@ const initialState: ElectionState = {
  
   export const { resetState , setPage, setPerPage} = electionSlice.actions;
   export default electionSlice.reducer;
+ 
