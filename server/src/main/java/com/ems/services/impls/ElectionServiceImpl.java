@@ -1,8 +1,10 @@
 package com.ems.services.impls;
 import com.ems.entities.Election;
+import com.ems.exceptions.CandidateAssociatedException;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.GlobalMapper;
+import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
@@ -27,6 +29,7 @@ public class ElectionServiceImpl implements ElectionService {
     private final ElectionRepository electionRepository;
     private final GlobalMapper globalMapper;
     private final CandidateMapper candidateMapper;
+    private final CandidateRepository candidateRepository;
     @Override
     public ModelApiResponse getElectionById(Long electionId) {
         log.info("Fetching election details for ID: {}", electionId);
@@ -132,6 +135,13 @@ public class ElectionServiceImpl implements ElectionService {
         if (!electionRepository.existsById(electionId)) {
             log.warn("Attempted to delete non-existent election with ID: {}", electionId);
             throw new DataNotFoundException("Election not found");
+        }
+
+        boolean hasCandidate= candidateRepository.existsByElection_ElectionId(electionId);
+
+        if(hasCandidate){
+            log.warn("Cannot delete election id {} as candidates are associated to it ",electionId);
+            throw new CandidateAssociatedException("Unable to delete because candidates are associated with this election");
         }
 
         electionRepository.deleteById(electionId);

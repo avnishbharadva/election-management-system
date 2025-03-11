@@ -29,6 +29,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,10 +51,12 @@ public class CandidateServiceImpl implements CandidateService {
     private final ElectionRepository electionRepository;
     private final PartyRepository partyRepository;
     private final JavaMailSender mailSender;
+
+    private static final String CANDIDATE_NOT_FOUND="Candidate not found with ID";
     private static final String EMAIL_ERROR="Skipping email notification: Candidate email is null or empty.";
     private static final String CANDIDATE_IMG_ERROR="Error saving candidate image";
     private static final String CANDIDATE_SIGN_ERROR="Error saving candidate signature";
-   private static final String ELECTION_NOT_FOUND_MSG = "Election not found with ID: ";
+    private static final String ELECTION_NOT_FOUND_MSG = "Election not found with ID: ";
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -84,8 +87,6 @@ public class CandidateServiceImpl implements CandidateService {
 
         candidate.setElection(election);
         candidate.setParty(party);
-
-        // Handle Candidate Image
         String imagePath = null;
         if (candidateDTO.getCandidateImage() != null && !candidateDTO.getCandidateImage().isEmpty()) {
             String imageName = candidateDTO.getCandidateSSN() + ".png";
@@ -98,7 +99,6 @@ public class CandidateServiceImpl implements CandidateService {
             }
         }
 
-        // Handle Candidate Signature
         String signaturePath = null;
         if (candidateDTO.getCandidateSignature() != null && !candidateDTO.getCandidateSignature().isEmpty()) {
             String signName = candidateDTO.getCandidateSSN() + "_sign.png";
@@ -110,8 +110,6 @@ public class CandidateServiceImpl implements CandidateService {
                 throw new IOException(CANDIDATE_SIGN_ERROR, e);
             }
         }
-
-        // Set image and signature paths in candidate entity
         if (imagePath != null) {
             candidate.setCandidateImage(imagePath);
         } else {
@@ -170,7 +168,7 @@ public class CandidateServiceImpl implements CandidateService {
         // Save Candidate
         log.info("Saving candidate to database...");
         Candidate savedCandidate = candidateRepository.save(candidate);
-        log.info("Candidate saved successfully with ID: " + savedCandidate.getCandidateId());
+        log.info("Candidate saved successfully with ID: {} ",savedCandidate.getCandidateId());
 
         return savedCandidate;
     }
@@ -179,7 +177,7 @@ public class CandidateServiceImpl implements CandidateService {
     private String decodeAndSaveBase64Image(String base64, String directory, String fileName) throws IOException {
         if (base64 == null || base64.isEmpty()) {
             log.warn("Base64 string is null or empty. Skipping image saving.");
-            return null; // No image provided
+            return null;
         }
 
         try {
@@ -235,7 +233,7 @@ public class CandidateServiceImpl implements CandidateService {
         Path candidateSignaturePath = Path.of(uploadDir);
 
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
+                .orElseThrow(() -> new DataNotFoundException(CANDIDATE_NOT_FOUND +":"+ candidateId));
 
         var candidateDto = candidateMapper.toCandidateDTO(candidate);
 
@@ -292,7 +290,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate existingCandidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> {
                     log.error("No candidate found with ID: {}", candidateId);
-                    return new DataNotFoundException("Candidate not found with ID: " + candidateId);
+                    return new DataNotFoundException(CANDIDATE_NOT_FOUND +":"+ candidateId);
                 });
 
         log.info("Candidate found: {}", existingCandidate.getCandidateName().getFirstName());
@@ -370,7 +368,6 @@ public class CandidateServiceImpl implements CandidateService {
         }
         fullName.append(" ").append(existingCandidate.getCandidateName().getLastName());
 
-        // Fetch Party and Election Details
         String partyName = (existingCandidate.getParty() != null) ? existingCandidate.getParty().getPartyName() : "N/A";
         String electionType = (existingCandidate.getElection() != null) ? existingCandidate.getElection().getElectionType() : "N/A";
 
@@ -429,9 +426,31 @@ public class CandidateServiceImpl implements CandidateService {
     public void deleteCandidateByCandidateId(Long candidateId) {
         log.info("Attempting to delete candidate with ID: {}", candidateId);
 
-        if (!candidateRepository.existsById(candidateId)) {
-            log.error("Candidate not found with ID: {}", candidateId);
-            throw new DataNotFoundException("Candidate not found with ID:" + candidateId);
+        var candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new DataNotFoundException(CANDIDATE_NOT_FOUND +":"+candidateId));
+
+        // Delete Candidate Image
+        if (candidate.getCandidateImage() != null) {
+            Path uploadDirPath=Path.of(uploadDir);
+            Path candidateImagePath=uploadDirPath.resolve(candidate.getCandidateImage());
+            File candidateImageFile = new File(String.valueOf(candidateImagePath));
+
+            if (candidateImageFile.exists() && candidateImageFile.delete()) {
+                log.info("Deleted candidate image: {}", candidate.getCandidateImage());
+            } else {
+                log.warn("Failed to delete candidate image: {}", candidate.getCandidateImage());
+            }
+        }
+
+        if (candidate.getCandidateSignature() != null) {
+            Path signaurePath=Path.of(uploadDir);
+            Path signaturePath1=signaurePath.resolve(candidate.getCandidateSignature());
+            File signatureFile = new File(String.valueOf(signaturePath1));
+           if (signatureFile.exists() && signatureFile.delete()) {
+                log.info("Deleted candidate signature: {}", candidate.getCandidateSignature());
+            } else {
+                log.warn("Failed to delete candidate signature: {}", candidate.getCandidateSignature());
+            }
         }
 
         candidateRepository.deleteById(candidateId);

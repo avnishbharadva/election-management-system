@@ -3,7 +3,6 @@ package com.ems.entities;
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

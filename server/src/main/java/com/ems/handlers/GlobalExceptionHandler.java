@@ -13,6 +13,17 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(CandidateAssociatedException.class)
+    public ResponseEntity<ErrorResponse> handleAssociatedCandidate(
+            CandidateAssociatedException candidateAssociatedException
+    ){
+        var errorResponse=new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.CONFLICT .value());
+        errorResponse.setMessage(String.valueOf(candidateAssociatedException.getMessage()));
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
             DataNotFoundException dataNotFoundException

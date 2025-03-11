@@ -33,4 +33,5 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>, Jpa
     @Query("SELECT c from Candidate c where c.candidateSSN LIKE CONCAT('%', :last4DIGIT)")
     Optional<Candidate> findByLast4SSN(@Param("last4DIGIT") String last4DIGIT);
 
+    boolean existsByElection_ElectionId(Long electionId);
 }
