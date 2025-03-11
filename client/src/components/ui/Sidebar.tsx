@@ -16,11 +16,11 @@ export default function Sidebar({ mobileOpen, handleDrawerToggle }: SidebarProps
   const location = useLocation();
 
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/app/dashboard" },
-    { text: "Candidates", icon: <AccountBoxIcon />, path: "/app/candidate" },
-    { text: "Voters", icon: <HowToVoteIcon />, path: "/app/voter" },
-    { text: "Parties", icon: <GroupsIcon />, path: "/app/party" },
-    { text: "Elections", icon: <BallotIcon />, path: "/app/election" },
+    { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+    { text: "Candidates", icon: <AccountBoxIcon />, path: "/dashboard/candidate" },
+    { text: "Voters", icon: <HowToVoteIcon />, path: "/dashboard/voter" },
+    { text: "Parties", icon: <GroupsIcon />, path: "/dashboard/party" },
+    { text: "Elections", icon: <BallotIcon />, path: "/dashboard/election" },
   ];
 
   const drawerContent = (

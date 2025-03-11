@@ -19,7 +19,7 @@ import {
   CircularProgress
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
-import { fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
+import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
 import Model from "../ui/Model";
 import CandidateForm from "../ui/CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -35,6 +35,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
 import CandidateContainer from "./CandidateForm/CandidatePage";
+import DeleteDialog from "./DeleteDialog";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -108,6 +109,19 @@ const CandidateData = () => {
     }
     handleClose();
   };
+
+    // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
+    const handleDeleteCandidate = async () => {
+      if (selectedCandidateId) {
+        try {
+          await dispatch(deleteCandidateById(selectedCandidateId));
+          dispatch(fetchCandidates({ page: currentPage, perPage }));
+        } catch (error) {
+          console.error("Error deleting candidate:", error);
+        }
+      }
+      handleCloseDeleteDialog();
+    };
 
   const handleOpenDeleteDialog = (candidateId: number) => {
     setSelectedCandidateId(candidateId);
@@ -321,10 +335,12 @@ const CandidateData = () => {
           handleClose={handleCloseViewDialog}
           selectedCandidate={selectedCandidate}
         />
-        <DeleteCandidateDialog
+        <DeleteDialog
           open={openDeleteDialog}
           handleClose={handleCloseDeleteDialog}
-          candidateId={selectedCandidateId ?? 0}
+          handleDelete={handleDeleteCandidate}
+          title="Delete Candidate"
+          message="Are you sure you want to delete this candidate? This action cannot be undone."
         />
     </>
   );
