@@ -109,7 +109,7 @@ import axiosInstance from "../../../store/app/axiosInstance";
 
 const ElectionDetails = ({ control, errors, register }: any) => {
   const dispatch: AppDispatch = useDispatch();
-  const elections = useSelector((state: RootState) => state.election.elections) || [];
+  const {elections} = useSelector((state: RootState) => state.election) || [];
   const [parties, setParties] = useState<{ partyId: number; partyName: string }[]>([]);
 
   const [dropdownOpened, setDropdownOpened] = useState(false);

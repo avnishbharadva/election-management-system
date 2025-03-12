@@ -7,7 +7,7 @@ import AddParty from "../components/pages/AddParty";
 import AddElection from "../components/pages/AddElection";
 import Layout from "../components/ui/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import Cards from "../components/ui/Cards";
+import Cards from "../components/pages/Dashboard";
 
 const AllRoutes = () => {
   return (

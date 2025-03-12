@@ -13,6 +13,7 @@ import {
 import { AppDispatch } from "../../store/app/store";
 import { useDispatch } from "react-redux";
 import { officerLogin } from "../../store/feature/officers/officerApi";
+import { resetState } from "../../store/feature/officers/officerSlice";
 
 type FormValues = {
   email: string;
@@ -33,10 +34,11 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
     try {
-      // Dispatch the login thunk and wait for the result
+      
        await dispatch(officerLogin(officerData)).unwrap()
-      // If successful, navigate to the dashboard
+     
       navigate("/dashboard");
+     
     } catch (error) {
       
       // console.error("Login failed:", error);

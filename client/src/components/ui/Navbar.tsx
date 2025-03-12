@@ -4,6 +4,9 @@ import MenuIcon from "@mui/icons-material/Menu"; // Toggle Button
 import { StyledAppBar, StyledButton } from "../../style/NavbarCss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { resetState } from "../../store/feature/officers/officerSlice";
+import { AppDispatch } from '../../store/app/store';
+import { useDispatch } from "react-redux";
 
 interface NavbarProps {
   handleDrawerToggle: () => void;
@@ -11,11 +14,12 @@ interface NavbarProps {
 
 export default function Navbar({ handleDrawerToggle }: NavbarProps) {
   const navigate = useNavigate();
-
+const dispatch = useDispatch()
   const logout = () => {
     localStorage.removeItem("token");
     toast.success("Signout Successfully");
     navigate("/");
+    dispatch(resetState())
   };
 
   return (

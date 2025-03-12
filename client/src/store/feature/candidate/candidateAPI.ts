@@ -53,10 +53,7 @@ export const addCandidate = createAsyncThunk(
         return response.data;
       } 
     } catch (error: any) {
-      if (error.response?.status === 400) {
-        toast.error("Invalid input. Please check the form fields.");
-      
-      } else if (error.response?.status === 500) {
+      if (error.response?.status === 500) {
         toast.error("Server error. Please try again later.");
       } else if (error.response?.status === 403) {
         toast.error("Forbidden");

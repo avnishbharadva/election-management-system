@@ -69,7 +69,7 @@ const candidateSlice = createSlice({
     },
     extraReducers: (builder) => {
       builder
-        // Fetch all candidates on mount
+        
         .addCase(fetchCandidates.pending, (state) => {
           state.loading = true;
           state.error = null;
