@@ -7,7 +7,7 @@ import AddParty from "../components/pages/AddParty";
 import AddElection from "../components/pages/AddElection";
 import Layout from "../components/ui/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "../components/pages/Dashboard";
+import Cards from "../components/ui/Cards";
 
 const AllRoutes = () => {
   return (
@@ -25,7 +25,7 @@ const AllRoutes = () => {
         }
       >
        
-        <Route index element={<Dashboard/>} /> 
+        <Route index element={<Cards/>} /> 
         <Route path="candidate" element={<AddCandidate />} /> 
         <Route path="voter" element={<AddVoter />} /> 
         <Route path="party" element={<AddParty />} /> 

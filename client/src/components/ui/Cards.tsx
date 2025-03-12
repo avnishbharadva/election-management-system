@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
 import { CardContent, CardActionArea } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
@@ -16,7 +15,6 @@ import { ContentWrapper } from "../../style/CardCss";
 import { CardsContainerLeft } from "../../style/CardCss";
 import { StyledCard } from "../../style/CardCss";
 import { ChartContainer } from "../../style/CardCss";
-import axios from "axios";
 import axiosInstance from "../../store/app/axiosInstance";
 
 interface CardData {

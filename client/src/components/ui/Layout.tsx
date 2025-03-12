@@ -22,7 +22,7 @@ export default function Layout() {
       <Box sx={{ flexGrow: 1, marginLeft: { xs: 0, md: "250px" }, overflowY: "auto" }}>
         <Navbar handleDrawerToggle={handleDrawerToggle} />
         <Box sx={{ p: 3 }}>
-          <Box sx={{ marginTop: "1.5rem" }}>
+          <Box sx={{ marginTop: "2.5rem" }}>
             <BreadCrumbs />
           </Box>
           <Outlet />
