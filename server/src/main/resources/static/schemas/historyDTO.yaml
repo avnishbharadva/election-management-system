@@ -1,0 +1,13 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Success"
+  data:
+    oneOf:
+      - type: array
+        items:
+          $ref: "./nameHistoryDTO.yaml"
+      - type: array
+        items:
+          $ref: "./statusHistoryDTO.yaml"

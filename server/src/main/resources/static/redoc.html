@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redoc with JWT Authentication</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+  <style>
+    body { margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+    #jwt-input, #set-token { padding: 10px; margin: 5px; font-size: 16px; }
+    #message { color: red; font-weight: bold; margin-top: 10px; }
+    #redoc-container { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+
+<input type="text" id="jwt-input" placeholder="Enter JWT Token" />
+<button id="set-token">Set Token</button>
+<p id="message"></p>
+
+<div id="redoc-container" style="display: none;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"></script>
+
+<script>
+  document.getElementById('set-token').addEventListener('click', function() {
+      const token = document.getElementById('jwt-input').value;
+      const messageElement = document.getElementById('message');
+
+      if (!token) {
+          messageElement.textContent = "Please enter a JWT token.";
+          return;
+      }
+
+      messageElement.textContent = "Validating token...";
+
+      fetch("http://localhost:8081/voters", {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${token}` }
+      })
+      .then(response => {
+          if (response.ok) {
+              messageElement.textContent = "Token is valid. Loading documentation...";
+              document.getElementById('redoc-container').style.display = 'block';
+
+              // Reload Redoc with proper token handling
+              Redoc.init('http://localhost:8081/v3/api-docs', {
+                  scrollYOffset: 50, // Ensures smooth scrolling
+                  hideDownloadButton: false, // Allows downloading the spec
+                  expandResponses: "all", // Expands all responses by default
+                  fetch: (url, options = {}) => {
+                      options.headers = options.headers || {};
+                      options.headers.Authorization = `Bearer ${token}`;
+                      return fetch(url, options);
+                  }
+              }, document.getElementById('redoc-container'));
+          } else {
+              throw new Error("Invalid Token");
+          }
+      })
+      .catch(error => {
+          messageElement.textContent = "Invalid token! Please enter a valid JWT.";
+          document.getElementById('redoc-container').style.display = 'none';
+      });
+  });
+</script>
+
+</body>
+</html>

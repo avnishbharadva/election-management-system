@@ -1,0 +1,7 @@
+type: object
+description: Represents a record of status change history for a voter
+properties:
+  status:
+    type: string
+    example: "Active"
+    description: Voter's status
