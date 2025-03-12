@@ -14,7 +14,7 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
 
   const logout = () => {
     localStorage.removeItem("token");
-    toast.success("Signout Successfully");
+    // toast.success("Signout Successfully");
     navigate("/");
   };
 

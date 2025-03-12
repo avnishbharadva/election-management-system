@@ -5,16 +5,13 @@ import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import GroupsIcon from "@mui/icons-material/Groups";
 import BallotIcon from "@mui/icons-material/Ballot";
 import {
-  CardContainer,
   Container,
+  CardWrapper,
+  ChartWrapper,
+  StyledCard,
   Content,
   Graph,
-  HeaderContainer,
 } from "../../style/CardCss";
-import { ContentWrapper } from "../../style/CardCss";
-import { CardsContainerLeft } from "../../style/CardCss";
-import { StyledCard } from "../../style/CardCss";
-import { ChartContainer } from "../../style/CardCss";
 import axiosInstance from "../../store/app/axiosInstance";
 
 interface CardData {
@@ -32,25 +29,19 @@ const Cards: React.FC = () => {
     elections: 0,
   });
 
-  const fetchCounts = async () => {
-    try {
-      // const token = localStorage.getItem("token");
-      const response = await axiosInstance.get("api/counts", {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      });
-      setCountsData(response.data); // Set the API data into state
-    } catch (error) {
-      console.error("Error fetching counts:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await axiosInstance.get("api/counts");
+        setCountsData(response.data);
+      } catch (error) {
+        console.error("Error fetching counts:", error);
+      }
+    };
+
     fetchCounts();
   }, []);
 
-  // Dynamically populate cards from API data
   const cards: CardData[] = [
     {
       id: 1,
@@ -83,34 +74,25 @@ const Cards: React.FC = () => {
 
   return (
     <Container>
-      {/* <Sidebar /> */}
-      <ContentWrapper>
-        <CardContainer>
-          {/* Cards on Left */}
-          <CardsContainerLeft>
-            {cards.map((card) => (
-              <StyledCard key={card.id}>
-                <CardActionArea>
-                  <CardContent>
-                    <HeaderContainer>
-                      <Content variant="h6">{card.title}</Content>
-                      {card.icon}
-                    </HeaderContainer>
-                    <Content variant="h4">{card.count}</Content>
-                  </CardContent>
-                </CardActionArea>
-              </StyledCard>
-            ))}
-          </CardsContainerLeft>
-
-          <ChartContainer>
-            <Graph
-              xAxis={[{ id: "barCategories", data: chartLabels, scaleType: "band" }]}
-              series={[{ data: chartData }]}
-            />
-          </ChartContainer>
-        </CardContainer>
-      </ContentWrapper>
+      <CardWrapper>
+        {cards.map((card) => (
+          <StyledCard key={card.id}>
+            <CardActionArea>
+              <CardContent>
+                <Content variant="h6">{card.title}</Content>
+                {card.icon}
+                <Content variant="h4">{card.count}</Content>
+              </CardContent>
+            </CardActionArea>
+          </StyledCard>
+        ))}
+      </CardWrapper>
+      <ChartWrapper>
+        <Graph
+          xAxis={[{ id: "categories", data: chartLabels, scaleType: "band" }]}
+          series={[{ data: chartData }]}
+        />
+      </ChartWrapper>
     </Container>
   );
 };

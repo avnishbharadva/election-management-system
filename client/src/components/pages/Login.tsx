@@ -9,10 +9,12 @@ import {
   LoginField,
   LoginForm,
   LoginImg,
+  LoginTitle,
 } from "../../style/LoginStyle";
 import { AppDispatch } from "../../store/app/store";
 import { useDispatch } from "react-redux";
 import { officerLogin } from "../../store/feature/officers/officerApi";
+import Navbar from "../ui/Navbar";
 
 type FormValues = {
   email: string;
@@ -33,10 +35,8 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
     try {
-      // Dispatch the login thunk and wait for the result
-       await dispatch(officerLogin(officerData)).unwrap()
-      // If successful, navigate to the dashboard
-      navigate("/dashboard");
+        await dispatch(officerLogin(officerData)).unwrap()
+       navigate("/dashboard");
     } catch (error) {
       
       // console.error("Login failed:", error);
@@ -47,11 +47,17 @@ const Login = () => {
 
   return (
     <>
+         
      <LoginBox>
+    {/* <Typography>Election Management System</Typography> */}
   <LoginImg src={bgImg} alt="" />
   <FormCard>
+  <LoginTitle>
+          
+          Election Management System
+        </LoginTitle>
     <LoginForm onSubmit={handleSubmit(onSubmit)}>
-      <Typography variant="h5">Sign In Here!</Typography>
+      <Typography variant="h6">Sign In Here!</Typography>
       <LoginField>
         <TextField
           fullWidth

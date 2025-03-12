@@ -15,9 +15,9 @@ export default function Dashboard() {
 
   return (
     <Box display="flex">
-      {isSidebarOpen && <Sidebar />}
+     
       <Box flexGrow={1}>
-        <Navbar toggleSidebar={toggleSidebar} />
+       
         <Cards />
       </Box>
     </Box>

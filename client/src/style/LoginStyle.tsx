@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 
 export const LoginBox = styled(Box)({
   position: "relative",
@@ -8,6 +8,7 @@ export const LoginBox = styled(Box)({
   flexWrap: "wrap", // Allow elements to wrap naturally
   width: "100%",
   height: "100vh",
+  // border:"1px solid black"
 });
 
 export const LoginImg = styled("img")({
@@ -22,6 +23,7 @@ export const LoginImg = styled("img")({
 
 export const FormCard = styled(Box)({
   borderRadius: "16px",
+  // height:"500px",
   background: "rgba(255, 255, 255)",
   boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
   backdropFilter: "blur(5px)",
@@ -57,4 +59,10 @@ export const ErrorMsg = styled("p")({
   color: "red",
   fontSize: "0.875rem",
   marginTop: "5px",
+});
+export const LoginTitle = styled(Typography)({
+  marginBottom: "8px", // Equivalent to 1 spacing unit
+  fontWeight: "bold",
+  color:"var(--mui)",
+  fontSize:"20px"
 });
