@@ -9,6 +9,7 @@ import com.ems.services.PartyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.PartyDataDTO;
+import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
-    public PartyDataDTO saveParty(PartyDataDTO partyDTO) {
+    public PartyDataDTO saveParty(PartyRegisterDTO partyDTO) {
         log.info("party registration for : {},{},{},{},{},{},{}", partyDTO.getPartyName(),partyDTO.getPartyAbbreviation(),partyDTO.getPartyFounderName(),partyDTO.getPartyFoundationYear(),partyDTO.getPartyLeaderName(),partyDTO.getPartyWebSite(),partyDTO.getHeadQuarters());
 
         if(partyRepository.existsByPartyNameOrPartyAbbreviationOrPartyLeaderName(partyDTO.getPartyName(),partyDTO.getPartyAbbreviation(), partyDTO.getPartyLeaderName()))
@@ -60,9 +61,12 @@ public class PartyServiceImpl implements PartyService {
             throw new CustomException("Failed to save party symbol: " + e.getMessage());
         }
         party.setPartySymbol(fileName);
-        party = partyRepository.save(party);
-        log.info("Party Successfully Saved : {}", party);
-        return globalMapper.toPartyDTO(party);
+        partyRepository.save(party);
+        var partyResponse = globalMapper.toPartyDTO(party);
+        Path imagePath = Path.of(UPLOAD_DIR + "/" + partyResponse.getPartySymbol());
+        partyResponse.setPartySymbol(encodeFileToBase64(imagePath));
+        log.info("Party Successfully Saved : {}", partyResponse);
+        return partyResponse;
     }
 
     private String extractExtension(String base64) {
@@ -75,7 +79,9 @@ public class PartyServiceImpl implements PartyService {
 
     @Override
     public List<PartyDataDTO> findAll() {
-        return partyRepository.findAll().stream().map(globalMapper::toPartyDTO).toList();
+        var parties = partyRepository.findAll();
+        parties.forEach(party -> party.setPartySymbol(encodeFileToBase64(Path.of(UPLOAD_DIR + "/" + party.getPartySymbol()))));
+        return parties.stream().map(globalMapper::toPartyDTO).toList();
     }
 
     @Override
@@ -109,8 +115,11 @@ public class PartyServiceImpl implements PartyService {
         }
 
         partyRepository.save(party);
+        var partyResponse = globalMapper.toPartyDTO(party);
+        Path imagePath = Path.of(UPLOAD_DIR + "/" + partyResponse.getPartySymbol());
+        partyResponse.setPartySymbol(encodeFileToBase64(imagePath));
         log.info("party updated id : {}, data : {}", partyId, party);
-        return globalMapper.toPartyDTO(party);
+        return partyResponse;
     }
 
     @Override
@@ -137,5 +146,21 @@ public class PartyServiceImpl implements PartyService {
         } catch (IOException e) {
             log.warn("Failed to delete old party symbol file: {}. Reason: {}", fileName, e.getMessage());
         }
+    }
+
+    private String encodeFileToBase64(Path filePath) {
+        try {
+            if (Files.exists(filePath)) {
+                byte[] fileContent = Files.readAllBytes(filePath);
+                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                log.info("{} : Encoded file to Base64", filePath.getFileName());
+                return encodedString;
+            } else {
+                log.info("File does not exist at path: {}", filePath);
+            }
+        } catch (Exception e) {
+            log.error("Error encoding file to Base64 at path: {}", filePath, e);
+        }
+        return null;
     }
 }

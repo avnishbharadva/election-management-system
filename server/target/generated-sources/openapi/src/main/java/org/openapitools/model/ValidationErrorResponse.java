@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:49.516614600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:41:01.252272900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ValidationErrorResponse {
 
   private String message;

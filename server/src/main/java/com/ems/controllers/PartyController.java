@@ -4,10 +4,7 @@ import com.ems.services.PartyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.PartyApi;
-import org.openapitools.model.PartyDTO;
-import org.openapitools.model.PartyDataDTO;
-import org.openapitools.model.PartyListDTO;
-import org.openapitools.model.PartyUpdateDTO;
+import org.openapitools.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +18,7 @@ public class PartyController implements PartyApi {
     private final PartyService partyService;
 
     @Override
-    public ResponseEntity<PartyDTO> createParty(PartyDataDTO partyDataDTO) {
+    public ResponseEntity<PartyDTO> createParty(PartyRegisterDTO partyDataDTO) {
         log.info("Create party method from party controller called for - {}",partyDataDTO);
         return new ResponseEntity<>(new PartyDTO(
                 "Party registered successfully",

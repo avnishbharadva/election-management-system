@@ -20,6 +20,7 @@ import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.OfficersRegisterDTO;
 import org.openapitools.model.OfficersResponseDTO;
 import org.openapitools.model.PartyDataDTO;
+import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.openapitools.model.VoterDataDTO;
 import org.openapitools.model.VoterRegisterDTO;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-12T15:11:59+0530",
+    date = "2025-03-12T17:41:32+0530",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
 )
 @Component
@@ -240,7 +241,7 @@ public class GlobalMapperImpl implements GlobalMapper {
     }
 
     @Override
-    public Party toParty(PartyDataDTO partyDTO) {
+    public Party toParty(PartyRegisterDTO partyDTO) {
         if ( partyDTO == null ) {
             return null;
         }
@@ -275,6 +276,7 @@ public class GlobalMapperImpl implements GlobalMapper {
         partyDataDTO.setPartyLeaderName( party.getPartyLeaderName() );
         partyDataDTO.setPartyWebSite( party.getPartyWebSite() );
         partyDataDTO.setHeadQuarters( party.getHeadQuarters() );
+        partyDataDTO.setPartyId( party.getPartyId() );
 
         return partyDataDTO;
     }

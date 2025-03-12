@@ -19,6 +19,6 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:44.617977500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:57.751410600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public interface HistoryDTOData {
 }

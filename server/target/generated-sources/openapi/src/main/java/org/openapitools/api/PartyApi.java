@@ -7,8 +7,8 @@ package org.openapitools.api;
 
 import org.openapitools.model.ErrorResponse;
 import org.openapitools.model.PartyDTO;
-import org.openapitools.model.PartyDataDTO;
 import org.openapitools.model.PartyListDTO;
+import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.openapitools.model.ValidationErrorResponse;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:49.516614600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:41:01.252272900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Party", description = "the Party API")
 public interface PartyApi {
@@ -49,7 +49,7 @@ public interface PartyApi {
     /**
      * POST /party : Create a new party
      *
-     * @param partyDataDTO  (required)
+     * @param partyRegisterDTO  (required)
      * @return Party created successfully (status code 200)
      *         or Invalid request data (status code 400)
      */
@@ -74,12 +74,12 @@ public interface PartyApi {
     )
     
     default ResponseEntity<PartyDTO> createParty(
-        @Parameter(name = "PartyDataDTO", description = "", required = true) @Valid @RequestBody PartyDataDTO partyDataDTO
+        @Parameter(name = "PartyRegisterDTO", description = "", required = true) @Valid @RequestBody PartyRegisterDTO partyRegisterDTO
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -127,7 +127,7 @@ public interface PartyApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -170,7 +170,7 @@ public interface PartyApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" } ], \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : [ { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" } ], \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -213,7 +213,7 @@ public interface PartyApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -268,7 +268,7 @@ public interface PartyApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"partyLeaderName\" : \"Narendra Modi\", \"partyAbbreviation\" : \"DA\", \"partyFoundationYear\" : 1998, \"headQuarters\" : \"Washington, D.C.\", \"partyName\" : \"Democratic Alliance\", \"partySymbol\" : \"partySymbol\", \"partyId\" : 1, \"partyWebSite\" : \"https://www.democraticalliance.org\", \"partyFounderName\" : \"John Smith\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

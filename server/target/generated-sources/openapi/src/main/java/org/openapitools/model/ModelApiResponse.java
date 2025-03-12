@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
 @JsonTypeName("ApiResponse")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:47.872702200+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:41:00.188687600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ModelApiResponse {
 
   private String message;

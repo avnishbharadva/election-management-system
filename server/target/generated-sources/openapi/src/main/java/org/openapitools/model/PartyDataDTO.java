@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:49.516614600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:41:01.252272900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class PartyDataDTO {
 
   private String partyName;
@@ -38,18 +38,7 @@ public class PartyDataDTO {
 
   private String headQuarters;
 
-  /**
-   * Constructor with only required parameters
-   */
-  public PartyDataDTO(String partyName, String partyAbbreviation, String partySymbol, String partyFounderName, Integer partyFoundationYear, String partyLeaderName, String headQuarters) {
-    this.partyName = partyName;
-    this.partyAbbreviation = partyAbbreviation;
-    this.partySymbol = partySymbol;
-    this.partyFounderName = partyFounderName;
-    this.partyFoundationYear = partyFoundationYear;
-    this.partyLeaderName = partyLeaderName;
-    this.headQuarters = headQuarters;
-  }
+  private Long partyId;
 
   public PartyDataDTO partyName(String partyName) {
     this.partyName = partyName;
@@ -60,8 +49,8 @@ public class PartyDataDTO {
    * Party name must be between 3 and 30 characters.
    * @return partyName
    */
-  @NotNull @Size(min = 3, max = 30) 
-  @Schema(name = "partyName", example = "Democratic Alliance", description = "Party name must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Size(min = 3, max = 30) 
+  @Schema(name = "partyName", example = "Democratic Alliance", description = "Party name must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partyName")
   public String getPartyName() {
     return partyName;
@@ -80,8 +69,8 @@ public class PartyDataDTO {
    * Party abbreviation must not exceed 10 characters.
    * @return partyAbbreviation
    */
-  @NotNull @Size(min = 1, max = 10) 
-  @Schema(name = "partyAbbreviation", example = "DA", description = "Party abbreviation must not exceed 10 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Size(min = 1, max = 10) 
+  @Schema(name = "partyAbbreviation", example = "DA", description = "Party abbreviation must not exceed 10 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partyAbbreviation")
   public String getPartyAbbreviation() {
     return partyAbbreviation;
@@ -100,8 +89,8 @@ public class PartyDataDTO {
    * Party Symbol String in Base64 format
    * @return partySymbol
    */
-  @NotNull 
-  @Schema(name = "partySymbol", description = "Party Symbol String in Base64 format", requiredMode = Schema.RequiredMode.REQUIRED)
+  
+  @Schema(name = "partySymbol", description = "Party Symbol String in Base64 format", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partySymbol")
   public String getPartySymbol() {
     return partySymbol;
@@ -120,8 +109,8 @@ public class PartyDataDTO {
    * Party Founder name must be between 2 and 20 characters.
    * @return partyFounderName
    */
-  @NotNull @Size(min = 2, max = 20) 
-  @Schema(name = "partyFounderName", example = "John Smith", description = "Party Founder name must be between 2 and 20 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Size(min = 2, max = 20) 
+  @Schema(name = "partyFounderName", example = "John Smith", description = "Party Founder name must be between 2 and 20 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partyFounderName")
   public String getPartyFounderName() {
     return partyFounderName;
@@ -142,8 +131,8 @@ public class PartyDataDTO {
    * maximum: 2025
    * @return partyFoundationYear
    */
-  @NotNull @Min(1900) @Max(2025) 
-  @Schema(name = "partyFoundationYear", example = "1998", description = "Foundation year must be between 1900 and 2025.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Min(1900) @Max(2025) 
+  @Schema(name = "partyFoundationYear", example = "1998", description = "Foundation year must be between 1900 and 2025.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partyFoundationYear")
   public Integer getPartyFoundationYear() {
     return partyFoundationYear;
@@ -162,8 +151,8 @@ public class PartyDataDTO {
    * Party Leader name must be between 3 and 20 characters.
    * @return partyLeaderName
    */
-  @NotNull @Size(min = 3, max = 20) 
-  @Schema(name = "partyLeaderName", example = "Narendra Modi", description = "Party Leader name must be between 3 and 20 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Size(min = 3, max = 20) 
+  @Schema(name = "partyLeaderName", example = "Narendra Modi", description = "Party Leader name must be between 3 and 20 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partyLeaderName")
   public String getPartyLeaderName() {
     return partyLeaderName;
@@ -202,8 +191,8 @@ public class PartyDataDTO {
    * Headquarter field must be between 3 and 30 characters.
    * @return headQuarters
    */
-  @NotNull @Size(min = 3, max = 30) 
-  @Schema(name = "headQuarters", example = "Washington, D.C.", description = "Headquarter field must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Size(min = 3, max = 30) 
+  @Schema(name = "headQuarters", example = "Washington, D.C.", description = "Headquarter field must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("headQuarters")
   public String getHeadQuarters() {
     return headQuarters;
@@ -211,6 +200,26 @@ public class PartyDataDTO {
 
   public void setHeadQuarters(String headQuarters) {
     this.headQuarters = headQuarters;
+  }
+
+  public PartyDataDTO partyId(Long partyId) {
+    this.partyId = partyId;
+    return this;
+  }
+
+  /**
+   * Get partyId
+   * @return partyId
+   */
+  
+  @Schema(name = "partyId", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("partyId")
+  public Long getPartyId() {
+    return partyId;
+  }
+
+  public void setPartyId(Long partyId) {
+    this.partyId = partyId;
   }
 
   @Override
@@ -229,12 +238,13 @@ public class PartyDataDTO {
         Objects.equals(this.partyFoundationYear, partyDataDTO.partyFoundationYear) &&
         Objects.equals(this.partyLeaderName, partyDataDTO.partyLeaderName) &&
         Objects.equals(this.partyWebSite, partyDataDTO.partyWebSite) &&
-        Objects.equals(this.headQuarters, partyDataDTO.headQuarters);
+        Objects.equals(this.headQuarters, partyDataDTO.headQuarters) &&
+        Objects.equals(this.partyId, partyDataDTO.partyId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(partyName, partyAbbreviation, partySymbol, partyFounderName, partyFoundationYear, partyLeaderName, partyWebSite, headQuarters);
+    return Objects.hash(partyName, partyAbbreviation, partySymbol, partyFounderName, partyFoundationYear, partyLeaderName, partyWebSite, headQuarters, partyId);
   }
 
   @Override
@@ -249,6 +259,7 @@ public class PartyDataDTO {
     sb.append("    partyLeaderName: ").append(toIndentedString(partyLeaderName)).append("\n");
     sb.append("    partyWebSite: ").append(toIndentedString(partyWebSite)).append("\n");
     sb.append("    headQuarters: ").append(toIndentedString(headQuarters)).append("\n");
+    sb.append("    partyId: ").append(toIndentedString(partyId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -19,7 +19,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PartyDataDTO"
+              $ref: "#/components/schemas/PartyRegisterDTO"
       responses:
         "200":
           description: Party created successfully
@@ -191,7 +191,7 @@ components:
           example: "Washington, D.C."
           description: "Headquarter field must be between 3 and 30 characters."
 
-    PartyDataDTO:
+    PartyRegisterDTO:
       allOf:
         - $ref: "#/components/schemas/PartyBaseDTO"
         - type: object
@@ -203,6 +203,17 @@ components:
             - partyFoundationYear
             - partyLeaderName
             - headQuarters
+
+    PartyDataDTO:
+      allOf:
+        - $ref: "#/components/schemas/PartyBaseDTO"
+        - type: object
+          required: []
+          properties:
+            partyId:
+              type: integer
+              format: int64
+              example: 1
 
     PartyUpdateDTO:
       allOf:

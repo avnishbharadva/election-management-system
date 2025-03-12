@@ -64,6 +64,7 @@ E:\testing ems\election-management-system\server\src\main\java\com\ems\config\My
 E:\testing ems\election-management-system\server\src\main\java\com\ems\services\CountService.java
 E:\testing ems\election-management-system\server\target\generated-sources\openapi\src\main\java\org\openapitools\model\VoterStatusDTO.java
 E:\testing ems\election-management-system\server\src\main\java\com\ems\services\AuditService.java
+E:\testing ems\election-management-system\server\target\generated-sources\openapi\src\main\java\org\openapitools\model\PartyRegisterDTO.java
 E:\testing ems\election-management-system\server\target\generated-sources\openapi\src\main\java\org\openapitools\model\VoterDTO.java
 E:\testing ems\election-management-system\server\target\generated-sources\openapi\src\main\java\org\openapitools\model\PartyBaseDTO.java
 E:\testing ems\election-management-system\server\src\main\java\com\ems\dtos\CandidateAddressDTO.java

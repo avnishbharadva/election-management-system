@@ -100,6 +100,7 @@ org\openapitools\model\VoterDataDTO.class
 com\ems\jwt\LoginForm.class
 com\ems\dtos\ElectionSortDTO.class
 org\openapitools\model\ElectionDTO.class
+org\openapitools\model\PartyRegisterDTO.class
 com\ems\entities\TimeStamp.class
 com\ems\events\AddressUpdateEvent.class
 com\ems\dtos\BankDetailsDTO.class

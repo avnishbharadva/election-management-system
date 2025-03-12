@@ -1,6 +1,7 @@
 package com.ems.services;
 
 import org.openapitools.model.PartyDataDTO;
+import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public interface PartyService {
 
     PartyDataDTO partyById(long id);
-    PartyDataDTO saveParty(PartyDataDTO partyDTO);
+    PartyDataDTO saveParty(PartyRegisterDTO partyDTO);
     List<PartyDataDTO> findAll();
     PartyDataDTO updateParty(Long partyId, PartyUpdateDTO partyUpdateDTO);
     void deleteParty(Long partyId);

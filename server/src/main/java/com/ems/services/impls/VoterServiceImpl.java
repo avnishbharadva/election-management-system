@@ -94,8 +94,14 @@ public class VoterServiceImpl implements VoterService {
         addressRepo.saveAll(List.of(residentialAddress, mailingAddress));
         savedVoter.setResidentialAddress(residentialAddress);
         savedVoter.setMailingAddress(mailingAddress);
-        log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
-        return globalMapper.toVoterDTO(savedVoter);
+
+        var voterResponse = globalMapper.toVoterDTO(savedVoter);
+        Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());
+        voterResponse.setImage(encodeFileToBase64(imagePath));
+        Path signaturePath = Path.of(SIGNATURE_DIR + "/" + voterResponse.getSignature());
+        voterResponse.setSignature(encodeFileToBase64(signaturePath));
+        log.info("voter registration completed for : {}", voterResponse.getSsnNumber());
+        return voterResponse;
     }
 
     @Override
@@ -179,8 +185,13 @@ public class VoterServiceImpl implements VoterService {
 //            }
 //        });
 
-        log.info("{} voter updated successfully - {}",voterId,updatedVoter);
-        return globalMapper.toVoterDTO(updatedVoter);
+        VoterDataDTO voterResponse = globalMapper.toVoterDTO(updatedVoter);
+        Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());
+        voterResponse.setImage(encodeFileToBase64(imagePath));
+        Path signaturePath = Path.of(SIGNATURE_DIR + "/" + voterResponse.getSignature());
+        voterResponse.setSignature(encodeFileToBase64(signaturePath));
+        log.info("{} voter updated successfully - {}",voterId,voterResponse);
+        return voterResponse;
     }
 
     private void updateVoterStatus(Voter updatedVoter, VoterUpdateRequest voterUpdateRequest) {
@@ -254,4 +265,21 @@ public class VoterServiceImpl implements VoterService {
             log.warn("Failed to list files in directory: {}. Reason: {}", directory, e.getMessage());
         }
     }
+
+    private String encodeFileToBase64(Path filePath) {
+        try {
+            if (Files.exists(filePath)) {
+                byte[] fileContent = Files.readAllBytes(filePath);
+                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                log.info("{} : Encoded file to Base64", filePath.getFileName());
+                return encodedString;
+            } else {
+                log.info("File does not exist at path: {}", filePath);
+            }
+        } catch (Exception e) {
+            log.error("Error encoding file to Base64 at path: {}", filePath, e);
+        }
+        return null;
+    }
+
 }

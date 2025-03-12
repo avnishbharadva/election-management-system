@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T15:11:46.250657900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:59.128896300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Voter", description = "the Voter API")
 public interface VotersApi {

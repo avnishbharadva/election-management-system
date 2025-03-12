@@ -1,17 +1,9 @@
 package com.ems.mappers;
 
 import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.PartyDataDTO;
-import org.openapitools.model.PartyUpdateDTO;
-import org.openapitools.model.VoterStatusDataDTO;
-import org.openapitools.model.OfficersRegisterDTO;
-import org.openapitools.model.AddressDTO;
+import org.openapitools.model.*;
 import com.ems.entities.*;
 import org.mapstruct.*;
-import org.openapitools.model.ElectionDTO;
 
 import java.util.List;
 
@@ -52,7 +44,7 @@ public interface GlobalMapper {
     VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
-    Party toParty(PartyDataDTO partyDTO);
+    Party toParty(PartyRegisterDTO partyDTO);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
     PartyDataDTO toPartyDTO(Party party);
