@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: EMS API
+  description: API for Officer Registration
+  version: 1.0.0
+
+
+paths:
+  /officers:
+    post:
+      summary: Register a new officer
+      description: Registers a new officer in the system.
+      operationId: registerOfficer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficersRegisterDTO'
+            example:
+              ssnNumber: "123-45-6789"
+              role: "Admin"
+              email: "officer@example.com"
+              password: "SecurePass123"
+      responses:
+        "201":
+          description: Officer registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficersRegisterDTO'
+              example:
+                ssnNumber: "123-45-6789"
+                role: "Admin"
+                email: "officer@example.com"
+                password: "SecurePass123"
+        "400":
+          description: Bad Request - Invalid data provided
+        "409":
+          description: Conflict - Data Already Exists
+        "500":
+          description: Internal Server Error
+      tags:
+        - Officers
+
+    get:
+      summary: Get all officers
+      description: Retrieves a list of all officers.
+      operationId: getAllOfficers
+      responses:
+        "200":
+          description: Successful response with a list of officers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfficersResponseDTO'
+        "500":
+          description: Internal Server Error - Unable to fetch roles
+      tags:
+        - Officers
+
+  /officers/authenticate:
+    post:
+      summary: Authenticate user and get JWT token
+      description: Authenticates a user with email and password and returns a JWT token.
+      operationId: authenticateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginForm'
+      responses:
+        "200":
+          description: Successful authentication, returns a JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        "400":
+          description: Bad Request - Invalid input data
+        "401":
+          description: Unauthorized - Invalid credentials
+        "500":
+          description: Internal Server Error
+      tags:
+        - Authentication
+
+
+
+components:
+  schemas:
+    OfficersRegisterDTO:
+      type: object
+      properties:
+        ssnNumber:
+          type: string
+          example: "123-45-6789"
+        role:
+          type: string
+          example: "Admin"
+        email:
+          type: string
+          format: email
+          example: "officer@example.com"
+        password:
+          type: string
+          example: "SecurePass123"
+
+    LoginForm:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          example: "SecurePass123"
+
+    AuthResponse:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+
+    OfficersResponseDTO:
+      type: object
+      properties:
+        officerId:
+          type: integer
+          format: int64
+          example: 101
+        ssnNumber:
+          type: string
+          example: "123456789"
+        role:
+          type: string
+          example: "Admin"
+        email:
+          type: string
+          format: email
+          example: "officer@example.com"
+        password:
+          type: string
+          example: "SecurePass123"

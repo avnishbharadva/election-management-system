@@ -1,0 +1,12 @@
+README.md
+pom.xml
+src/main/java/org/openapitools/api/ApiUtil.java
+src/main/java/org/openapitools/api/PartyApi.java
+src/main/java/org/openapitools/model/ErrorItem.java
+src/main/java/org/openapitools/model/ErrorResponse.java
+src/main/java/org/openapitools/model/PartyBaseDTO.java
+src/main/java/org/openapitools/model/PartyDTO.java
+src/main/java/org/openapitools/model/PartyDataDTO.java
+src/main/java/org/openapitools/model/PartyListDTO.java
+src/main/java/org/openapitools/model/PartyUpdateDTO.java
+src/main/java/org/openapitools/model/ValidationErrorResponse.java
