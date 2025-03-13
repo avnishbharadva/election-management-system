@@ -1,11 +1,11 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 
 export const LoginBox = styled(Box)({
   position: "relative",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  flexWrap: "wrap", // Allow elements to wrap naturally
+  flexWrap: "wrap", 
   width: "100%",
   height: "100vh",
 });
@@ -33,8 +33,8 @@ export const FormCard = styled(Box)({
   zIndex: 1,
   padding: "40px",
   margin: "20px",
-  flex: "1 1 400px", // Flex-grow, flex-shrink, and base size
-  maxWidth: "400px", // Prevents expanding too wide
+  flex: "1 1 400px", 
+  maxWidth: "400px", 
 });
 
 export const LoginForm = styled("form")({
@@ -57,4 +57,10 @@ export const ErrorMsg = styled("p")({
   color: "red",
   fontSize: "0.875rem",
   marginTop: "5px",
+});
+export const LoginTitle = styled(Typography)({
+  marginBottom: "8px", 
+  fontWeight: "bold",
+  color:"var(--titleColor)",
+  fontSize:"20px"
 });
