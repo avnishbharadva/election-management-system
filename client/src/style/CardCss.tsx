@@ -2,61 +2,40 @@ import { Card, Typography } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { BarChart } from "@mui/x-charts";
 
-export const Container = styled(Box)(({ theme }) => ({
-  display: "flex",
+export const Container = styled(Box)({
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+  gridGap: "1rem",
   width: "100%",
   height: "100%",
+  alignItems: "start", 
+});
 
-  
-  [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-    // justifyContent: "center",
-  },
-}));
-
-
-export const CardWrapper = styled(Box)(({ theme }) => ({
+export const CardWrapper = styled(Box)({
   display: "grid",
-  
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
   gap: "1rem",
   width: "100%",
+});
 
-  
-  [theme.breakpoints.up("md")]: {
-    gridTemplateColumns: "repeat(2, 1fr)",
-    width: "50%" 
-  },
-}));
-
-export const ChartWrapper = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: "1rem", 
+export const ChartWrapper = styled(Box)({
   backgroundColor: "white",
   borderRadius: "15px",
   boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.2)",
-
-  
-  [theme.breakpoints.up("md")]: {
-    marginTop: 0, 
-    marginLeft: "1rem", 
-    width: "50%",
-    height: "auto",
-  },
-}));
+  padding: "1rem",
+  height: "auto",
+});
 
 export const StyledCard = styled(Card)({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  height: 160,
+  height: "160px",
   textAlign: "center",
   borderRadius: "15px",
   boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.2)",
   transition: "0.3s",
-  
 });
 
 export const Content = styled(Typography)({
@@ -65,5 +44,5 @@ export const Content = styled(Typography)({
 
 export const Graph = styled(BarChart)({
   width: "100%",
-  height: 333,
+  height: "300px",
 });

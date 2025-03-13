@@ -5,10 +5,9 @@ export const LoginBox = styled(Box)({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  flexWrap: "wrap", // Allow elements to wrap naturally
+  flexWrap: "wrap", 
   width: "100%",
   height: "100vh",
-  // border:"1px solid black"
 });
 
 export const LoginImg = styled("img")({
@@ -23,7 +22,6 @@ export const LoginImg = styled("img")({
 
 export const FormCard = styled(Box)({
   borderRadius: "16px",
-  // height:"500px",
   background: "rgba(255, 255, 255)",
   boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
   backdropFilter: "blur(5px)",
@@ -35,8 +33,8 @@ export const FormCard = styled(Box)({
   zIndex: 1,
   padding: "40px",
   margin: "20px",
-  flex: "1 1 400px", // Flex-grow, flex-shrink, and base size
-  maxWidth: "400px", // Prevents expanding too wide
+  flex: "1 1 400px", 
+  maxWidth: "400px", 
 });
 
 export const LoginForm = styled("form")({
@@ -61,8 +59,8 @@ export const ErrorMsg = styled("p")({
   marginTop: "5px",
 });
 export const LoginTitle = styled(Typography)({
-  marginBottom: "8px", // Equivalent to 1 spacing unit
+  marginBottom: "8px", 
   fontWeight: "bold",
-  color:"var(--mui)",
+  color:"var(--titleColor)",
   fontSize:"20px"
 });
