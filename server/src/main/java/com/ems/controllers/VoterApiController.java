@@ -1,21 +1,18 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.entities.constants.AddressType;
+import com.ems.mappers.GlobalMapper;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
-import org.openapitools.model.VoterDTO;
-import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.VoterStatusDTO;
-import org.openapitools.model.VoterStatusDataDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +22,7 @@ import java.util.List;
 public class VoterApiController implements VotersApi {
 
     private final VoterService voterService;
+    private final GlobalMapper globalMapper;
 
     @Override
     public ResponseEntity<VoterDTO> registerVoter(VoterRegisterDTO voterRegisterDTO) {
@@ -42,16 +40,8 @@ public class VoterApiController implements VotersApi {
 
         String[] sortArray = (sort != null) ? sort.toArray(new String[0]) : new String[0];
         VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, city);
-
         Page<VoterDataDTO> voterDTOData = voterService.searchVoters(searchDTO, page, size, sortArray);
-
-        PaginatedVoterDTO response = new PaginatedVoterDTO();
-        response.setData(voterDTOData.getContent());
-        response.setNumber(voterDTOData.getNumber());
-        response.setSize(voterDTOData.getSize());
-        response.setTotalElements(voterDTOData.getTotalElements());
-        response.setTotalPages(voterDTOData.getTotalPages());
-
+        PaginatedVoterDTO response = new PaginatedVoterDTO(voterDTOData.getContent(), voterDTOData.getTotalElements(), voterDTOData.getTotalPages(), voterDTOData.getSize(), voterDTOData.getNumber());
         return ResponseEntity.ok(response);
     }
 
@@ -69,6 +59,29 @@ public class VoterApiController implements VotersApi {
         return ResponseEntity.ok(new VoterStatusDTO(
                 "SuccessFully Fetched All Status",
                 statusList
+        ));
+    }
+
+//    @Override
+//    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, AddressDTO addressDTO) {
+//        var voterUpdateRequest = new VoterUpdateRequest();
+//        log.info("address type for change : {}", addressDTO.getAddressType());
+//        if (addressDTO.getAddressType().toString().equals(AddressType.RESIDENTIAL.toString()))
+//            voterUpdateRequest.setResidentialAddress(addressDTO);
+//        else
+//            voterUpdateRequest.setMailingAddress(addressDTO);
+//        return ResponseEntity.ok(new VoterDTO(
+//                "Voter Updated Successfully",
+//                voterService.updateVoter(voterId, voterUpdateRequest)
+//        ));
+//    }
+
+    @Override
+    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {
+        log.info("address type for change : {}", changeVoterAddress.getAddressType());
+        return ResponseEntity.ok(new VoterDTO(
+                "Voter Updated Successfully",
+                voterService.changeVoterAddress(voterId, changeVoterAddress)
         ));
     }
 }

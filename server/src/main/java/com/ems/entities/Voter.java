@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -81,4 +82,25 @@ public class Voter extends TimeStamp {
         }
     }
 
+    public Long getPartyId() {
+        return (party != null) ? party.getPartyId() : null;
+    }
+
+    public Long getVoterStatusId() {
+        return (voterStatus != null) ? voterStatus.getStatusId() : null;
+    }
+
+    public String getGenderAsString() {
+        return (gender != null) ? gender.name() : null;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return super.getCreatedAt();
+
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return super.getUpdatedAt();
+    }
 }
+

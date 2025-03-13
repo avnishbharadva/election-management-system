@@ -1,7 +1,8 @@
 package com.ems.config;
 
 import com.ems.jwt.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
+import com.ems.jwt.JwtService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,19 +21,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
 import java.util.List;
 
-
-
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final MyUserDetailService userDetailService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtService jwtService;
+    private final HandlerExceptionResolver exceptionResolver;
+
+    public SecurityConfiguration(MyUserDetailService userDetailService,
+                                 JwtService jwtService,
+                                 JwtAuthenticationFilter jwtAuthenticationFilter,
+                                 @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+        this.userDetailService = userDetailService;
+        this.jwtService = jwtService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.exceptionResolver = exceptionResolver;
+    }
+
 
 
     @Bean
@@ -41,9 +53,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
+                    registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs" , "/report/**" , "/actuator/**").permitAll();
+                    registry.requestMatchers("/actuator/health", "/actuator/info").permitAll();
                     registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
-                    registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
+                    registry.requestMatchers("/officers/register/**","/officers/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.requestMatchers(
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
@@ -51,8 +64,6 @@ public class SecurityConfiguration {
                     ).permitAll();
                     registry.anyRequest().authenticated();
                 })
-
-
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

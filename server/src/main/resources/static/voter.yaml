@@ -150,7 +150,6 @@ paths:
           application/json:
             schema:
               $ref: "./schemas/voterUpdateRequest.yaml"
-
       responses:
         '200':
           description: Voter details updated successfully
@@ -164,6 +163,51 @@ paths:
           description: Voter not found
         '500':
           description: Internal server error
+
+  /voters/changeAddress/{voterId}:
+    patch:
+      summary: Update voter details
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/changeVoterAddress.yaml"
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        "400":
+          description: Bad Request (Invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid town ID. Please check and try again."
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Voter not found."
 
 components:
   schemas:

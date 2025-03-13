@@ -3,6 +3,7 @@ package com.ems.handlers;
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,14 +15,11 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(
-            DataNotFoundException dataNotFoundException
-    ) {
-        var candidateErrorResponse = new ErrorResponse();
-        candidateErrorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-        candidateErrorResponse.setMessage(String.valueOf(dataNotFoundException.getMessage()));
-        candidateErrorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
+    public ProblemDetail handleGenericException(DataNotFoundException ex) {
+        ProblemDetail errorDetail = ProblemDetail
+                .forStatusAndDetail(HttpStatus.NOT_FOUND, "An unexpected error occurred");
+        errorDetail.setProperty("details", ex.getMessage());
+        return errorDetail;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -54,5 +52,4 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
-
 }

@@ -9,12 +9,6 @@ properties:
   city:
     type: string
     example: "Springfield"
-  county:
-    type: string
-    example: "Clark"
-  state:
-    type: string
-    example: "New York"
   zipCode:
     type: string
     pattern: "\\d{5}"
@@ -23,6 +17,7 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
-  townName:
-    type: string
-    example: "Alexander Street"
+  townId:
+    type: integer
+    format: int64
+    example: 1
