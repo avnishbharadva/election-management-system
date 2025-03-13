@@ -1,14 +1,10 @@
 package com.ems.mappers;
 
 import com.ems.dtos.*;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.VoterStatusDataDTO;
+import org.openapitools.model.*;
 import com.ems.entities.*;
 import org.mapstruct.*;
-import org.openapitools.model.AddressDTO;
 import org.openapitools.model.ElectionDTO;
-import org.openapitools.model.OfficersRegisterDTO;
 import org.openapitools.model.PartyDTO;
 
 import java.util.List;
@@ -45,6 +41,9 @@ public interface GlobalMapper {
 //    @Mapping(target = "data.statusId", source = "voterStatus.statusId")
 //    org.openapitools.model.VoterDTO toVoterDTO(Voter voter);
 
+
+   // @Mapping(source = "county.countyName", target = "addressDTO.countyName")
+//    @Mapping(source = "transferAddress.countyId", target = "addressDto.residentialAddress.county.countyName")
     VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
@@ -87,4 +86,11 @@ public interface GlobalMapper {
     Officers toRole(OfficersRegisterDTO officersRegisterDTO);
     OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
     List<org.openapitools.model.OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter voterTransferDtotoVoter(TransferAddress transferAddress, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address transferVoterAddressToAddress(TransferAddress transferAddress, @MappingTarget Address address);
+
 }

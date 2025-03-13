@@ -138,6 +138,7 @@ paths:
     patch:
       summary: Update voter details
       description: Updates a voter's details based on the provided voter ID.
+      operationId: updateVoter
       parameters:
         - name: voterId
           in: path
@@ -151,6 +152,39 @@ paths:
           application/json:
             schema:
               $ref: "./schemas/voterUpdateRequest.yaml"
+
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
+  /voters/transfer/{voterId}:
+    patch:
+      summary: Transfer voter county details
+      description: Transfer a voter's county based on the provided voter ID.
+      operationId: transferVoter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/transferAddress.yaml"
 
       responses:
         '200':

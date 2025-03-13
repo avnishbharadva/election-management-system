@@ -41,7 +41,8 @@ public class RegistrationServiceImpl implements RegistrationService {
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
                 String token = jwtService.generateToken(
-                        myUserDetailService.loadUserByUsername(user.getEmail()),
+                        myUserDetailService.loadUserByUsername(user
+                                .getEmail()),
                         user.getOfficerId(),
                         user.getRole().name());
 

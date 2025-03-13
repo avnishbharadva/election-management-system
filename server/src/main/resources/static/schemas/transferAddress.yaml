@@ -8,7 +8,7 @@ properties:
     example: "Apt 4B"
   city:
     type: string
-    example: "Delhi"
+    example: "Springfield"
   county:
     type: string
     example: "Clark"
@@ -23,9 +23,17 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
+  countyId:
+    type: integer
+    format: int64
+    example: 1
+  townId:
+    type: integer
+    format: int64
+    example: 1
   countyName:
     type: string
-    example: "Las Vegas"
+    example: "1"
   townName:
     type: string
-    example: "Alexander Street"
+    example: "1"

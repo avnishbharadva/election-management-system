@@ -134,10 +134,10 @@ public class AuditServiceImpl implements AuditService {
             updatedFields.put("city", newAddress.getCity());
             oldFields.put("city",oldAddress.getCity());
         }
-        if (!Objects.equals(oldAddress.getCounty(), newAddress.getCounty())) {
-            updatedFields.put("county", newAddress.getCounty());
-            oldFields.put("county",oldAddress.getCounty());
-        }
+//        if (!Objects.equals(oldAddress.getCounty(), newAddress.getCounty())) {
+//            updatedFields.put("county", newAddress.getCounty());
+//            oldFields.put("county",oldAddress.getCounty());
+//        }
         if (!Objects.equals(oldAddress.getState(), newAddress.getState())) {
             updatedFields.put("state", newAddress.getState());
             oldFields.put("state",oldAddress.getState());

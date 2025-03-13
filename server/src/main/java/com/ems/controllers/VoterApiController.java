@@ -1,21 +1,18 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.entities.constants.AddressType;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
-import org.openapitools.model.VoterDTO;
-import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.*;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.VoterStatusDTO;
-import org.openapitools.model.VoterStatusDataDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -56,11 +53,11 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> votersVoterIdPatch(String voterId, VoterUpdateRequest voterUpdateRequest) {
+    public ResponseEntity<VoterDTO> updateVoter(String voterId, VoterUpdateRequest voterUpdateRequest) {
         return ResponseEntity.ok(new VoterDTO(
                 "Voter Updated Successfully",
                 voterService.updateVoter(voterId, voterUpdateRequest)
-                ));
+        ));
     }
 
     @Override
@@ -69,6 +66,38 @@ public class VoterApiController implements VotersApi {
         return ResponseEntity.ok(new VoterStatusDTO(
                 "SuccessFully Fetched All Status",
                 statusList
+        ));
+    }
+
+//    @Override
+//    public ResponseEntity<VoterDTO> transferVoter(String voterId, VoterUpdateRequest voterUpdateRequest) {
+//        return ResponseEntity.ok(new VoterDTO(
+//                "Voter Transfer Successfully",
+//                voterService.updateVoter(voterId, voterUpdateRequest)
+//        ));
+//    }
+
+
+//    @Override
+//    public ResponseEntity<VoterDTO> transferVoter(String voterId, AddressDTO addressDTO) {
+//        var voterUpdateRequest = new VoterUpdateRequest();
+//        if(addressDTO.getAddressType().equals(AddressType.RESIDENTIAL))
+//            voterUpdateRequest.setResidentialAddress(addressDTO);
+//        else
+//            voterUpdateRequest.setMailingAddress(addressDTO);
+//        return ResponseEntity.ok(new VoterDTO(
+//                "Voter Transfer Successfully",
+//                voterService.updateVoter(voterId, voterUpdateRequest)
+//        ));
+//    }
+
+
+    @Override
+    public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
+        log.info("Inside Trasnfer Voter Controller, Id : {} | Request ID: {}", voterId, MDC.get("requestId"));
+        return ResponseEntity.ok(new VoterDTO(
+                "Voter Transfer Successfully",
+                voterService.transferVoterAddress(voterId, transferAddress)
         ));
     }
 }
