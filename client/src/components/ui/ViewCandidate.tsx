@@ -32,21 +32,35 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           <Grid item xs={8}>
                             <Grid container spacing={2}>
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>ID:</Typography></Grid>
+<<<<<<< HEAD
                               <Grid item xs={8}><Typography>{selectedCandidate?.candidate?.candidateId}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>SSN:</Typography></Grid>
                               <Grid item xs={8}><Typography>{selectedCandidate?.candidate?.candidateSSN}</Typography></Grid>
+=======
+                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateId}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>SSN:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateSSN}</Typography></Grid>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Name:</Typography></Grid>
                               <Grid item xs={8}>
                                 <Typography>
+<<<<<<< HEAD
                                   {selectedCandidate?.candidate?.candidateName?.firstName} 
                                   {selectedCandidate?.candidate?.candidateName?.middleName ? ` ${selectedCandidate?.candidate?.candidateName?.middleName}` : ""} 
                                   {selectedCandidate?.candidate?.candidateName?.lastName}
+=======
+                                  {selectedCandidate?.candidateName?.firstName} 
+                                  {selectedCandidate?.candidateName?.middleName ? ` ${selectedCandidate?.candidateName?.middleName}` : ""} 
+                                  {selectedCandidate?.candidateName?.lastName}
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                                 </Typography>
                               </Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Email:</Typography></Grid>
+<<<<<<< HEAD
                               <Grid item xs={8}><Typography>{selectedCandidate?.candidate?.candidateEmail}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Gender:</Typography></Grid>
@@ -66,6 +80,27 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>State:</Typography></Grid>
                               <Grid item xs={8}><Typography>{selectedCandidate?.candidate?.stateName}</Typography></Grid>
+=======
+                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateEmail}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Gender:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.gender}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Date of Birth:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.dateOfBirth}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Marital Status:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.maritialStatus}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Spouse Name:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.spouseName}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Number of Children:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.noOfChildren}</Typography></Grid>
+
+                              <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>State:</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.stateName}</Typography></Grid>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                             </Grid>
                           </Grid>
 
@@ -123,7 +158,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Election Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
+<<<<<<< HEAD
                             <Typography>{selectedCandidate?.candidate?.electionName}</Typography>
+=======
+                            <Typography>{selectedCandidate?.electionName}</Typography>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                           </Grid>
 
                           {/* Email */}
@@ -131,7 +170,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Party Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
+<<<<<<< HEAD
                             <Typography>{selectedCandidate?.candidate?.partyName}</Typography>
+=======
+                            <Typography>{selectedCandidate?.partyName}</Typography>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                           </Grid>
                         </Grid>
                       </CardContent>
@@ -152,7 +195,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           </Grid>
                           <Grid item xs={8}>
                             <Typography>
+<<<<<<< HEAD
                               {selectedCandidate?.candidate?.mailingAddress?.street}, {selectedCandidate?.candidate?.mailingAddress?.city}, {selectedCandidate?.candidate?.mailingAddress?.zipcode}
+=======
+                              {selectedCandidate?.mailingAddress?.street}, {selectedCandidate?.mailingAddress?.city}, {selectedCandidate?.mailingAddress?.zipcode}
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                             </Typography>
                           </Grid>
 
@@ -162,7 +209,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           </Grid>
                           <Grid item xs={8}>
                             <Typography>
+<<<<<<< HEAD
                               {selectedCandidate?.candidate?.residentialAddress?.street}, {selectedCandidate?.candidate?.residentialAddress?.city}, {selectedCandidate?.candidate?.residentialAddress?.zipcode}
+=======
+                              {selectedCandidate?.residentialAddress?.street}, {selectedCandidate?.residentialAddress?.city}, {selectedCandidate?.residentialAddress?.zipcode}
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                             </Typography>
                           </Grid>
                         </Grid>
@@ -184,7 +235,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Bank Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
+<<<<<<< HEAD
                             <Typography>{selectedCandidate?.candidate?.bankDetails?.bankName}</Typography>
+=======
+                            <Typography>{selectedCandidate?.bankDetails?.bankName}</Typography>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                           </Grid>
 
                           {/* Bank Address */}
@@ -192,7 +247,11 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Bank Address:</Typography>
                           </Grid>
                           <Grid item xs={8}>
+<<<<<<< HEAD
                             <Typography>{selectedCandidate?.candidate?.bankDetails?.bankAddress}</Typography>
+=======
+                            <Typography>{selectedCandidate?.bankDetails?.bankAddress}</Typography>
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
                           </Grid>
                         </Grid>
                       </CardContent>

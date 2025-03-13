@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import {
   Box,
@@ -225,3 +226,18 @@ export default AddVoter;
 
 
 
+=======
+import Model from "../ui/Model"
+
+
+const AddVoter = () => {
+  return (
+    
+        <Model>
+          <>dummy</>
+        </Model>
+  )
+}
+
+export default AddVoter
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

@@ -1,6 +1,7 @@
 import { Box, styled } from "@mui/material";
 
 export const ModelBox = styled(Box)({
+<<<<<<< HEAD
      position: "absolute",
         top: "49%",
         left: "50%",
@@ -15,3 +16,14 @@ export const ModelBox = styled(Box)({
         // padding: "1.5rem",
 })
 
+=======
+        width: "auto",
+        maxWidth: "90vw", // Limits modal width
+        backgroundColor: "white",
+        borderRadius: "10px",
+        overflow: "hidden", // Prevent extra scrollbars
+        maxHeight: "80vh", // Limits height
+        padding: "2rem",
+      });
+      
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

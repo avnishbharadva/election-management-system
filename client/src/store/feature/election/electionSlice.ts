@@ -52,7 +52,10 @@ const initialState: ElectionState = {
  
         //Fetch Election
         .addCase(fetchElection.fulfilled, (state, action) => {
+<<<<<<< HEAD
           console.log("API Response:", action.payload);
+=======
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
           state.elections = action.payload;  // Ensure `content` exists
           state.currentPage = action.payload.currentPage;
           state.totalPages = action.payload.totalPages;
@@ -75,11 +78,14 @@ const initialState: ElectionState = {
         .addCase(updateElectionById.fulfilled,(state: any, action) =>{
           state.loading = false;
           state.success = true;
+<<<<<<< HEAD
             // Find and update the election in the array
           const index = state.elections.findIndex((e: any) => e.id === action.payload.id);
           if (index !== -1) {
             state.elections[index] = action.payload;
           }
+=======
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
         })
         .addCase(updateElectionById.rejected, (state, action: PayloadAction<any>) => {
           state.loading = false;
@@ -91,10 +97,14 @@ const initialState: ElectionState = {
           state.success = false;
         })
         .addCase(deleteElectionById.fulfilled, (state,  action: PayloadAction<any>)=>{
+<<<<<<< HEAD
           if (state.elections) {
             state.elections = state.elections.filter((elections: any) => elections.id !== action.payload);
           }
           state.loading = false;
+=======
+          state.loading = false
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
           state.success = true;
         })
         .addCase(deleteElectionById.rejected, (state,  action: PayloadAction<any>)=>{
@@ -115,4 +125,9 @@ const initialState: ElectionState = {
   });
  
   export const { resetState , setPage, setPerPage} = electionSlice.actions;
+<<<<<<< HEAD
   export default electionSlice.reducer;
+=======
+  export default electionSlice.reducer;
+ 
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

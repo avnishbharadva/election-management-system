@@ -8,7 +8,11 @@ export const addElection = createAsyncThunk(
     "election/addElection",
     async (election: Election, { rejectWithValue }) => {
       try {
+<<<<<<< HEAD
         const response = await axiosInstance.post("/elections/addElection", election);
+=======
+        const response = await axiosInstance.post("/elections", election);
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
         if(response.status === 200){
           toast.success("Election Registerd SuccessFully!")
         }
@@ -29,9 +33,14 @@ export const addElection = createAsyncThunk(
     try {
       const response = await axiosInstance.get(`/elections/sorted?page=${page}&size=${perPage}&order=${order}`);
       console.log("sorted Election:", response.data);
+<<<<<<< HEAD
 
       // Map response to only necessary data
       console.log("api"+response.data)
+=======
+ 
+      // Map response to only necessary data
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       return response.data
        
     } catch (error: any) {
@@ -40,15 +49,22 @@ export const addElection = createAsyncThunk(
     }
   }
 );
+<<<<<<< HEAD
   
  
+=======
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
  
   export const updateElectionById = createAsyncThunk(
     "election/updateElection",
     async ({ electionId, updatedElection }: { electionId: number, updatedElection: FormValues }, { rejectWithValue }) => {
       console.log(electionId, updatedElection);
       try{
+<<<<<<< HEAD
         const response = await axiosInstance.put(`/elections/update/${electionId}`, updatedElection);
+=======
+        const response = await axiosInstance.put(`/elections/${electionId}`, updatedElection);
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
         console.log(response);
         return response.data;
       }catch(error:any){
@@ -60,7 +76,11 @@ export const addElection = createAsyncThunk(
     "election/deleteElection",
     async (electionId: number, { rejectWithValue }) => {
       try {
+<<<<<<< HEAD
         const response = await axiosInstance.delete(`/elections/delete/${electionId}`);
+=======
+        const response = await axiosInstance.delete(`/elections/${electionId}`);
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
         console.log(response);
         return response.data;
       }
@@ -74,12 +94,21 @@ export const addElection = createAsyncThunk(
     "election/fetchAllElection",
     async (_, { rejectWithValue }) => {
       try {
+<<<<<<< HEAD
         const response = await axiosInstance.get("/elections/getAllElection");
         return response.data;
+=======
+        const response = await axiosInstance.get("/elections");
+        return response?.data?.data;
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       } catch (error: any) {
         console.error("Failed to fetch elections:", error);
         return rejectWithValue(error.response?.data || "Failed to fetch elections");
       }
     }
+<<<<<<< HEAD
   );
  
+=======
+  );
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

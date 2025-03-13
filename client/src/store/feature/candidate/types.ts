@@ -74,4 +74,45 @@ bankDetails: BankDetails;
 candidateImage: string;
 candidateSignature: string;
 sameMailingAddress: boolean;
+<<<<<<< HEAD
 }
+=======
+}
+
+export interface ModalData {
+    open: boolean;
+    actionType: "edit" | "add" | null;
+    selectedCandidate: Candidate | null;
+  }
+
+  const defaultValues = {
+  candidateName: {
+    firstName: null,
+    middleName: null,
+    lastName: null,
+  },
+  gender: "",
+  dateOfBirth: "",
+  partyId: "",
+  candidateEmail: "",
+  candidateSSN: searchQuery, // Preserving searchQuery
+  maritalStatus: "",
+  noOfChildren: null,
+  spouseName: "",
+  stateName: "New York",
+  residentialAddress: {
+    street: "",
+    city: "",
+    zipcode: "",
+  },
+  mailingAddress: {
+    street: "",
+    city: "",
+    zipcode: "",
+  },
+  bankDetails: {
+    bankName: "",
+    bankAddress: "",
+  },
+};
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

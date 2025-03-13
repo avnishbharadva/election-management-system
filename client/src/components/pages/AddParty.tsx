@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import {
   Typography,
@@ -429,3 +430,21 @@ export default AddParty;
 // };
  
 // export default AddParty;
+=======
+
+import Model from '../ui/Model'
+import PartyForm from '../ui/PartyForm'
+// import Sidebar from '../ui/Sidebar'
+
+const AddParty = () => {
+  return (
+   <>
+   <Model>
+    <PartyForm/>
+   </Model>
+   </>
+  )
+}
+
+export default AddParty
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

@@ -6,7 +6,11 @@ import { toast } from "react-toastify";
 
 export const officerLogin = createAsyncThunk('officer/login',async(offcierData:Officer,{rejectWithValue})=>{
     try {
+<<<<<<< HEAD
           const response =await axios.post("http://localhost:8082/api/officers/authenticate",offcierData)
+=======
+          const response =await axios.post("http://localhost:8082/authenticate",offcierData)
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
           console.log(response.status)
           if (response.status === 200) {
             const token = response.data.token;

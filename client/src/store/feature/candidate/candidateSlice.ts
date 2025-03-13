@@ -57,10 +57,20 @@ const candidateSlice = createSlice({
         state.sortBy = action.payload.sortBy;
         state.sortDir = action.payload.sortDir;
       },
+<<<<<<< HEAD
+=======
+      clearCandidate(state) {
+        state.candidate = null; // Reset the candidate state
+      },
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       resetState: (state) => {
         state.loading = false;
         state.success = false;
         state.error = null;
+<<<<<<< HEAD
+=======
+        state.candidate = null
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       },
     },
     extraReducers: (builder) => {
@@ -169,5 +179,9 @@ const candidateSlice = createSlice({
     },
   });
 
+<<<<<<< HEAD
   export const { setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
+=======
+  export const { clearCandidate,setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
+>>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
   export default candidateSlice.reducer;
