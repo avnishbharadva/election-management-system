@@ -30,7 +30,7 @@
 // export default AllRoutes
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "../components/pages/Login";
-import AddCandidate from "../components/pages/AddCandidate";
+// import AddCandidate from "../components/pages/AddCandidate";
 import Cards from "../components/ui/Cards";
 import AddVoter from "../components/pages/AddVoter";
 import AddParty from "../components/pages/AddParty";
@@ -54,7 +54,7 @@ const AllRoutes = () => {
         }
       >
         <Route path="/app/dashboard" element={<Cards />} />
-        <Route path="/app/candidate" element={<AddCandidate />} />
+        {/* <Route path="/app/candidate" element={<AddCandidate />} /> */}
         <Route path="/app/voter" element={<AddVoter />} />
         <Route path="/app/party" element={<AddParty />} />
         <Route path="/app/election" element={<AddElection />} />

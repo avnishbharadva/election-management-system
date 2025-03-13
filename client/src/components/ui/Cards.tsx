@@ -18,18 +18,18 @@ interface CardData {
   icon: JSX.Element;
 }
 const Cards: React.FC = () => {
-  const { allCandidates } = useSelector(
-    (state: any) => state.candidate
-  );
+  // const { allCandidates } = useSelector(
+  //   (state: any) => state.candidate
+  // );
   // console.log(allCandidates.candidates.length)
   
   const cards: CardData[] = [
-    {
-      id: 1,
-      title: "Candidate",
-      // count:  allCandidates.candidates.length,
-      icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
-    },
+    // {
+    //   id: 1,
+    //   title: "Candidate",
+    //   // count:  allCandidates.candidates.length,
+    //   icon: <AccountBoxIcon fontSize="large" sx={{ color: "#02B2AF" }} />,
+    // },
     {
       id: 2,
       title: "Voters",
