@@ -1,0 +1,9 @@
+type: object
+properties:
+  townId:
+    type: integer
+    example: 101
+  townName:
+    type: string
+    example: "Springfield"
+

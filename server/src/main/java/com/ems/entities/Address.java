@@ -33,6 +33,11 @@ public class Address extends TimeStamp {
     private AddressType addressType;
 
 //    @ManyToOne
+//    @JoinColumn(name = "town_id", nullable = false)
+    private String  townId;
+
+
+//    @ManyToOne
 //    @JoinColumn(name = "voter_id")
 //    @JsonBackReference("address-voter")
 //    private Voter voter;

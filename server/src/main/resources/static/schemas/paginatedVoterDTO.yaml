@@ -10,10 +10,13 @@ properties:
     description: Total number of voters found
   totalPages:
     type: integer
+    format: int32
     description: Total pages available
   size:
     type: integer
+    format: int32
     description: Number of voters per page
   number:
     type: integer
+    format: int32
     description: Current page number

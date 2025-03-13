@@ -1,7 +1,16 @@
 package com.ems.services.impls;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
+import com.ems.entities.Town;
+import org.openapitools.model.ChangeVoterAddress;
+
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.events.VoterUpdateEvent;
@@ -20,30 +29,21 @@ import org.openapitools.model.VoterStatusDataDTO;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.data.domain.*;
+//import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
 
-    private final KafkaTemplate<String,VoterUpdateEvent> kafkaTemplate;
-
-
-    private static final String DIRECTORY = "E:\\Internship\\Election_Management_System\\11 March\\election-management-system\\server\\uploads";
+//    private final KafkaTemplate<String,VoterUpdateEvent> kafkaTemplate;
+    private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/photos";
     private static final String SIGNATURE_DIR = DIRECTORY + "/signature";
 
@@ -161,7 +161,6 @@ public class VoterServiceImpl implements VoterService {
                 .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
 
 
-
         var oldVoter = new Voter();
         BeanUtils.copyProperties(existingVoter, oldVoter);
 //        var oldAddressList = getOldAddressList(existingVoter);
@@ -199,11 +198,12 @@ public class VoterServiceImpl implements VoterService {
         }
         voterRepo.save(updatedVoter);
 
-        if (voterUpdateRequest.getResidentialAddress() != null)
+        if (voterUpdateRequest.getResidentialAddress() != null) {
             updateAddress(voterId, voterUpdateRequest.getResidentialAddress(), updatedVoter.getResidentialAddress().getAddressId());
 
-        if(voterUpdateRequest.getMailingAddress() != null)
-            updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId() );
+            if (voterUpdateRequest.getMailingAddress() != null) {
+                updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
+            }
 
 //        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, oldAddressList, updatedVoter.getAddress()));
 //        future.whenComplete((result,exception)->{
@@ -215,10 +215,9 @@ public class VoterServiceImpl implements VoterService {
 //            }
 //        });
 
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-
-        return voterDTO;
-    }
+            var voterDTO = globalMapper.toVoterDTO(updatedVoter);
+            return voterDTO;
+        }
 
 //    private List<Address> getOldAddressList(Voter existingVoter){
 //        var oldResidentialAddress = new Address();
@@ -233,92 +232,126 @@ public class VoterServiceImpl implements VoterService {
 //        return List.of(oldResidentialAddress, oldMailingAddress);
 //    }
 
-    private void updateVoterStatus(Voter updatedVoter, org.openapitools.model.VoterUpdateRequest voterUpdateRequest) {
-        if (voterUpdateRequest.getStatusId() == null) return;
+        private void updateVoterStatus (Voter updatedVoter, org.openapitools.model.VoterUpdateRequest voterUpdateRequest)
+        {
+            if (voterUpdateRequest.getStatusId() == null) return;
 
-        var voterStatus = voterStatusRepo.findById(voterUpdateRequest.getStatusId())
-                .orElseThrow(() -> new DataNotFoundException("Status not found with id: " + voterUpdateRequest.getStatusId()));
+            var voterStatus = voterStatusRepo.findById(voterUpdateRequest.getStatusId())
+                    .orElseThrow(() -> new DataNotFoundException("Status not found with id: " + voterUpdateRequest.getStatusId()));
 
-        updatedVoter.setVoterStatus(voterStatus);
-        log.info("Voter Status Id : {}", voterStatus.getStatusId());
-    }
+            updatedVoter.setVoterStatus(voterStatus);
+            log.info("Voter Status Id : {}", voterStatus.getStatusId());
+        }
 
+        private void updateAddress (String voterId, org.openapitools.model.AddressDTO addressDTO, Long addressId){
+            if (addressDTO == null) return;
+            log.info("Voter Update By Address Type : {}", addressDTO);
+            var address = addressRepo.findById(addressId).orElseThrow(() -> new DataNotFoundException("Address not found for voter id : " + voterId));
+            log.info("Voter Update By Address Type");
+            globalMapper.addressDTOToAddress(addressDTO, address);
+            addressRepo.save(address);
+        }
 
-    private void updateAddress(String voterId, org.openapitools.model.AddressDTO addressDTO, Long addressId) {
-        if (addressDTO == null) return;
-        log.info("Voter Update By Address Type : {}", addressDTO);
-        var address = addressRepo.findById(addressId).orElseThrow(() -> new DataNotFoundException("Address not found for voter id : " + voterId));
-        log.info("Voter Update By Address Type");
-        globalMapper.addressDTOToAddress(addressDTO, address);
-        addressRepo.save(address);
-    }
+        private String saveBase64Image (String base64String, String voterId, String directory) throws IOException {
+            if (base64String == null || base64String.isBlank())
+                throw new CustomException("Base64 string is empty or null");
 
-    private String saveBase64Image(String base64String, String voterId, String directory) throws IOException {
-        if (base64String == null || base64String.isBlank()) throw new CustomException("Base64 string is empty or null");
+            String base64Data = base64String.contains(",") ? base64String.split(",", 2)[1].trim() : base64String.trim();
+            base64Data = base64Data.replaceAll("[^A-Za-z0-9+/=]", "");
 
-        String base64Data = base64String.contains(",") ? base64String.split(",", 2)[1].trim() : base64String.trim();
-        base64Data = base64Data.replaceAll("[^A-Za-z0-9+/=]", "");
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+            Path filePath = Paths.get(directory, voterId + ".png");
 
-        byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
-        Path filePath = Paths.get(directory, voterId + ".png");
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, decodedBytes);
 
-        Files.createDirectories(filePath.getParent());
-        Files.write(filePath, decodedBytes);
+            log.info("Image saved at: {}", filePath);
+            return filePath.getFileName().toString();
+        }
 
-        log.info("Image saved at: {}", filePath);
-        return filePath.getFileName().toString();
-    }
+        @Transactional
+        @Override
+        public VoterDataDTO changeVoterAddress (String voterId, ChangeVoterAddress changeVoterAddress){
+            MDC.put("VoterId", voterId);
+            log.info("Update process started for voter {}", voterId);
 
-    @Override
-    public VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress){
-        log.info("Processing request for User ID: {} | Thread Name: {} | Request ID: {}",
-                voterId, Thread.currentThread().getName(), MDC.get("requestId"));
+            var existingVoter = voterRepo.findById(voterId)
+                    .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id : " + voterId));
 
-        log.info("Voter Transfer process started for voter {}", voterId);
+            var updatedVoter = globalMapper.voterDTOtoVoter(changeVoterAddress, existingVoter);
+            log.info("update voter details : {}", updatedVoter);
+            log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
+            boolean isTownExist = townRepository.existsById(changeVoterAddress.getTownId());
 
-        var existingVoter = voterRepo.findById(voterId)
-                .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
-
-        var updatedVoter = globalMapper.voterTransferDtotoVoter(transferAddress, existingVoter);
-        log.info("Transfer voter details : {}", updatedVoter);
-        boolean istownId = townRepository.existsById(transferAddress.getTownId());
-        boolean iscountyId = countyRepository.existsById(transferAddress.getCountyId());
-
-        if(iscountyId) {
-            if (istownId) {
+            if (isTownExist) {
                 var oldVoter = new Voter();
                 Address address = new Address();
-                if (existingVoter.getResidentialAddress().getAddressType().toString().equals(transferAddress.getAddressType().toString())) {
-                    var oldAddress = addressRepo.findById(existingVoter.getResidentialAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
-                    address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
+                if (existingVoter.getResidentialAddress().getAddressType().toString().equals(changeVoterAddress.getAddressType().toString())) {
+                    var oldAddress = addressRepo.findById(existingVoter.getResidentialAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("Address Not Found For VoterId : " + voterId));
+                    address = globalMapper.changeAddressDTOToAddress(changeVoterAddress, oldAddress);
                 }
-                if (existingVoter.getMailingAddress().getAddressType().toString().equals(transferAddress.getAddressType().toString())) {
-                    var oldAddress = addressRepo.findById(existingVoter.getMailingAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
-                    address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
+                if (existingVoter.getMailingAddress().getAddressType().toString().equals(changeVoterAddress.getAddressType().toString())) {
+                    var oldAddress = addressRepo.findById(existingVoter.getMailingAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("Address Not Found For VoterId : " + voterId));
+                    address = globalMapper.changeAddressDTOToAddress(changeVoterAddress, oldAddress);
                 }
                 addressRepo.save(address);
+            } else {
+                throw new DataNotFoundException("Town Not Found With TownID : " + changeVoterAddress.getTownId());
             }
-            else
-            {
-                throw new DataNotFoundException("Town Not Found For Voter : " + voterId);
-            }
-        }
-        else
-        {
-            throw new DataNotFoundException("County Not Found For Voter : " + voterId);
+            Town town = townRepository.findById(changeVoterAddress.getTownId()).orElseThrow(() -> new DataNotFoundException("Town Not Found With Voter : " + voterId));
+            var voterDTO = globalMapper.toVoterDTO(updatedVoter);
+            voterDTO.getResidentialAddress().setTownName(town.getTownName());
+            log.info("town name {}", town.getTownName());
+            return voterDTO;
         }
 
-        voterRepo.save(updatedVoter);
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-        var townId = transferAddress.getTownId();
-        var townObj = townRepository.findById(townId).orElseThrow(() -> new DataNotFoundException(""));
-        var countyId = transferAddress.getCountyId();
-        var countyObj = countyRepository.findById(countyId).orElseThrow(() -> new DataNotFoundException(""));
+        @Override
+        public VoterDataDTO transferVoterAddress (String voterId, TransferAddress transferAddress){
+            log.info("Processing request for User ID: {} | Thread Name: {} | Request ID: {}",
+                    voterId, Thread.currentThread().getName(), MDC.get("requestId"));
 
-        voterDTO.getResidentialAddress().setTownName(townObj.getTownName());
-        voterDTO.getResidentialAddress().setCountyName(countyObj.getCountyName());
-        voterDTO.getMailingAddress().setTownName(townObj.getTownName());
-        voterDTO.getMailingAddress().setCountyName(countyObj.getCountyName());
-        return voterDTO;
+            log.info("Voter Transfer process started for voter {}", voterId);
+
+            var existingVoter = voterRepo.findById(voterId)
+                    .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
+
+            var updatedVoter = globalMapper.voterTransferDtotoVoter(transferAddress, existingVoter);
+            log.info("Transfer voter details : {}", updatedVoter);
+            boolean istownId = townRepository.existsById(transferAddress.getTownId());
+            boolean iscountyId = countyRepository.existsById(transferAddress.getCountyId());
+
+            if (iscountyId) {
+                if (istownId) {
+                    var oldVoter = new Voter();
+                    Address address = new Address();
+                    if (existingVoter.getResidentialAddress().getAddressType().toString().equals(transferAddress.getAddressType().toString())) {
+                        var oldAddress = addressRepo.findById(existingVoter.getResidentialAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
+                        address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
+                    }
+                    if (existingVoter.getMailingAddress().getAddressType().toString().equals(transferAddress.getAddressType().toString())) {
+                        var oldAddress = addressRepo.findById(existingVoter.getMailingAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
+                        address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
+                    }
+                    addressRepo.save(address);
+                } else {
+                    throw new DataNotFoundException("Town Not Found For Voter : " + voterId);
+                }
+            } else {
+                throw new DataNotFoundException("County Not Found For Voter : " + voterId);
+            }
+
+            voterRepo.save(updatedVoter);
+            var voterDTO = globalMapper.toVoterDTO(updatedVoter);
+            var townId = transferAddress.getTownId();
+            var townObj = townRepository.findById(townId).orElseThrow(() -> new DataNotFoundException(""));
+            var countyId = transferAddress.getCountyId();
+            var countyObj = countyRepository.findById(countyId).orElseThrow(() -> new DataNotFoundException(""));
+
+            voterDTO.getResidentialAddress().setTownName(townObj.getTownName());
+            voterDTO.getResidentialAddress().setCountyName(countyObj.getCountyName());
+            voterDTO.getMailingAddress().setTownName(townObj.getTownName());
+            voterDTO.getMailingAddress().setCountyName(countyObj.getCountyName());
+            return voterDTO;
+        }
     }
 }

@@ -120,18 +120,25 @@
 			<version>3.4.2</version>
 		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.21.2</version>
-        </dependency><!-- iText for PDF Export -->
+        </dependency>
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
             <version>2.1.7</version>
-        </dependency><!-- Commons BeanUtils (if needed) -->
-        <dependency>
+        </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>3.4.2</version>
+		</dependency>
+
+
+		<dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>
@@ -165,17 +172,17 @@
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<version>3.3.1</version>
-			<scope>test</scope>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.kafka</groupId>-->
+<!--			<artifactId>spring-kafka</artifactId>-->
+<!--			<version>3.3.1</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.kafka</groupId>-->
+<!--			<artifactId>spring-kafka-test</artifactId>-->
+<!--			<version>3.3.1</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
@@ -248,7 +255,7 @@
 							<output>${project.build.directory}/generated-sources/openapi</output>
 							<configOptions>
 								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-									@lombok.Data
+
 								</additionalModelTypeAnnotations>
 								<interfaceOnly>true</interfaceOnly>
 								<useJakartaEe>true</useJakartaEe>
@@ -269,7 +276,7 @@
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-                                    @lombok.Data
+
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
@@ -289,7 +296,7 @@
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-                                    @lombok.Data
+
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>

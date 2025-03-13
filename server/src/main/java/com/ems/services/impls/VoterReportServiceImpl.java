@@ -1,4 +1,4 @@
-package com.ems.services;
+package com.ems.services.impls;
 
 import com.ems.entities.Voter;
 import com.ems.repositories.VoterRepository;

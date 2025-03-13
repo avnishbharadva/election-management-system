@@ -41,9 +41,8 @@ public interface GlobalMapper {
 //    @Mapping(target = "data.statusId", source = "voterStatus.statusId")
 //    org.openapitools.model.VoterDTO toVoterDTO(Voter voter);
 
-
-   // @Mapping(source = "county.countyName", target = "addressDTO.countyName")
-//    @Mapping(source = "transferAddress.countyId", target = "addressDto.residentialAddress.county.countyName")
+    @Mapping(target = "partyId", source = "party.partyId")
+    @Mapping(target = "statusId", source = "voterStatus.statusId")
     VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
@@ -92,5 +91,12 @@ public interface GlobalMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Address transferVoterAddressToAddress(TransferAddress transferAddress, @MappingTarget Address address);
+
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter voterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address changeAddressDTOToAddress(ChangeVoterAddress addressDTO, @MappingTarget Address address);
 
 }

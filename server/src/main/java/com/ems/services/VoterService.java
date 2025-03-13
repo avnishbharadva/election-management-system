@@ -15,6 +15,6 @@ public interface VoterService {
     Page<VoterDataDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort);
     List<VoterStatusDataDTO> getAllStatus();
     VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterDTO);
-
     VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress);
+    VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress);
 }
