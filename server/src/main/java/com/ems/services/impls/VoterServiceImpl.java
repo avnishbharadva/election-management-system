@@ -1,17 +1,8 @@
 package com.ems.services.impls;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
 import com.ems.entities.Town;
-import org.openapitools.model.ChangeVoterAddress;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterStatusDataDTO;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.exceptions.CustomException;
@@ -22,23 +13,33 @@ import com.ems.repositories.*;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.ChangeVoterAddress;
+import org.openapitools.model.VoterDataDTO;
+import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.VoterStatusDataDTO;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.*;
-//import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.openapitools.model.VoterRegisterDTO;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
 
-//    private final KafkaTemplate<String,VoterUpdateEvent> kafkaTemplate;
+    //    private final KafkaTemplate<String,VoterUpdateEvent> kafkaTemplate;
     private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/photos";
     private static final String SIGNATURE_DIR = DIRECTORY + "/signature";
@@ -82,7 +83,6 @@ public class VoterServiceImpl implements VoterService {
 
         String signaturePath = null;
         if (voterRegisterDTO.getSignature() != null) {
-//            String signName = voterRegisterDTO.getSsnNumber() + "_sign.png";
             try {
                 signaturePath = saveBase64Image(voterRegisterDTO.getSignature(), voter.getVoterId(),SIGNATURE_DIR);
             } catch (IOException | IllegalArgumentException ex) {
@@ -117,13 +117,8 @@ public class VoterServiceImpl implements VoterService {
         log.info("Searching voters with filters: {}", searchDTO);
         Pageable pageable = PageRequest.of(page, size, getSort(sort));
         return  voterRepo.searchVoters(
-                searchDTO.getFirstName(),
-                searchDTO.getLastName(),
-                searchDTO.getDateOfBirth(),
-                searchDTO.getDmvNumber(),
-                searchDTO.getSsnNumber(),
-                searchDTO.getCity(),
-                pageable).map(globalMapper::toVoterDTO);
+                searchDTO.getFirstName(), searchDTO.getLastName(), searchDTO.getDateOfBirth(), searchDTO.getDmvNumber(),
+                searchDTO.getSsnNumber(), searchDTO.getCity(), pageable).map(globalMapper::toVoterDTO);
     }
 
     private Sort getSort(String[] sort) {
@@ -188,38 +183,12 @@ public class VoterServiceImpl implements VoterService {
         if (voterUpdateRequest.getResidentialAddress() != null) {
             updateAddress(voterId, voterUpdateRequest.getResidentialAddress(), updatedVoter.getResidentialAddress().getAddressId());
         }
-
         if(voterUpdateRequest.getMailingAddress() != null) {
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
         }
-
-//        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, oldAddressList, updatedVoter.getAddress()));
-//        future.whenComplete((result,exception)->{
-//            if(exception!=null){
-//                log.error("Failed to send message:"+exception.getMessage());
-//            }
-//            else{
-//                log.info("Message sent successfully:"+result.getRecordMetadata());
-//            }
-//        });
-
         var voterDTO = globalMapper.toVoterDTO(updatedVoter);
         return voterDTO;
     }
-
-//    private List<Address> getOldAddressList(Voter existingVoter){
-//        var oldResidentialAddress = new Address();
-//        BeanUtils.copyProperties(existingVoter.getAddress().get(0), oldResidentialAddress);
-//        var oldMailingAddress = new Address();
-//        BeanUtils.copyProperties(existingVoter
-//                .getAddress()
-//                .stream()
-//                .filter(address -> address.getAddressType().equals(AddressType.MAILING))
-//                .findFirst()
-//                .orElseThrow(), oldMailingAddress);
-//        return List.of(oldResidentialAddress, oldMailingAddress);
-//    }
-
     private void updateVoterStatus(Voter updatedVoter, org.openapitools.model.VoterUpdateRequest voterUpdateRequest) {
         if (voterUpdateRequest.getStatusId() == null) return;
 
@@ -234,9 +203,6 @@ public class VoterServiceImpl implements VoterService {
         if (addressDTO == null) return;
         log.info("Voter By Address Type : {}", addressDTO);
         var address = addressRepo.findById(addressId).orElseThrow(() -> new DataNotFoundException("Address not found for voter id : " + voterId));
-//        var address = addressRepo.findByAddressType(addressType)
-//        Address address = addressRepo.findByVoter_VoterIdAndAddressType(voterId, addressType)
-//                .orElseThrow(() -> new DataNotFoundException(addressDTO.getAddressType() + " address not found for voter: " + voterId));
         log.info("Voter By Address Type");
         globalMapper.addressDTOToAddress(addressDTO, address);
         addressRepo.save(address);
@@ -267,13 +233,12 @@ public class VoterServiceImpl implements VoterService {
         var existingVoter = voterRepo.findById(voterId)
                 .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id : " + voterId));
 
-        var updatedVoter = globalMapper.voterDTOtoVoter(changeVoterAddress, existingVoter);
+        var updatedVoter = globalMapper.changeVoterDTOtoVoter(changeVoterAddress, existingVoter);
         log.info("update voter details : {}", updatedVoter);
         log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
-        boolean isTownExist = townRepository.existsById(changeVoterAddress.getTownId());
+        boolean isTownExist = townRepository.existsByTownName(changeVoterAddress.getTownName());
 
         if(isTownExist) {
-            var oldVoter = new Voter();
             Address address = new Address();
             if (existingVoter.getResidentialAddress().getAddressType().toString().equals(changeVoterAddress.getAddressType().toString())) {
                 var oldAddress = addressRepo.findById(existingVoter.getResidentialAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("Address Not Found For VoterId : " + voterId));
@@ -287,12 +252,8 @@ public class VoterServiceImpl implements VoterService {
         }
         else
         {
-            throw new DataNotFoundException("Town Not Found With TownID : " + changeVoterAddress.getTownId());
+            throw new DataNotFoundException("Town Not Found With TownID : " + changeVoterAddress.getTownName());
         }
-        Town town = townRepository.findById(changeVoterAddress.getTownId()).orElseThrow(() -> new DataNotFoundException("Town Not Found With Voter : " + voterId));
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-        voterDTO.getResidentialAddress().setTownName(town.getTownName());
-        log.info("town name {}" ,town.getTownName() );
-        return voterDTO;
+        return globalMapper.toVoterDTO(updatedVoter);
     }
 }

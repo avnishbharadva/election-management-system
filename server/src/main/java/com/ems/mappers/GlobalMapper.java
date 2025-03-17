@@ -84,4 +84,8 @@ public interface GlobalMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Address changeAddressDTOToAddress(ChangeVoterAddress addressDTO, @MappingTarget Address address);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter changeVoterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+
+
 }

@@ -1,6 +1,7 @@
 package com.ems.jwt;
 
 import com.ems.config.MyUserDetailService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         }
-        catch (Exception ex) {
+        catch (JwtException ex) {
         exceptionResolver.resolveException(request, response, null, ex);
         }
     }

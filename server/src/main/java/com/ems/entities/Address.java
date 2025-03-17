@@ -1,7 +1,6 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.AddressType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,19 +25,12 @@ public class Address extends TimeStamp {
 
     private String state = "New York";
 
+    private String  townName;
+
     @Column(length = 5, nullable = false)
     private String zipCode;
 
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
-//    @ManyToOne
-//    @JoinColumn(name = "town_id", nullable = false)
-    private String  townId;
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "voter_id")
-//    @JsonBackReference("address-voter")
-//    private Voter voter;
 }

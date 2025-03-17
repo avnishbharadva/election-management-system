@@ -1,7 +1,6 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
-import com.ems.entities.constants.AddressType;
 import com.ems.mappers.GlobalMapper;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
@@ -62,19 +61,6 @@ public class VoterApiController implements VotersApi {
         ));
     }
 
-//    @Override
-//    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, AddressDTO addressDTO) {
-//        var voterUpdateRequest = new VoterUpdateRequest();
-//        log.info("address type for change : {}", addressDTO.getAddressType());
-//        if (addressDTO.getAddressType().toString().equals(AddressType.RESIDENTIAL.toString()))
-//            voterUpdateRequest.setResidentialAddress(addressDTO);
-//        else
-//            voterUpdateRequest.setMailingAddress(addressDTO);
-//        return ResponseEntity.ok(new VoterDTO(
-//                "Voter Updated Successfully",
-//                voterService.updateVoter(voterId, voterUpdateRequest)
-//        ));
-//    }
 
     @Override
     public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {

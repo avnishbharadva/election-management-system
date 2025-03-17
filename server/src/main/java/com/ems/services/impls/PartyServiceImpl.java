@@ -5,7 +5,7 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.PartyService;
-import liquibase.exception.DatabaseException;
+//import liquibase.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.PartyDTO;

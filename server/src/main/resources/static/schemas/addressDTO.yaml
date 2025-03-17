@@ -25,4 +25,4 @@ properties:
     example: "RESIDENTIAL"
   townName:
     type: string
-    example: "Alexander Street"
+    example: "Street"
