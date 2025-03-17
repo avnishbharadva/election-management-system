@@ -8,7 +8,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "Election Management API", version = "1.0", description = "API for managing elections"),
+
+        info = @Info(
+                title = "Election Management API",
+                version = "1.0",
+                description = "API for managing elections"
+        ),
+
         security = @SecurityRequirement(name = "bearerAuth") // Apply security globally
 )
 @SecurityScheme(

@@ -7,45 +7,43 @@ export default function BreadCrumbs() {
 
   return (
     <Breadcrumbs sx={{ padding: "8px 16px" }} separator="›" aria-label="breadcrumb">
-      <Link component={RouterLink} to="/" sx={{ color: "inherit", textDecoration: "none" }}>
+      {/* Home Link */}
+      <Link component={RouterLink} to="/dashboard" sx={{ color: "inherit", textDecoration: "none" }}>
         Dashboard
       </Link>
-      {pathnames.map((value, index) => {
-        const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-        const isLast = index === pathnames.length - 1;
+      {pathnames.slice(1).map((value, index) => {
+        const to = `/${pathnames.slice(0, index + 2).join("/")}`;
+        const isLast = index === pathnames.length - 2;
+
+        const formattedValue = value.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+
         return isLast ? (
-          <Typography 
-            key={to} 
+          <Typography
+            key={to}
             color="textPrimary"
+            aria-current="page"
             sx={{
-              // backgroundColor: "rgba(0, 48, 87, 0.1)", // Light blue background
-              color: "#002F57", // Dark blue text
-              borderRadius: "20px", // Rounded edges
+              color: "#002F57",
               fontWeight: "bold",
-              textTransform: "none", // Keep text case normal
+              textTransform: "capitalize",
               padding: "6px",
-              // "&:hover": {
-              //   backgroundColor: "rgba(0, 48, 87, 0.2)", // Slightly darker hover effect
-              // },
             }}
-            >{value}</Typography>
+          >
+            {formattedValue}
+          </Typography>
         ) : (
-          <Link 
-            key={to} 
-            component={RouterLink} 
-            to={to} 
+          <Link
+            key={to}
+            component={RouterLink}
+            to={to}
             sx={{
-              // backgroundColor: "rgba(0, 48, 87, 0.1)", // Light blue background
-              color: "#002F57", // Dark blue text
-              borderRadius: "20px", // Rounded edges
+              color: "#002F57",
               fontWeight: "bold",
-              textTransform: "none", // Keep text case normal
+              textTransform: "capitalize",
               padding: "6px",
-              // "&:hover": {
-              //   backgroundColor: "rgba(0, 48, 87, 0.2)", 
-              // },
-            }}>
-            {value}
+            }}
+          >
+            {formattedValue}
           </Link>
         );
       })}

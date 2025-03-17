@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -60,27 +59,18 @@ public class CandidateController {
     }
 
 
+
+
     @GetMapping("/{candidateId}")
-    ResponseEntity<CandidateDTO> getCandidateById(@PathVariable Long candidateId){
-        try {
-            CandidateDTO candidateData = candidateService.findById(candidateId);
-            log.info("Successfully retrieved candidate with ID: {}", candidateId);
-            return ResponseEntity.ok(candidateData);
-        } catch (DataNotFoundException e) {
-            log.warn("Candidate with ID {} not found", candidateId);
-            return ResponseEntity.status(404).body(null); // Or return a ResponseDTO with a message
-        } catch (Exception e) {
-            log.error("Error retrieving candidate with ID {}: {}", candidateId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(null);
-        }
+    ResponseEntity<CandidateDataDTO> getCandidateById(@PathVariable Long candidateId) {
+        return ResponseEntity.ok().body(candidateService.findById(candidateId));
     }
 
-    @PutMapping(value = "/{candidateId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{candidateId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> updateCandidate(
             @PathVariable Long candidateId,
-            @RequestPart(value = "candidate", required = false) CandidateDTO candidateDTO,
-            @RequestPart(value = "candidateImage", required = false) MultipartFile candidateImage,
-            @RequestPart(value = "candidateSignature", required = false) MultipartFile candidateSignature) {
+            @RequestBody CandidateDTO candidateDTO) {
+
 
         if (candidateDTO == null) {
             log.warn("Candidate data must be provided for ID: {}", candidateId);
@@ -101,7 +91,6 @@ public class CandidateController {
         }
     }
 
-
     @GetMapping("/by-party/{candidatePartyName}")
     public ResponseEntity<ResponseDTO> getCandidateByPartyName(@PathVariable String candidatePartyName) {
         List<CandidateByPartyDTO> candidates = candidateService.findByPartyName(candidatePartyName);
@@ -117,10 +106,10 @@ public class CandidateController {
 
     @GetMapping
     public ResponseEntity<CandidatePageResponse> getCandidates(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "perPage",defaultValue = "10") int perPage,
-            @RequestParam(value = "sortBy",defaultValue = "candidateId") String sortBy,
-            @RequestParam(value = "sortDir",defaultValue = "asc") String sortDir
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "perPage", defaultValue = "10") int perPage,
+            @RequestParam(value = "sortBy", defaultValue = "candidateId") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir
     ) {
         if (page < 0 || perPage <= 0) {
             throw new IllegalArgumentException("Page and perPage must be positive.");
@@ -136,10 +125,11 @@ public class CandidateController {
                 candidatePage.getSize()
         ));
     }
+
     @GetMapping("election/{electionId}")
     public ResponseEntity<CandidatePageResponse> getCandidateByElection(@PathVariable Long electionId,
-                                                     @RequestParam(value = "page", defaultValue = "0") int page,
-                                                     @RequestParam(value = "perPage", defaultValue = "10") int perPage){
+                                                                        @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                        @RequestParam(value = "perPage", defaultValue = "10") int perPage) {
         if (page < 0 || perPage <= 0) {
             throw new IllegalArgumentException("Page and perPage must be non-negative and greater than zero.");
         }

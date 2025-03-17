@@ -1,0 +1,104 @@
+openapi: 3.0.1
+info:
+  title: Party Management API
+  description: API for managing political parties
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081
+    description: Local development server
+
+paths:
+  /party:
+    post:
+      summary: Create a new party
+      operationId: createParty
+      tags:
+        - Party
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyDTO"
+      responses:
+        "201":
+          description: Party created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartyDTO"
+        "400":
+          description: Bad request
+
+  /party/{partyId}:
+    get:
+      summary: Get Party by ID
+      description: Fetch details of a party by its ID
+      operationId: findByPartyId
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          description: ID of the party to fetch
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Party details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartyDTO"
+        "404":
+          description: Party not found
+        "500":
+          description: Internal server error
+
+  /party/getAll:
+    get:
+      summary: Get All Parties
+      description: Retrieve a list of all registered political parties
+      operationId: findAllParties
+      responses:
+        "200":
+          description: List of parties retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PartyDTO"
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    PartyDTO:
+      type: object
+      properties:
+        partyId:
+          type: integer
+          example: 1
+        partyName:
+          type: string
+          example: "Democratic Party"
+        partyAbbreviation:
+          type: string
+          example: "DP"
+        partySymbol:
+          type: string
+          example: "dp_logo.png"
+        partyFoundationYear:
+          type: integer
+          example: 1990
+        partyWebSite:
+          type: string
+          example: "https://www.democraticparty.org"
+        headQuarters:
+          type: string
+          example: "New Delhi"
+        founderName:
+          type: string
+          example: "John Doe"

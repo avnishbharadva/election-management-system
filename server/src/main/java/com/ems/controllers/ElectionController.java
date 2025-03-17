@@ -1,64 +1,48 @@
 package com.ems.controllers;
-import com.ems.dtos.*;
-import com.ems.entities.Election;
+
 import com.ems.services.ElectionService;
-import jakarta.validation.Valid;
-import lombok.Data;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import org.openapitools.api.ElectionsApi;
+import org.openapitools.model.ElectionDTO;
+import org.openapitools.model.ElectionPageResponse;
+import org.openapitools.model.ModelApiResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequiredArgsConstructor
 @RestController
-@Data
-@RequestMapping("/elections")
-public class ElectionController {
+public class ElectionController implements ElectionsApi {
+
     private final ElectionService electionService;
-    @PostMapping
-    Election createElection(@RequestBody ElectionDTO electionDTO){
-        return electionService.saveElection(electionDTO);
-    }
-    @PutMapping("/{electionId}")
-    Election updateElection(@PathVariable Long electionId,@Valid  @RequestBody ElectionDTO electionDTO)
-    {
-        return electionService.updateElection(electionId,electionDTO);
 
+    @Override
+    public ResponseEntity<ModelApiResponse> createElection(ElectionDTO electionDTO) {
+        return ResponseEntity.ok(electionService.saveElection(electionDTO));
     }
 
-   @GetMapping("/sorted")
-    public ResponseEntity<ElectionPageResponse> getSortedElections(
-            @RequestParam(defaultValue = "asc") String order,
-            @RequestParam(defaultValue = "0") int page,  // Page index should start from 0
-            @RequestParam(name="size",defaultValue = "5") int size) {
- 
-        ElectionPageResponse response = electionService.getElectionsSorted(order, page, size);
-        return ResponseEntity.ok(response);
+
+    @Override
+    public ResponseEntity<ModelApiResponse> getAllElections() {
+        return ResponseEntity.ok(electionService.getAllElection());
     }
 
-    @DeleteMapping("/{electionId}")
-    public ResponseEntity<ErrorResponse> deleteById(@PathVariable Long electionId) {
-        electionService.deleteElectionById(electionId);
-        ErrorResponse errorResponse=new ErrorResponse();
-        errorResponse.setMessage("Election with id:"+electionId+" is deleted");
-        errorResponse.setRequestTime(LocalDateTime.now());
-        errorResponse.setStatus(HttpStatus.OK.value());
-        return ResponseEntity.ok(errorResponse);
+    @Override
+    public ResponseEntity<ModelApiResponse> deleteElection(Long electionId) {
+        return ResponseEntity.ok(electionService.deleteElectionById(electionId));
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseDTO> getAllElection() {
-        List<ElectionDTO> electionDetailsList = electionService.getAllElection();
-        if (electionDetailsList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseDTO("No Election details found", Collections.emptyList(), LocalDateTime.now(), false));
-        }
-        return ResponseEntity.ok(
-                new ResponseDTO("Election details retrieved successfully", electionDetailsList, LocalDateTime.now(), true)
-        );
-
+    @Override
+    public ResponseEntity<ModelApiResponse> getElectionById(Long electionId) {
+        return ResponseEntity.ok(electionService.getElectionById(electionId));
     }
 
+    @Override
+    public ResponseEntity<ElectionPageResponse> getSortedElection(String order, Integer page, Integer size) {
+        return ResponseEntity.ok(electionService.getElectionsSorted(order, page, size));
+    }
+
+    @Override
+    public ResponseEntity<ModelApiResponse> updateElection(Long electionId, ElectionDTO electionDTO) {
+        return ResponseEntity.ok(electionService.updateElection(electionId, electionDTO));
+    }
 }
-
