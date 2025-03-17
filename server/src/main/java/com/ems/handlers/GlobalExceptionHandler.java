@@ -1,17 +1,54 @@
 package com.ems.handlers;
 
 import com.ems.dtos.ErrorResponse;
-import com.ems.exceptions.*;
+import com.ems.exceptions.DataAlreadyExistException;
+import com.ems.exceptions.DataNotFoundException;
+import com.ems.exceptions.FileProcessingException;
+import com.ems.exceptions.IllegalCredentials;
+import org.openapitools.model.ErrorItem;
+import org.openapitools.model.ValidationErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex){
+    ////        .info("Method argument not valid exception occurred error message: {}", ex.getMessage());
+//        var errorItemList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> new ErrorItem(fieldError.getField(), fieldError.getDefaultMessage())).toList();
+//        return new ResponseEntity<>(new ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
+//    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+
+        // Use a Map to store only one error message per field (first encountered error)
+        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage,
+                        (existing, replacement) -> existing // Keep the first error message encountered
+                ));
+
+        // Convert the map to a list of ErrorItem objects
+        List<ErrorItem> errorItemList = fieldErrors.entrySet().stream()
+                .map(entry -> new ErrorItem(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return new ResponseEntity<>(
+                new ValidationErrorResponse("Bad request, validation failed for fields", errorItemList),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
@@ -24,14 +61,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        var errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getAllErrors().get(0).getDefaultMessage());
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//        var errorResponse = new ErrorResponse();
+//        errorResponse.setMessage(ex.getAllErrors().get(0).getDefaultMessage());
+//        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+//        errorResponse.setRequestTime(LocalDateTime.now());
+//        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler({DataAlreadyExistException.class})
     public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(DataAlreadyExistException dataAlreadyExistException)
@@ -53,6 +90,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
-
+    @ExceptionHandler(FileProcessingException.class)
+    public ResponseEntity<ErrorResponse> handleFileProcessingException(FileProcessingException ex) {
+        var errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setMessage("File processing error: " + ex.getMessage());
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

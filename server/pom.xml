@@ -39,12 +39,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -154,6 +149,7 @@
             <version>1.9.4</version>
         </dependency>
 
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -163,11 +159,6 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-envers</artifactId>
 			<version>6.5.2.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.15.0</version>  <!-- Ensure this is included -->
 		</dependency>
 
 		<dependency>
@@ -193,6 +184,12 @@
 			<version>3.3.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka-test</artifactId>
 			<version>3.3.1</version>
@@ -211,7 +208,7 @@
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
-
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -290,34 +287,134 @@
 				</executions>
 				<configuration>
 					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
-				</configuration>
+			</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.6.0</version>
+				<version>7.10.0</version>
 				<executions>
 					<execution>
+						<id>generate-voter-api</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/voter.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<!-- <useBeanValidation>true</useBeanValidation> -->
+								<!-- <useLombok>true</useLombok> -->
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-contract-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-registration-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/registration.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-party-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/party.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-candidate-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/candidate.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<useBeanValidation>true</useBeanValidation>
+								<!-- <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations> -->
+								<interfaceOnly>true</interfaceOnly>
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+								<jacksonNullable>false</jacksonNullable>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-election-api</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<configOptions>
+								<!--								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor-->
+								<!--								</additionalModelTypeAnnotations>-->
+								<interfaceOnly>true</interfaceOnly>
+								<!--
+                                <useBeanValidation>true</useBeanValidation>
+                                <useLombok>true</useLombok>
+                                -->
+								<useJakartaEe>true</useJakartaEe>
+								<useSpringBoot3>true</useSpringBoot3>
+								<skipApiUtil>true</skipApiUtil>
+							</configOptions>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<generatorName>spring</generatorName>
-					<inputSpec>${project.basedir}/src/main/resources/candidate.yaml</inputSpec>
-					<!-- <inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec> -->
-					<output>${project.build.directory}/generated-sources/openapi</output>
-					<configOptions>
-						<interfaceOnly>true</interfaceOnly>
-						<useSpringBoot3>true</useSpringBoot3>
-					</configOptions>
-					<additionalProperties>
-						<springBootVersion>3.1.2</springBootVersion>
-						<additionalDependencies>org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0</additionalDependencies>
-					</additionalProperties>
-				</configuration>
 			</plugin>
+
+
 
 		</plugins>
 	</build>

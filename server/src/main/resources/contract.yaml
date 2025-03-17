@@ -94,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrorResponse"
+                $ref: "#/components/schemas/ValidationErrorResponseDTO"
         "404":
           description: Election not found
 
@@ -204,7 +204,7 @@ components:
           type: boolean
           example: true
 
-    ValidationErrorResponse:
+    ValidationErrorResponseDTO:
       type: object
       properties:
         errors:
