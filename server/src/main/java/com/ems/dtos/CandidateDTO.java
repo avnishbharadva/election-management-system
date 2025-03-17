@@ -6,12 +6,17 @@ import com.ems.entities.CandidateName;
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.MaritialStatus;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandidateDTO {
 
     private Long candidateId; // Optional, assuming it's auto-generated
@@ -64,4 +69,7 @@ public class CandidateDTO {
 
     @NotNull(message = "Bank details cannot be null")
     private BankDetails bankDetails;
+
+    private String candidateImage;
+    private String candidateSignature;
 }

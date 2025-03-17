@@ -3,37 +3,38 @@ package com.ems.services.impls;
 import com.ems.dtos.*;
 import com.ems.entities.Candidate;
 import com.ems.entities.Election;
+import com.ems.events.EmailSendEvent;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
     @Service
     @RequiredArgsConstructor
     public class CandidateServiceImpl implements CandidateService {
+        private final KafkaTemplate<String, EmailSendEvent> kafkaTemplate;
         private final CandidateRepository candidateRepository;
         private final CandidateMapper candidateMapper;
         private final ElectionRepository electionRepository;
@@ -58,105 +60,160 @@ import java.util.stream.Collectors;
 
     @Override
     @Transactional
-    public Candidate saveCandidate(CandidateDTO candidateDTO, MultipartFile candidateImage, MultipartFile candidateSignature) throws IOException {
-//        CandidateDTO candidateDTO=objectMapper.readValue(candidateData, CandidateDTO.class);
+    public Candidate saveCandidate(CandidateDTO candidateDTO) throws IOException {
         if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
             throw new DataNotFoundException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
         }
-        Path candidateImagePath=Path.of(uploadDir,"candidateImage");
-        Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
-        Files.createDirectories(candidateImagePath);
-        Files.createDirectories(candidateSignaturePath);
-
         var candidate = candidateMapper.toCandidate(candidateDTO);
         var election = electionRepository.findById(candidateDTO.getElectionId())
-                .orElseThrow(() -> new DataNotFoundException("Election not found with ID: " + candidateDTO.getElectionId()));
+                .orElseThrow(() -> new DataNotFoundException("sdfghjkl" + candidateDTO.getElectionId()));
         var party = partyRepository.findById(candidateDTO.getPartyId())
                 .orElseThrow(() -> new DataNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
+
         candidate.setElection(election);
         candidate.setParty(party);
-        if (candidateImage != null && !candidateImage.isEmpty()) {
-            String imageFileName = UUID.randomUUID() + "_" + candidateImage.getOriginalFilename(); // Unique filename
-            Path imagePath = candidateImagePath.resolve(imageFileName);
-            Files.copy(candidateImage.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-            candidate.setCandidateImage(imageFileName);
+        String imagePath = null;
+
+        if (candidateDTO.getCandidateImage() != null) {
+            String imageName = candidateDTO.getCandidateSSN() + ".png";
+            try {
+                imagePath = decodeAndSaveBase64Image(candidateDTO.getCandidateImage(), uploadDir, imageName);
+            } catch (IOException e) {
+                throw new DataNotFoundException("No image is fetched");
+            }
         }
-        if (candidateSignature != null && !candidateSignature.isEmpty()) {
-            String signatureFileName = UUID.randomUUID() + "_" + candidateSignature.getOriginalFilename(); // Unique filename
-            Path signaturePath = candidateSignaturePath.resolve(signatureFileName);
-            Files.copy(candidateSignature.getInputStream(), signaturePath, StandardCopyOption.REPLACE_EXISTING);
-            candidate.setCandidateSignature(signatureFileName);
+
+        String signaturePath = null;
+        if (candidateDTO.getCandidateSignature() != null) {
+            String signName = candidateDTO.getCandidateSSN() + "_sign.png";
+            try {
+                signaturePath = decodeAndSaveBase64Image(candidateDTO.getCandidateSignature(), uploadDir, signName);
+            } catch (IOException e) {
+                throw new DataNotFoundException("No image is being fetched");
+            }
         }
+
+        if (candidateDTO.getCandidateImage() != null)
+            candidate.setCandidateImage(imagePath);
+        if (candidateDTO.getCandidateSignature() != null)
+            candidate.setCandidateSignature(signaturePath);
+
         var residentialAddress = candidateDTO.getResidentialAddress();
         var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
                 ? residentialAddress
                 : candidateDTO.getMailingAddress();
 
-            candidate.setResidentialAddress(residentialAddress);
-            candidate.setMailingAddress(mailingAddress);
+        candidate.setResidentialAddress(residentialAddress);
+        candidate.setMailingAddress(mailingAddress);
 
-            String fullName = candidate.getCandidateName().getFirstName() + " " +
-                    (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
-                    candidate.getCandidateName().getLastName();
-                    sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate Registration Successful – Welcome to the Election!",
-                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
-                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
-                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
-                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+        String fullName = candidate.getCandidateName().getFirstName() + " " +
+                (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
+                candidate.getCandidateName().getLastName();
+//            String fullName = candidate.getCandidateName().getFirstName() + " " +
+//                    (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
+//                    candidate.getCandidateName().getLastName();
+            String mailSubject="Candidate Registration Successful – Welcome to the Election!";
+            String mailBody="<div style='font-family: Arial, sans-serif; color: #333;'>" +
+                    "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+                    "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+                    "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+                    "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
 
-                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
-                            "<ul>" +
-                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
-                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
-                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
-                            "</ul>" +
+                    "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+                    "<ul>" +
+                    "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+                    "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+                    "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+                    "</ul>" +
 
-                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
-                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
+                    "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+                    "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
 
-                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+                    "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
 
-                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
-                            "<b>Election Commission Team</b></p>" +
-                            "</div>"
-            );
+                    "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+                    "<b>Election Commission Team</b></p>" +
+                    "</div>";
+        CompletableFuture<SendResult<String,EmailSendEvent>> future=kafkaTemplate.send("email-send-event-topic", String.valueOf(candidate.getCandidateId()),new EmailSendEvent(candidateDTO.getCandidateEmail(),mailSubject,mailBody));
+        future.whenComplete((result,exception)->{
+            if(exception!=null){
+                log.error("Failed to send message:"+exception.getMessage());
+            }
+            else{
+                log.info("Message sent successfully:"+result.getRecordMetadata());
+            }
+        });
+//                    sendEmail(candidateDTO.getCandidateEmail(),
+//                    "Candidate Registration Successful – Welcome to the Election!",
+//                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
+//                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+//                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+//                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+//                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+//
+//                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+//                            "<ul>" +
+//                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+//                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+//                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+//                            "</ul>" +
+//
+//                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+//                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
+//
+//                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+//
+//                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+//                            "<b>Election Commission Team</b></p>" +
+//                            "</div>"
+//            );
             return candidateRepository.save(candidate);
         }
-        private void sendEmail(String to, String subject, String content) {
-            try {
-                MimeMessage message = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
 
-                helper.setTo(to);
-                helper.setSubject(subject);
-                helper.setText(content, true);
+        private String decodeAndSaveBase64Image(String base64, String directory, String fileName) throws IOException {
+            if (base64 == null || base64.isEmpty()) return null;  // No image provided
 
-                ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
-
-                helper.addInline("companyLogo", image);
-                mailSender.send(message);
-                log.info("Email sent successfully to {}", to);
-            } catch (MessagingException e) {
-                log.error("Failed to send email to {}: {}", to, e.getMessage());
-            }
+            byte[] decodedBytes = Base64.getDecoder().decode(base64);
+            Path filePath = Paths.get(directory, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, decodedBytes);
+            return filePath.toString();  // Return file path
         }
+//        private void sendEmail(String to, String subject, String content) {
+//            try {
+//                MimeMessage message = mailSender.createMimeMessage();
+//                MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
+//
+//                helper.setTo(to);
+//                helper.setSubject(subject);
+//                helper.setText(content, true);
+//
+//                ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
+//
+//                helper.addInline("companyLogo", image);
+//                mailSender.send(message);
+//                log.info("Email sent successfully to {}", to);
+//            } catch (MessagingException e) {
+//                log.error("Failed to send email to {}: {}", to, e.getMessage());
+//            }
+//        }
     @Override
-    public CandidateDataDTO findById(Long candidateId) {
+    public CandidateDTO findById(Long candidateId) {
         Path candidateImagePath=Path.of(uploadDir,"candidateImage");
         Path candidateSignaturePath=Path.of(uploadDir,"candidateSignature");
         Candidate candidate=candidateRepository.findById(candidateId).get();
         var candidateDto=candidateMapper.toCandidateDTO(candidate);
         Path imagepath=candidateImagePath.resolve(candidate.getCandidateImage());
         Path signaturepath=candidateSignaturePath.resolve(candidate.getCandidateSignature());
+
         System.out.println(signaturepath+"-------------------------------");
 //        Resource candidateImageResouce=imagepath.toFile().exists()?new FileSystemResource(imagepath):null;
 //        Resource signatureResourse=signaturepath.toFile().exists()?new FileSystemResource(signaturepath):null;
         String candidateImageResouce=encodeFileToBase64(imagepath);
         String signatureResourse=encodeFileToBase64(signaturepath);
-        System.out.println(signatureResourse+"//////////////////");
-        return new CandidateDataDTO(candidateDto,candidateImageResouce,signatureResourse);
+        candidateDto.setCandidateImage(candidateImageResouce);
+        candidateDto.setCandidateSignature(signatureResourse);
+        return candidateDto;
     }
     private String encodeFileToBase64(Path filePath) {
         try {
@@ -225,16 +282,35 @@ import java.util.stream.Collectors;
             String fullName = existingCandidate.getCandidateName().getFirstName() + " " +
                     (existingCandidate.getCandidateName().getMiddleName() != null ? existingCandidate.getCandidateName().getMiddleName() + " " : "") +
                     existingCandidate.getCandidateName().getLastName();
-            sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate updation Successfully",
-                    "<div>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
-                            "<h3>Dear " + fullName + ",</h3>" +
-                            "<p>Your data is successfully updated!</p>" +
-                            "<b>Party:</b> " + existingCandidate.getParty().getPartyName() + "<br>" +
-                            "<b>Election Type:</b> " + existingCandidate.getElection().getElectionType() + "<br>" +
-                            "</div>"
-            );
+
+            String mailSubject ="Candidate updation Successfully";
+            String mailBody="<div>" +
+                    "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
+                    "<h3>Dear " + fullName + ",</h3>" +
+                    "<p>Your data is successfully updated!</p>" +
+                    "<b>Party:</b> " + existingCandidate.getParty().getPartyName() + "<br>" +
+                    "<b>Election Type:</b> " + existingCandidate.getElection().getElectionType() + "<br>" +
+                    "</div>";
+            CompletableFuture<SendResult<String,EmailSendEvent>> future=kafkaTemplate.send("email-send-event-topic", String.valueOf(existingCandidate.getCandidateId()),new EmailSendEvent(candidateDTO.getCandidateEmail(),mailSubject,mailBody));
+        future.whenComplete((result,exception)->{
+            if(exception!=null){
+                log.error("Failed to send message:"+exception.getMessage());
+            }
+            else{
+                log.info("Message sent successfully:"+result.getRecordMetadata());
+            }
+        });
+
+//        sendEmail(candidateDTO.getCandidateEmail(),
+//                    "Candidate updation Successfully",
+//                    "<div>" +
+//                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
+//                            "<h3>Dear " + fullName + ",</h3>" +
+//                            "<p>Your data is successfully updated!</p>" +
+//                            "<b>Party:</b> " + existingCandidate.getParty().getPartyName() + "<br>" +
+//                            "<b>Election Type:</b> " + existingCandidate.getElection().getElectionType() + "<br>" +
+//                            "</div>"
+//            );
 
             return candidateRepository.save(existingCandidate);
         }

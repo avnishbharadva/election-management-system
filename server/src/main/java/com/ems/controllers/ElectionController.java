@@ -13,14 +13,14 @@ import java.util.Collections;
 import java.util.List;
 @RestController
 @Data
-@RequestMapping("/api/elections")
+@RequestMapping("/elections")
 public class ElectionController {
     private final ElectionService electionService;
-    @PostMapping("/addElection")
+    @PostMapping
     Election createElection(@RequestBody ElectionDTO electionDTO){
         return electionService.saveElection(electionDTO);
     }
-    @PutMapping("/update/{electionId}")
+    @PutMapping("/{electionId}")
     Election updateElection(@PathVariable Long electionId,@Valid  @RequestBody ElectionDTO electionDTO)
     {
         return electionService.updateElection(electionId,electionDTO);
@@ -37,7 +37,7 @@ public class ElectionController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{electionId}")
+    @DeleteMapping("/{electionId}")
     public ResponseEntity<ErrorResponse> deleteById(@PathVariable Long electionId) {
         electionService.deleteElectionById(electionId);
         ErrorResponse errorResponse=new ErrorResponse();
@@ -47,7 +47,7 @@ public class ElectionController {
         return ResponseEntity.ok(errorResponse);
     }
 
-    @GetMapping("/getAllElection")
+    @GetMapping
     public ResponseEntity<ResponseDTO> getAllElection() {
         List<ElectionDTO> electionDetailsList = electionService.getAllElection();
         if (electionDetailsList.isEmpty()) {

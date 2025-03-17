@@ -148,11 +148,6 @@
 			<version>3.4.2</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -181,6 +176,13 @@
 			<version>4.29.2</version>
 		</dependency>
 		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>openapi-generator-maven-plugin</artifactId>
+			<version>7.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 			<version>3.3.1</version>
@@ -195,7 +197,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -250,6 +261,33 @@
 					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<generatorName>spring</generatorName>
+					<inputSpec>${project.basedir}/src/main/resources/candidate.yaml</inputSpec>
+					<!-- <inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec> -->
+					<output>${project.build.directory}/generated-sources/openapi</output>
+					<configOptions>
+						<interfaceOnly>true</interfaceOnly>
+						<useSpringBoot3>true</useSpringBoot3>
+					</configOptions>
+					<additionalProperties>
+						<springBootVersion>3.1.2</springBootVersion>
+						<additionalDependencies>org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0</additionalDependencies>
+					</additionalProperties>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

@@ -28,4 +28,12 @@ public class KafkaConfig {  //this is class to create new topic in kafka server
                 .configs(Map.ofEntries(Map.entry("min.insync.replicas","1")))
                 .build();
     }
+    @Bean
+    NewTopic emailSendEventTopic(){
+        return TopicBuilder.name("email-send-event-topic")
+                .partitions(3)
+                .replicas(1)
+                .configs(Map.ofEntries(Map.entry("min.insync.replicas","1")))
+                .build();
+    }
 }
