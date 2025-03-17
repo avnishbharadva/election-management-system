@@ -3,7 +3,6 @@ import { setCandidateNotFound } from "./candidateSlice";
 import axiosInstance from "../../app/axiosInstance";
 import { toast } from "react-toastify";
 
-// Fetch all candidates initially
 export const fetchCandidates = createAsyncThunk(
   "candidates/fetchCandidates",
   async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
@@ -16,8 +15,6 @@ export const fetchCandidates = createAsyncThunk(
         return response.data;
       }
       if(response.status === 404){
-        console.log(response.data)
-        console.log(response.data.message)
         return response.data.message;
       }
     } catch (error: any) {
@@ -28,7 +25,6 @@ export const fetchCandidates = createAsyncThunk(
 );
 
 
-// Fetch candidate by SSN
 export const fetchCandidateBySSN = createAsyncThunk(
   "candidate/fetchBySSN",
   async (candidateSSN: string, { dispatch, rejectWithValue }) => {
@@ -60,11 +56,9 @@ export const addCandidate = createAsyncThunk(
         toast.error("Server error. Please try again later.");
       } else if (error.response?.status === 403) {
         toast.error("Forbidden");
-      }else {
-        
+      }else {       
         toast.error("Failed to add candidate. Please try again.");
       }
-
       return rejectWithValue(error.response?.data || "Error occurred while adding candidate");
     }
   }
@@ -74,15 +68,14 @@ export const addCandidate = createAsyncThunk(
 export const fetchCandidateById = createAsyncThunk(
   "candidate/fetchCandidateById",
   async (candidateId: number, { dispatch, rejectWithValue }) => {
-    try {
-      
+    try {      
       const response = await axiosInstance.get(
         `api/candidates/${candidateId}`
       );
-      return response.data;  // This will return the candidate's details including `candidateId`
+      return response.data;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-        dispatch(setCandidateNotFound(true)); // Set not found flag
+        dispatch(setCandidateNotFound(true)); 
         return rejectWithValue("No candidate found");
       }
       return rejectWithValue(error.message);
@@ -90,21 +83,22 @@ export const fetchCandidateById = createAsyncThunk(
   }
 );
 
-
 export const updateCandidateData = createAsyncThunk(
   "candidate/updateCandidateData",
   async (
-    { candidateId, candidateData }: { candidateId: string; candidateData: FormData },
+    { candidateId, candidateData }: { candidateId: string; candidateData: Record<string, any> },
     { rejectWithValue }
-    
   ) => {
     try {
       const response = await axiosInstance.put(
         `api/candidates/${candidateId}`,
         candidateData, 
-       
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-      
       return response.data;
     } catch (error: any) {
       toast.error("Something Went Wrong!");
@@ -120,12 +114,10 @@ export const deleteCandidateById = createAsyncThunk(
       const response = await axiosInstance.delete(
         `/api/candidates/${candidateId}`
       );
-      toast.success("Candidate Deleted successfully!");
-      
+      toast.success("Candidate Deleted successfully!");     
       return response.data;
     } catch (error: any) { 
       toast.error("Something Went Wrong!");
-
       return rejectWithValue(error.response?.data || error.message || "Error deleting candidate");
     }
   }

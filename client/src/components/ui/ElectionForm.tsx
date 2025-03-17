@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Box,
   TextField,
-  Typography,
   Button,
   CircularProgress,
   Alert,
@@ -51,24 +50,25 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
       setValue("electionDate", selectedElection.electionDate);
       setValue("electionState", selectedElection.electionState);
       setValue("totalSeats", selectedElection.totalSeats);
-
+      
       setOriginalData({ ...selectedElection });
     } else {
       reset();
+      setOriginalData(null); 
     }
   }, [selectedElection, setValue, reset]);
-
+  
   const handleClose = () => {
     closeModal();
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (selectedElection) {
-      setUpdatedData(data);
-
-      // Check if data is changed before opening dialog
-      if (JSON.stringify(data) !== JSON.stringify(originalData)) {
-        setOpenUpdateDialog(true); // Open dialog before updating
+      const { electionId, ...dataWithoutId } = data; // Remove ID for comparison
+      setUpdatedData({ ...dataWithoutId, electionId: selectedElection.electionId });
+  
+      if (JSON.stringify(dataWithoutId) !== JSON.stringify(originalData)) {
+        setOpenUpdateDialog(true);
       } else {
         toast.info("No changes detected");
       }
@@ -79,16 +79,17 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
       dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
     }
   };
-
+  
   const handleConfirmUpdate = async () => {
     if (selectedElection && updatedData) {
       await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: updatedData }));
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
       toast.success("Election updated successfully!");
       closeModal();
-      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
     }
-    setOpenUpdateDialog(false); // Close the update confirmation dialog
+    setOpenUpdateDialog(false);
   };
+  
 
   return (
     <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
@@ -153,17 +154,15 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
       </form>
 
       <ToastContainer position="top-right" autoClose={3000} />
-      
-      {/* Update Confirmation Dialog */}
+    
       {selectedElection && (
-        <UpdateDialog 
-          open={openUpdateDialog} 
-          handleClose={() => setOpenUpdateDialog(false)} // Only close dialog
-          handleConfirm={handleConfirmUpdate} 
-          originalData={originalData!} // Ensure originalData is defined
-          updatedData={updatedData!} // Ensure updatedData is defined
-          ignoredKeys={["electionId"]} 
-          title="Confirm Election Changes" 
+        <UpdateDialog
+          open={openUpdateDialog}
+          title="Confirm Election Updates"
+          originalData={originalData || {}} 
+          updatedData={updatedData || {}}  
+          handleClose={() => setOpenUpdateDialog(false)}
+          handleConfirm={handleConfirmUpdate}
         />
       )}
     </Box>

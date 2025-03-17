@@ -183,7 +183,6 @@ public class VoterServiceImpl implements VoterService {
             updateAddress(voterId, voterDTO.getResidentialAddress(), AddressType.RESIDENTIAL);
             updateAddress(voterId, voterDTO.getMailingAddress(), AddressType.MAILING);
         }
-        eventPublisher.publishEvent(new VoterUpdateEvent(this, oldVoter, updatedVoter, getOldAddressList(existingVoter), updatedVoter.getAddress()));
         return globalMapper.toVoterDTO(updatedVoter);
     }
 

@@ -5,11 +5,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -21,7 +19,6 @@ import {
 import { RootState, AppDispatch } from "../../store/app/store";
 import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
 import Model from "../ui/Model";
-import CandidateForm from "../ui/CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,7 +26,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
-import DeleteCandidateDialog from "./DeleteDialog";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
@@ -47,7 +43,6 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
- console.log(allCandidates)
   const ITEM_HEIGHT = 48;
   const [modalData, setModalData] = useState<ModalData>({
     open: false,
@@ -56,7 +51,6 @@ const CandidateData = () => {
   });
 
   const handleOpenModal = (actionType: "add" | "edit", candidate?: Candidate) => {
-    console.log(candidate)
     if (actionType === "add") {
       dispatch(resetState());
     }
@@ -68,7 +62,6 @@ const CandidateData = () => {
     });
   };
   
-
   const handleCloseModal = () => {
     setModalData({ open: false, actionType: null, selectedCandidate: null });
   };
@@ -86,7 +79,6 @@ const CandidateData = () => {
 
   const handleView = async (candidateId: number) => {
     try {
-      console.log("Viewing candidate:", candidateId);
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       setSelectedCandidate(data);
       setOpenViewDialog(true);
@@ -110,7 +102,6 @@ const CandidateData = () => {
     handleClose();
   };
 
-    // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
     const handleDeleteCandidate = async () => {
       if (selectedCandidateId) {
         try {
@@ -155,9 +146,6 @@ const CandidateData = () => {
     dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
-
-  // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
-
   const candidatesToDisplay = useMemo(() => {
     if (filteredCandidate?.length > 0) {
       return filteredCandidate;
@@ -303,13 +291,9 @@ const CandidateData = () => {
             )}
           </TableBody>
         </Table>
-        
-        {/* <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
-          <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
-        </Model> */}
           <Model open={modalData.open} handleClose={handleCloseModal}>
             <CandidateContainer
-              handleClose={handleCloseModal}  // Pass handleClose to CandidateContainer
+              handleClose={handleCloseModal} 
               selectedCandidate={modalData.selectedCandidate}
               actionType={modalData.actionType}
             />

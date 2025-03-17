@@ -1,4 +1,4 @@
-import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,TablePagination,Box,CircularProgress,Menu,MenuItem,ListItemIcon} from "@mui/material";
+import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,Box,CircularProgress,Menu,MenuItem,ListItemIcon, TablePagination} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -31,32 +31,28 @@ const ElectionData = ({ handleOpenModel }: any) => {
     setSelectedElection(electionData); 
   };
 
-  // Close menu
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  // Edit button: Pass selected election data to modal
   const handleEditClick = () => {
     if (selectedElection) {
-      console.log("Editing election:", elections);
-      handleOpenModel(selectedElection); // Pass correct data to modal
+      handleOpenModel(selectedElection); 
     }
     handleMenuClose();
   };
 
-  // Delete function
-   const handleOpenDeleteDialog = (electionId: number) => {
+  const handleOpenDeleteDialog = (electionId: number) => {
       setSelectedElection(electionId);
       setOpenDeleteDialog(true);
-    };
+  };
     
-    const handleCloseDeleteDialog = () => {
+  const handleCloseDeleteDialog = () => {
       setOpenDeleteDialog(false);
       setSelectedElection(null);
-    };
+  };
     
-    const handleDeleteClick = async () => {
+  const handleDeleteClick = async () => {
       if (selectedElection?.electionId) {
         try {
           await dispatch(deleteElectionById(selectedElection.electionId)).unwrap();
@@ -68,7 +64,7 @@ const ElectionData = ({ handleOpenModel }: any) => {
       }
       handleCloseDeleteDialog();
       handleMenuClose();
-    };
+  };
 
   return (
     <>
@@ -111,13 +107,7 @@ const ElectionData = ({ handleOpenModel }: any) => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} align="center" sx={{ 
-                      fontSize: "16px", 
-                      fontWeight: "bold", 
-                      color: "#757575", 
-                      padding: "20px",
-                      backgroundColor: "#f9f9f9"
-                    }}>
+                    <TableCell colSpan={6} align="center">
                       No elections available.
                     </TableCell>
                   </TableRow>
@@ -152,14 +142,14 @@ const ElectionData = ({ handleOpenModel }: any) => {
           </Menu>
 
           <TablePagination
-            sx={{
+              sx={{
               position: "sticky", 
               bottom: 0, 
               backgroundColor: "white", 
               zIndex: 10,
             }}
-            rowsPerPageOptions={[2, 5, 10, 25]}
             component="div"
+            rowsPerPageOptions={[2, 5, 10, 25]}
             count={totalRecords}
             rowsPerPage={perPage}
             page={currentPage}
