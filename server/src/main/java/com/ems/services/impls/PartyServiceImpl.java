@@ -5,11 +5,9 @@ import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.PartyService;
-//import liquibase.exception.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.PartyDTO;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -40,7 +38,7 @@ public class PartyServiceImpl implements PartyService {
         if (partyDTO.getPartySymbol() != null && !partyDTO.getPartySymbol().isEmpty()) {
             String imageName = partyDTO.getPartyName().replaceAll("\\s+", "_") + ".png";
             try {
-                String imagePath = decodeAndSaveBase64Image(partyDTO.getPartySymbol(), PHOTO_DIR, imageName);
+                String imagePath = decodeAndSaveBase64Image(partyDTO.getPartySymbol(), imageName);
 
                 if(partyDTO.getPartySymbol()!=null)
                     party.setPartySymbol(imagePath);
@@ -65,11 +63,11 @@ public class PartyServiceImpl implements PartyService {
         }
     }
 
-    private String decodeAndSaveBase64Image(String base64, String directory, String fileName) throws IOException {
+    private String decodeAndSaveBase64Image(String base64, String fileName) throws IOException {
         if (base64 == null || base64.isEmpty()) return null;
 
         byte[] decodedBytes = Base64.getDecoder().decode(base64);
-        Path filePath = Paths.get(directory, fileName);
+        Path filePath = Paths.get(PartyServiceImpl.PHOTO_DIR, fileName);
         Files.createDirectories(filePath.getParent()); // Ensure directory exists
         Files.write(filePath, decodedBytes);
         return filePath.toString();

@@ -1,15 +1,7 @@
 package com.ems.services.impls;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
-import com.ems.entities.Town;
-import org.openapitools.model.*;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.exceptions.CustomException;
@@ -20,16 +12,22 @@ import com.ems.repositories.*;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.*;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.*;
-//import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -45,11 +43,8 @@ public class VoterServiceImpl implements VoterService {
     private final GlobalMapper globalMapper;
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
-    private final NameHistoryRepository nameHistoryRepo;
     private final VoterStatusRepository voterStatusRepo;
-    private final ApplicationEventPublisher eventPublisher;
     private final TownRepository townRepository;
-    private final CountyRepository countyRepository;
 
     @Transactional
     @Override
@@ -81,7 +76,6 @@ public class VoterServiceImpl implements VoterService {
 
         String signaturePath = null;
         if (voterRegisterDTO.getSignature() != null) {
-//            String signName = voterRegisterDTO.getSsnNumber() + "_sign.png";
             try {
                 signaturePath = saveBase64Image(voterRegisterDTO.getSignature(), voter.getVoterId(),SIGNATURE_DIR);
             } catch (IOException | IllegalArgumentException ex) {
@@ -149,8 +143,8 @@ public class VoterServiceImpl implements VoterService {
         BeanUtils.copyProperties(existingVoter, oldVoter);
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterUpdateRequest, existingVoter);
-        log.info("update voter details : {}", updatedVoter);
-        log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
+        log.info("Updated Voter details : {}", updatedVoter);
+        log.info("Updated Voter party : {},", updatedVoter.getParty().getPartyId());
 
         if (voterUpdateRequest.getImage() != null) {
             try {
@@ -168,15 +162,13 @@ public class VoterServiceImpl implements VoterService {
             }
         }
 
-        if (voterUpdateRequest != null) {
-            if (voterUpdateRequest.getPartyId() != null) {
-                log.info("voterDto party : {}", voterUpdateRequest.getPartyId());
-                var party = partyRepo.findById(voterUpdateRequest.getPartyId())
-                        .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + voterUpdateRequest.getPartyId()));
-                updatedVoter.setParty(party);
-            }
-            updateVoterStatus(updatedVoter, voterUpdateRequest);
+        if (voterUpdateRequest.getPartyId() != null) {
+            log.info("voterDto party : {}", voterUpdateRequest.getPartyId());
+            var party = partyRepo.findById(voterUpdateRequest.getPartyId())
+                    .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + voterUpdateRequest.getPartyId()));
+            updatedVoter.setParty(party);
         }
+        updateVoterStatus(updatedVoter, voterUpdateRequest);
         voterRepo.save(updatedVoter);
 
         if (voterUpdateRequest.getResidentialAddress() != null) {
@@ -187,8 +179,7 @@ public class VoterServiceImpl implements VoterService {
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
         }
 
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-        return voterDTO;
+        return globalMapper.toVoterDTO(updatedVoter);
     }
 
     private void updateVoterStatus(Voter updatedVoter, org.openapitools.model.VoterUpdateRequest voterUpdateRequest) {
@@ -230,7 +221,7 @@ public class VoterServiceImpl implements VoterService {
     @Override
     public VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress){
         MDC.put("VoterId", voterId);
-        log.info("Update process started for voter {}", voterId);
+        log.info("Change Voter Address process started for voter {}", voterId);
 
         var existingVoter = voterRepo.findById(voterId)
                 .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id : " + voterId));
@@ -283,7 +274,6 @@ public class VoterServiceImpl implements VoterService {
                 addressRepo.save(address);
 
         voterRepo.save(updatedVoter);
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-        return voterDTO;
+        return globalMapper.toVoterDTO(updatedVoter);
     }
 }

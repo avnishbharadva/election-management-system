@@ -78,7 +78,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/AuthResponseDTO'
         "400":
           description: Bad Request - Invalid input data
         "401":
@@ -120,12 +120,15 @@ components:
           type: string
           example: "SecurePass123"
 
-    AuthResponse:
+    AuthResponseDTO:
       type: object
-      additionalProperties:
-        type: string
-      example:
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      properties:
+        message:
+          type: string
+          example: "User authentication successful"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
 
     OfficersResponseDTO:

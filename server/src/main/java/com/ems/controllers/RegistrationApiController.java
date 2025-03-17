@@ -5,6 +5,7 @@ import com.ems.services.impls.RegistrationServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.OfficersApi;
+import org.openapitools.model.AuthResponseDTO;
 import org.openapitools.model.LoginForm;
 import org.openapitools.model.OfficersRegisterDTO;
 import org.openapitools.model.OfficersResponseDTO;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -25,17 +25,25 @@ public class RegistrationApiController implements OfficersApi {
 
     @Override
     public ResponseEntity<OfficersRegisterDTO> registerOfficer(OfficersRegisterDTO officersRegisterDTO) {
+        log.info("Starting officer registration for: {}", officersRegisterDTO.getSsnNumber());
         OfficersRegisterDTO createdRole = officersService.createRole(officersRegisterDTO);
+        log.info("Officer registered successfully: {}", createdRole.getSsnNumber());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> authenticateUser(LoginForm loginForm) {
-        return ResponseEntity.ok(registrationService.doAuthenticate(loginForm));
+    public ResponseEntity<AuthResponseDTO> authenticateUser(LoginForm loginForm) {
+        log.info("Authenticating user: {}", loginForm.getEmail());
+        AuthResponseDTO authResponseDTO = registrationService.doAuthenticate(loginForm);
+        log.info("User authentication successful for: {}", loginForm.getEmail());
+        return ResponseEntity.ok(authResponseDTO);
     }
 
     @Override
     public ResponseEntity<List<OfficersResponseDTO>> getAllOfficers() {
-        return ResponseEntity.ok(officersService.getAllRoles());
+        log.info("Fetching all officers.");
+        List<OfficersResponseDTO> officers = officersService.getAllRoles();
+        log.info("Successfully fetched {} officers.", officers.size());
+        return ResponseEntity.ok(officers);
     }
 }
