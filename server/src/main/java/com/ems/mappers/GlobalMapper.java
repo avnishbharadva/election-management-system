@@ -7,7 +7,6 @@ import org.mapstruct.*;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.PartyDTO;
 
-
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -31,7 +30,16 @@ public interface GlobalMapper {
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
+//    @Mapping(target = "data.residentialAddress",
+//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.RESIDENTIAL))")
+//    @Mapping(target = "data.mailingAddress",
+//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.MAILING))")
 
+//    @Mapping(target = "data", source = ".")
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    @Mapping(target = "data.partyId", source = "party.partyId")
+//    @Mapping(target = "data.statusId", source = "voterStatus.statusId")
+//    org.openapitools.model.VoterDTO toVoterDTO(Voter voter);
 
     @Mapping(target = "partyId", source = "party.partyId")
     @Mapping(target = "statusId", source = "voterStatus.statusId")
@@ -47,7 +55,7 @@ public interface GlobalMapper {
 //    @Mapping(target = "voter", ignore = true)
     Address toAddress(AddressDTO addressDTO);
 
-//    @Mapping(source = "town.townId", target = "townId")
+//    @Mapping(source = "voter.voterId", target = "voterId")
     AddressDTO toAddressDTO(Address address);
 
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
@@ -77,6 +85,13 @@ public interface GlobalMapper {
     Officers toRole(OfficersRegisterDTO officersRegisterDTO);
     OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
     List<org.openapitools.model.OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter voterTransferDtotoVoter(TransferAddress transferAddress, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address transferVoterAddressToAddress(TransferAddress transferAddress, @MappingTarget Address address);
+
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Voter voterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);

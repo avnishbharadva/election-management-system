@@ -1,12 +1,14 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.entities.constants.AddressType;
 import com.ems.mappers.GlobalMapper;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
 import org.openapitools.model.*;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +63,14 @@ public class VoterApiController implements VotersApi {
         ));
     }
 
+    @Override
+    public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
+        log.info("Inside Transfer Voter Controller, Id : {} | Request ID: {}", voterId, MDC.get("requestId"));
+        return ResponseEntity.ok(new VoterDTO(
+                "Voter Transfer Successfully",
+                voterService.transferVoterAddress(voterId, transferAddress)
+        ));
+    }
 
     @Override
     public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {

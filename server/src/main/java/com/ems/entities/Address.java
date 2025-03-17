@@ -1,6 +1,7 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.AddressType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,11 +22,10 @@ public class Address extends TimeStamp {
     @Column(nullable = false)
     private String city;
 
-    private String county;
-
     private String state = "New York";
 
-    private String  townName;
+    private String countyName;
+    private String townName;
 
     @Column(length = 5, nullable = false)
     private String zipCode;
