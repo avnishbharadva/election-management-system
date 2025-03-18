@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
+import { Toolbar, Typography, IconButton } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu"; // Toggle Button
 import { StyledAppBar, StyledButton } from "../../style/NavbarCss";

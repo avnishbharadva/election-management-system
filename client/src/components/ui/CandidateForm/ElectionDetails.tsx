@@ -53,7 +53,7 @@ const ElectionDetails = ({ control, errors, register }: any) => {
                 value={field.value ?? ""}
               >
                 {elections.length > 0 ? (
-                  elections.map((e) => (
+                  elections.map((e: any) => (
                     <MenuItem key={e.electionId} value={e.electionId}>
                       {e.electionName}
                     </MenuItem>

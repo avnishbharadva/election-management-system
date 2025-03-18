@@ -1,4 +1,4 @@
-import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { Breadcrumbs, Link } from "@mui/material";
 import { useLocation, Link as RouterLink } from "react-router-dom";
 import { BreadCrumbsName } from "../../style/CommanStyle";
 
