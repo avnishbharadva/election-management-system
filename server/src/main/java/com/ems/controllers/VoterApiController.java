@@ -14,6 +14,7 @@ import org.openapitools.model.VoterStatusDTO;
 import org.openapitools.model.VoterStatusDataDTO;
 import org.openapitools.model.VoterUpdateRequest;
 import org.openapitools.model.AuditDTO;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,7 @@ public class VoterApiController implements VotersApi {
         return ResponseEntity.ok(new VoterDTO(
                 "Voter Updated Successfully",
                 voterService.updateVoter(voterId, voterUpdateRequest)
-                ));
+        ));
     }
 
     @Override
@@ -83,5 +84,21 @@ public class VoterApiController implements VotersApi {
                 "Voter Audit Details Successfully fetched for : " + voterId,
                 auditService.getAudit(voterId)
         ), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
+        log.info("Starting voter transfer for ID: {} | Request ID: {}", voterId, MDC.get("requestId"));
+        VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress);
+        log.info("Voter transfer successful for ID: {}", voterId);
+        return ResponseEntity.ok(new VoterDTO("Voter Transferred Successfully", transferredVoter));
+    }
+
+    @Override
+    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {
+        log.info("Starting address change for voter ID: {} | Address type: {}", voterId, changeVoterAddress.getAddressType());
+        VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
+        log.info("Voter address updated successfully for ID: {}", voterId);
+        return ResponseEntity.ok(new VoterDTO("Voter Updated Successfully", updatedVoter));
     }
 }

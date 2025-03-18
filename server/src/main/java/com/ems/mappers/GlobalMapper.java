@@ -41,8 +41,6 @@ public interface GlobalMapper {
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
-    @Mapping(target = "party", source = "party.partyName")
-    @Mapping(target = "status", source = "voterStatus.statusDesc")
     VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
@@ -84,4 +82,21 @@ public interface GlobalMapper {
     List<StatusHistoryDataDTO> toStatusHistoryDataDTO(List<StatusHistory> statusHistory);
     List<AddressHistoryDataDTO> toAddressHistoryDataDTO(List<AddressHistory> addressHistoryList);
     List<AuditDataDTO> toAuditDataDTO(List<Audit> auditList);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter voterTransferDtotoVoter(TransferAddress transferAddress, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address transferVoterAddressToAddress(TransferAddress transferAddress, @MappingTarget Address address);
+
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter voterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Address changeAddressDTOToAddress(ChangeVoterAddress addressDTO, @MappingTarget Address address);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter changeVoterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+
+
 }

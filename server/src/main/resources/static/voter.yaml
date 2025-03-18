@@ -164,7 +164,6 @@ paths:
           description: Voter not found
         '500':
           description: Internal server error
-
   /voters/audit/{voterId}:
     get:
       summary: Get Voter Audit by Voter Id
@@ -192,6 +191,84 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/transfer/{voterId}:
+    patch:
+      summary: Transfer voter county details
+      description: Transfer a voter's county based on the provided voter ID.
+      operationId: transferVoter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/transferAddress.yaml"
+
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
+  /voters/changeAddress/{voterId}:
+    patch:
+      summary: Update voter details
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/changeVoterAddress.yaml"
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        "400":
+          description: Bad Request (Invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid town ID. Please check and try again."
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Voter not found."
 
 components:
   schemas:

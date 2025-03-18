@@ -22,9 +22,10 @@ public class Address extends TimeStamp {
     @Column(nullable = false)
     private String city;
 
-    private String county;
-
     private String state = "New York";
+
+    private String countyName;
+    private String townName;
 
     @Column(length = 5, nullable = false)
     private String zipCode;
@@ -32,8 +33,4 @@ public class Address extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
-//    @ManyToOne
-//    @JoinColumn(name = "voter_id")
-//    @JsonBackReference("address-voter")
-//    private Voter voter;
 }

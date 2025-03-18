@@ -9,9 +9,6 @@ properties:
   city:
     type: string
     example: "Springfield"
-  county:
-    type: string
-    example: "Clark"
   state:
     type: string
     example: "New York"
@@ -25,7 +22,8 @@ properties:
     example: "RESIDENTIAL"
   countyName:
     type: string
-    example: "Las Vegas"
+    example: "1"
   townName:
     type: string
     example: "Alexander Street"
+
