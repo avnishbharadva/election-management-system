@@ -15,7 +15,6 @@ public class MDCFilter implements Filter {
 
     private static final String REQUEST_ID = "requestId";
     private static final String USERNAME = "userName";
-    MyUserDetailService myUserDetailService = new MyUserDetailService();
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

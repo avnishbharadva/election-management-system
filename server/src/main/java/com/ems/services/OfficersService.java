@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface OfficersService {
     List<OfficersResponseDTO> getAllRoles();
-    org.openapitools.model.OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO);
+    OfficersResponseDTO createRole(OfficersRegisterDTO officersRegisterDTO);
 }

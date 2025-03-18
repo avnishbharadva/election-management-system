@@ -24,9 +24,9 @@ public class RegistrationApiController implements OfficersApi {
     private final OfficersService officersService;
 
     @Override
-    public ResponseEntity<OfficersRegisterDTO> registerOfficer(OfficersRegisterDTO officersRegisterDTO) {
+    public ResponseEntity<OfficersResponseDTO> registerOfficer(OfficersRegisterDTO officersRegisterDTO) {
         log.info("Starting officer registration for: {}", officersRegisterDTO.getSsnNumber());
-        OfficersRegisterDTO createdRole = officersService.createRole(officersRegisterDTO);
+        OfficersResponseDTO createdRole = officersService.createRole(officersRegisterDTO);
         log.info("Officer registered successfully: {}", createdRole.getSsnNumber());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }

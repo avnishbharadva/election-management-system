@@ -23,23 +23,12 @@ public interface GlobalMapper {
     Voter voterDTOtoVoter(org.openapitools.model.VoterUpdateRequest voterDTO, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Address addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
+    void addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
-
-//    @Mapping(target = "data.residentialAddress",
-//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.RESIDENTIAL))")
-//    @Mapping(target = "data.mailingAddress",
-//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.MAILING))")
-
-//    @Mapping(target = "data", source = ".")
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    @Mapping(target = "data.partyId", source = "party.partyId")
-//    @Mapping(target = "data.statusId", source = "voterStatus.statusId")
-//    org.openapitools.model.VoterDTO toVoterDTO(Voter voter);
 
     @Mapping(target = "partyId", source = "party.partyId")
     @Mapping(target = "statusId", source = "voterStatus.statusId")
@@ -52,10 +41,8 @@ public interface GlobalMapper {
     PartyDTO toPartyDTO(Party party);
 
     @Mapping(target = "addressId", ignore = true)
-//    @Mapping(target = "voter", ignore = true)
     Address toAddress(AddressDTO addressDTO);
 
-//    @Mapping(source = "voter.voterId", target = "voterId")
     AddressDTO toAddressDTO(Address address);
 
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
@@ -68,23 +55,13 @@ public interface GlobalMapper {
 
     List<VoterStatusDataDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
 
-//    @Mapping(source = "address.voter.voterId", target = "voterId")
     AddressHistory toAddressHistory(Address address);
 
     NameHistory toNameHistory(Voter voter);
 
-//    default AddressDTO getAddressByType(List<Address> addresses, AddressType type) {
-//        if (addresses == null) return null;
-//        return addresses.stream()
-//                .filter(address -> address.getAddressType() == type)
-//                .findFirst()
-//                .map(this::toAddressDTO)
-//                .orElse(null);
-//    }
-
-    Officers toRole(OfficersRegisterDTO officersRegisterDTO);
-    OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
-    List<org.openapitools.model.OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
+    Officers toOfficer(OfficersRegisterDTO officersRegisterDTO);
+    OfficersResponseDTO toOfficerResponseDTO(Officers officers);
+    List<org.openapitools.model.OfficersResponseDTO> toOfficerResponseDTO(List<Officers> officers);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Voter voterTransferDtotoVoter(TransferAddress transferAddress, @MappingTarget Voter voter);
@@ -101,6 +78,5 @@ public interface GlobalMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Voter changeVoterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
-
 
 }

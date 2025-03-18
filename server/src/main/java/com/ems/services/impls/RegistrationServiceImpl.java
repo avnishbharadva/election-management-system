@@ -3,7 +3,7 @@ package com.ems.services.impls;
 import com.ems.config.MyUserDetailService;
 import com.ems.exceptions.IllegalCredentials;
 import com.ems.jwt.JwtService;
-import com.ems.repositories.RoleRepository;
+import com.ems.repositories.OfficersRepository;
 import com.ems.services.RegistrationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final AuthenticationManager authenticationManager;
-    private final RoleRepository roleRepository;
+    private final OfficersRepository officersRepository;
     private final JwtService jwtService;
     private final MyUserDetailService myUserDetailService;
 
@@ -33,14 +33,14 @@ public class RegistrationServiceImpl implements RegistrationService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword()));
 
-            var user = roleRepository.findByEmail(loginForm.getEmail())
+            var user = officersRepository.findByEmail(loginForm.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             String token = jwtService.generateToken(myUserDetailService.loadUserByUsername(user.getEmail()),
                     user.getOfficerId(),
                     user.getRole().name());
 
-            return new AuthResponseDTO(token, "Login successful");
+            return new AuthResponseDTO("Login successful" , token);
 
         } catch (BadCredentialsException e) {
             log.warn("Invalid login credentials for email: {}", loginForm.getEmail());

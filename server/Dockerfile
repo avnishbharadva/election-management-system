@@ -1,23 +1,15 @@
+FROM maven:3.8.1-openjdk-17 AS build
+WORKDIR /app
 
+COPY pom.xml .
+COPY src ./src
 
-    FROM maven:3.8.1-openjdk-17 AS build
+RUN mvn clean package -DskipTests
 
-    WORKDIR /app
+FROM openjdk:17-jdk-slim
+WORKDIR /app
 
-    COPY pom.xml .
-    COPY src ./src
+COPY --from=build /app/target/election-management-system-0.0.1-SNAPSHOT.jar app.jar
 
-    RUN mvn clean package -DskipTests
-
-
-    FROM openjdk:17-jdk-slim
-
-    WORKDIR /app
-
-    COPY --from=build /app/target/election-management-system-0.0.1-SNAPSHOT.jar app.jar
-
-    EXPOSE 8082
-
-    # Run the application
-    ENTRYPOINT ["java", "-jar", "/app/app.jar"]
-
+EXPOSE 8082
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

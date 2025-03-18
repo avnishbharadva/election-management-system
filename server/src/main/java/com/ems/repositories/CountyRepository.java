@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CountyRepository extends JpaRepository<County,Long> {
-
+    boolean existsByCountyName(String countyName);
 
 }

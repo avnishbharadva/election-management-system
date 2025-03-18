@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfficersRegisterDTO'
+                $ref: '#/components/schemas/OfficersResponseDTO'
               example:
                 ssnNumber: "123-45-6789"
                 role: "Admin"
@@ -100,7 +100,7 @@ components:
           example: "123-45-6789"
         role:
           type: string
-          example: "Admin"
+          example: "COUNTY"
         email:
           type: string
           format: email
@@ -108,6 +108,18 @@ components:
         password:
           type: string
           example: "SecurePass123"
+        firstName:
+          type: string
+          example: "John"
+        middleName:
+          type: string
+          example: "A."
+        lastName:
+          type: string
+          example: "Doe"
+        countyName:
+          type: string
+          example: "Orange County"
 
     LoginForm:
       type: object
@@ -140,10 +152,10 @@ components:
           example: 101
         ssnNumber:
           type: string
-          example: "123456789"
+          example: "123-45-6789"
         role:
           type: string
-          example: "Admin"
+          example: "COUNTY"
         email:
           type: string
           format: email
@@ -151,3 +163,15 @@ components:
         password:
           type: string
           example: "SecurePass123"
+        firstName:
+          type: string
+          example: "John"
+        middleName:
+          type: string
+          example: "A."
+        lastName:
+          type: string
+          example: "Doe"
+        countyName:
+          type: string
+          example: "Orange County"

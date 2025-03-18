@@ -19,12 +19,24 @@ public class Officers {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long officerId;
 
+    @Column(nullable = false, length = 50)
+    private String firstName;
+
+    @Column(length = 50)
+    private String middleName;
+
+    @Column(nullable = false, length = 50)
+    private String lastName;
+
+    @Column(unique = true, nullable = false, length = 100)
+    private String countyName;
+
     @Column(length = 9, unique = true, nullable = false)
     private String ssnNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RoleType role;
+    private RoleType role = RoleType.COUNTY;
 
     @Column(nullable = false)
     private String password;

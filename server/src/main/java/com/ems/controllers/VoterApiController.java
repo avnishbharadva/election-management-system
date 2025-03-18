@@ -46,7 +46,7 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> votersVoterIdPatch(String voterId, VoterUpdateRequest voterUpdateRequest) {
+    public ResponseEntity<VoterDTO> updateVoter(String voterId, VoterUpdateRequest voterUpdateRequest) {
         log.info("Starting voter update for ID: {}", voterId);
         VoterDataDTO updatedVoter = voterService.updateVoter(voterId, voterUpdateRequest);
         log.info("Voter update successful for ID: {}", voterId);
@@ -70,7 +70,7 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {
+    public ResponseEntity<VoterDTO> changeAddress(String voterId, ChangeVoterAddress changeVoterAddress) {
         log.info("Starting address change for voter ID: {} | Address type: {}", voterId, changeVoterAddress.getAddressType());
         VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
         log.info("Voter address updated successfully for ID: {}", voterId);
