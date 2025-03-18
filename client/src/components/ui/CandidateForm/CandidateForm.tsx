@@ -14,7 +14,6 @@ import { Box, Button, IconButton } from "@mui/material";
 import { IFormInput } from "../../../store/feature/candidate/types";
 import { clearCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
-import { Form } from "../../../style/CommanStyle";
 import UpdateDialog from "../UpdateDialog";
 
 const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) => {
@@ -74,7 +73,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
         delete val2.addressId;
       }
   
-      // Check for changes
       if (JSON.stringify(val1) !== JSON.stringify(val2)) {
         diff[key] = val2;
       }
@@ -149,7 +147,7 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
 
   return (
     <>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box position="relative" display="flex" alignItems="center" justifyContent="center">
           <Heading variant="h5">{editId ? "EDIT CANDIDATE" : "ADD CANDIDATE"}</Heading>
           <IconButton onClick={resetForm} sx={{ position: "absolute", right: 0 }}>
@@ -173,7 +171,7 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
           <Button variant="contained" type="submit">{editId ? "Update" : "Submit"}</Button>
           <Button variant="contained" onClick={resetForm}>Cancel</Button>
         </ModalFooter>
-      </Form>
+      </form>
 
       <UpdateDialog
         open={confirmDialogOpen}

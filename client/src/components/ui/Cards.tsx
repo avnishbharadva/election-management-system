@@ -34,13 +34,9 @@ const Cards: React.FC = () => {
 
   const fetchCounts = async () => {
     try {
-      // const token = localStorage.getItem("token");
       const response = await axiosInstance.get("api/counts", {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
       });
-      setCountsData(response.data); // Set the API data into state
+      setCountsData(response.data); 
     } catch (error) {
       console.error("Error fetching counts:", error);
     }
@@ -49,8 +45,7 @@ const Cards: React.FC = () => {
   useEffect(() => {
     fetchCounts();
   }, []);
-
-  // Dynamically populate cards from API data
+  
   const cards: CardData[] = [
     {
       id: 1,

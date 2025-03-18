@@ -14,19 +14,6 @@ import {
 import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { IFormInput } from "../../../store/feature/candidate/types";
 
-// interface AddressFormData {
-//   residentialAddress: {
-//     street: string;
-//     city: string;
-//     zipcode: string;
-//   };
-//   mailingAddress: {
-//     street: string;
-//     city: string;
-//     zipcode: string;
-//   };
-// }
-
 interface AddressFormProps {
   register: UseFormRegister<IFormInput>;
   errors: FieldErrors<IFormInput>;
@@ -51,7 +38,6 @@ export default function AddressForm({
 
   return (
     <>
-      {/* ✅ Residential Address Section */}
       <Section>
         <Title variant="h6">Residential Address</Title>
         <DividerStyle />
@@ -91,7 +77,6 @@ export default function AddressForm({
         </Row>
       </Section>
 
-      {/* ✅ Checkbox for Same Mailing Address */}
       <Section>
         <Typography>
           <FormControlLabel
@@ -105,8 +90,7 @@ export default function AddressForm({
           />
         </Typography>
       </Section>
-
-      {/* ✅ Mailing Address Section */}
+      
       <Section>
         <Title variant="h6">Mailing Address</Title>
         <DividerStyle />

@@ -15,7 +15,7 @@ const Model: React.FC<ModalProps> = ({ open, handleClose, children }) => {
       open={open}
       aria-labelledby="modal-title"
       BackdropProps={{
-        onClick: (e) => e.stopPropagation(), // Prevent closing modal on backdrop click
+        onClick: (e) => e.stopPropagation(), 
       }}
       sx={{
         display: "flex",

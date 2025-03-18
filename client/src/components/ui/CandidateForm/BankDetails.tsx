@@ -22,7 +22,7 @@ const BankDetails = ({ register, errors }: BankDetailsProps) => {
             required: "Bank name is required",
           })}
           InputLabelProps={{ shrink: true }}
-          error={!!errors.bankDetails?.bankName} // ✅ TypeScript will now recognize this
+          error={!!errors.bankDetails?.bankName} 
           helperText={errors.bankDetails?.bankName?.message}
         />
 
@@ -34,10 +34,9 @@ const BankDetails = ({ register, errors }: BankDetailsProps) => {
             required: "Bank address is required",
           })}
           InputLabelProps={{ shrink: true }}
-          error={!!errors.bankDetails?.bankAddress} // ✅ Ensuring `bankDetails` exists
+          error={!!errors.bankDetails?.bankAddress} 
           helperText={errors.bankDetails?.bankAddress?.message}
         />
-
       </Row>
     </Section>
   );

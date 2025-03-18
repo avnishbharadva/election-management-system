@@ -1,5 +1,6 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { useLocation, Link as RouterLink } from "react-router-dom";
+import { BreadCrumbsName } from "../../style/CommanStyle";
 
 export default function BreadCrumbs() {
   const location = useLocation();
@@ -7,7 +8,6 @@ export default function BreadCrumbs() {
 
   return (
     <Breadcrumbs sx={{ padding: "8px 16px" }} separator="›" aria-label="breadcrumb">
-      {/* Home Link */}
       <Link component={RouterLink} to="/dashboard" sx={{ color: "inherit", textDecoration: "none" }}>
         Dashboard
       </Link>
@@ -18,30 +18,18 @@ export default function BreadCrumbs() {
         const formattedValue = value.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
         return isLast ? (
-          <Typography
+          <BreadCrumbsName
             key={to}
             color="textPrimary"
             aria-current="page"
-            sx={{
-              color: "#002F57",
-              fontWeight: "bold",
-              textTransform: "capitalize",
-              padding: "6px",
-            }}
           >
             {formattedValue}
-          </Typography>
+          </BreadCrumbsName>
         ) : (
           <Link
             key={to}
             component={RouterLink}
             to={to}
-            sx={{
-              color: "#002F57",
-              fontWeight: "bold",
-              textTransform: "capitalize",
-              padding: "6px",
-            }}
           >
             {formattedValue}
           </Link>

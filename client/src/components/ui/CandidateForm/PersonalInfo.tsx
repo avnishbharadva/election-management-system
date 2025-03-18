@@ -18,7 +18,7 @@ interface PersonalInfoProps {
   control: Control<any>;
   editId?: string | null;
   candidate?: any;
-  searchQuery?: string;  // ✅ Add searchQuery as an optional prop
+  searchQuery?: string; 
   watch: (name: string) => any;
 }
 
@@ -97,7 +97,7 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
             helperText={errors.candidateSSN?.message?.toString()}
             InputLabelProps={{ shrink: true }}
             InputProps={{
-              readOnly: true, // Make it read-only since it's not editable
+              readOnly: true,
             }}
             disabled
           />
@@ -161,7 +161,7 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
                   label="Spouse Name"
                   {...register("spouseName")}
                   InputLabelProps={{ shrink: true }}
-                  disabled={watch("maritalStatus") === "SINGLE"} // Dynamically disable based on form state
+                  disabled={watch("maritalStatus") === "SINGLE"} 
                 />
 
                 <TextField
@@ -176,7 +176,6 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
                   }
                 />
               </Row>
-
     </Section>
   );
 };

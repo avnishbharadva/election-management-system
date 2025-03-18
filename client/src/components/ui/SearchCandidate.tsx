@@ -1,6 +1,4 @@
-import { TextField, InputAdornment, IconButton, Box, Button } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
+import { InputAdornment, IconButton} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../store/feature/candidate/candidateSlice";
 import { AppDispatch } from "../../store/app/store";

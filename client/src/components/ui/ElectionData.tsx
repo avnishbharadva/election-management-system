@@ -115,7 +115,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
               </TableBody>
           </Table>
 
-          {/* Menu Component */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
