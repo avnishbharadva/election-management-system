@@ -4,10 +4,14 @@ import com.ems.entities.Address;
 import com.ems.entities.Audit;
 import com.ems.entities.Voter;
 import com.ems.events.VoterUpdateEvent;
+import com.ems.exceptions.DataNotFoundException;
+import com.ems.mappers.GlobalMapper;
 import com.ems.mongo.repository.AuditRepository;
 import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.AuditDataDTO;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,9 +27,10 @@ import java.util.Objects;
 public class AuditServiceImpl implements AuditService {
 
     private final AuditRepository auditRepository;
+    private final GlobalMapper mapper;
 
     @Async("taskExecutor")
-    @KafkaHandler
+    @EventListener
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();
@@ -36,6 +41,15 @@ public class AuditServiceImpl implements AuditService {
             auditRepository.save(audit);
             log.info("thread - {}, Voter audited: {}", Thread.currentThread().getName(),fields);
         }
+    }
+
+    @Override
+    public List<AuditDataDTO> getAudit(String voterId) {
+        log.info("audit called for voterId : {}", voterId);
+        var auditList = auditRepository.findByVoterId(voterId);
+        if(auditList.isEmpty())
+            throw new DataNotFoundException("Voter Id not found : " + voterId);
+        return mapper.toAuditDataDTO(auditList);
     }
 
     private List<Map<String, Object>> getUpdatedFields(Voter oldVoter, Voter newVoter, List<Address> oldAddressList, List<Address> newAddressList) {
@@ -140,17 +154,17 @@ public class AuditServiceImpl implements AuditService {
     }
 
     private static Audit getAudit(Voter newVoter, List<Map<String, Object>> fieldList) {
-        Map<String,Object> voterData = Map.ofEntries(
-                Map.entry("voterId", newVoter.getVoterId()),
-                Map.entry("dateOfBirth", newVoter.getDateOfBirth()),
-                Map.entry("ssnNumber", newVoter.getSsnNumber()),
-                Map.entry("dmvNumber", newVoter.getDmvNumber()),
-                Map.entry("email", newVoter.getEmail())
-        );
+//        Map<String,Object> voterData = Map.ofEntries(
+//                Map.entry("voterId", newVoter.getVoterId()),
+//                Map.entry("dateOfBirth", newVoter.getDateOfBirth()),
+//                Map.entry("ssnNumber", newVoter.getSsnNumber()),
+//                Map.entry("dmvNumber", newVoter.getDmvNumber()),
+//                Map.entry("email", newVoter.getEmail())
+//        );
 
         Audit audit = new Audit();
         audit.setTableName("Voter");
-        audit.setMetadata(voterData);
+        audit.setVoterId(newVoter.getVoterId());
         audit.setOldFields(fieldList.get(0));
         audit.setChangeFields(fieldList.get(1));
         audit.setCreatedBy("SYSTEM");

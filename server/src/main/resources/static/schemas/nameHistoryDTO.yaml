@@ -1,19 +1,14 @@
 type: object
-description: Represents a record of name change history for a voter
 properties:
-  firstName:
+  message:
     type: string
-    example: "John"
-    description: Voter's first name
-  middleName:
-    type: string
-    example: "A."
-    description: Voter's middle name (if any)
-  lastName:
-    type: string
-    example: "Doe"
-    description: Voter's last name
-  suffixName:
-    type: string
-    example: "Jr."
-    description: Suffix of the voter's name (if any)
+    example: "Success"
+  data:
+    type: array
+    items:
+      $ref: "#/components/schemas/NameHistoryDataDTO"
+
+components:
+  schemas:
+    NameHistoryDataDTO:
+      $ref: "./nameHistoryDataDTO.yaml"

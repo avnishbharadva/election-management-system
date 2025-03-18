@@ -1,17 +1,12 @@
 package com.ems.services.impls;
 
 import com.ems.entities.Address;
-import com.ems.entities.AddressHistory;
-import com.ems.events.AddressUpdateEvent;
 import com.ems.events.VoterUpdateEvent;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.AddressHistoryRepository;
 import com.ems.services.AddressHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

@@ -5,7 +5,9 @@
  */
 package org.openapitools.api;
 
+import org.openapitools.model.AuditDTO;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.openapitools.model.ErrorResponse;
 import java.time.LocalDate;
 import org.openapitools.model.PaginatedVoterDTO;
 import org.openapitools.model.VoterDTO;
@@ -38,7 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:59.128896300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:17.448530600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Voter", description = "the Voter API")
 public interface VotersApi {
@@ -77,6 +79,54 @@ public interface VotersApi {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"msg\" : \"Success\", \"data\" : [ { \"statusDesc\" : \"Active\", \"statusId\" : 1 }, { \"statusDesc\" : \"Active\", \"statusId\" : 1 } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /voters/audit/{voterId} : Get Voter Audit by Voter Id
+     *
+     * @param voterId Unique ID of the Voter (required)
+     * @return Audit Details retrieved successfully (status code 200)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "getAudit",
+        summary = "Get Voter Audit by Voter Id",
+        tags = { "Voter" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Audit Details retrieved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AuditDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/voters/audit/{voterId}",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<AuditDTO> getAudit(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : [ { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"updatedBy\" : \"ADMIN\", \"oldFields\" : { \"firstName\" : \"John\", \"lastName\" : \"Doe\" }, \"createdBy\" : \"SYSTEM\", \"changeFields\" : { \"firstName\" : \"Mark\", \"lastName\" : \"Smith\" }, \"voterId\" : \"000000123\", \"id\" : \"65fd3a2e5b6c\", \"tableName\" : \"voter\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" }, { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"updatedBy\" : \"ADMIN\", \"oldFields\" : { \"firstName\" : \"John\", \"lastName\" : \"Doe\" }, \"createdBy\" : \"SYSTEM\", \"changeFields\" : { \"firstName\" : \"Mark\", \"lastName\" : \"Smith\" }, \"voterId\" : \"000000123\", \"id\" : \"65fd3a2e5b6c\", \"tableName\" : \"voter\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" } ], \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"message\" : \"Detailed error message\", \"timestamp\" : \"10:30:15\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

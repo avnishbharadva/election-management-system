@@ -1,22 +1,24 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
+import com.ems.services.AuditService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
+import org.openapitools.model.PaginatedVoterDTO;
 import org.openapitools.model.VoterDTO;
+import org.openapitools.model.VoterDataDTO;
 import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.VoterStatusDTO;
+import org.openapitools.model.VoterStatusDataDTO;
+import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.AuditDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.VoterStatusDTO;
-import org.openapitools.model.VoterStatusDataDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import java.util.List;
 public class VoterApiController implements VotersApi {
 
     private final VoterService voterService;
+    private final AuditService auditService;
 
     @Override
     public ResponseEntity<VoterDTO> registerVoter(VoterRegisterDTO voterRegisterDTO) {
@@ -71,5 +74,14 @@ public class VoterApiController implements VotersApi {
                 "SuccessFully Fetched All Status",
                 statusList
         ));
+    }
+
+    @Override
+    public ResponseEntity<AuditDTO> getAudit(String voterId) {
+        log.info("voter audit called for voterId : {}", voterId);
+        return new ResponseEntity<>(new AuditDTO(
+                "Voter Audit Details Successfully fetched for : " + voterId,
+                auditService.getAudit(voterId)
+        ), HttpStatus.OK);
     }
 }

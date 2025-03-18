@@ -6,6 +6,6 @@ properties:
   data:
     type: array
     items:
-      $ref: "voterStatusDataDTO.yaml"
+      $ref: "./voterStatusDataDTO.yaml"
 
 

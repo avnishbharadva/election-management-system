@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -52,6 +53,7 @@ public class VoterServiceImpl implements VoterService {
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
     private final VoterStatusRepository voterStatusRepo;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -176,6 +178,7 @@ public class VoterServiceImpl implements VoterService {
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
 
 //        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
+        eventPublisher.publishEvent(new VoterUpdateEvent(this, oldVoter, updatedVoter, List.of(oldResidentialAddress, oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
 //        future.whenComplete((result,exception)->{
 //            if(exception!=null){
 //                log.info("Failed to send message: {}",exception.getMessage());

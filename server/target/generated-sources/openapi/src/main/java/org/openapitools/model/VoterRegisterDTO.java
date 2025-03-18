@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:59.128896300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:17.448530600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class VoterRegisterDTO {
 
   private String firstName;
@@ -74,12 +74,15 @@ public class VoterRegisterDTO {
 
   private GenderEnum gender;
 
+  @jakarta.validation.constraints.Pattern(regexp = "^\\d{9}$", message = "DMV number must contain exactly 9 digits")
   private String dmvNumber;
 
+  @jakarta.validation.constraints.Pattern(regexp = "^\\d{9}$", message = "SSN number must contain exactly 9 digits")
   private String ssnNumber;
 
   private String email;
 
+  @jakarta.validation.constraints.Pattern(regexp = "^\\d{11}$", message = "Phone no must contain exactly 11 digits")
   private String phoneNumber;
 
   private Boolean hasVotedBefore;
@@ -242,7 +245,7 @@ public class VoterRegisterDTO {
    * Get dmvNumber
    * @return dmvNumber
    */
-  @NotNull @Pattern(regexp = "\\d{9}") 
+  @NotNull 
   @Schema(name = "dmvNumber", example = "123456789", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("dmvNumber")
   public String getDmvNumber() {
@@ -262,7 +265,7 @@ public class VoterRegisterDTO {
    * Get ssnNumber
    * @return ssnNumber
    */
-  @NotNull @Pattern(regexp = "\\d{9}") 
+  @NotNull 
   @Schema(name = "ssnNumber", example = "987654321", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("ssnNumber")
   public String getSsnNumber() {
@@ -302,7 +305,7 @@ public class VoterRegisterDTO {
    * Get phoneNumber
    * @return phoneNumber
    */
-  @NotNull @Pattern(regexp = "\\d{11}") 
+  @NotNull 
   @Schema(name = "phoneNumber", example = "12345678901", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("phoneNumber")
   public String getPhoneNumber() {

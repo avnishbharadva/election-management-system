@@ -165,6 +165,34 @@ paths:
         '500':
           description: Internal server error
 
+  /voters/audit/{voterId}:
+    get:
+      summary: Get Voter Audit by Voter Id
+      operationId: getAudit
+      tags:
+        - Voter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Audit Details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     PaginatedVoterDTO:
@@ -179,6 +207,12 @@ components:
     AddressDTO:
       $ref: './schemas/addressDTO.yaml'
 
+    AuditDTO:
+      $ref: './schemas/auditDTO.yaml'
+
     VoterStatusDTO:
       $ref: './schemas/voterStatusDTO.yaml'
+
+    ErrorResponse:
+      $ref: './schemas/errorResponse.yaml'
 

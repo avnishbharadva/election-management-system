@@ -5,8 +5,10 @@
  */
 package org.openapitools.api;
 
+import org.openapitools.model.AddressHistoryDTO;
 import org.openapitools.model.ErrorResponse;
-import org.openapitools.model.HistoryDTO;
+import org.openapitools.model.NameHistoryDTO;
+import org.openapitools.model.StatusHistoryDTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,14 +35,62 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:57.751410600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:15.804555400+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
-@Tag(name = "history", description = "the history API")
+@Tag(name = "History", description = "the History API")
 public interface HistoryApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
+
+    /**
+     * GET /history/address/{voterId} : Get Address History by Voter Id
+     *
+     * @param voterId Unique ID of the Voter (required)
+     * @return Address History retrieved successfully (status code 200)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "addressHistory",
+        summary = "Get Address History by Voter Id",
+        tags = { "History" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Address History retrieved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AddressHistoryDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/history/address/{voterId}",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<AddressHistoryDTO> addressHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : [ { \"zipCode\" : \"10001\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"city\" : \"New York\", \"historyId\" : 1, \"addressType\" : \"RESIDENTIAL\", \"county\" : \"New York County\", \"state\" : \"New York\", \"addressLine\" : \"123 Main Street\", \"aptNumber\" : \"Apt 4B\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" }, { \"zipCode\" : \"10001\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"city\" : \"New York\", \"historyId\" : 1, \"addressType\" : \"RESIDENTIAL\", \"county\" : \"New York County\", \"state\" : \"New York\", \"addressLine\" : \"123 Main Street\", \"aptNumber\" : \"Apt 4B\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" } ], \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"message\" : \"Detailed error message\", \"timestamp\" : \"10:30:15\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 
     /**
      * GET /history/name/{voterId} : Get Name History by Voter Id
@@ -52,10 +102,10 @@ public interface HistoryApi {
     @Operation(
         operationId = "nameHistory",
         summary = "Get Name History by Voter Id",
-        tags = { "history" },
+        tags = { "History" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Name History retrieved successfully", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = HistoryDTO.class))
+                @Content(mediaType = "application/json", schema = @Schema(implementation = NameHistoryDTO.class))
             }),
             @ApiResponse(responseCode = "404", description = "Voter not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -68,13 +118,13 @@ public interface HistoryApi {
         produces = { "application/json" }
     )
     
-    default ResponseEntity<HistoryDTO> nameHistory(
-        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") Long voterId
+    default ResponseEntity<NameHistoryDTO> nameHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\" }, { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\" } ], \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : [ { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"id\" : 1, \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" }, { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"id\" : 1, \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" } ], \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -100,10 +150,10 @@ public interface HistoryApi {
     @Operation(
         operationId = "statusHistory",
         summary = "Get Status History by Voter Id",
-        tags = { "history" },
+        tags = { "History" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Status History retrieved successfully", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = HistoryDTO.class))
+                @Content(mediaType = "application/json", schema = @Schema(implementation = StatusHistoryDTO.class))
             }),
             @ApiResponse(responseCode = "404", description = "Voter not found", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
@@ -116,13 +166,13 @@ public interface HistoryApi {
         produces = { "application/json" }
     )
     
-    default ResponseEntity<HistoryDTO> statusHistory(
-        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") Long voterId
+    default ResponseEntity<StatusHistoryDTO> statusHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\" }, { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\" } ], \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : [ { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"historyId\" : 1, \"status\" : \"Active\", \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" }, { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"historyId\" : 1, \"status\" : \"Active\", \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" } ], \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

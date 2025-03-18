@@ -3,25 +3,33 @@ package com.ems.mappers;
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
 import com.ems.entities.AddressHistory;
+import com.ems.entities.Audit;
 import com.ems.entities.Election;
 import com.ems.entities.NameHistory;
 import com.ems.entities.Officers;
 import com.ems.entities.Party;
+import com.ems.entities.StatusHistory;
 import com.ems.entities.Voter;
 import com.ems.entities.VoterStatus;
 import com.ems.entities.constants.AddressType;
 import com.ems.entities.constants.Gender;
 import com.ems.entities.constants.RoleType;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.processing.Generated;
 import org.openapitools.model.AddressDTO;
+import org.openapitools.model.AddressHistoryDataDTO;
+import org.openapitools.model.AuditDataDTO;
 import org.openapitools.model.ElectionDTO;
+import org.openapitools.model.NameHistoryDataDTO;
 import org.openapitools.model.OfficersRegisterDTO;
 import org.openapitools.model.OfficersResponseDTO;
 import org.openapitools.model.PartyDataDTO;
 import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
+import org.openapitools.model.StatusHistoryDataDTO;
 import org.openapitools.model.VoterDataDTO;
 import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterStatusDataDTO;
@@ -30,8 +38,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-12T17:41:32+0530",
-    comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.2 (Oracle Corporation)"
+    date = "2025-03-18T10:34:49+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class GlobalMapperImpl implements GlobalMapper {
@@ -521,6 +529,62 @@ public class GlobalMapperImpl implements GlobalMapper {
         return list;
     }
 
+    @Override
+    public List<NameHistoryDataDTO> toNameHistoryDataDTO(List<NameHistory> nameHistory) {
+        if ( nameHistory == null ) {
+            return null;
+        }
+
+        List<NameHistoryDataDTO> list = new ArrayList<NameHistoryDataDTO>( nameHistory.size() );
+        for ( NameHistory nameHistory1 : nameHistory ) {
+            list.add( nameHistoryToNameHistoryDataDTO( nameHistory1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<StatusHistoryDataDTO> toStatusHistoryDataDTO(List<StatusHistory> statusHistory) {
+        if ( statusHistory == null ) {
+            return null;
+        }
+
+        List<StatusHistoryDataDTO> list = new ArrayList<StatusHistoryDataDTO>( statusHistory.size() );
+        for ( StatusHistory statusHistory1 : statusHistory ) {
+            list.add( statusHistoryToStatusHistoryDataDTO( statusHistory1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<AddressHistoryDataDTO> toAddressHistoryDataDTO(List<AddressHistory> addressHistoryList) {
+        if ( addressHistoryList == null ) {
+            return null;
+        }
+
+        List<AddressHistoryDataDTO> list = new ArrayList<AddressHistoryDataDTO>( addressHistoryList.size() );
+        for ( AddressHistory addressHistory : addressHistoryList ) {
+            list.add( addressHistoryToAddressHistoryDataDTO( addressHistory ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<AuditDataDTO> toAuditDataDTO(List<Audit> auditList) {
+        if ( auditList == null ) {
+            return null;
+        }
+
+        List<AuditDataDTO> list = new ArrayList<AuditDataDTO>( auditList.size() );
+        for ( Audit audit : auditList ) {
+            list.add( auditToAuditDataDTO( audit ) );
+        }
+
+        return list;
+    }
+
     protected Gender genderEnumToGender(VoterRegisterDTO.GenderEnum genderEnum) {
         if ( genderEnum == null ) {
             return null;
@@ -682,5 +746,107 @@ public class GlobalMapperImpl implements GlobalMapper {
         officersResponseDTO.setPassword( officers.getPassword() );
 
         return officersResponseDTO;
+    }
+
+    protected NameHistoryDataDTO nameHistoryToNameHistoryDataDTO(NameHistory nameHistory) {
+        if ( nameHistory == null ) {
+            return null;
+        }
+
+        NameHistoryDataDTO nameHistoryDataDTO = new NameHistoryDataDTO();
+
+        if ( nameHistory.getId() != null ) {
+            nameHistoryDataDTO.setId( nameHistory.getId().intValue() );
+        }
+        nameHistoryDataDTO.setFirstName( nameHistory.getFirstName() );
+        nameHistoryDataDTO.setMiddleName( nameHistory.getMiddleName() );
+        nameHistoryDataDTO.setLastName( nameHistory.getLastName() );
+        nameHistoryDataDTO.setSuffixName( nameHistory.getSuffixName() );
+        nameHistoryDataDTO.setCreatedAt( nameHistory.getCreatedAt() );
+        nameHistoryDataDTO.setUpdatedAt( nameHistory.getUpdatedAt() );
+
+        return nameHistoryDataDTO;
+    }
+
+    protected StatusHistoryDataDTO statusHistoryToStatusHistoryDataDTO(StatusHistory statusHistory) {
+        if ( statusHistory == null ) {
+            return null;
+        }
+
+        StatusHistoryDataDTO statusHistoryDataDTO = new StatusHistoryDataDTO();
+
+        statusHistoryDataDTO.setHistoryId( statusHistory.getHistoryId() );
+        statusHistoryDataDTO.setStatus( statusHistory.getStatus() );
+        statusHistoryDataDTO.setCreatedAt( statusHistory.getCreatedAt() );
+        statusHistoryDataDTO.setUpdatedAt( statusHistory.getUpdatedAt() );
+
+        return statusHistoryDataDTO;
+    }
+
+    protected AddressHistoryDataDTO.AddressTypeEnum addressTypeToAddressTypeEnum1(AddressType addressType) {
+        if ( addressType == null ) {
+            return null;
+        }
+
+        AddressHistoryDataDTO.AddressTypeEnum addressTypeEnum;
+
+        switch ( addressType ) {
+            case RESIDENTIAL: addressTypeEnum = AddressHistoryDataDTO.AddressTypeEnum.RESIDENTIAL;
+            break;
+            case MAILING: addressTypeEnum = AddressHistoryDataDTO.AddressTypeEnum.MAILING;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressType );
+        }
+
+        return addressTypeEnum;
+    }
+
+    protected AddressHistoryDataDTO addressHistoryToAddressHistoryDataDTO(AddressHistory addressHistory) {
+        if ( addressHistory == null ) {
+            return null;
+        }
+
+        AddressHistoryDataDTO addressHistoryDataDTO = new AddressHistoryDataDTO();
+
+        if ( addressHistory.getHistoryId() != null ) {
+            addressHistoryDataDTO.setHistoryId( addressHistory.getHistoryId().intValue() );
+        }
+        addressHistoryDataDTO.setAddressLine( addressHistory.getAddressLine() );
+        addressHistoryDataDTO.setAptNumber( addressHistory.getAptNumber() );
+        addressHistoryDataDTO.setCity( addressHistory.getCity() );
+        addressHistoryDataDTO.setCounty( addressHistory.getCounty() );
+        addressHistoryDataDTO.setState( addressHistory.getState() );
+        addressHistoryDataDTO.setZipCode( addressHistory.getZipCode() );
+        addressHistoryDataDTO.setAddressType( addressTypeToAddressTypeEnum1( addressHistory.getAddressType() ) );
+        addressHistoryDataDTO.setCreatedAt( addressHistory.getCreatedAt() );
+        addressHistoryDataDTO.setUpdatedAt( addressHistory.getUpdatedAt() );
+
+        return addressHistoryDataDTO;
+    }
+
+    protected AuditDataDTO auditToAuditDataDTO(Audit audit) {
+        if ( audit == null ) {
+            return null;
+        }
+
+        AuditDataDTO auditDataDTO = new AuditDataDTO();
+
+        auditDataDTO.setId( audit.getId() );
+        auditDataDTO.setTableName( audit.getTableName() );
+        auditDataDTO.setVoterId( audit.getVoterId() );
+        Map<String, Object> map = audit.getOldFields();
+        if ( map != null ) {
+            auditDataDTO.setOldFields( new LinkedHashMap<String, Object>( map ) );
+        }
+        Map<String, Object> map1 = audit.getChangeFields();
+        if ( map1 != null ) {
+            auditDataDTO.setChangeFields( new LinkedHashMap<String, Object>( map1 ) );
+        }
+        auditDataDTO.setCreatedBy( audit.getCreatedBy() );
+        auditDataDTO.setUpdatedBy( audit.getUpdatedBy() );
+        auditDataDTO.setCreatedAt( audit.getCreatedAt() );
+        auditDataDTO.setUpdatedAt( audit.getUpdatedAt() );
+
+        return auditDataDTO;
     }
 }

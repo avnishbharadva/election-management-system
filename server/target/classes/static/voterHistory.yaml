@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:8081/api
+  - url: http://localhost:8082/api
 
 paths:
   /history/name/{voterId}:
@@ -13,23 +13,22 @@ paths:
       summary: Get Name History by Voter Id
       operationId: nameHistory
       tags:
-        - history
+        - History
       parameters:
         - name: voterId
           in: path
           required: true
           description: Unique ID of the Voter
           schema:
-            type: integer
-            format: int64
-            example: 000000001
+            type: string
+            example: "000000001"
       responses:
         "200":
           description: Name History retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HistoryDTO"
+                $ref: "#/components/schemas/NameHistoryDTO"
         "404":
           description: Voter not found
           content:
@@ -42,23 +41,50 @@ paths:
       summary: Get Status History by Voter Id
       operationId: statusHistory
       tags:
-        - history
+        - History
       parameters:
         - name: voterId
           in: path
           required: true
           description: Unique ID of the Voter
           schema:
-            type: integer
-            format: int64
-            example: 000000001
+            type: string
+            example: "000000001"
       responses:
         "200":
           description: Status History retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "./schemas/historyDTO.yaml"
+                $ref: "#/components/schemas/StatusHistoryDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /history/address/{voterId}:
+    get:
+      summary: Get Address History by Voter Id
+      operationId: addressHistory
+      tags:
+        - History
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Address History retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressHistoryDTO"
         "404":
           description: Voter not found
           content:
@@ -68,8 +94,11 @@ paths:
 
 components:
   schemas:
-    HistoryDTO:
-      $ref: './schemas/historyDTO.yaml'
-
+    NameHistoryDTO:
+      $ref: "./schemas/nameHistoryDTO.yaml"
+    StatusHistoryDTO:
+      $ref: "./schemas/statusHistoryDTO.yaml"
+    AddressHistoryDTO:
+      $ref: "./schemas/addressHistoryDTO.yaml"
     ErrorResponse:
-      $ref: 'schemas/errorResponse.yaml'
+      $ref: "./schemas/errorResponse.yaml"

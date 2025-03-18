@@ -4,7 +4,10 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.openapitools.model.NameHistoryDataDTO;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -16,101 +19,64 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * Represents a record of name change history for a voter
+ * NameHistoryDTO
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Schema(name = "nameHistoryDTO", description = "Represents a record of name change history for a voter")
-@JsonTypeName("nameHistoryDTO")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:57.751410600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:15.804555400+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class NameHistoryDTO {
 
-  private String firstName;
+  private String message;
 
-  private String middleName;
+  @Valid
+  private List<@Valid NameHistoryDataDTO> data = new ArrayList<>();
 
-  private String lastName;
-
-  private String suffixName;
-
-  public NameHistoryDTO firstName(String firstName) {
-    this.firstName = firstName;
+  public NameHistoryDTO message(String message) {
+    this.message = message;
     return this;
   }
 
   /**
-   * Voter's first name
-   * @return firstName
+   * Get message
+   * @return message
    */
   
-  @Schema(name = "firstName", example = "John", description = "Voter's first name", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("firstName")
-  public String getFirstName() {
-    return firstName;
+  @Schema(name = "message", example = "Success", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("message")
+  public String getMessage() {
+    return message;
   }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
+  public void setMessage(String message) {
+    this.message = message;
   }
 
-  public NameHistoryDTO middleName(String middleName) {
-    this.middleName = middleName;
+  public NameHistoryDTO data(List<@Valid NameHistoryDataDTO> data) {
+    this.data = data;
+    return this;
+  }
+
+  public NameHistoryDTO addDataItem(NameHistoryDataDTO dataItem) {
+    if (this.data == null) {
+      this.data = new ArrayList<>();
+    }
+    this.data.add(dataItem);
     return this;
   }
 
   /**
-   * Voter's middle name (if any)
-   * @return middleName
+   * Get data
+   * @return data
    */
-  
-  @Schema(name = "middleName", example = "A.", description = "Voter's middle name (if any)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("middleName")
-  public String getMiddleName() {
-    return middleName;
+  @Valid 
+  @Schema(name = "data", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("data")
+  public List<@Valid NameHistoryDataDTO> getData() {
+    return data;
   }
 
-  public void setMiddleName(String middleName) {
-    this.middleName = middleName;
-  }
-
-  public NameHistoryDTO lastName(String lastName) {
-    this.lastName = lastName;
-    return this;
-  }
-
-  /**
-   * Voter's last name
-   * @return lastName
-   */
-  
-  @Schema(name = "lastName", example = "Doe", description = "Voter's last name", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("lastName")
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public NameHistoryDTO suffixName(String suffixName) {
-    this.suffixName = suffixName;
-    return this;
-  }
-
-  /**
-   * Suffix of the voter's name (if any)
-   * @return suffixName
-   */
-  
-  @Schema(name = "suffixName", example = "Jr.", description = "Suffix of the voter's name (if any)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("suffixName")
-  public String getSuffixName() {
-    return suffixName;
-  }
-
-  public void setSuffixName(String suffixName) {
-    this.suffixName = suffixName;
+  public void setData(List<@Valid NameHistoryDataDTO> data) {
+    this.data = data;
   }
 
   @Override
@@ -122,25 +88,21 @@ public class NameHistoryDTO {
       return false;
     }
     NameHistoryDTO nameHistoryDTO = (NameHistoryDTO) o;
-    return Objects.equals(this.firstName, nameHistoryDTO.firstName) &&
-        Objects.equals(this.middleName, nameHistoryDTO.middleName) &&
-        Objects.equals(this.lastName, nameHistoryDTO.lastName) &&
-        Objects.equals(this.suffixName, nameHistoryDTO.suffixName);
+    return Objects.equals(this.message, nameHistoryDTO.message) &&
+        Objects.equals(this.data, nameHistoryDTO.data);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName, middleName, lastName, suffixName);
+    return Objects.hash(message, data);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NameHistoryDTO {\n");
-    sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
-    sb.append("    middleName: ").append(toIndentedString(middleName)).append("\n");
-    sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
-    sb.append("    suffixName: ").append(toIndentedString(suffixName)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("}");
     return sb.toString();
   }

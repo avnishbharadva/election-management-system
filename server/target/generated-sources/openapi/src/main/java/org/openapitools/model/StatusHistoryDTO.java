@@ -4,7 +4,10 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.openapitools.model.StatusHistoryDataDTO;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -16,35 +19,64 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * Represents a record of status change history for a voter
+ * StatusHistoryDTO
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Schema(name = "statusHistoryDTO", description = "Represents a record of status change history for a voter")
-@JsonTypeName("statusHistoryDTO")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-12T17:40:57.751410600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:15.804555400+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class StatusHistoryDTO {
 
-  private String status;
+  private String message;
 
-  public StatusHistoryDTO status(String status) {
-    this.status = status;
+  @Valid
+  private List<@Valid StatusHistoryDataDTO> data = new ArrayList<>();
+
+  public StatusHistoryDTO message(String message) {
+    this.message = message;
     return this;
   }
 
   /**
-   * Voter's status
-   * @return status
+   * Get message
+   * @return message
    */
   
-  @Schema(name = "status", example = "Active", description = "Voter's status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("status")
-  public String getStatus() {
-    return status;
+  @Schema(name = "message", example = "Success", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("message")
+  public String getMessage() {
+    return message;
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public StatusHistoryDTO data(List<@Valid StatusHistoryDataDTO> data) {
+    this.data = data;
+    return this;
+  }
+
+  public StatusHistoryDTO addDataItem(StatusHistoryDataDTO dataItem) {
+    if (this.data == null) {
+      this.data = new ArrayList<>();
+    }
+    this.data.add(dataItem);
+    return this;
+  }
+
+  /**
+   * Get data
+   * @return data
+   */
+  @Valid 
+  @Schema(name = "data", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("data")
+  public List<@Valid StatusHistoryDataDTO> getData() {
+    return data;
+  }
+
+  public void setData(List<@Valid StatusHistoryDataDTO> data) {
+    this.data = data;
   }
 
   @Override
@@ -56,19 +88,21 @@ public class StatusHistoryDTO {
       return false;
     }
     StatusHistoryDTO statusHistoryDTO = (StatusHistoryDTO) o;
-    return Objects.equals(this.status, statusHistoryDTO.status);
+    return Objects.equals(this.message, statusHistoryDTO.message) &&
+        Objects.equals(this.data, statusHistoryDTO.data);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status);
+    return Objects.hash(message, data);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StatusHistoryDTO {\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,7 +1,20 @@
 package com.ems.mappers;
 
 import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.*;
+import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.AddressDTO;
+import org.openapitools.model.VoterDataDTO;
+import org.openapitools.model.PartyRegisterDTO;
+import org.openapitools.model.PartyDataDTO;
+import org.openapitools.model.PartyUpdateDTO;
+import org.openapitools.model.ElectionDTO;
+import org.openapitools.model.VoterStatusDataDTO;
+import org.openapitools.model.OfficersRegisterDTO;
+import org.openapitools.model.NameHistoryDataDTO;
+import org.openapitools.model.StatusHistoryDataDTO;
+import org.openapitools.model.AddressHistoryDataDTO;
+import org.openapitools.model.AuditDataDTO;
 import com.ems.entities.*;
 import org.mapstruct.*;
 
@@ -27,17 +40,6 @@ public interface GlobalMapper {
     @Mapping(target = "signature", ignore = true)
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
-
-//    @Mapping(target = "data.residentialAddress",
-//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.RESIDENTIAL))")
-//    @Mapping(target = "data.mailingAddress",
-//            expression = "java(getAddressByType(voter.getAddress(), com.ems.entities.constants.AddressType.MAILING))")
-
-//    @Mapping(target = "data", source = ".")
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    @Mapping(target = "data.partyId", source = "party.partyId")
-//    @Mapping(target = "data.statusId", source = "voterStatus.statusId")
-//    org.openapitools.model.VoterDTO toVoterDTO(Voter voter);
 
     @Mapping(target = "party", source = "party.partyName")
     @Mapping(target = "status", source = "voterStatus.statusDesc")
@@ -74,16 +76,12 @@ public interface GlobalMapper {
 
     NameHistory toNameHistory(Voter voter);
 
-//    default AddressDTO getAddressByType(List<Address> addresses, AddressType type) {
-//        if (addresses == null) return null;
-//        return addresses.stream()
-//                .filter(address -> address.getAddressType() == type)
-//                .findFirst()
-//                .map(this::toAddressDTO)
-//                .orElse(null);
-//    }
-
     Officers toRole(OfficersRegisterDTO officersRegisterDTO);
     OfficersRegisterDTO toRoleRegisterDTO(Officers officers);
     List<org.openapitools.model.OfficersResponseDTO> toRoleResponseDTO(List<Officers> officers);
+
+    List<NameHistoryDataDTO> toNameHistoryDataDTO(List<NameHistory> nameHistory);
+    List<StatusHistoryDataDTO> toStatusHistoryDataDTO(List<StatusHistory> statusHistory);
+    List<AddressHistoryDataDTO> toAddressHistoryDataDTO(List<AddressHistory> addressHistoryList);
+    List<AuditDataDTO> toAuditDataDTO(List<Audit> auditList);
 }
