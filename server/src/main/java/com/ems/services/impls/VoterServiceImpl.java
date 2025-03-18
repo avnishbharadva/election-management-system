@@ -24,17 +24,23 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
 import org.openapitools.model.VoterDTO;
 import org.openapitools.model.VoterRegisterDTO;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoterServiceImpl implements VoterService {
+
+
+    private final KafkaTemplate<String,VoterUpdateEvent> kafkaTemplate;
 
     private static final String DIRECTORY = "D:/Spring/election-management-system/server/uploads";
     private static final String PHOTO_DIR = DIRECTORY + "/photos";
@@ -146,7 +152,7 @@ public class VoterServiceImpl implements VoterService {
 
         var oldVoter = new Voter();
         BeanUtils.copyProperties(existingVoter, oldVoter);
-
+        var oldAddressList = getOldAddressList(existingVoter);
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterDTO, existingVoter);
         log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
@@ -183,6 +189,16 @@ public class VoterServiceImpl implements VoterService {
             updateAddress(voterId, voterDTO.getResidentialAddress(), AddressType.RESIDENTIAL);
             updateAddress(voterId, voterDTO.getMailingAddress(), AddressType.MAILING);
         }
+
+        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, oldAddressList, updatedVoter.getAddress()));
+        future.whenComplete((result,exception)->{
+            if(exception!=null){
+                log.error("Failed to send message:"+exception.getMessage());
+            }
+            else{
+                log.info("Message sent successfully:"+result.getRecordMetadata());
+            }
+        });
         return globalMapper.toVoterDTO(updatedVoter);
     }
 

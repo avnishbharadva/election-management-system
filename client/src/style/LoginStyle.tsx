@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 
 export const LoginBox = styled(Box)({
   position: "relative",
@@ -57,4 +57,10 @@ export const ErrorMsg = styled("p")({
   color: "red",
   fontSize: "0.875rem",
   marginTop: "5px",
+});
+export const LoginTitle = styled(Typography)({
+  marginBottom: "8px", 
+  fontWeight: "bold",
+  color:"var(--titleColor)",
+  fontSize:"20px"
 });
