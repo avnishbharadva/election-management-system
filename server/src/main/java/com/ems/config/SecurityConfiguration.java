@@ -2,6 +2,7 @@ package com.ems.config;
 
 import com.ems.jwt.JwtAuthenticationFilter;
 import com.ems.jwt.JwtService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,24 +29,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfiguration {
 
     private final MyUserDetailService userDetailService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtService jwtService;
-    private final HandlerExceptionResolver exceptionResolver;
-
-    public SecurityConfiguration(MyUserDetailService userDetailService,
-                                 JwtService jwtService,
-                                 JwtAuthenticationFilter jwtAuthenticationFilter,
-                                 @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
-        this.userDetailService = userDetailService;
-        this.jwtService = jwtService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.exceptionResolver = exceptionResolver;
-    }
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {

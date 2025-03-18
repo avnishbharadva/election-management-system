@@ -9,7 +9,5 @@ import java.util.Optional;
 @Repository
 public interface OfficersRepository extends JpaRepository<Officers, Long> {
     Optional<Officers> findByEmail(String email);
-
     boolean existsByEmailOrCountyNameOrSsnNumber(String email, String countyName, String ssnNumber);
-
 }
