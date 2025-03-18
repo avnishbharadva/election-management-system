@@ -9,10 +9,12 @@ import {
   LoginField,
   LoginForm,
   LoginImg,
+  LoginTitle,
 } from "../../style/LoginStyle";
 import { AppDispatch } from "../../store/app/store";
 import { useDispatch } from "react-redux";
 import { officerLogin } from "../../store/feature/officers/officerApi";
+import Navbar from "../ui/Navbar";
 
 type FormValues = {
   email: string;
@@ -32,17 +34,30 @@ const Login = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
-    await dispatch(officerLogin(officerData));
-    navigate("/app/dashboard");
+    try {
+        await dispatch(officerLogin(officerData)).unwrap()
+       navigate("/dashboard");
+    } catch (error) {
+      
+      // console.error("Login failed:", error);
+     
+    }
   };
+  
 
   return (
     <>
+         
      <LoginBox>
+    {/* <Typography>Election Management System</Typography> */}
   <LoginImg src={bgImg} alt="" />
   <FormCard>
+  <LoginTitle>
+          
+          Election Management System
+        </LoginTitle>
     <LoginForm onSubmit={handleSubmit(onSubmit)}>
-      <Typography variant="h5">Sign In Here!</Typography>
+      <Typography variant="h6">Sign In Here!</Typography>
       <LoginField>
         <TextField
           fullWidth

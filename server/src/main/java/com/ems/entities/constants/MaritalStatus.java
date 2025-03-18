@@ -1,6 +1,6 @@
 package com.ems.entities.constants;
 
-public enum MaritialStatus {
+public enum MaritalStatus {
     SINGLE,
     MARRIED,
     DIVORCED,
