@@ -1,10 +1,11 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 
 export const LoginBox = styled(Box)({
   position: "relative",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  flexWrap: "wrap", 
   width: "100%",
   height: "100vh",
 });
@@ -12,6 +13,7 @@ export const LoginBox = styled(Box)({
 export const LoginImg = styled("img")({
   width: "100%",
   height: "100vh",
+  objectFit: "cover",
   position: "absolute",
   top: 0,
   left: 0,
@@ -28,6 +30,11 @@ export const FormCard = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "column",
+  zIndex: 1,
+  padding: "40px",
+  margin: "20px",
+  flex: "1 1 400px", 
+  maxWidth: "400px", 
 });
 
 export const LoginForm = styled("form")({
@@ -35,13 +42,13 @@ export const LoginForm = styled("form")({
   alignItems: "center",
   justifyContent: "center",
   flexDirection: "column",
-  width: "400px",
-  padding: "40px",
+  width: "100%",
 });
 
 export const LoginField = styled(Box)({
   margin: "10px",
-  width: "320px",
+  width: "100%",
+  maxWidth: "320px",
   backgroundColor: "#fff",
   borderRadius: "5px",
 });
@@ -51,8 +58,9 @@ export const ErrorMsg = styled("p")({
   fontSize: "0.875rem",
   marginTop: "5px",
 });
-// const StyledTextField = styled(TextField)(({ theme }) => ({
-//   marginTop: "20px",
-//   backgroundColor: "#fff",
-//   borderRadius: "5px",
-// }));
+export const LoginTitle = styled(Typography)({
+  marginBottom: "8px", 
+  fontWeight: "bold",
+  color:"var(--titleColor)",
+  fontSize:"20px"
+});

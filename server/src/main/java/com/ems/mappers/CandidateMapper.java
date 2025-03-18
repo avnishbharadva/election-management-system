@@ -1,13 +1,11 @@
 package com.ems.mappers;
 
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
 import com.ems.entities.Election;
 import com.ems.entities.Party;
 import org.mapstruct.*;
+import org.openapitools.model.*;
 
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
@@ -17,24 +15,27 @@ public interface CandidateMapper {
     @Mapping(target = "bankDetails", source = "bankDetails")
     @Mapping(target = "partyName", source = "party.partyName")
     @Mapping(target = "electionName", source = "election.electionName")
-    CandidateDTO toCandidateDTO(Candidate candidate);
+    CandidateDto toCandidateDto(Candidate candidate);
 
-    Candidate toCandidate(CandidateDTO candidateDTO);
+    Candidate toCandidate(CandidateDto candidateDto);
+    com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddress candidateAddress);
+    com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddressNoValidation candidateAddress);
 
     @Mapping(target = "partyName", source = "party.partyName")
     @Mapping(target = "electionName", source = "election.electionName")
-    CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate);
+    CandidateDetailsDto toCandidateDetailsDto(Candidate candidate);
 
 
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCandidateFromDTO(CandidateDTO candidateDTO, @MappingTarget Candidate candidate);
+    void updateCandidateFromDto(CandidateUpdateDto candidateDto, @MappingTarget Candidate candidate);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCandidateNameFromDTO(CandidateName newName, @MappingTarget CandidateName existingName);
+    void updateCandidateNameFromDto(CandidateName newName, @MappingTarget CandidateName existingName);
 
 
-    org.openapitools.model.ElectionSortDTO toElectionSortDTO(Election election);
+    ElectionSortDTO toElectionSortDTO(Election election);
+
 
     default Long mapPartyToId(Party party) {
         return (party != null) ? party.getPartyId() : null;
@@ -43,5 +44,4 @@ public interface CandidateMapper {
     default Long mapElectionToElectionId(Election election) {
         return (election != null) ? election.getElectionId() : null;
     }
-    CandidateByPartyDTO toCandidateByPartyDTO(Candidate candidate);
 }

@@ -1,19 +1,14 @@
 package com.ems.services;
 
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.entities.Candidate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-
-import java.io.IOException;
+import org.openapitools.model.CandidateDto;
+import org.openapitools.model.CandidateUpdateDto;
+import org.openapitools.model.ResponseDto;
 
 public interface CandidateService {
-    CandidateDetailsDTO findByCandidateSSN(String candidateSSN);
-    Candidate saveCandidate(CandidateDTO candidateData) throws IOException;
-    CandidateDTO findById(Long id);
-    Candidate update(Long candidateId, CandidateDTO candidateDTO) throws IOException;
-    void deleteCandidateByCandidateId(Long candidateId);
-    Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort);
-
+    ResponseDto findByCandidateSSN(String candidateSSN);
+    ResponseDto saveCandidate(org.openapitools.model.CandidateDto candidateData);
+    ResponseDto findById(Long id);
+    ResponseDto update(Long candidateId, CandidateUpdateDto candidateDto);
+    ResponseDto deleteCandidateByCandidateId(Long candidateId);
+    ResponseDto getPagedCandidate(int page, int perPage,String sortBy, String sortDir);
 }

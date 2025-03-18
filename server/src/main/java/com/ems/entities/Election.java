@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-public class Election extends TimeStamp {
+public class Election extends AuditEntity {
 
     @Id
     @GeneratedValue
