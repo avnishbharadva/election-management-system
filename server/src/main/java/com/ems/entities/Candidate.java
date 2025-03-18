@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @DynamicUpdate
 @Entity
-public class Candidate extends TimeStamp {
+public class Candidate extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_seq")

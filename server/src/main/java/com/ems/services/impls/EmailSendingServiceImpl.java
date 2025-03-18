@@ -36,7 +36,10 @@ public class EmailSendingServiceImpl {
             ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
 
             helper.addInline("companyLogo", image);
-            log.info("Sending email to: {}", emailSendEvent.getReceiverMailAddress());
+            log.info("Email details - Receiver: {}, Subject: {}",
+                    emailSendEvent.getReceiverMailAddress(),
+                    emailSendEvent.getEmailSubject()
+            );
             mailSender.send(message);
             log.info("Email sent successfully to {}", emailSendEvent.getReceiverMailAddress());
         } catch (MessagingException e) {

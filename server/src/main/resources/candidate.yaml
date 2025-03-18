@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
         "404":
           description: No candidate found
           content:
@@ -47,14 +47,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CandidateDTO"
+              $ref: "#/components/schemas/CandidateDto"
       responses:
         "200":
           description: Candidate created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
         "404":
           description: Error while creating candidate
           content:
@@ -105,7 +105,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
 
   /candidates/{candidateId}:
     get:
@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
         "404":
           description: Error retrieving Candidate Data
           content:
@@ -152,14 +152,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CandidateUpdateDTO"
+              $ref: "#/components/schemas/CandidateUpdateDto"
       responses:
         "200":
           description: Candidate Updated Successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
         "404":
           description: No candidate Found
           content:
@@ -185,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseDTO"
+                $ref: "#/components/schemas/ResponseDto"
         "404":
           description: Error Deleting Candidate
           content:
@@ -195,7 +195,7 @@ paths:
 
 components:
   schemas:
-    CandidateDTO:
+    CandidateDto:
       type: object
       required:
         - candidateName
@@ -301,7 +301,7 @@ components:
           type: string
           description: Candidate's digital signature
           example: "/signatures/candidate123.png"
-    CandidateUpdateDTO:
+    CandidateUpdateDto:
       type: object
       properties:
         candidateId:
@@ -531,7 +531,7 @@ components:
           type: string
           example: "123 Wall Street, New York, NY"
 
-    ResponseDTO:
+    ResponseDto:
       type: object
       required:
         - message
@@ -566,7 +566,7 @@ components:
           description: Timestamp of when the error occurred
           example: "2025-03-05T10:30:15"
 
-    CandidateDetailsDTO:
+    CandidateDetailsDto:
       type: object
       description: "Candidate details including personal information and election-related data."
       required:

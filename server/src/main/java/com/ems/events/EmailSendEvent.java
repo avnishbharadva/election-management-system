@@ -5,7 +5,6 @@ import lombok.*;
 
 @Getter
 @Setter
-//@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmailSendEvent {

@@ -4,9 +4,9 @@ import com.ems.services.CandidateService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.CandidatesApi;
-import org.openapitools.model.CandidateDTO;
-import org.openapitools.model.CandidateUpdateDTO;
-import org.openapitools.model.ResponseDTO;
+import org.openapitools.model.CandidateDto;
+import org.openapitools.model.CandidateUpdateDto;
+import org.openapitools.model.ResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,33 +18,39 @@ public class CandidateController implements CandidatesApi{
     private final CandidateService candidateService;
 
     @Override
-    public ResponseEntity<ResponseDTO> createCandidate(CandidateDTO candidateDTO) {
-        log.info("Process start to create candidate");
-        return ResponseEntity.ok(candidateService.saveCandidate(candidateDTO));
+    public ResponseEntity<ResponseDto> createCandidate(CandidateDto candidateDto) {
+        log.debug("Create candidate with firstName:{},lastName:{},SSN:{}",candidateDto.getCandidateName().getFirstName(),candidateDto.getCandidateName().getLastName(),candidateDto.getCandidateSSN());
+        return ResponseEntity.ok(candidateService.saveCandidate(candidateDto));
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> deleteById(Long candidateId) {
+    public ResponseEntity<ResponseDto> deleteById(Long candidateId) {
+        log.info("Remove Candidate With candidateId:{}",candidateId);
         return ResponseEntity.ok(candidateService.deleteCandidateByCandidateId(candidateId));
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> getCandidateById(Long candidateId) {
+    public ResponseEntity<ResponseDto> getCandidateById(Long candidateId) {
+        log.info("fetch candidate with ID: {}", candidateId);
         return ResponseEntity.ok(candidateService.findById(candidateId));
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> getCandidateBySSN(String candidateSSN) {
+    public ResponseEntity<ResponseDto> getCandidateBySSN(String candidateSSN) {
+        log.info("fetch candidate details for SSN: {}", candidateSSN);
         return ResponseEntity.ok(candidateService.findByCandidateSSN(candidateSSN));
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> getCandidates(Integer page, Integer perPage, String sortBy, String sortDir) {
+    public ResponseEntity<ResponseDto> getCandidates(Integer page, Integer perPage, String sortBy, String sortDir) {
+        log.info("request to fetch candidates - Page: {}, Per Page: {}, Sort By: {}, Sort Direction: {}",
+                page, perPage, sortBy, sortDir);
         return ResponseEntity.ok(candidateService.getPagedCandidate(page,perPage,sortBy,sortDir));
     }
 
     @Override
-    public ResponseEntity<ResponseDTO> updateCandidate(Long candidateId, CandidateUpdateDTO candidateDTO) {
-        return ResponseEntity.ok(candidateService.update(candidateId,candidateDTO));
+    public ResponseEntity<ResponseDto> updateCandidate(Long candidateId, CandidateUpdateDto candidateDto) {
+        log.info("Request to Update Candidate - Id:{}",candidateId);
+        return ResponseEntity.ok(candidateService.update(candidateId,candidateDto));
     }
 }

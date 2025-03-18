@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class TimeStamp {
+public abstract class AuditEntity {
     @CreationTimestamp
     @JsonIgnore
     private LocalDateTime createdAt;

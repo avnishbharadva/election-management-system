@@ -21,17 +21,9 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex){
-    ////        .info("Method argument not valid exception occurred error message: {}", ex.getMessage());
-//        var errorItemList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> new ErrorItem(fieldError.getField(), fieldError.getDefaultMessage())).toList();
-//        return new ResponseEntity<>(new ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
-//    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
 
-        // Use a Map to store only one error message per field (first encountered error)
         Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
@@ -39,7 +31,6 @@ public class GlobalExceptionHandler {
                         (existing, replacement) -> existing // Keep the first error message encountered
                 ));
 
-        // Convert the map to a list of ErrorItem objects
         List<ErrorItem> errorItemList = fieldErrors.entrySet().stream()
                 .map(entry -> new ErrorItem(entry.getKey(), entry.getValue()))
                 .toList();
@@ -60,15 +51,6 @@ public class GlobalExceptionHandler {
         candidateErrorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
     }
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//        var errorResponse = new ErrorResponse();
-//        errorResponse.setMessage(ex.getAllErrors().get(0).getDefaultMessage());
-//        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-//        errorResponse.setRequestTime(LocalDateTime.now());
-//        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-//    }
 
     @ExceptionHandler({DataAlreadyExistException.class})
     public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(DataAlreadyExistException dataAlreadyExistException)
