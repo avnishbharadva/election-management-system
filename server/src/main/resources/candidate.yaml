@@ -531,36 +531,9 @@ components:
           type: string
           example: "123 Wall Street, New York, NY"
 
-
-
-    #    CandidateDetailsDTO:
-    #      type: object
-    #      properties:
-    #        candidateId:
-    #          type: integer
-    #          format: int64
-    #        candidateName:
-    #          $ref: "#/components/schemas/CandidateName"
-    #        candidateSSN:
-    #          type: string
-    #          pattern: "^\\d{9}$"
-    #        gender:
-    #          $ref: "#/components/schemas/Gender"
-    #        spouseName:
-    #          type: string
-    #        partyName:
-    #          type: string
-    #        stateName:
-    #          type: string
-    #        candidateEmail:
-    #          type: string
-    #          format: email
-    #        electionName:
-    #          type: string
-
     ResponseDTO:
       type: object
-      required: # Ensures all fields are required, triggering an all-args constructor
+      required:
         - message
         - data
         - timeStamp
@@ -571,15 +544,7 @@ components:
           example: "Request processed successfully"
         data:
           type: object
-        #          oneOf:
-        #            - $ref: "#/components/schemas/CandidateDetailsDTO"
-        #            - $ref: "#/components/schemas/CandidateDTO"
-        #          description: "Response data (can be any type)"
-        #          discriminator:
-        #            propertyName: type
-        #            mapping:
-        #              CandidateDetailsDTO: "#/components/schemas/CandidateDetailsDTO"
-        #              CandidateDTO: "#/components/schemas/CandidateDTO"
+
         timeStamp:
           type: string
           format: date-time

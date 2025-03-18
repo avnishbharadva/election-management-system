@@ -25,11 +25,10 @@ public class EmailSendingServiceImpl {
     @Async
     @KafkaHandler
     public void sendMail(EmailSendEvent emailSendEvent){
-        System.out.println("in my email service************************************");
+        log.info("Received EmailSendEvent for email: {}", emailSendEvent.getReceiverMailAddress());
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
-            System.out.println("in email service---------------------------------------------------------------");
             helper.setTo(emailSendEvent.getReceiverMailAddress());
             helper.setSubject(emailSendEvent.getEmailSubject());
             helper.setText(emailSendEvent.getMailBody(), true);
@@ -37,6 +36,7 @@ public class EmailSendingServiceImpl {
             ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
 
             helper.addInline("companyLogo", image);
+            log.info("Sending email to: {}", emailSendEvent.getReceiverMailAddress());
             mailSender.send(message);
             log.info("Email sent successfully to {}", emailSendEvent.getReceiverMailAddress());
         } catch (MessagingException e) {
