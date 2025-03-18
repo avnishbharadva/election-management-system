@@ -9,9 +9,6 @@ properties:
   city:
     type: string
     example: "Springfield"
-  county:
-    type: string
-    example: "Clark"
   state:
     type: string
     example: "New York"
@@ -23,9 +20,9 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
-  countyName:
+  county:
     type: string
     example: "Las Vegas"
-  townName:
+  town:
     type: string
     example: "Alexander Street"

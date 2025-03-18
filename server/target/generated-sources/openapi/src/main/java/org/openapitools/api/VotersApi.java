@@ -5,11 +5,18 @@
  */
 package org.openapitools.api;
 
+import org.openapitools.model.AddressHistoryDTO;
 import org.openapitools.model.AuditDTO;
+import org.openapitools.model.ChangeVoter400Response;
+import org.openapitools.model.ChangeVoter404Response;
+import org.openapitools.model.ChangeVoterAddress;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.openapitools.model.ErrorResponse;
 import java.time.LocalDate;
+import org.openapitools.model.NameHistoryDTO;
 import org.openapitools.model.PaginatedVoterDTO;
+import org.openapitools.model.StatusHistoryDTO;
+import org.openapitools.model.TransferAddress;
 import org.openapitools.model.VoterDTO;
 import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterStatusDTO;
@@ -40,7 +47,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:17.448530600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:00.826534100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Voter", description = "the Voter API")
 public interface VotersApi {
@@ -48,6 +55,115 @@ public interface VotersApi {
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
+
+    /**
+     * GET /voters/{voterId}/history/address : Get Address History by Voter Id
+     *
+     * @param voterId Unique ID of the Voter (required)
+     * @return Address History retrieved successfully (status code 200)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "addressHistory",
+        summary = "Get Address History by Voter Id",
+        tags = { "Voter" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Address History retrieved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AddressHistoryDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/voters/{voterId}/history/address",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<AddressHistoryDTO> addressHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : [ { \"zipCode\" : \"10001\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"city\" : \"New York\", \"historyId\" : 1, \"addressType\" : \"RESIDENTIAL\", \"county\" : \"New York County\", \"state\" : \"New York\", \"addressLine\" : \"123 Main Street\", \"aptNumber\" : \"Apt 4B\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" }, { \"zipCode\" : \"10001\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"city\" : \"New York\", \"historyId\" : 1, \"addressType\" : \"RESIDENTIAL\", \"county\" : \"New York County\", \"state\" : \"New York\", \"addressLine\" : \"123 Main Street\", \"aptNumber\" : \"Apt 4B\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" } ], \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"message\" : \"Detailed error message\", \"timestamp\" : \"10:30:15\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * PATCH /voters/{voterId}/change : Update voter details
+     * Updates a voter&#39;s details based on the provided voter ID.
+     *
+     * @param voterId Unique identifier of the voter (required)
+     * @param changeVoterAddress  (required)
+     * @return Voter details updated successfully (status code 200)
+     *         or Bad Request (Invalid input) (status code 400)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "changeVoter",
+        summary = "Update voter details",
+        description = "Updates a voter's details based on the provided voter ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Voter details updated successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = VoterDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad Request (Invalid input)", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ChangeVoter400Response.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ChangeVoter404Response.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PATCH,
+        value = "/voters/{voterId}/change",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    default ResponseEntity<VoterDTO> changeVoter(
+        @Parameter(name = "voterId", description = "Unique identifier of the voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId,
+        @Parameter(name = "ChangeVoterAddress", description = "", required = true) @Valid @RequestBody ChangeVoterAddress changeVoterAddress
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"error\" : \"Invalid town ID. Please check and try again.\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"error\" : \"Voter not found.\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 
     /**
      * GET /voters/status : Get all voter statuses
@@ -90,7 +206,7 @@ public interface VotersApi {
 
 
     /**
-     * GET /voters/audit/{voterId} : Get Voter Audit by Voter Id
+     * GET /voters/{voterId}/audit : Get Voter Audit by Voter Id
      *
      * @param voterId Unique ID of the Voter (required)
      * @return Audit Details retrieved successfully (status code 200)
@@ -111,7 +227,7 @@ public interface VotersApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/voters/audit/{voterId}",
+        value = "/voters/{voterId}/audit",
         produces = { "application/json" }
     )
     
@@ -122,6 +238,54 @@ public interface VotersApi {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"data\" : [ { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"updatedBy\" : \"ADMIN\", \"oldFields\" : { \"firstName\" : \"John\", \"lastName\" : \"Doe\" }, \"createdBy\" : \"SYSTEM\", \"changeFields\" : { \"firstName\" : \"Mark\", \"lastName\" : \"Smith\" }, \"voterId\" : \"000000123\", \"id\" : \"65fd3a2e5b6c\", \"tableName\" : \"voter\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" }, { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"updatedBy\" : \"ADMIN\", \"oldFields\" : { \"firstName\" : \"John\", \"lastName\" : \"Doe\" }, \"createdBy\" : \"SYSTEM\", \"changeFields\" : { \"firstName\" : \"Mark\", \"lastName\" : \"Smith\" }, \"voterId\" : \"000000123\", \"id\" : \"65fd3a2e5b6c\", \"tableName\" : \"voter\", \"updatedAt\" : \"2025-03-11T15:22:30.12Z\" } ], \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"message\" : \"Detailed error message\", \"timestamp\" : \"10:30:15\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /voters/{voterId}/history/name : Get Name History by Voter Id
+     *
+     * @param voterId Unique ID of the Voter (required)
+     * @return Name History retrieved successfully (status code 200)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "nameHistory",
+        summary = "Get Name History by Voter Id",
+        tags = { "Voter" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Name History retrieved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = NameHistoryDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/voters/{voterId}/history/name",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<NameHistoryDTO> nameHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : [ { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"id\" : 1, \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" }, { \"firstName\" : \"John\", \"lastName\" : \"Doe\", \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"id\" : 1, \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" } ], \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -174,7 +338,7 @@ public interface VotersApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -234,7 +398,104 @@ public interface VotersApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"number\" : 5, \"data\" : [ { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" } ], \"size\" : 1, \"totalPages\" : 6, \"totalElements\" : 0 }";
+                    String exampleString = "{ \"number\" : 5, \"data\" : [ { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" } ], \"size\" : 1, \"totalPages\" : 6, \"totalElements\" : 0 }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /voters/{voterId}/history/status : Get Status History by Voter Id
+     *
+     * @param voterId Unique ID of the Voter (required)
+     * @return Status History retrieved successfully (status code 200)
+     *         or Voter not found (status code 404)
+     */
+    @Operation(
+        operationId = "statusHistory",
+        summary = "Get Status History by Voter Id",
+        tags = { "Voter" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Status History retrieved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = StatusHistoryDTO.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Voter not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/voters/{voterId}/history/status",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<StatusHistoryDTO> statusHistory(
+        @Parameter(name = "voterId", description = "Unique ID of the Voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : [ { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"historyId\" : 1, \"status\" : \"Active\", \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" }, { \"createdAt\" : \"2025-03-11T13:07:06.27Z\", \"historyId\" : 1, \"status\" : \"Active\", \"updatedAt\" : \"2025-03-11T13:07:06.27Z\" } ], \"message\" : \"Success\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"message\" : \"Detailed error message\", \"timestamp\" : \"10:30:15\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * PATCH /voters/{voterId}/transfer : Transfer voter county details
+     * Transfer a voter&#39;s county based on the provided voter ID.
+     *
+     * @param voterId Unique identifier of the voter (required)
+     * @param transferAddress  (required)
+     * @return Voter details updated successfully (status code 200)
+     *         or Bad request, invalid input (status code 400)
+     *         or Voter not found (status code 404)
+     *         or Internal server error (status code 500)
+     */
+    @Operation(
+        operationId = "transferVoter",
+        summary = "Transfer voter county details",
+        description = "Transfer a voter's county based on the provided voter ID.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Voter details updated successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = VoterDTO.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input"),
+            @ApiResponse(responseCode = "404", description = "Voter not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PATCH,
+        value = "/voters/{voterId}/transfer",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    default ResponseEntity<VoterDTO> transferVoter(
+        @Parameter(name = "voterId", description = "Unique identifier of the voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId,
+        @Parameter(name = "TransferAddress", description = "", required = true) @Valid @RequestBody TransferAddress transferAddress
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -257,7 +518,7 @@ public interface VotersApi {
      *         or Internal server error (status code 500)
      */
     @Operation(
-        operationId = "votersVoterIdPatch",
+        operationId = "voterUpdate",
         summary = "Update voter details",
         description = "Updates a voter's details based on the provided voter ID.",
         responses = {
@@ -276,14 +537,14 @@ public interface VotersApi {
         consumes = { "application/json" }
     )
     
-    default ResponseEntity<VoterDTO> votersVoterIdPatch(
+    default ResponseEntity<VoterDTO> voterUpdate(
         @Parameter(name = "voterId", description = "Unique identifier of the voter", required = true, in = ParameterIn.PATH) @PathVariable("voterId") String voterId,
         @Parameter(name = "VoterUpdateRequest", description = "", required = true) @Valid @RequestBody VoterUpdateRequest voterUpdateRequest
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Clark\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
+                    String exampleString = "{ \"data\" : { \"lastName\" : \"Doe\", \"image\" : \"base64-encoded-image-string\", \"gender\" : \"MALE\", \"signature\" : \"base64-encoded-signature-string\", \"ssnNumber\" : \"987654321\", \"dateOfBirth\" : \"1990-05-15\", \"dmvNumber\" : \"123456789\", \"firstName\" : \"John\", \"phoneNumber\" : \"12345678901\", \"firstVotedYear\" : 2010, \"mailingAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"residentialAddress\" : { \"zipCode\" : \"62704\", \"town\" : \"Alexander Street\", \"city\" : \"Springfield\", \"addressType\" : \"RESIDENTIAL\", \"county\" : \"Las Vegas\", \"state\" : \"New York\", \"addressLine\" : \"123 Main St\", \"aptNumber\" : \"Apt 4B\" }, \"voterId\" : \"000123456\", \"suffixName\" : \"Jr.\", \"middleName\" : \"A.\", \"email\" : \"john.doe@example.com\", \"party\" : \"Democratic Party\", \"hasVotedBefore\" : false, \"status\" : \"Active\" }, \"message\" : \"Success\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

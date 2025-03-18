@@ -1,10 +1,12 @@
 package com.ems.services;
 
 import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterDataDTO;
+import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterStatusDataDTO;
 import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.TransferAddress;
+import org.openapitools.model.ChangeVoterAddress;
 import org.springframework.data.domain.Page;
 import java.util.List;
 

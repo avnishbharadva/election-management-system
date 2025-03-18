@@ -20,10 +20,10 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
-  countyName:
+  county:
     type: string
     example: "1"
-  townName:
+  town:
     type: string
     example: "Alexander Street"
 

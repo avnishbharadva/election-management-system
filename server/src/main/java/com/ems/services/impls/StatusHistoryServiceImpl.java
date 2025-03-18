@@ -18,7 +18,7 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
     private final StatusHistoryRepository statusHistoryRepo;
 
     @Async("taskExecutor")
-//    @KafkaHandler
+    @KafkaHandler
     @Override
     public void statusHistory(VoterUpdateEvent voterUpdateEvent) {
         Voter oldVoter = voterUpdateEvent.getOldVoter();

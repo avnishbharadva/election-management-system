@@ -7,6 +7,8 @@ import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterUpdateRequest;
 import org.openapitools.model.AddressDTO;
 import org.openapitools.model.VoterStatusDataDTO;
+import org.openapitools.model.ChangeVoterAddress;
+import org.openapitools.model.TransferAddress;
 import com.ems.entities.Voter;
 import com.ems.entities.constants.AddressType;
 import com.ems.events.VoterUpdateEvent;
@@ -18,15 +20,14 @@ import com.ems.repositories.*;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openapitools.model.*;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -56,7 +56,7 @@ public class VoterServiceImpl implements VoterService {
     private final AddressRepository addressRepo;
     private final PartyRepository partyRepo;
     private final VoterStatusRepository voterStatusRepo;
-    private final ApplicationEventPublisher eventPublisher;
+    private final TownRepository townRepo;
 
     @Transactional
     @Override
@@ -180,16 +180,15 @@ public class VoterServiceImpl implements VoterService {
         if (voterUpdateRequest.getMailingAddress() != null)
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
 
-//        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
-        eventPublisher.publishEvent(new VoterUpdateEvent(this, oldVoter, updatedVoter, List.of(oldResidentialAddress, oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
-//        future.whenComplete((result,exception)->{
-//            if(exception!=null){
-//                log.info("Failed to send message: {}",exception.getMessage());
-//            }
-//            else{
-//                log.info("Message sent successfully: {}",result.getRecordMetadata());
-//            }
-//        });
+        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
+        future.whenComplete((result,exception)->{
+            if(exception!=null){
+                log.info("Failed to send message: {}",exception.getMessage());
+            }
+            else{
+                log.info("Message sent successfully: {}",result.getRecordMetadata());
+            }
+        });
 
         VoterDataDTO voterResponse = globalMapper.toVoterDTO(updatedVoter);
         Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());
@@ -299,8 +298,7 @@ public class VoterServiceImpl implements VoterService {
 
         var updatedVoter = globalMapper.changeVoterDTOtoVoter(changeVoterAddress, existingVoter);
         log.info("update voter details : {}", updatedVoter);
-        log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
-        boolean isTownExist = townRepository.existsByTownName(changeVoterAddress.getTownName());
+        boolean isTownExist = townRepo.existsByTownName(changeVoterAddress.getTown());
 
         if(isTownExist) {
             Address address = new Address();
@@ -316,7 +314,7 @@ public class VoterServiceImpl implements VoterService {
         }
         else
         {
-            throw new DataNotFoundException("Town Not Found With TownID : " + changeVoterAddress.getTownName());
+            throw new DataNotFoundException("Town Not Found With TownID : " + changeVoterAddress.getTown());
         }
         return globalMapper.toVoterDTO(updatedVoter);
     }

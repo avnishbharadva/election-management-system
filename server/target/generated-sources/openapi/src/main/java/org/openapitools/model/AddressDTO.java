@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:17.448530600+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:00.826534100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class AddressDTO {
 
   private String addressLine;
@@ -28,8 +28,6 @@ public class AddressDTO {
   private String aptNumber;
 
   private String city;
-
-  private String county;
 
   private String state;
 
@@ -71,6 +69,10 @@ public class AddressDTO {
   }
 
   private AddressTypeEnum addressType;
+
+  private String county;
+
+  private String town;
 
   public AddressDTO addressLine(String addressLine) {
     this.addressLine = addressLine;
@@ -130,26 +132,6 @@ public class AddressDTO {
 
   public void setCity(String city) {
     this.city = city;
-  }
-
-  public AddressDTO county(String county) {
-    this.county = county;
-    return this;
-  }
-
-  /**
-   * Get county
-   * @return county
-   */
-  
-  @Schema(name = "county", example = "Clark", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("county")
-  public String getCounty() {
-    return county;
-  }
-
-  public void setCounty(String county) {
-    this.county = county;
   }
 
   public AddressDTO state(String state) {
@@ -212,6 +194,46 @@ public class AddressDTO {
     this.addressType = addressType;
   }
 
+  public AddressDTO county(String county) {
+    this.county = county;
+    return this;
+  }
+
+  /**
+   * Get county
+   * @return county
+   */
+  
+  @Schema(name = "county", example = "Las Vegas", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("county")
+  public String getCounty() {
+    return county;
+  }
+
+  public void setCounty(String county) {
+    this.county = county;
+  }
+
+  public AddressDTO town(String town) {
+    this.town = town;
+    return this;
+  }
+
+  /**
+   * Get town
+   * @return town
+   */
+  
+  @Schema(name = "town", example = "Alexander Street", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("town")
+  public String getTown() {
+    return town;
+  }
+
+  public void setTown(String town) {
+    this.town = town;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -224,15 +246,16 @@ public class AddressDTO {
     return Objects.equals(this.addressLine, addressDTO.addressLine) &&
         Objects.equals(this.aptNumber, addressDTO.aptNumber) &&
         Objects.equals(this.city, addressDTO.city) &&
-        Objects.equals(this.county, addressDTO.county) &&
         Objects.equals(this.state, addressDTO.state) &&
         Objects.equals(this.zipCode, addressDTO.zipCode) &&
-        Objects.equals(this.addressType, addressDTO.addressType);
+        Objects.equals(this.addressType, addressDTO.addressType) &&
+        Objects.equals(this.county, addressDTO.county) &&
+        Objects.equals(this.town, addressDTO.town);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(addressLine, aptNumber, city, county, state, zipCode, addressType);
+    return Objects.hash(addressLine, aptNumber, city, state, zipCode, addressType, county, town);
   }
 
   @Override
@@ -242,10 +265,11 @@ public class AddressDTO {
     sb.append("    addressLine: ").append(toIndentedString(addressLine)).append("\n");
     sb.append("    aptNumber: ").append(toIndentedString(aptNumber)).append("\n");
     sb.append("    city: ").append(toIndentedString(city)).append("\n");
-    sb.append("    county: ").append(toIndentedString(county)).append("\n");
     sb.append("    state: ").append(toIndentedString(state)).append("\n");
     sb.append("    zipCode: ").append(toIndentedString(zipCode)).append("\n");
     sb.append("    addressType: ").append(toIndentedString(addressType)).append("\n");
+    sb.append("    county: ").append(toIndentedString(county)).append("\n");
+    sb.append("    town: ").append(toIndentedString(town)).append("\n");
     sb.append("}");
     return sb.toString();
   }

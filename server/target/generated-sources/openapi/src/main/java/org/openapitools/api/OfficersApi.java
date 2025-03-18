@@ -5,8 +5,8 @@
  */
 package org.openapitools.api;
 
+import org.openapitools.model.AuthResponseDTO;
 import org.openapitools.model.LoginForm;
-import java.util.Map;
 import org.openapitools.model.OfficersRegisterDTO;
 import org.openapitools.model.OfficersResponseDTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-13T18:26:19.437976300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:03.170275500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Authentication", description = "the Authentication API")
 public interface OfficersApi {
@@ -61,7 +61,7 @@ public interface OfficersApi {
         tags = { "Authentication" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful authentication, returns a JWT token", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class))
+                @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponseDTO.class))
             }),
             @ApiResponse(responseCode = "400", description = "Bad Request - Invalid input data"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid credentials"),
@@ -75,13 +75,13 @@ public interface OfficersApi {
         consumes = { "application/json" }
     )
     
-    default ResponseEntity<Map<String, String>> authenticateUser(
+    default ResponseEntity<AuthResponseDTO> authenticateUser(
         @Parameter(name = "LoginForm", description = "", required = true) @Valid @RequestBody LoginForm loginForm
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\" }";
+                    String exampleString = "{ \"message\" : \"User authentication successful\", \"token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

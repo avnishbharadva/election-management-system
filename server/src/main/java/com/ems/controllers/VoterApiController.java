@@ -2,24 +2,29 @@ package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
 import com.ems.services.AuditService;
+import com.ems.services.HistoryService;
 import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.VoterStatusDTO;
-import org.openapitools.model.VoterStatusDataDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.AuditDTO;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.openapitools.model.VoterDTO;
+import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.PaginatedVoterDTO;
+import org.openapitools.model.VoterDataDTO;
+import org.openapitools.model.VoterStatusDTO;
+import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.VoterStatusDataDTO;
+import org.openapitools.model.AuditDTO;
+import org.openapitools.model.TransferAddress;
+import org.openapitools.model.ChangeVoterAddress;
+import org.openapitools.model.NameHistoryDTO;
+import org.openapitools.model.StatusHistoryDTO;
+import org.openapitools.model.AddressHistoryDTO;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +35,7 @@ public class VoterApiController implements VotersApi {
 
     private final VoterService voterService;
     private final AuditService auditService;
+    private final HistoryService historyService;
 
     @Override
     public ResponseEntity<VoterDTO> registerVoter(VoterRegisterDTO voterRegisterDTO) {
@@ -61,7 +67,7 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> votersVoterIdPatch(String voterId, VoterUpdateRequest voterUpdateRequest) {
+    public ResponseEntity<VoterDTO> voterUpdate(String voterId, VoterUpdateRequest voterUpdateRequest) {
         return ResponseEntity.ok(new VoterDTO(
                 "Voter Updated Successfully",
                 voterService.updateVoter(voterId, voterUpdateRequest)
@@ -95,10 +101,37 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> votersChangeAddressVoterIdPatch(String voterId, ChangeVoterAddress changeVoterAddress) {
+    public ResponseEntity<VoterDTO> changeVoter(String voterId, ChangeVoterAddress changeVoterAddress) {
         log.info("Starting address change for voter ID: {} | Address type: {}", voterId, changeVoterAddress.getAddressType());
         VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
-        log.info("Voter address updated successfully for ID: {}", voterId);
-        return ResponseEntity.ok(new VoterDTO("Voter Updated Successfully", updatedVoter));
+        log.info("Voter address changed successfully for ID: {}", voterId);
+        return ResponseEntity.ok(new VoterDTO("Voter address changed Successfully", updatedVoter));
+    }
+
+    @Override
+    public ResponseEntity<NameHistoryDTO> nameHistory(String voterId) {
+        log.info("name history called for voterId : {}",voterId);
+        return new ResponseEntity<>(new NameHistoryDTO(
+                "Name history fetched for voter : " + voterId,
+                historyService.getNameHistory(voterId)
+        ), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<StatusHistoryDTO> statusHistory(String voterId) {
+        log.info("status history called for voterId : {}", voterId);
+        return new ResponseEntity<>(new StatusHistoryDTO(
+                "Status history fetched for voter : " + voterId,
+                historyService.getStatusHistory(voterId)
+        ), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<AddressHistoryDTO> addressHistory(String voterId) {
+        log.info("address history called for voterId : {}", voterId);
+        return new ResponseEntity<>(new AddressHistoryDTO(
+                "Address history fetched for voter : " + voterId,
+                historyService.getAddressHistory(voterId)
+        ), HttpStatus.OK);
     }
 }

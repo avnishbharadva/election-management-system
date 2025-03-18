@@ -30,7 +30,7 @@ public class AuditServiceImpl implements AuditService {
     private final GlobalMapper mapper;
 
     @Async("taskExecutor")
-    @EventListener
+    @KafkaHandler
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();
@@ -129,6 +129,10 @@ public class AuditServiceImpl implements AuditService {
         if (!Objects.equals(oldAddress.getCounty(), newAddress.getCounty())) {
             updatedFields.put("county", newAddress.getCounty());
             oldFields.put("county",oldAddress.getCounty());
+        }
+        if(!Objects.equals(oldAddress.getTown(), newAddress.getTown())){
+            updatedFields.put("town", newAddress.getTown());
+            oldFields.put("town",oldAddress.getTown());
         }
         if (!Objects.equals(oldAddress.getState(), newAddress.getState())) {
             updatedFields.put("state", newAddress.getState());

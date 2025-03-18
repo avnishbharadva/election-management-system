@@ -1,20 +1,24 @@
 package com.ems.mappers;
 
-import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.VoterRegisterDTO;
+//import com.ems.dtos.VoterSearchDTO;
 import org.openapitools.model.VoterUpdateRequest;
+
 import org.openapitools.model.AddressDTO;
+import org.openapitools.model.ChangeVoterAddress;
 import org.openapitools.model.VoterDataDTO;
 import org.openapitools.model.PartyRegisterDTO;
+import org.openapitools.model.AuditDataDTO;
+import org.openapitools.model.NameHistoryDataDTO;
+import org.openapitools.model.TransferAddress;
+import org.openapitools.model.StatusHistoryDataDTO;
+import org.openapitools.model.AddressHistoryDataDTO;
 import org.openapitools.model.PartyDataDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.VoterStatusDataDTO;
 import org.openapitools.model.OfficersRegisterDTO;
-import org.openapitools.model.NameHistoryDataDTO;
-import org.openapitools.model.StatusHistoryDataDTO;
-import org.openapitools.model.AddressHistoryDataDTO;
-import org.openapitools.model.AuditDataDTO;
+
+import org.openapitools.model.VoterRegisterDTO;
 import com.ems.entities.*;
 import org.mapstruct.*;
 
@@ -28,7 +32,7 @@ public interface GlobalMapper {
     @Mapping(target = "voterStatus", ignore = true)
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
 
-    Voter toVoter(VoterSearchDTO voterSearchDTO);
+//    Voter toVoter(VoterSearchDTO voterSearchDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Voter voterDTOtoVoter(VoterUpdateRequest voterDTO, @MappingTarget Voter voter);
@@ -41,6 +45,8 @@ public interface GlobalMapper {
     @Mapping(source = "party.partyId", target = "partyId")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
+    @Mapping(target = "party", source = "party.partyName")
+    @Mapping(target = "status", source = "voterStatus.statusDesc")
     VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")

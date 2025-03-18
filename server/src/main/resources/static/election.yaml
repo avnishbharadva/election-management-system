@@ -5,7 +5,7 @@ info:
   version: 1.0.1
 
 servers:
-  - url: http://localhost:8081/api
+  - url: http://localhost:8082
 
 paths:
   /elections:

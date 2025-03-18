@@ -7,6 +7,7 @@ import com.ems.repositories.AddressHistoryRepository;
 import com.ems.services.AddressHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     private final AddressHistoryRepository addressHistoryRepo;
 
     @Async("taskExecutor")
-//    @KafkaHandler
+    @KafkaHandler
     @Override
     public void addressHistory(VoterUpdateEvent event){
 

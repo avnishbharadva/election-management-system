@@ -1,6 +1,5 @@
 package com.ems.mappers;
 
-import com.ems.dtos.VoterSearchDTO;
 import com.ems.entities.Address;
 import com.ems.entities.AddressHistory;
 import com.ems.entities.Audit;
@@ -22,6 +21,7 @@ import javax.annotation.processing.Generated;
 import org.openapitools.model.AddressDTO;
 import org.openapitools.model.AddressHistoryDataDTO;
 import org.openapitools.model.AuditDataDTO;
+import org.openapitools.model.ChangeVoterAddress;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.NameHistoryDataDTO;
 import org.openapitools.model.OfficersRegisterDTO;
@@ -30,6 +30,7 @@ import org.openapitools.model.PartyDataDTO;
 import org.openapitools.model.PartyRegisterDTO;
 import org.openapitools.model.PartyUpdateDTO;
 import org.openapitools.model.StatusHistoryDataDTO;
+import org.openapitools.model.TransferAddress;
 import org.openapitools.model.VoterDataDTO;
 import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.VoterStatusDataDTO;
@@ -38,7 +39,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-18T10:34:49+0530",
+    date = "2025-03-18T19:12:13+0530",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -70,23 +71,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         }
         voter.setResidentialAddress( toAddress( voterRegisterDTO.getResidentialAddress() ) );
         voter.setMailingAddress( toAddress( voterRegisterDTO.getMailingAddress() ) );
-
-        return voter;
-    }
-
-    @Override
-    public Voter toVoter(VoterSearchDTO voterSearchDTO) {
-        if ( voterSearchDTO == null ) {
-            return null;
-        }
-
-        Voter voter = new Voter();
-
-        voter.setFirstName( voterSearchDTO.getFirstName() );
-        voter.setLastName( voterSearchDTO.getLastName() );
-        voter.setDateOfBirth( voterSearchDTO.getDateOfBirth() );
-        voter.setDmvNumber( voterSearchDTO.getDmvNumber() );
-        voter.setSsnNumber( voterSearchDTO.getSsnNumber() );
 
         return voter;
     }
@@ -170,11 +154,14 @@ public class GlobalMapperImpl implements GlobalMapper {
         if ( addressDTO.getCity() != null ) {
             address.setCity( addressDTO.getCity() );
         }
+        if ( addressDTO.getState() != null ) {
+            address.setState( addressDTO.getState() );
+        }
         if ( addressDTO.getCounty() != null ) {
             address.setCounty( addressDTO.getCounty() );
         }
-        if ( addressDTO.getState() != null ) {
-            address.setState( addressDTO.getState() );
+        if ( addressDTO.getTown() != null ) {
+            address.setTown( addressDTO.getTown() );
         }
         if ( addressDTO.getZipCode() != null ) {
             address.setZipCode( addressDTO.getZipCode() );
@@ -332,8 +319,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         address.setAddressLine( addressDTO.getAddressLine() );
         address.setAptNumber( addressDTO.getAptNumber() );
         address.setCity( addressDTO.getCity() );
-        address.setCounty( addressDTO.getCounty() );
         address.setState( addressDTO.getState() );
+        address.setCounty( addressDTO.getCounty() );
+        address.setTown( addressDTO.getTown() );
         address.setZipCode( addressDTO.getZipCode() );
         address.setAddressType( addressTypeEnumToAddressType( addressDTO.getAddressType() ) );
 
@@ -351,10 +339,11 @@ public class GlobalMapperImpl implements GlobalMapper {
         addressDTO.setAddressLine( address.getAddressLine() );
         addressDTO.setAptNumber( address.getAptNumber() );
         addressDTO.setCity( address.getCity() );
-        addressDTO.setCounty( address.getCounty() );
         addressDTO.setState( address.getState() );
         addressDTO.setZipCode( address.getZipCode() );
         addressDTO.setAddressType( addressTypeToAddressTypeEnum( address.getAddressType() ) );
+        addressDTO.setCounty( address.getCounty() );
+        addressDTO.setTown( address.getTown() );
 
         return addressDTO;
     }
@@ -583,6 +572,95 @@ public class GlobalMapperImpl implements GlobalMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public Voter voterTransferDtotoVoter(TransferAddress transferAddress, Voter voter) {
+        if ( transferAddress == null ) {
+            return voter;
+        }
+
+        return voter;
+    }
+
+    @Override
+    public Address transferVoterAddressToAddress(TransferAddress transferAddress, Address address) {
+        if ( transferAddress == null ) {
+            return address;
+        }
+
+        if ( transferAddress.getAddressLine() != null ) {
+            address.setAddressLine( transferAddress.getAddressLine() );
+        }
+        if ( transferAddress.getAptNumber() != null ) {
+            address.setAptNumber( transferAddress.getAptNumber() );
+        }
+        if ( transferAddress.getCity() != null ) {
+            address.setCity( transferAddress.getCity() );
+        }
+        if ( transferAddress.getState() != null ) {
+            address.setState( transferAddress.getState() );
+        }
+        if ( transferAddress.getCounty() != null ) {
+            address.setCounty( transferAddress.getCounty() );
+        }
+        if ( transferAddress.getTown() != null ) {
+            address.setTown( transferAddress.getTown() );
+        }
+        if ( transferAddress.getZipCode() != null ) {
+            address.setZipCode( transferAddress.getZipCode() );
+        }
+        if ( transferAddress.getAddressType() != null ) {
+            address.setAddressType( addressTypeEnumToAddressType1( transferAddress.getAddressType() ) );
+        }
+
+        return address;
+    }
+
+    @Override
+    public Voter voterDTOtoVoter(ChangeVoterAddress voterDTO, Voter voter) {
+        if ( voterDTO == null ) {
+            return voter;
+        }
+
+        return voter;
+    }
+
+    @Override
+    public Address changeAddressDTOToAddress(ChangeVoterAddress addressDTO, Address address) {
+        if ( addressDTO == null ) {
+            return address;
+        }
+
+        if ( addressDTO.getAddressLine() != null ) {
+            address.setAddressLine( addressDTO.getAddressLine() );
+        }
+        if ( addressDTO.getAptNumber() != null ) {
+            address.setAptNumber( addressDTO.getAptNumber() );
+        }
+        if ( addressDTO.getCity() != null ) {
+            address.setCity( addressDTO.getCity() );
+        }
+        if ( addressDTO.getTown() != null ) {
+            address.setTown( addressDTO.getTown() );
+        }
+        if ( addressDTO.getZipCode() != null ) {
+            address.setZipCode( addressDTO.getZipCode() );
+        }
+        if ( addressDTO.getAddressType() != null ) {
+            address.setAddressType( addressTypeEnumToAddressType2( addressDTO.getAddressType() ) );
+        }
+
+        return address;
+    }
+
+    @Override
+    public Voter changeVoterDTOtoVoter(ChangeVoterAddress voterDTO, Voter voter) {
+        if ( voterDTO == null ) {
+            return voter;
+        }
+
+        return voter;
     }
 
     protected Gender genderEnumToGender(VoterRegisterDTO.GenderEnum genderEnum) {
@@ -848,5 +926,41 @@ public class GlobalMapperImpl implements GlobalMapper {
         auditDataDTO.setUpdatedAt( audit.getUpdatedAt() );
 
         return auditDataDTO;
+    }
+
+    protected AddressType addressTypeEnumToAddressType1(TransferAddress.AddressTypeEnum addressTypeEnum) {
+        if ( addressTypeEnum == null ) {
+            return null;
+        }
+
+        AddressType addressType;
+
+        switch ( addressTypeEnum ) {
+            case RESIDENTIAL: addressType = AddressType.RESIDENTIAL;
+            break;
+            case MAILING: addressType = AddressType.MAILING;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressTypeEnum );
+        }
+
+        return addressType;
+    }
+
+    protected AddressType addressTypeEnumToAddressType2(ChangeVoterAddress.AddressTypeEnum addressTypeEnum) {
+        if ( addressTypeEnum == null ) {
+            return null;
+        }
+
+        AddressType addressType;
+
+        switch ( addressTypeEnum ) {
+            case RESIDENTIAL: addressType = AddressType.RESIDENTIAL;
+            break;
+            case MAILING: addressType = AddressType.MAILING;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressTypeEnum );
+        }
+
+        return addressType;
     }
 }
