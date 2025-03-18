@@ -4,13 +4,17 @@ import com.ems.entities.BankDetails;
 import com.ems.entities.CandidateAddress;
 import com.ems.entities.CandidateName;
 import com.ems.entities.constants.Gender;
-import com.ems.entities.constants.MaritialStatus;
+import com.ems.entities.constants.MaritalStatus;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandidateDTO {
 
     private Long candidateId; // Optional, assuming it's auto-generated
@@ -30,7 +34,7 @@ public class CandidateDTO {
     private Gender gender;
 
     @NotNull(message = "Marital status cannot be null")
-    private MaritialStatus maritialStatus;
+    private MaritalStatus maritalStatus;
 
     @Min(value = 0, message = "Number of children cannot be negative")
     private int noOfChildren;
