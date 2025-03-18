@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
-
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)

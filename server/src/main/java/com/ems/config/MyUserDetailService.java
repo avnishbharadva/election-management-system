@@ -14,23 +14,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MyUserDetailService implements UserDetailsService {
 
-	@Autowired
-	private RoleRepository myUserRepository;
+    @Autowired
+    private RoleRepository myUserRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		return myUserRepository.findByEmail(email)
-				.map(user -> User.builder()
-						.username(user.getEmail())
-						.password(user.getPassword())
-						.roles(getRoles(user))
-						.build())
-				.orElseThrow(() -> new UsernameNotFoundException(email));
-	}
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return myUserRepository.findByEmail(email)
+                .map(user -> User.builder()
+                        .username(user.getEmail())
+                        .password(user.getPassword())
+                        .roles(getRoles(user))
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+    }
 
-	private String[] getRoles(Officers user) {
-		log.info("role : {}" , user.getRole().name());
-		return new String[]{user.getRole().name()};
-	}
+    private String[] getRoles(Officers user) {
+        log.info("role : {}", user.getRole().name());
+        return new String[]{user.getRole().name()};
+    }
 
 }

@@ -2,16 +2,25 @@ package com.ems.handlers;
 
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.ErrorItem;
+import org.openapitools.model.ValidationErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.time.LocalDateTime;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex){
+        log.info("Method argument not valid exception occurred error message: {}", ex.getMessage());
+        var errorItemList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> new ErrorItem(fieldError.getField(), fieldError.getDefaultMessage())).toList();
+        return new ResponseEntity<>(new ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(CandidateAssociatedException.class)
     public ResponseEntity<ErrorResponse> handleAssociatedCandidate(
@@ -35,15 +44,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        var errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getAllErrors().get(0).getDefaultMessage());
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler({DataAlreadyExistException.class})
     public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(DataAlreadyExistException dataAlreadyExistException)
     {
@@ -63,7 +63,5 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
-
-
 
 }

@@ -101,6 +101,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>3.4.3</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -128,6 +135,12 @@
 			<version>7.6.0</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
@@ -140,11 +153,6 @@
 			<version>3.4.2</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -172,21 +180,39 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>4.29.2</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter</artifactId>-->
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>ch.qos.logback</groupId>-->
+<!--					<artifactId>logback-classic</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.slf4j</groupId>-->
+<!--					<artifactId>slf4j-simple</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>commons-logging</groupId>-->
+<!--					<artifactId>commons-logging</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
+<!--		</dependency>-->
+
+
+
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 			<version>3.3.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<version>3.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.kafka</groupId>-->
+<!--			<artifactId>spring-kafka-test</artifactId>-->
+<!--			<version>3.3.1</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+
 
 	</dependencies>
 	<build>
@@ -226,10 +252,12 @@
 				</executions>
 				<configuration>
 					<generatorName>spring</generatorName>
-					<inputSpec>${project.basedir}/src/main/resources/candidate.yaml</inputSpec>
+					<inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
 					<output>${project.build.directory}/generated-sources/openapi</output>
 					<configOptions>
 						<interfaceOnly>true</interfaceOnly>
+						<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
+							</additionalModelTypeAnnotations>
 						<useSpringBoot3>true</useSpringBoot3>
 					</configOptions>
 					<additionalProperties>

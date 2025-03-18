@@ -9,10 +9,8 @@ import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.openapitools.model.ElectionDTO;
-import org.openapitools.model.ElectionPageResponse;
-import org.openapitools.model.ElectionSortDTO;
-import org.openapitools.model.ModelApiResponse;
+import org.openapitools.model.*;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +28,8 @@ public class ElectionServiceImpl implements ElectionService {
     private final GlobalMapper globalMapper;
     private final CandidateMapper candidateMapper;
     private final CandidateRepository candidateRepository;
+
+
     @Override
     public ModelApiResponse getElectionById(Long electionId) {
         log.info("Fetching election details for ID: {}", electionId);
@@ -39,7 +39,7 @@ public class ElectionServiceImpl implements ElectionService {
             log.warn("No election found with ID: {}", electionId);
             throw new DataNotFoundException("No election found with id:"+electionId);
         } else {
-            log.debug("Election details found: {}", electionDTO.get());
+            log.debug("Election details found: {}", electionDTO.get().getElectionId());
         }
 
         return new ModelApiResponse()
@@ -68,9 +68,8 @@ public class ElectionServiceImpl implements ElectionService {
     }
 
     @Override
-    public ModelApiResponse updateElection(Long electionId, ElectionDTO electionDTO) {
+    public ModelApiResponse updateElection(Long electionId, ElectionUpdateDTO electionDTO) {
         log.info("Updating election with ID: {}", electionId);
-
         var existingElection = electionRepository.findById(electionId)
                 .orElseThrow(() -> {
                     log.warn("No election found with ID: {}", electionId);

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.ElectionsApi;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
+import org.openapitools.model.ElectionUpdateDTO;
 import org.openapitools.model.ModelApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class ElectionController implements ElectionsApi {
     public ResponseEntity<ModelApiResponse> getAllElections() {
         log.info("Fetching all elections");
         ModelApiResponse response = electionService.getAllElection();
-        log.info("Fetched elections successfully");
+        log.info("Fetched elections successfully {}",response);
         return ResponseEntity.ok(response);
     }
 
@@ -45,7 +46,7 @@ public class ElectionController implements ElectionsApi {
     public ResponseEntity<ModelApiResponse> getElectionById(Long electionId) {
         log.info("Fetching election with ID: {}", electionId);
         ModelApiResponse response = electionService.getElectionById(electionId);
-        log.info("Election details retrieved: {}", response);
+        log.info("Election details retrieved for id: {}",electionId);
         return ResponseEntity.ok(response);
     }
 
@@ -58,10 +59,10 @@ public class ElectionController implements ElectionsApi {
     }
 
     @Override
-    public ResponseEntity<ModelApiResponse> updateElection(Long electionId, ElectionDTO electionDTO) {
+    public ResponseEntity<ModelApiResponse> updateElection(Long electionId, ElectionUpdateDTO electionDTO) {
         log.info("Updating election with ID: {}", electionId);
         ModelApiResponse response = electionService.updateElection(electionId, electionDTO);
-        log.info("Election updated successfully: {}", response);
+        log.info("Election updated successfully: {}", electionId);
         return ResponseEntity.ok(response);
     }
 }

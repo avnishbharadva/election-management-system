@@ -20,11 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Arrays;
 import java.util.List;
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +30,6 @@ public class SecurityConfiguration {
 
     private final MyUserDetailService userDetailService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -44,6 +40,8 @@ public class SecurityConfiguration {
                     registry.requestMatchers( "/authenticate/**" , "/email/**" , "/api/password/**").permitAll();
                     registry.requestMatchers("/api/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
+                    registry.requestMatchers("/actuator/health", "/actuator/info").permitAll();
+                    registry.requestMatchers("/actuator/**").permitAll();
                     registry.requestMatchers(
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
@@ -52,26 +50,22 @@ public class SecurityConfiguration {
                     ).permitAll();
                     registry.anyRequest().authenticated();
                 })
-
-
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Replace with your allowed origins
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type","*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     public UserDetailsService userDetailsService() {

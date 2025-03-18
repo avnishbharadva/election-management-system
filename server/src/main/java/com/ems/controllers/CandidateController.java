@@ -1,6 +1,9 @@
 package com.ems.controllers;
 
-import com.ems.dtos.*;
+import com.ems.dtos.CandidateDTO;
+import com.ems.dtos.CandidateDetailsDTO;
+import com.ems.dtos.CandidatePageResponse;
+import com.ems.dtos.ResponseDTO;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.services.CandidateService;
@@ -16,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,7 +28,7 @@ public class CandidateController {
 
     private final CandidateService candidateService;
 
-    @GetMapping("/by-ssn/{candidateSSN}")
+    @GetMapping("/ssn/{candidateSSN}")
     ResponseEntity<CandidateDetailsDTO> getCandidateBySSN(@Valid @PathVariable String candidateSSN) {
         log.info("Fetching candidate by SSN: {}", candidateSSN);
         try {
@@ -92,23 +93,6 @@ public class CandidateController {
         }
     }
 
-    @GetMapping("/by-party/{candidatePartyName}")
-    public ResponseEntity<ResponseDTO> getCandidateByPartyName(@PathVariable String candidatePartyName) {
-        log.info("Fetching candidates for party: {}", candidatePartyName);
-        List<CandidateByPartyDTO> candidates = candidateService.findByPartyName(candidatePartyName);
-
-        if (candidates.isEmpty()) {
-            log.warn("No candidates found for party: {}", candidatePartyName);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseDTO("No candidates found for the given party name", Collections.emptyList(), LocalDateTime.now(), false));
-        }
-
-        log.info("Candidates retrieved successfully for party: {}", candidatePartyName);
-        return ResponseEntity.ok(
-                new ResponseDTO("Candidates retrieved successfully", candidates, LocalDateTime.now(), true)
-        );
-    }
-
     @GetMapping
     public ResponseEntity<CandidatePageResponse> getCandidates(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -157,35 +141,5 @@ public class CandidateController {
         }
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ResponseDTO> searchCandidates(
-            @RequestBody CandidateDTO searchCriteria,
-            @RequestParam int page,
-            @RequestParam(defaultValue = "candidateId") String sortBy,
-            @RequestParam int perPage,
-            @RequestParam(defaultValue = "ASC") String sortOrder) {
 
-        log.info("Searching candidates with criteria: {}, page={}, perPage={}, sortBy={}, sortOrder={}",
-                searchCriteria, page, perPage, sortBy, sortOrder);
-
-        try {
-            Sort sort = Sort.by(Sort.Order.by(sortBy).with(Sort.Direction.fromString(sortOrder)));
-            Page<CandidateDTO> candidatesPage = candidateService.searchCandidates(searchCriteria, page, perPage, sort);
-
-            if (candidatesPage.isEmpty()) {
-                log.warn("No candidates found matching the search criteria.");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ResponseDTO("No candidates found matching the criteria", Collections.emptyList(), LocalDateTime.now(), false));
-            }
-
-            log.info("Candidates retrieved successfully, total: {}", candidatesPage.getTotalElements());
-            return ResponseEntity.ok(
-                    new ResponseDTO("Candidates retrieved successfully", candidatesPage, LocalDateTime.now(), true)
-            );
-        } catch (Exception e) {
-            log.error("Error while searching candidates", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO("Error while searching candidates", null, LocalDateTime.now(), false));
-        }
-    }
 }

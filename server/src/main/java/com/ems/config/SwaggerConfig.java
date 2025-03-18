@@ -1,4 +1,5 @@
 package com.ems.config;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "API for managing elections"
         ),
 
-        security = @SecurityRequirement(name = "bearerAuth") // Apply security globally
+        security = @SecurityRequirement(name = "bearerAuth")
 )
 @SecurityScheme(
         name = "bearerAuth",

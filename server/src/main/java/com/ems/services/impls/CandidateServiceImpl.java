@@ -1,9 +1,7 @@
 package com.ems.services.impls;
 
-import com.ems.dtos.CandidateByPartyDTO;
 import com.ems.dtos.CandidateDTO;
 import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.CandidatePageResponse;
 import com.ems.entities.Candidate;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.exceptions.DataNotFoundException;
@@ -14,7 +12,6 @@ import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -35,11 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -164,7 +157,6 @@ public class CandidateServiceImpl implements CandidateService {
         } else {
             log.info(EMAIL_ERROR);
         }
-
         // Save Candidate
         log.info("Saving candidate to database...");
         Candidate savedCandidate = candidateRepository.save(candidate);
@@ -281,6 +273,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
         return null;
     }
+
     @Override
     @Transactional
     public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
@@ -375,7 +368,6 @@ public class CandidateServiceImpl implements CandidateService {
         log.info("Candidate party: {}", partyName);
         log.info("Candidate election type: {}", electionType);
 
-        // --- Send Email Notification ---
         if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
             sendEmail(candidateDTO.getCandidateEmail(),
                     "Candidate Update Successful",
@@ -397,29 +389,6 @@ public class CandidateServiceImpl implements CandidateService {
         log.info("Candidate updated successfully with ID: {}", updatedCandidate.getCandidateId());
 
         return updatedCandidate;
-    }
-
-
-    @Override
-    public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {
-        log.info("Fetching candidates for party name: {}", candidatePartyName);
-
-        if (candidatePartyName == null || candidatePartyName.isBlank()) {
-            log.error("Party name cannot be null or blank.");
-            throw new IllegalArgumentException("Party name cannot be null or blank.");
-        }
-
-        List<Candidate> candidates = Optional.ofNullable(candidateRepository.findByParty_PartyName(candidatePartyName))
-                .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> {
-                    log.error("No candidates found for party: {}", candidatePartyName);
-                    return new DataNotFoundException("Party with the given name not found: " + candidatePartyName);
-                });
-
-        log.info("Found {} candidates for party: {}", candidates.size(), candidatePartyName);
-        return candidates.stream()
-                .map(candidateMapper::toCandidateByPartyDTO)
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -468,130 +437,5 @@ public class CandidateServiceImpl implements CandidateService {
         return candidatePage.map(candidateMapper::toCandidateDetailsDTO);
     }
 
-    @Override
-    public CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage) {
-        log.info("Fetching candidates for election ID: {}. Page: {}, PerPage: {}", electionId, page, perPage);
-
-        if (!electionRepository.existsById(electionId)) {
-            log.error("No election found with id: {}", electionId);
-            throw new DataNotFoundException("Election not found with id:" + electionId);
-        }
-
-        Pageable pageable = PageRequest.of(page, perPage);
-        Page<Candidate> candidatePage = candidateRepository.findByElection_electionId(electionId, pageable);
-
-        if (candidatePage.isEmpty()) {
-            log.warn("No candidates found for Election ID: {}", electionId);
-            throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
-        }
-
-        log.info("Found {} candidates for Election ID: {}", candidatePage.getTotalElements(), electionId);
-
-        Page<CandidateDetailsDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDetailsDTO);
-        return new CandidatePageResponse(
-                candidateDTOPage.getContent(),
-                candidateDTOPage.getNumber(),
-                candidateDTOPage.getTotalPages(),
-                candidateDTOPage.getTotalElements(),
-                candidateDTOPage.getSize()
-        );
-    }
-
-
-    @Override
-    public List<CandidateDetailsDTO> getCandidateInfo() {
-        log.info("Fetching all candidates information");
-
-        List<Candidate> candidates = candidateRepository.findAll();
-
-        if (candidates.isEmpty()) {
-            log.warn("No candidates found in the database");
-            throw new DataNotFoundException("No candidates found");
-        }
-
-        log.info("Found {} candidates", candidates.size());
-        return candidates.stream().map(candidateMapper::toCandidateDetailsDTO).toList();
-    }
-
-
-    @Override
-    public Page<CandidateDTO> searchCandidates(CandidateDTO searchCriteria, int page, int perPage, Sort sort) {
-        log.info("Searching candidates with criteria: {}, page: {}, perPage: {}, sort: {}", searchCriteria, page, perPage, sort);
-
-        Pageable pageable = PageRequest.of(page, perPage, sort);
-        Specification<Candidate> spec = buildSearchSpecification(searchCriteria);
-
-        Page<Candidate> candidatePage = candidateRepository.findAll(spec, pageable);
-
-        if (candidatePage.isEmpty()) {
-            log.warn("No candidates found for the given search criteria: {}", searchCriteria);
-            throw new DataNotFoundException("No such candidate with this filters");
-        }
-
-        log.info("Found {} candidates matching the search criteria", candidatePage.getTotalElements());
-        return candidatePage.map(candidateMapper::toCandidateDTO);
-    }
-
-
-    private Specification<Candidate> buildSearchSpecification(CandidateDTO searchCriteria) {
-        log.info("Building search specification for candidate with criteria: {}", searchCriteria);
-
-        return (root, query, criteriaBuilder) -> {
-            Predicate predicate = criteriaBuilder.conjunction();
-
-            if (searchCriteria.getCandidateSSN() != null) {
-                log.debug("Filtering by Candidate SSN: {}", searchCriteria.getCandidateSSN());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("candidateSSN"), searchCriteria.getCandidateSSN()));
-            }
-
-            if (searchCriteria.getCandidateName() != null) {
-                log.debug("Filtering by Candidate Name (LIKE): {}", searchCriteria.getCandidateName());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateName"), "%" + searchCriteria.getCandidateName() + "%"));
-            }
-
-            if (searchCriteria.getGender() != null) {
-                log.debug("Filtering by Gender: {}", searchCriteria.getGender());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("gender"), searchCriteria.getGender()));
-            }
-
-            if (searchCriteria.getMaritialStatus() != null) {
-                log.debug("Filtering by Marital Status: {}", searchCriteria.getMaritialStatus());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("maritialStatus"), searchCriteria.getMaritialStatus()));
-            }
-
-            if (searchCriteria.getStateName() != null) {
-                log.debug("Filtering by State Name (LIKE): {}", searchCriteria.getStateName());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("stateName"), "%" + searchCriteria.getStateName() + "%"));
-            }
-
-            if (searchCriteria.getCandidateEmail() != null) {
-                log.debug("Filtering by Candidate Email (LIKE): {}", searchCriteria.getCandidateEmail());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateEmail"), "%" + searchCriteria.getCandidateEmail() + "%"));
-            }
-
-            if (searchCriteria.getPartyId() != null && searchCriteria.getPartyId() != 0) {
-                log.debug("Filtering by Party ID: {}", searchCriteria.getPartyId());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("party").get("partyId"), searchCriteria.getPartyId()));
-            }
-
-            if (searchCriteria.getElectionId() != null && searchCriteria.getElectionId() != 0) {
-                log.debug("Filtering by Election ID: {}", searchCriteria.getElectionId());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("election").get("electionId"), searchCriteria.getElectionId()));
-            }
-
-            if (searchCriteria.getNoOfChildren() != 0) {
-                log.debug("Filtering by Number of Children: {}", searchCriteria.getNoOfChildren());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("noOfChildren"), searchCriteria.getNoOfChildren()));
-            }
-
-            if (searchCriteria.getSpouseName() != null) {
-                log.debug("Filtering by Spouse Name (LIKE): {}", searchCriteria.getSpouseName());
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("spouseName"), "%" + searchCriteria.getSpouseName() + "%"));
-            }
-
-            log.info("Search specification built successfully");
-            return predicate;
-        };
-    }
 
 }
