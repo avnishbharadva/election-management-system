@@ -324,29 +324,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>generate-election-api</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <output>${project.build.directory}/generated-sources/openapi</output>
-                            <configOptions>
-                                <!--								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor-->
-                                <!--								</additionalModelTypeAnnotations>-->
-                                <interfaceOnly>true</interfaceOnly>
-                                <!--
-                                <useBeanValidation>true</useBeanValidation>
-                                <useLombok>true</useLombok>
-                                -->
-                                <useJakartaEe>true</useJakartaEe>
-                                <useSpringBoot3>true</useSpringBoot3>
-                                <skipApiUtil>true</skipApiUtil>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>generate-candidate-api</id>
                         <goals>
                             <goal>generate</goal>
