@@ -9,7 +9,7 @@ export const fetchCandidates = createAsyncThunk(
   async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `/api/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
+        `/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
       );
       if(response.status === 200){
 
