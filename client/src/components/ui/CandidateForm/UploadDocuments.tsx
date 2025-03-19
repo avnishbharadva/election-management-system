@@ -9,14 +9,7 @@ import {
   DropzoneContainer,
   Row,
 } from "../../../style/CandidateFormCss";
-
-interface UploadDocumentsProps {
-  profilePic: File | string | null;
-  signature: File | string | null;
-  onDropProfile: (acceptedFiles: File[]) => void;
-  onDropSignature: (acceptedFiles: File[]) => void;
-  editId: number | null;
-}
+import { UploadDocumentsProps } from "../../../store/feature/candidate/types";
 
 const UploadDocuments: React.FC<UploadDocumentsProps> = ({
   profilePic,
@@ -64,38 +57,37 @@ const UploadDocuments: React.FC<UploadDocumentsProps> = ({
     <Section>
       <Title variant="h6">Upload Documents</Title>
       <DividerStyle />
-        <Row>
-      <FieldContainer>
-        {/* Candidate Image Upload */}
-  <Typography variant="subtitle1">Candidate Image</Typography>
-  <DropzoneContainer {...getProfileProps()}>
-    <input {...getProfileInputProps()} />
-    {profilePicPreview ? (
-      <img
-        src={profilePicPreview}
-        alt="Profile"
-        width="100"
-        height="100"
-        style={{ borderRadius: "50%" }}
-      />
-    ) : (
-      <Typography>Drag & Drop or Click</Typography>
-    )}
-  </DropzoneContainer>
-  </FieldContainer>
-  <FieldContainer>
-  <Typography variant="subtitle1">Signature</Typography>
-  <DropzoneContainer {...getSignatureProps()}>
-    <input {...getSignatureInputProps()} />
-    {signaturePreview ? (
-      <img src={signaturePreview} alt="Signature" width="200" height="50" />
-    ) : (
-      <Typography>Drag & Drop or Click</Typography>
-    )}
-  </DropzoneContainer>
-      </FieldContainer>
-</Row>
+      <FlexCenter>
+        <Box>
+          <Typography variant="subtitle1">Candidate Image</Typography>
+          <DropzoneContainer {...getProfileProps()}>
+            <input {...getProfileInputProps()} />
+            {profilePicPreview ? (
+              <img
+                src={profilePicPreview}
+                alt="Profile"
+                width="100"
+                height="100"
+                style={{ borderRadius: "50%" }}
+              />
+            ) : (
+              <Typography>Drag & Drop or Click</Typography>
+            )}
+          </DropzoneContainer>
+        </Box>
 
+        <Box>
+          <Typography variant="subtitle1">Signature</Typography>
+          <DropzoneContainer {...getSignatureProps()}>
+            <input {...getSignatureInputProps()} />
+            {signaturePreview ? (
+              <img src={signaturePreview} alt="Signature" width="200" height="50" />
+            ) : (
+              <Typography>Drag & Drop or Click</Typography>
+            )}
+          </DropzoneContainer>
+        </Box>
+      </FlexCenter>
     </Section>
   );
 };

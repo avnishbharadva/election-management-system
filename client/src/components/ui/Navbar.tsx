@@ -23,10 +23,9 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
         <IconButton color="inherit" aria-label="open drawer" edge="start" sx={{ mr: 2, display: { md: "none" } }} onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
-
-        <ResponsiveTypography>
-  Election Management System
-</ResponsiveTypography>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Election Management System
+        </Typography>
         <Typography variant="h4">
           <AccountCircleIcon />
         </Typography>

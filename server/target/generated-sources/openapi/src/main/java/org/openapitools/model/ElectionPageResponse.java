@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:32.209238700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T15:40:47.427401700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ElectionPageResponse {
 
   @Valid

@@ -5,6 +5,7 @@ export default function Dashboard() {
   return (
     <Box display="flex">
       <Box flexGrow={1}>
+      <Box flexGrow={1}>      
         <Cards />
       </Box>
     </Box>

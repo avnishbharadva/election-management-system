@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Election, FormValues } from "./types";
-// import axios from "axios";
 import axiosInstance from "../../app/axiosInstance";
 import { toast } from "react-toastify";
  
@@ -13,7 +12,7 @@ export const addElection = createAsyncThunk(
           toast.success("Election Registerd SuccessFully!")
         }
         console.log(response)
-        return response.data; // Return response data if needed
+        return response.data; 
       } catch (error: any) {
         toast.error("Something went wrong ")
         return rejectWithValue(error.response?.data?.message || "Failed to add election");
@@ -28,9 +27,7 @@ export const addElection = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(`/elections/sorted?page=${page}&size=${perPage}&order=${order}`);
-      console.log("sorted Election:", response.data);
-      return response.data
-       
+      return response.data   
     } catch (error: any) {
       console.error("Error fetching elections:", error);
       return rejectWithValue(error.response?.data || error.message || "Failed to fetch elections");

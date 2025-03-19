@@ -1,26 +1,8 @@
 // import React from "react";
 import { TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText, InputLabel, Select, MenuItem } from "@mui/material";
-import { Controller, FieldError } from "react-hook-form";
-import { FieldErrors, Control, UseFormRegister } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { DividerStyle, Row, Section, Title } from "../../../style/CandidateFormCss";
-
-interface CandidateNameErrors {
-  firstName?: FieldError;
-  middleName?: FieldError;
-  lastName?: FieldError;
-}
-
-interface PersonalInfoProps {
-  register: UseFormRegister<any>;
-  errors: FieldErrors & {
-    candidateName?: CandidateNameErrors;
-  };
-  control: Control<any>;
-  editId?: string | null;
-  candidate?: any;
-  searchQuery?: string;  // ✅ Add searchQuery as an optional prop
-  watch: (name: string) => any;
-}
+import { PersonalInfoProps } from "../../../store/feature/candidate/types";
 
 const PersonalInfo = ({ register, errors, control, watch, editId, candidate, searchQuery }: PersonalInfoProps) => {
 
@@ -97,7 +79,7 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
             helperText={errors.candidateSSN?.message?.toString()}
             InputLabelProps={{ shrink: true }}
             InputProps={{
-              readOnly: true, // Make it read-only since it's not editable
+              readOnly: true,
             }}
             disabled
           />
@@ -161,7 +143,7 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
                   label="Spouse Name"
                   {...register("spouseName")}
                   InputLabelProps={{ shrink: true }}
-                  disabled={watch("maritalStatus") === "SINGLE"} // Dynamically disable based on form state
+                  disabled={watch("maritalStatus") === "SINGLE"} 
                 />
 
                 <TextField
@@ -176,7 +158,6 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
                   }
                 />
               </Row>
-
     </Section>
   );
 };

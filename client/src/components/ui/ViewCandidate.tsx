@@ -32,49 +32,49 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           <Grid item xs={8}>
                             <Grid container spacing={2}>
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>ID:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateId}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.candidateId}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>SSN:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateSSN}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.candidateSSN}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Name:</Typography></Grid>
                               <Grid item xs={8}>
                                 <Typography>
-                                  {selectedCandidate?.candidateName?.firstName} 
-                                  {selectedCandidate?.candidateName?.middleName ? ` ${selectedCandidate?.candidateName?.middleName}` : ""} 
-                                  {selectedCandidate?.candidateName?.lastName}
+                                  {selectedCandidate?.data?.candidateName?.firstName} 
+                                  {selectedCandidate?.data?.candidateName?.middleName ? ` ${selectedCandidate?.data?.candidateName?.middleName}` : ""} 
+                                  {selectedCandidate?.data?.candidateName?.lastName}
                                 </Typography>
                               </Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Email:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.candidateEmail}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.candidateEmail}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Gender:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.gender}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.gender}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Date of Birth:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.dateOfBirth}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.dateOfBirth}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Marital Status:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.maritialStatus}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.maritalStatus}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Spouse Name:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.spouseName}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.spouseName}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>Number of Children:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.noOfChildren}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.noOfChildren}</Typography></Grid>
 
                               <Grid item xs={4}><Typography sx={{ fontWeight: "bold" }}>State:</Typography></Grid>
-                              <Grid item xs={8}><Typography>{selectedCandidate?.stateName}</Typography></Grid>
+                              <Grid item xs={8}><Typography>{selectedCandidate?.data?.stateName}</Typography></Grid>
                             </Grid>
                           </Grid>
 
                           {/* Candidate Image - Right Side */}
                           <Grid item xs={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                          {selectedCandidate?.candidateImage && (
+                          {selectedCandidate?.data?.candidateImage && (
                             <Box sx={{ textAlign: "center", marginBottom: "4rem" }}>
                               <img
-                                src={`data:image/png;base64,${selectedCandidate?.candidateImage}`}
+                                src={`data:image/png;base64,${selectedCandidate?.data?.candidateImage}`}
                                 alt="Candidate"
                                 style={{
                                   width: "150px",
@@ -89,10 +89,10 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             </Box>
                           )}
 
-                          {selectedCandidate?.candidateSignature && (
+                          {selectedCandidate?.data?.candidateSignature && (
                             <Box sx={{ textAlign: "center" }}>
                               <img
-                                src={`data:image/png;base64,${selectedCandidate?.candidateSignature}`}
+                                src={`data:image/png;base64,${selectedCandidate?.data?.candidateSignature}`}
                                 alt="Signature"
                                 style={{
                                   width: "150px",
@@ -123,7 +123,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Election Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
-                            <Typography>{selectedCandidate?.electionName}</Typography>
+                            <Typography>{selectedCandidate?.data?.electionName}</Typography>
                           </Grid>
 
                           {/* Email */}
@@ -131,7 +131,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Party Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
-                            <Typography>{selectedCandidate?.partyName}</Typography>
+                            <Typography>{selectedCandidate?.data?.partyName}</Typography>
                           </Grid>
                         </Grid>
                       </CardContent>
@@ -152,7 +152,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           </Grid>
                           <Grid item xs={8}>
                             <Typography>
-                              {selectedCandidate?.mailingAddress?.street}, {selectedCandidate?.mailingAddress?.city}, {selectedCandidate?.mailingAddress?.zipcode}
+                              {selectedCandidate?.data?.mailingAddress?.street}, {selectedCandidate?.data?.mailingAddress?.city}, {selectedCandidate?.data?.mailingAddress?.zipcode}
                             </Typography>
                           </Grid>
 
@@ -162,7 +162,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                           </Grid>
                           <Grid item xs={8}>
                             <Typography>
-                              {selectedCandidate?.residentialAddress?.street}, {selectedCandidate?.residentialAddress?.city}, {selectedCandidate?.residentialAddress?.zipcode}
+                              {selectedCandidate?.data?.residentialAddress?.street}, {selectedCandidate?.data?.residentialAddress?.city}, {selectedCandidate?.data?.residentialAddress?.zipcode}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -184,7 +184,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Bank Name:</Typography>
                           </Grid>
                           <Grid item xs={8}>
-                            <Typography>{selectedCandidate?.bankDetails?.bankName}</Typography>
+                            <Typography>{selectedCandidate?.data?.bankDetails?.bankName}</Typography>
                           </Grid>
 
                           {/* Bank Address */}
@@ -192,7 +192,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                             <Typography sx={{ fontWeight: "bold" }}>Bank Address:</Typography>
                           </Grid>
                           <Grid item xs={8}>
-                            <Typography>{selectedCandidate?.bankDetails?.bankAddress}</Typography>
+                            <Typography>{selectedCandidate?.data?.bankDetails?.bankAddress}</Typography>
                           </Grid>
                         </Grid>
                       </CardContent>
