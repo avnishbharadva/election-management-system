@@ -1,0 +1,49 @@
+type: object
+description: Represents a system audit log entry
+properties:
+  id:
+    type: string
+    example: "65fd3a2e5b6c"
+    description: Auto-generated unique audit ID
+  tableName:
+    type: string
+    example: "voter"
+    description: Name of the table/entity being audited
+  voterId:
+    type: string
+    example: "000000123"
+    description: Unique ID of Voter
+  oldFields:
+    type: object
+    additionalProperties: true
+    example:
+      firstName: "John"
+      lastName: "Doe"
+    description: Original values before changes were made
+  changeFields:
+    type: object
+    additionalProperties: true
+    example:
+      firstName: "Mark"
+      lastName: "Smith"
+    description: Modified values after the update
+  createdBy:
+    type: string
+    example: "SYSTEM"
+    description: User who created the record
+  updatedBy:
+    type: string
+    example: "ADMIN"
+    description: User who last modified the record
+  createdAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    readOnly: true
+    description: Timestamp when the record was created
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T15:22:30.120Z"
+    readOnly: true
+    description: Timestamp when the record was last updated

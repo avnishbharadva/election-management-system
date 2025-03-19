@@ -1,18 +1,18 @@
 package com.ems.services;
 
-
-import com.ems.entities.Party;
-import org.openapitools.model.PartyDTO;
+import org.openapitools.model.PartyDataDTO;
+import org.openapitools.model.PartyRegisterDTO;
+import org.openapitools.model.PartyUpdateDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.List;
 
 @Service
 public interface PartyService {
 
-    PartyDTO partyById(long id);
-    PartyDTO saveParty(org.openapitools.model.PartyDTO partyDTO);
-    List<PartyDTO> findAll();
+    PartyDataDTO partyById(long id);
+    PartyDataDTO saveParty(PartyRegisterDTO partyDTO);
+    List<PartyDataDTO> findAll();
+    PartyDataDTO updateParty(Long partyId, PartyUpdateDTO partyUpdateDTO);
+    void deleteParty(Long partyId);
+
 }

@@ -22,6 +22,7 @@
             <column name="status_id" value="4"/>
             <column name="status_desc" value="Reject"/>
         </insert>
+
     </changeSet>
 </databaseChangeLog>
 

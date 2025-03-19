@@ -32,19 +32,17 @@ public class OfficersServiceImpl implements OfficersService {
             log.warn("No roles found in the database.");
             throw new DataNotFoundException("No roles found.");
         }
-
         log.info("Fetched {} roles from the database.", roles.size());
         return roles;
     }
 
 
     @Override
-    public org.openapitools.model.OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
+    public OfficersRegisterDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
         if (roleRepository.existsByEmail(officersRegisterDTO.getEmail())) {
             log.warn("Officer with email {} already exists", officersRegisterDTO.getEmail());
             throw new DataAlreadyExistException("Officer already exists");
         }
-
         try {
             officersRegisterDTO.setPassword(passwordEncoder.encode(officersRegisterDTO.getPassword()));
             var savedRole = roleRepository.save(globalMapper.toRole(officersRegisterDTO));

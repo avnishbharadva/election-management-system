@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="12" author="Aryan">
+        <insert tableName="officers">
+            <column name="email" value="stateofficer@gmail.com"/>
+            <column name="password" value="$2a$12$LD12ngC16crMAHSxwiM05.8vVcWojuiZYRa6ZsJyYp.lRsMr1wHOi"/>
+            <column name="officer_id" value="1"/>
+            <column name="role" value="STATE"/>
+            <column name="ssn_number" value="834716378"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+

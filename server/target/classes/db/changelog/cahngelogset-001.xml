@@ -1,0 +1,309 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="LENOVO (generated)" id="1739796863126-1">
+        <createTable tableName="address">
+            <column autoIncrement="true" name="address_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="address_line" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_type" type="ENUM('MAILING', 'RESIDENTIAL', 'SAME')"/>
+            <column name="apt_number" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="county" type="VARCHAR(255)"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="zip_code" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voter_id" type="VARCHAR(9)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-2">
+        <createTable tableName="address_aud">
+            <column name="address_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="revtype" type="TINYINT(3)"/>
+            <column name="address_line" type="VARCHAR(255)"/>
+            <column name="address_type" type="ENUM('MAILING', 'RESIDENTIAL', 'SAME')"/>
+            <column name="apt_number" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="county" type="VARCHAR(255)"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="zip_code" type="VARCHAR(5)"/>
+            <column name="voter_id" type="VARCHAR(9)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-3">
+        <createTable tableName="bank_details">
+            <column name="bank_details_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="bank_address" type="VARCHAR(255)"/>
+            <column name="bank_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-4">
+        <createTable tableName="bank_details_seq">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-5">
+        <createTable tableName="candidate">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="candidate_email" type="VARCHAR(255)"/>
+            <column name="candidate_image" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="candidatessn" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="candidate_signature" type="VARCHAR(255)"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="gender" type="ENUM('FEMALE', 'MALE')"/>
+            <column name="maritial_status" type="ENUM('DIVORCED', 'MARRIED', 'SINGLE', 'WIDOWED')"/>
+            <column name="no_of_children" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spouse_name" type="VARCHAR(255)"/>
+            <column name="state_name" type="VARCHAR(255)"/>
+            <column name="bank_details_id" type="BIGINT"/>
+            <column name="election_id" type="BIGINT"/>
+            <column name="mailing_address_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+            <column name="party_id" type="BIGINT"/>
+            <column name="residential_address_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-6">
+        <createTable tableName="candidate_address">
+            <column name="address_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="zipcode" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-7">
+        <createTable tableName="candidate_address_seq">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-8">
+        <createTable tableName="candidate_sequence">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-9">
+        <createTable tableName="election">
+            <column name="election_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="election_date" type="date"/>
+            <column name="election_name" type="VARCHAR(255)"/>
+            <column name="election_state" type="VARCHAR(255)"/>
+            <column name="election_type" type="VARCHAR(255)"/>
+            <column name="total_seats" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-10">
+        <createTable tableName="election_seq">
+            <column name="next_val" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-11">
+        <createTable tableName="name_history">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="suffix_name" type="VARCHAR(255)"/>
+            <column name="voter_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-12">
+        <createTable tableName="party">
+            <column autoIncrement="true" name="party_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="founder_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="head_quarters" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="party_abbreviation" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="party_foundation_year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="party_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="party_symbol" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="party_web_site" type="VARCHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-13">
+        <createTable tableName="revinfo">
+            <column autoIncrement="true" name="rev" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="revtstmp" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-14">
+        <createTable tableName="voter">
+            <column name="voter_id" type="VARCHAR(9)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="created_at" type="datetime"/>
+            <column name="updated_at" type="datetime"/>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dmv_number" type="VARCHAR(9)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="VARCHAR(50)">
+                <constraints unique="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_voted_year" type="BIGINT"/>
+            <column name="gender" type="ENUM('FEMALE', 'MALE')"/>
+            <column defaultValueBoolean="false" name="has_voted_before" type="BIT(1)"/>
+            <column name="image" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(20)"/>
+            <column name="phone_number" type="VARCHAR(11)">
+                <constraints unique="true"/>
+            </column>
+            <column name="signature" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ssn_number" type="VARCHAR(9)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="suffix_name" type="VARCHAR(10)"/>
+            <column name="party_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-15">
+        <createTable tableName="voter_aud">
+            <column name="voter_id" type="VARCHAR(9)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="revtype" type="TINYINT(3)"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="dmv_number" type="VARCHAR(9)"/>
+            <column name="email" type="VARCHAR(50)"/>
+            <column name="first_name" type="VARCHAR(20)"/>
+            <column name="first_voted_year" type="VARCHAR(4)"/>
+            <column name="gender" type="ENUM('FEMALE', 'MALE')"/>
+            <column defaultValueBoolean="false" name="has_voted_before" type="BIT(1)"/>
+            <column name="image" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(20)"/>
+            <column name="middle_name" type="VARCHAR(20)"/>
+            <column name="phone_number" type="VARCHAR(11)"/>
+            <column name="signature" type="VARCHAR(255)"/>
+            <column name="ssn_number" type="VARCHAR(9)"/>
+            <column name="suffix_name" type="VARCHAR(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-16">
+        <createTable tableName="voter_sequence">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-17">
+        <createIndex indexName="FK3aildy2n4alpob07lkh6qtx32" tableName="candidate">
+            <column name="party_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-18">
+        <createIndex indexName="FK6d0s9dwsagto3lpk7c6efuulu" tableName="voter">
+            <column name="party_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-19">
+        <createIndex indexName="FK878j3mngr4m60icg7vwwj5xbi" tableName="candidate">
+            <column name="bank_details_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-20">
+        <createIndex indexName="FKlojnhqo49oc42rh7odgl2623n" tableName="address">
+            <column name="voter_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-21">
+        <createIndex indexName="FKp57rk1ull71c84jen0ftb0745" tableName="candidate">
+            <column name="election_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-22">
+        <addForeignKeyConstraint baseColumnNames="party_id" baseTableName="candidate" constraintName="FK3aildy2n4alpob07lkh6qtx32" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="party_id" referencedTableName="party" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-23">
+        <addForeignKeyConstraint baseColumnNames="residential_address_id" baseTableName="candidate" constraintName="FK60y1kvic5mt4d57en94pdexqa" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="address_id" referencedTableName="candidate_address" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-24">
+        <addForeignKeyConstraint baseColumnNames="party_id" baseTableName="voter" constraintName="FK6d0s9dwsagto3lpk7c6efuulu" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="party_id" referencedTableName="party" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-25">
+        <addForeignKeyConstraint baseColumnNames="bank_details_id" baseTableName="candidate" constraintName="FK878j3mngr4m60icg7vwwj5xbi" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="bank_details_id" referencedTableName="bank_details" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-26">
+        <addForeignKeyConstraint baseColumnNames="rev" baseTableName="voter_aud" constraintName="FK8g0vhs2307vic0hkb2oh8hn6t" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="rev" referencedTableName="revinfo" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-27">
+        <addForeignKeyConstraint baseColumnNames="mailing_address_id" baseTableName="candidate" constraintName="FKab62gfimc97597j9xix7lw9xd" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="address_id" referencedTableName="candidate_address" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-28">
+        <addForeignKeyConstraint baseColumnNames="rev" baseTableName="address_aud" constraintName="FKcc7vlgg86eqe1dmvivbkv046v" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="rev" referencedTableName="revinfo" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-29">
+        <addForeignKeyConstraint baseColumnNames="voter_id" baseTableName="address" constraintName="FKlojnhqo49oc42rh7odgl2623n" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="voter_id" referencedTableName="voter" validate="true"/>
+    </changeSet>
+    <changeSet author="LENOVO (generated)" id="1739796863126-30">
+        <addForeignKeyConstraint baseColumnNames="election_id" baseTableName="candidate" constraintName="FKp57rk1ull71c84jen0ftb0745" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="election_id" referencedTableName="election" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
