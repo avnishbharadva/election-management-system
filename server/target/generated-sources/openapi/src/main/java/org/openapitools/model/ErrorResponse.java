@@ -4,7 +4,8 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -18,14 +19,14 @@ import jakarta.annotation.Generated;
 /**
  * ErrorResponse
  */
-@lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:03.599388100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:34.443208300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ErrorResponse {
 
   private String message;
 
-  private LocalTime timestamp;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime timestamp;
 
   public ErrorResponse message(String message) {
     this.message = message;
@@ -47,7 +48,7 @@ public class ErrorResponse {
     this.message = message;
   }
 
-  public ErrorResponse timestamp(LocalTime timestamp) {
+  public ErrorResponse timestamp(OffsetDateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -57,13 +58,13 @@ public class ErrorResponse {
    * @return timestamp
    */
   @Valid 
-  @Schema(name = "timestamp", example = "10:30:15", description = "Timestamp of when the error occurred", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @Schema(name = "timestamp", description = "Timestamp of when the error occurred", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("timestamp")
-  public LocalTime getTimestamp() {
+  public OffsetDateTime getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(LocalTime timestamp) {
+  public void setTimestamp(OffsetDateTime timestamp) {
     this.timestamp = timestamp;
   }
 

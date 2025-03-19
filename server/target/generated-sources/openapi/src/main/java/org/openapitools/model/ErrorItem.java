@@ -17,14 +17,25 @@ import jakarta.annotation.Generated;
 /**
  * ErrorItem
  */
-@lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:03.599388100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:34.443208300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ErrorItem {
 
   private String field;
 
   private String errorMessage;
+
+  public ErrorItem() {
+    super();
+  }
+
+  /**
+   * Constructor with only required parameters
+   */
+  public ErrorItem(String field, String errorMessage) {
+    this.field = field;
+    this.errorMessage = errorMessage;
+  }
 
   public ErrorItem field(String field) {
     this.field = field;
@@ -35,8 +46,8 @@ public class ErrorItem {
    * Get field
    * @return field
    */
-  
-  @Schema(name = "field", example = "partyName", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull 
+  @Schema(name = "field", example = "partyName", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("field")
   public String getField() {
     return field;
@@ -55,8 +66,8 @@ public class ErrorItem {
    * Get errorMessage
    * @return errorMessage
    */
-  
-  @Schema(name = "errorMessage", example = "Party name must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull 
+  @Schema(name = "errorMessage", example = "Party name must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("errorMessage")
   public String getErrorMessage() {
     return errorMessage;

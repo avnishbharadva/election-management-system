@@ -1,161 +1,209 @@
 package com.ems.mappers;
 
-import com.ems.dtos.CandidateByPartyDTO;
-import com.ems.dtos.CandidateDTO;
-import com.ems.dtos.CandidateDetailsDTO;
-import com.ems.dtos.ElectionSortDTO;
+import com.ems.entities.BankDetails;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateName;
 import com.ems.entities.Election;
 import com.ems.entities.Party;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import com.ems.entities.constants.MaritalStatus;
 import javax.annotation.processing.Generated;
+import org.openapitools.model.BankDetailsNoValidation;
+import org.openapitools.model.CandidateAddress;
+import org.openapitools.model.CandidateAddressNoValidation;
+import org.openapitools.model.CandidateDetailsDto;
+import org.openapitools.model.CandidateDto;
+import org.openapitools.model.CandidateNameNoValidation;
+import org.openapitools.model.CandidateUpdateDto;
+import org.openapitools.model.ElectionSortDTO;
+import org.openapitools.model.Gender;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-18T19:12:12+0530",
+    date = "2025-03-18T23:37:19+0530",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class CandidateMapperImpl implements CandidateMapper {
 
     @Override
-    public CandidateDTO toCandidateDTO(Candidate candidate) {
+    public CandidateDto toCandidateDto(Candidate candidate) {
         if ( candidate == null ) {
             return null;
         }
 
-        CandidateDTO candidateDTO = new CandidateDTO();
+        CandidateDto candidateDto = new CandidateDto();
 
-        candidateDTO.setPartyId( mapPartyToId( candidate.getParty() ) );
-        candidateDTO.setElectionId( mapElectionToElectionId( candidate.getElection() ) );
-        candidateDTO.setBankDetails( candidate.getBankDetails() );
-        candidateDTO.setPartyName( candidatePartyPartyName( candidate ) );
-        candidateDTO.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDTO.setCandidateId( candidate.getCandidateId() );
-        candidateDTO.setCandidateName( candidate.getCandidateName() );
-        candidateDTO.setCandidateSSN( candidate.getCandidateSSN() );
-        candidateDTO.setDateOfBirth( candidate.getDateOfBirth() );
-        candidateDTO.setGender( candidate.getGender() );
-        candidateDTO.setMaritialStatus( candidate.getMaritialStatus() );
-        candidateDTO.setNoOfChildren( candidate.getNoOfChildren() );
-        candidateDTO.setSpouseName( candidate.getSpouseName() );
-        candidateDTO.setResidentialAddress( candidate.getResidentialAddress() );
-        candidateDTO.setMailingAddress( candidate.getMailingAddress() );
-        candidateDTO.setStateName( candidate.getStateName() );
-        candidateDTO.setCandidateEmail( candidate.getCandidateEmail() );
-        candidateDTO.setCandidateImage( candidate.getCandidateImage() );
-        candidateDTO.setCandidateSignature( candidate.getCandidateSignature() );
+        candidateDto.setPartyId( mapPartyToId( candidate.getParty() ) );
+        candidateDto.setElectionId( mapElectionToElectionId( candidate.getElection() ) );
+        candidateDto.setBankDetails( bankDetailsToBankDetails( candidate.getBankDetails() ) );
+        candidateDto.setPartyName( candidatePartyPartyName( candidate ) );
+        candidateDto.setElectionName( candidateElectionElectionName( candidate ) );
+        candidateDto.setCandidateId( candidate.getCandidateId() );
+        candidateDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
+        candidateDto.setCandidateSSN( candidate.getCandidateSSN() );
+        candidateDto.setDateOfBirth( candidate.getDateOfBirth() );
+        candidateDto.setGender( genderToGender( candidate.getGender() ) );
+        candidateDto.setMaritalStatus( maritalStatusToMaritalStatus( candidate.getMaritalStatus() ) );
+        candidateDto.setNoOfChildren( candidate.getNoOfChildren() );
+        candidateDto.setSpouseName( candidate.getSpouseName() );
+        candidateDto.setResidentialAddress( candidateAddressToCandidateAddress( candidate.getResidentialAddress() ) );
+        candidateDto.setMailingAddress( candidateAddressToCandidateAddress( candidate.getMailingAddress() ) );
+        candidateDto.setStateName( candidate.getStateName() );
+        candidateDto.setCandidateEmail( candidate.getCandidateEmail() );
+        candidateDto.setCandidateImage( candidate.getCandidateImage() );
+        candidateDto.setCandidateSignature( candidate.getCandidateSignature() );
 
-        return candidateDTO;
+        return candidateDto;
     }
 
     @Override
-    public Candidate toCandidate(CandidateDTO candidateDTO) {
-        if ( candidateDTO == null ) {
+    public Candidate toCandidate(CandidateDto candidateDto) {
+        if ( candidateDto == null ) {
             return null;
         }
 
         Candidate candidate = new Candidate();
 
-        candidate.setCandidateId( candidateDTO.getCandidateId() );
-        candidate.setCandidateName( candidateDTO.getCandidateName() );
-        candidate.setCandidateSSN( candidateDTO.getCandidateSSN() );
-        candidate.setDateOfBirth( candidateDTO.getDateOfBirth() );
-        candidate.setGender( candidateDTO.getGender() );
-        candidate.setCandidateImage( candidateDTO.getCandidateImage() );
-        candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
-        candidate.setNoOfChildren( candidateDTO.getNoOfChildren() );
-        candidate.setSpouseName( candidateDTO.getSpouseName() );
-        candidate.setStateName( candidateDTO.getStateName() );
-        candidate.setCandidateEmail( candidateDTO.getCandidateEmail() );
-        candidate.setResidentialAddress( candidateDTO.getResidentialAddress() );
-        candidate.setMailingAddress( candidateDTO.getMailingAddress() );
-        candidate.setBankDetails( candidateDTO.getBankDetails() );
-        candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
+        candidate.setCandidateId( candidateDto.getCandidateId() );
+        candidate.setCandidateName( candidateNameToCandidateName1( candidateDto.getCandidateName() ) );
+        candidate.setCandidateSSN( candidateDto.getCandidateSSN() );
+        candidate.setDateOfBirth( candidateDto.getDateOfBirth() );
+        candidate.setGender( genderToGender1( candidateDto.getGender() ) );
+        candidate.setCandidateImage( candidateDto.getCandidateImage() );
+        candidate.setMaritalStatus( maritalStatusToMaritalStatus1( candidateDto.getMaritalStatus() ) );
+        if ( candidateDto.getNoOfChildren() != null ) {
+            candidate.setNoOfChildren( candidateDto.getNoOfChildren() );
+        }
+        candidate.setSpouseName( candidateDto.getSpouseName() );
+        candidate.setStateName( candidateDto.getStateName() );
+        candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
+        candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
+        candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
+        candidate.setBankDetails( bankDetailsToBankDetails1( candidateDto.getBankDetails() ) );
+        candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
 
         return candidate;
     }
 
     @Override
-    public CandidateDetailsDTO toCandidateDetailsDTO(Candidate candidate) {
+    public com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddress candidateAddress) {
+        if ( candidateAddress == null ) {
+            return null;
+        }
+
+        com.ems.entities.CandidateAddress candidateAddress1 = new com.ems.entities.CandidateAddress();
+
+        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
+        candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
+        if ( candidateAddress.getZipcode() != null ) {
+            candidateAddress1.setZipcode( candidateAddress.getZipcode() );
+        }
+
+        return candidateAddress1;
+    }
+
+    @Override
+    public com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddressNoValidation candidateAddress) {
+        if ( candidateAddress == null ) {
+            return null;
+        }
+
+        com.ems.entities.CandidateAddress candidateAddress1 = new com.ems.entities.CandidateAddress();
+
+        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
+        candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
+        if ( candidateAddress.getZipcode() != null ) {
+            candidateAddress1.setZipcode( candidateAddress.getZipcode() );
+        }
+
+        return candidateAddress1;
+    }
+
+    @Override
+    public CandidateDetailsDto toCandidateDetailsDto(Candidate candidate) {
         if ( candidate == null ) {
             return null;
         }
 
-        CandidateDetailsDTO candidateDetailsDTO = new CandidateDetailsDTO();
+        CandidateDetailsDto candidateDetailsDto = new CandidateDetailsDto();
 
-        candidateDetailsDTO.setPartyName( candidatePartyPartyName( candidate ) );
-        candidateDetailsDTO.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDetailsDTO.setCandidateId( candidate.getCandidateId() );
-        candidateDetailsDTO.setCandidateName( candidate.getCandidateName() );
-        candidateDetailsDTO.setCandidateSSN( candidate.getCandidateSSN() );
-        candidateDetailsDTO.setGender( candidate.getGender() );
-        candidateDetailsDTO.setSpouseName( candidate.getSpouseName() );
-        candidateDetailsDTO.setStateName( candidate.getStateName() );
-        candidateDetailsDTO.setCandidateEmail( candidate.getCandidateEmail() );
+        candidateDetailsDto.setPartyName( candidatePartyPartyName( candidate ) );
+        candidateDetailsDto.setElectionName( candidateElectionElectionName( candidate ) );
+        candidateDetailsDto.setCandidateId( candidate.getCandidateId() );
+        candidateDetailsDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
+        candidateDetailsDto.setCandidateSSN( candidate.getCandidateSSN() );
+        candidateDetailsDto.setGender( genderToGender( candidate.getGender() ) );
+        candidateDetailsDto.setSpouseName( candidate.getSpouseName() );
+        candidateDetailsDto.setStateName( candidate.getStateName() );
+        candidateDetailsDto.setCandidateEmail( candidate.getCandidateEmail() );
 
-        return candidateDetailsDTO;
+        return candidateDetailsDto;
     }
 
     @Override
-    public void updateCandidateFromDTO(CandidateDTO candidateDTO, Candidate candidate) {
-        if ( candidateDTO == null ) {
+    public void updateCandidateFromDto(CandidateUpdateDto candidateDto, Candidate candidate) {
+        if ( candidateDto == null ) {
             return;
         }
 
-        if ( candidateDTO.getCandidateId() != null ) {
-            candidate.setCandidateId( candidateDTO.getCandidateId() );
+        if ( candidateDto.getCandidateId() != null ) {
+            candidate.setCandidateId( candidateDto.getCandidateId() );
         }
-        if ( candidateDTO.getCandidateName() != null ) {
+        if ( candidateDto.getCandidateName() != null ) {
             if ( candidate.getCandidateName() == null ) {
                 candidate.setCandidateName( new CandidateName() );
             }
-            updateCandidateNameFromDTO( candidateDTO.getCandidateName(), candidate.getCandidateName() );
+            candidateNameNoValidationToCandidateName( candidateDto.getCandidateName(), candidate.getCandidateName() );
         }
-        if ( candidateDTO.getCandidateSSN() != null ) {
-            candidate.setCandidateSSN( candidateDTO.getCandidateSSN() );
+        if ( candidateDto.getCandidateSSN() != null ) {
+            candidate.setCandidateSSN( candidateDto.getCandidateSSN() );
         }
-        if ( candidateDTO.getDateOfBirth() != null ) {
-            candidate.setDateOfBirth( candidateDTO.getDateOfBirth() );
+        if ( candidateDto.getDateOfBirth() != null ) {
+            candidate.setDateOfBirth( candidateDto.getDateOfBirth() );
         }
-        if ( candidateDTO.getGender() != null ) {
-            candidate.setGender( candidateDTO.getGender() );
+        if ( candidateDto.getGender() != null ) {
+            candidate.setGender( genderToGender1( candidateDto.getGender() ) );
         }
-        if ( candidateDTO.getCandidateImage() != null ) {
-            candidate.setCandidateImage( candidateDTO.getCandidateImage() );
+        if ( candidateDto.getCandidateImage() != null ) {
+            candidate.setCandidateImage( candidateDto.getCandidateImage() );
         }
-        if ( candidateDTO.getMaritialStatus() != null ) {
-            candidate.setMaritialStatus( candidateDTO.getMaritialStatus() );
+        if ( candidateDto.getMaritalStatus() != null ) {
+            candidate.setMaritalStatus( maritalStatusToMaritalStatus1( candidateDto.getMaritalStatus() ) );
         }
-        candidate.setNoOfChildren( candidateDTO.getNoOfChildren() );
-        if ( candidateDTO.getSpouseName() != null ) {
-            candidate.setSpouseName( candidateDTO.getSpouseName() );
+        if ( candidateDto.getNoOfChildren() != null ) {
+            candidate.setNoOfChildren( candidateDto.getNoOfChildren() );
         }
-        if ( candidateDTO.getStateName() != null ) {
-            candidate.setStateName( candidateDTO.getStateName() );
+        if ( candidateDto.getSpouseName() != null ) {
+            candidate.setSpouseName( candidateDto.getSpouseName() );
         }
-        if ( candidateDTO.getCandidateEmail() != null ) {
-            candidate.setCandidateEmail( candidateDTO.getCandidateEmail() );
+        if ( candidateDto.getStateName() != null ) {
+            candidate.setStateName( candidateDto.getStateName() );
         }
-        if ( candidateDTO.getResidentialAddress() != null ) {
-            candidate.setResidentialAddress( candidateDTO.getResidentialAddress() );
+        if ( candidateDto.getCandidateEmail() != null ) {
+            candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
         }
-        if ( candidateDTO.getMailingAddress() != null ) {
-            candidate.setMailingAddress( candidateDTO.getMailingAddress() );
+        if ( candidateDto.getResidentialAddress() != null ) {
+            candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
         }
-        if ( candidateDTO.getBankDetails() != null ) {
-            candidate.setBankDetails( candidateDTO.getBankDetails() );
+        if ( candidateDto.getMailingAddress() != null ) {
+            candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
         }
-        if ( candidateDTO.getCandidateSignature() != null ) {
-            candidate.setCandidateSignature( candidateDTO.getCandidateSignature() );
+        if ( candidateDto.getBankDetails() != null ) {
+            if ( candidate.getBankDetails() == null ) {
+                candidate.setBankDetails( new BankDetails() );
+            }
+            bankDetailsNoValidationToBankDetails( candidateDto.getBankDetails(), candidate.getBankDetails() );
+        }
+        if ( candidateDto.getCandidateSignature() != null ) {
+            candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
         }
     }
 
     @Override
-    public void updateCandidateNameFromDTO(CandidateName newName, CandidateName existingName) {
+    public void updateCandidateNameFromDto(CandidateName newName, CandidateName existingName) {
         if ( newName == null ) {
             return;
         }
@@ -172,32 +220,12 @@ public class CandidateMapperImpl implements CandidateMapper {
     }
 
     @Override
-    public Election toElection(ElectionSortDTO electionSortDTO) {
-        if ( electionSortDTO == null ) {
-            return null;
-        }
-
-        Election election = new Election();
-
-        election.setElectionId( electionSortDTO.getElectionId() );
-        election.setElectionName( electionSortDTO.getElectionName() );
-        election.setElectionType( electionSortDTO.getElectionType() );
-        if ( electionSortDTO.getElectionDate() != null ) {
-            election.setElectionDate( LocalDateTime.ofInstant( electionSortDTO.getElectionDate().toInstant(), ZoneOffset.UTC ).toLocalDate() );
-        }
-        election.setElectionState( electionSortDTO.getElectionState() );
-        election.setTotalSeats( electionSortDTO.getTotalSeats() );
-
-        return election;
-    }
-
-    @Override
-    public org.openapitools.model.ElectionSortDTO toElectionSortDTO(Election election) {
+    public ElectionSortDTO toElectionSortDTO(Election election) {
         if ( election == null ) {
             return null;
         }
 
-        org.openapitools.model.ElectionSortDTO electionSortDTO = new org.openapitools.model.ElectionSortDTO();
+        ElectionSortDTO electionSortDTO = new ElectionSortDTO();
 
         if ( election.getElectionId() != null ) {
             electionSortDTO.setElectionId( election.getElectionId().intValue() );
@@ -211,20 +239,18 @@ public class CandidateMapperImpl implements CandidateMapper {
         return electionSortDTO;
     }
 
-    @Override
-    public CandidateByPartyDTO toCandidateByPartyDTO(Candidate candidate) {
-        if ( candidate == null ) {
+    protected org.openapitools.model.BankDetails bankDetailsToBankDetails(BankDetails bankDetails) {
+        if ( bankDetails == null ) {
             return null;
         }
 
-        CandidateByPartyDTO candidateByPartyDTO = new CandidateByPartyDTO();
+        org.openapitools.model.BankDetails bankDetails1 = new org.openapitools.model.BankDetails();
 
-        candidateByPartyDTO.setCandidateName( candidate.getCandidateName() );
-        candidateByPartyDTO.setResidentialAddress( candidate.getResidentialAddress() );
-        candidateByPartyDTO.setMailingAddress( candidate.getMailingAddress() );
-        candidateByPartyDTO.setGender( candidate.getGender() );
+        bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
+        bankDetails1.setBankName( bankDetails.getBankName() );
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
 
-        return candidateByPartyDTO;
+        return bankDetails1;
     }
 
     private String candidatePartyPartyName(Candidate candidate) {
@@ -241,5 +267,174 @@ public class CandidateMapperImpl implements CandidateMapper {
             return null;
         }
         return election.getElectionName();
+    }
+
+    protected org.openapitools.model.CandidateName candidateNameToCandidateName(CandidateName candidateName) {
+        if ( candidateName == null ) {
+            return null;
+        }
+
+        org.openapitools.model.CandidateName candidateName1 = new org.openapitools.model.CandidateName();
+
+        candidateName1.setFirstName( candidateName.getFirstName() );
+        candidateName1.setMiddleName( candidateName.getMiddleName() );
+        candidateName1.setLastName( candidateName.getLastName() );
+
+        return candidateName1;
+    }
+
+    protected Gender genderToGender(com.ems.entities.constants.Gender gender) {
+        if ( gender == null ) {
+            return null;
+        }
+
+        Gender gender1;
+
+        switch ( gender ) {
+            case MALE: gender1 = Gender.MALE;
+            break;
+            case FEMALE: gender1 = Gender.FEMALE;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
+        }
+
+        return gender1;
+    }
+
+    protected org.openapitools.model.MaritalStatus maritalStatusToMaritalStatus(MaritalStatus maritalStatus) {
+        if ( maritalStatus == null ) {
+            return null;
+        }
+
+        org.openapitools.model.MaritalStatus maritalStatus1;
+
+        switch ( maritalStatus ) {
+            case SINGLE: maritalStatus1 = org.openapitools.model.MaritalStatus.SINGLE;
+            break;
+            case MARRIED: maritalStatus1 = org.openapitools.model.MaritalStatus.MARRIED;
+            break;
+            case DIVORCED: maritalStatus1 = org.openapitools.model.MaritalStatus.DIVORCED;
+            break;
+            case WIDOWED: maritalStatus1 = org.openapitools.model.MaritalStatus.WIDOWED;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + maritalStatus );
+        }
+
+        return maritalStatus1;
+    }
+
+    protected CandidateAddress candidateAddressToCandidateAddress(com.ems.entities.CandidateAddress candidateAddress) {
+        if ( candidateAddress == null ) {
+            return null;
+        }
+
+        CandidateAddress candidateAddress1 = new CandidateAddress();
+
+        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
+        candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
+        candidateAddress1.setZipcode( candidateAddress.getZipcode() );
+
+        return candidateAddress1;
+    }
+
+    protected CandidateName candidateNameToCandidateName1(org.openapitools.model.CandidateName candidateName) {
+        if ( candidateName == null ) {
+            return null;
+        }
+
+        CandidateName candidateName1 = new CandidateName();
+
+        candidateName1.setFirstName( candidateName.getFirstName() );
+        candidateName1.setMiddleName( candidateName.getMiddleName() );
+        candidateName1.setLastName( candidateName.getLastName() );
+
+        return candidateName1;
+    }
+
+    protected com.ems.entities.constants.Gender genderToGender1(Gender gender) {
+        if ( gender == null ) {
+            return null;
+        }
+
+        com.ems.entities.constants.Gender gender1;
+
+        switch ( gender ) {
+            case MALE: gender1 = com.ems.entities.constants.Gender.MALE;
+            break;
+            case FEMALE: gender1 = com.ems.entities.constants.Gender.FEMALE;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
+        }
+
+        return gender1;
+    }
+
+    protected MaritalStatus maritalStatusToMaritalStatus1(org.openapitools.model.MaritalStatus maritalStatus) {
+        if ( maritalStatus == null ) {
+            return null;
+        }
+
+        MaritalStatus maritalStatus1;
+
+        switch ( maritalStatus ) {
+            case SINGLE: maritalStatus1 = MaritalStatus.SINGLE;
+            break;
+            case MARRIED: maritalStatus1 = MaritalStatus.MARRIED;
+            break;
+            case DIVORCED: maritalStatus1 = MaritalStatus.DIVORCED;
+            break;
+            case WIDOWED: maritalStatus1 = MaritalStatus.WIDOWED;
+            break;
+            default: throw new IllegalArgumentException( "Unexpected enum constant: " + maritalStatus );
+        }
+
+        return maritalStatus1;
+    }
+
+    protected BankDetails bankDetailsToBankDetails1(org.openapitools.model.BankDetails bankDetails) {
+        if ( bankDetails == null ) {
+            return null;
+        }
+
+        BankDetails bankDetails1 = new BankDetails();
+
+        bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
+        bankDetails1.setBankName( bankDetails.getBankName() );
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
+
+        return bankDetails1;
+    }
+
+    protected void candidateNameNoValidationToCandidateName(CandidateNameNoValidation candidateNameNoValidation, CandidateName mappingTarget) {
+        if ( candidateNameNoValidation == null ) {
+            return;
+        }
+
+        if ( candidateNameNoValidation.getFirstName() != null ) {
+            mappingTarget.setFirstName( candidateNameNoValidation.getFirstName() );
+        }
+        if ( candidateNameNoValidation.getMiddleName() != null ) {
+            mappingTarget.setMiddleName( candidateNameNoValidation.getMiddleName() );
+        }
+        if ( candidateNameNoValidation.getLastName() != null ) {
+            mappingTarget.setLastName( candidateNameNoValidation.getLastName() );
+        }
+    }
+
+    protected void bankDetailsNoValidationToBankDetails(BankDetailsNoValidation bankDetailsNoValidation, BankDetails mappingTarget) {
+        if ( bankDetailsNoValidation == null ) {
+            return;
+        }
+
+        if ( bankDetailsNoValidation.getBankDetailsId() != null ) {
+            mappingTarget.setBankDetailsId( bankDetailsNoValidation.getBankDetailsId() );
+        }
+        if ( bankDetailsNoValidation.getBankName() != null ) {
+            mappingTarget.setBankName( bankDetailsNoValidation.getBankName() );
+        }
+        if ( bankDetailsNoValidation.getBankAddress() != null ) {
+            mappingTarget.setBankAddress( bankDetailsNoValidation.getBankAddress() );
+        }
     }
 }

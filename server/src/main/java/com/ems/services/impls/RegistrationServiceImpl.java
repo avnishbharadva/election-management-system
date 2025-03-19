@@ -40,7 +40,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                     user.getOfficerId(),
                     user.getRole().name());
 
-            return new AuthResponseDTO(token, "Login successful");
+            return new AuthResponseDTO( "Login successful" , token);
 
         } catch (BadCredentialsException e) {
             log.warn("Invalid login credentials for email: {}", loginForm.getEmail());

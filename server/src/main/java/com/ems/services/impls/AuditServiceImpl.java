@@ -11,8 +11,8 @@ import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.AuditDataDTO;
-import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-//@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
+@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
     private final AuditRepository auditRepository;
@@ -158,14 +158,6 @@ public class AuditServiceImpl implements AuditService {
     }
 
     private static Audit getAudit(Voter newVoter, List<Map<String, Object>> fieldList) {
-//        Map<String,Object> voterData = Map.ofEntries(
-//                Map.entry("voterId", newVoter.getVoterId()),
-//                Map.entry("dateOfBirth", newVoter.getDateOfBirth()),
-//                Map.entry("ssnNumber", newVoter.getSsnNumber()),
-//                Map.entry("dmvNumber", newVoter.getDmvNumber()),
-//                Map.entry("email", newVoter.getEmail())
-//        );
-
         Audit audit = new Audit();
         audit.setTableName("Voter");
         audit.setVoterId(newVoter.getVoterId());

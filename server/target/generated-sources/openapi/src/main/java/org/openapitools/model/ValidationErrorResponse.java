@@ -21,15 +21,26 @@ import jakarta.annotation.Generated;
 /**
  * ValidationErrorResponse
  */
-@lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:03.599388100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:34.443208300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ValidationErrorResponse {
 
   private String message;
 
   @Valid
   private List<@Valid ErrorItem> errors = new ArrayList<>();
+
+  public ValidationErrorResponse() {
+    super();
+  }
+
+  /**
+   * Constructor with only required parameters
+   */
+  public ValidationErrorResponse(String message, List<@Valid ErrorItem> errors) {
+    this.message = message;
+    this.errors = errors;
+  }
 
   public ValidationErrorResponse message(String message) {
     this.message = message;
@@ -40,8 +51,8 @@ public class ValidationErrorResponse {
    * Get message
    * @return message
    */
-  
-  @Schema(name = "message", example = "Validation failed for request.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull 
+  @Schema(name = "message", example = "Validation failed for request.", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("message")
   public String getMessage() {
     return message;
@@ -68,8 +79,8 @@ public class ValidationErrorResponse {
    * Get errors
    * @return errors
    */
-  @Valid 
-  @Schema(name = "errors", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull @Valid 
+  @Schema(name = "errors", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("errors")
   public List<@Valid ErrorItem> getErrors() {
     return errors;

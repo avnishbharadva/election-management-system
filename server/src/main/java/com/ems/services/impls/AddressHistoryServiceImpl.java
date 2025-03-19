@@ -8,6 +8,7 @@ import com.ems.services.AddressHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-//@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
+@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
 public class AddressHistoryServiceImpl implements AddressHistoryService {
 
     private final GlobalMapper globalMapper;

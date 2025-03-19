@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:03.170275500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:33.048834700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Authentication", description = "the Authentication API")
 public interface OfficersApi {

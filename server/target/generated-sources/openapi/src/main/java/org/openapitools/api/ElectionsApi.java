@@ -8,7 +8,7 @@ package org.openapitools.api;
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
 import org.openapitools.model.ModelApiResponse;
-import org.openapitools.model.ValidationErrorResponse;
+import org.openapitools.model.ValidationErrorResponseDTO;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T19:12:02.709478800+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-18T23:35:32.209238700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 @Validated
 @Tag(name = "Election", description = "the Election API")
 public interface ElectionsApi {
@@ -269,7 +269,7 @@ public interface ElectionsApi {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ModelApiResponse.class))
             }),
             @ApiResponse(responseCode = "400", description = "Invalid request data", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationErrorResponse.class))
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationErrorResponseDTO.class))
             }),
             @ApiResponse(responseCode = "404", description = "Election not found")
         }

@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-18T19:12:13+0530",
+    date = "2025-03-18T23:37:18+0530",
     comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -438,6 +438,8 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         addressHistory.setCreatedAt( address.getCreatedAt() );
         addressHistory.setUpdatedAt( address.getUpdatedAt() );
+        addressHistory.setCreatedBy( address.getCreatedBy() );
+        addressHistory.setUpdatedBy( address.getUpdatedBy() );
         addressHistory.setAddressLine( address.getAddressLine() );
         addressHistory.setAptNumber( address.getAptNumber() );
         addressHistory.setCity( address.getCity() );
@@ -459,6 +461,8 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         nameHistory.setCreatedAt( voter.getCreatedAt() );
         nameHistory.setUpdatedAt( voter.getUpdatedAt() );
+        nameHistory.setCreatedBy( voter.getCreatedBy() );
+        nameHistory.setUpdatedBy( voter.getUpdatedBy() );
         nameHistory.setVoterId( voter.getVoterId() );
         nameHistory.setFirstName( voter.getFirstName() );
         nameHistory.setMiddleName( voter.getMiddleName() );
