@@ -79,9 +79,9 @@ const ElectionData = ({ handleOpenModel }: any) => {
         </Box>
       ) : (
         <>
-          <Table stickyHeader>
+          <Table stickyHeader >
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow >
                 <TableCell><b>Election Name</b></TableCell>
                 <TableCell><b>Election Type</b></TableCell>
                 <TableCell><b>Election Date</b></TableCell>

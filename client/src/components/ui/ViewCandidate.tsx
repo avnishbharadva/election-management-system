@@ -205,7 +205,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
                 )}
               </DialogContent>
         
-              {/* Close Button */}
+
               <DialogActions sx={{ justifyContent: "center", padding: "10px", backgroundColor: "#f1f1f1" }}>
                 <Button onClick={handleClose} variant="contained" color="primary">
                   Close

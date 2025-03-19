@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Button, Box } from "@mui/material";
+import { Button } from "@mui/material";
 import ElectionForm from "../ui/ElectionForm";
 import ElectionData from "../ui/ElectionData";
 import Model from "../ui/Model";
+import { FlexBox } from "../../style/ElectionCss";
+import { FlexBoxCenter } from "../../style/CommanStyle";
 const AddElection = () => {
   const [open, setOpen] = useState(false);
   const [selectedElection, setSelectedElection] = useState(null);
@@ -18,7 +20,7 @@ const AddElection = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection:'column', justifyContent: "center", alignItems: "flex-end" }}>
+    <FlexBox>
       <Button onClick={() => setOpen(true)} variant="contained" color="primary">
         Add Election
       </Button>
@@ -26,11 +28,14 @@ const AddElection = () => {
       <ElectionData handleOpenModel={handleOpenModel} />
 
       <Model open={open} handleClose={handleClose}>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-          <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
-        </Box>
+        <FlexBoxCenter>
+          <ElectionForm
+            selectedElection={selectedElection}
+            closeModal={handleClose}
+          />
+        </FlexBoxCenter>
       </Model>
-    </Box>
+    </FlexBox>
   );
 };
 

@@ -5,11 +5,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -21,7 +19,6 @@ import {
 import { RootState, AppDispatch } from "../../store/app/store";
 import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
 import Model from "../ui/Model";
-import CandidateForm from "../ui/CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,13 +26,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
-import DeleteCandidateDialog from "./DeleteDialog";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
 import CandidateContainer from "./CandidateForm/CandidatePage";
 import DeleteDialog from "./DeleteDialog";
+import { TableContent } from "../../style/CandidateFormCss";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -47,7 +44,7 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
- console.log(allCandidates)
+ 
   const ITEM_HEIGHT = 48;
   const [modalData, setModalData] = useState<ModalData>({
     open: false,
@@ -214,19 +211,8 @@ const CandidateData = () => {
             ) : notFound ? (
               <TableRow>
                 <TableCell colSpan={9} align="center">
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 2,
-                      padding: 3,
-                      borderRadius: 2,
-                      backgroundColor: "#f9f9f9",
-                      boxShadow: 1,
-                    }}
-                  >
+                  <TableContent>
+                    <Box>
                     <PersonOffIcon sx={{ fontSize: 48, color: "#b0bec5" }} />
                     <Typography variant="h6" color="textSecondary">
                       No Candidate Found!
@@ -244,7 +230,8 @@ const CandidateData = () => {
                     >
                       + Add Candidate
                     </Button>
-                  </Box>
+                    </Box>
+                  </TableContent>
                 </TableCell>
               </TableRow>
             ) : (

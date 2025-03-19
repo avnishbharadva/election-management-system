@@ -1,7 +1,7 @@
 import {  Toolbar, Typography, IconButton } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu"; 
-import { StyledAppBar, StyledButton } from "../../style/NavbarCss";
+import { ResponsiveTypography, StyledAppBar, StyledButton } from "../../style/NavbarCss";
 import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
@@ -24,9 +24,9 @@ export default function Navbar({ handleDrawerToggle }: NavbarProps) {
           <MenuIcon />
         </IconButton>
 
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Election Management System
-        </Typography>
+        <ResponsiveTypography>
+  Election Management System
+</ResponsiveTypography>
         <Typography variant="h4">
           <AccountCircleIcon />
         </Typography>

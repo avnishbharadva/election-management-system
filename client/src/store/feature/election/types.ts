@@ -10,8 +10,7 @@ export interface ElectionState {
   loading: boolean;
   error: string | null;
   success: boolean;
-  // election?: any[];
-  elections?: any[], 
+  elections?: { elections: any[] }, 
   currentPage: number;
   totalPages:number;
   totalRecords:number;
