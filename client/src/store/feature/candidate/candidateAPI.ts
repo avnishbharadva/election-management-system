@@ -93,11 +93,6 @@ export const updateCandidateData = createAsyncThunk(
       const response = await axiosInstance.put(
         `/candidates/${candidateId}`,
         candidateData, 
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
       );
       return response.data;
     } catch (error: any) {
@@ -114,7 +109,7 @@ export const deleteCandidateById = createAsyncThunk(
       const response = await axiosInstance.delete(
         `/candidates/${candidateId}`
       );
-      toast.success("Candidate Deleted successfully!");     
+      toast.success(response.data.message);     
       return response.data;
     } catch (error: any) { 
       toast.error("Something Went Wrong!");

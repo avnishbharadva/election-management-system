@@ -28,9 +28,8 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   updatedData = {},
 }) => {
   const handleConfirmClick = () => {
-    handleConfirm(updatedData);  // ✅ Ensure updatedData is passed
+    handleConfirm(updatedData);
   };
-  // Function to deeply compare objects and track only updated fields
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
   
@@ -134,13 +133,3 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
 };
 
 export default UpdateDialog;
-
-
-
-
-
-
-
-
-
-
