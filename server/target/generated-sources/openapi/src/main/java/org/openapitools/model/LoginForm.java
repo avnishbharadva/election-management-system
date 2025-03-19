@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T15:26:49.334938800+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T15:40:48.087886500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class LoginForm {
 
   private String email;
