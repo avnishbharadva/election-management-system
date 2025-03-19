@@ -1,4 +1,4 @@
-import { Box, Button, styled } from "@mui/material";
+import { Box, Button, styled, Typography } from "@mui/material";
 export const FlexBoxColumn = styled(Box)({
 display:"flex",
 justifyContent:"center",
@@ -6,7 +6,11 @@ alignItems:"center",
 flexDirection:"column"
 })
 
-
+export const FlexBoxCenter = styled(Box)({
+  display:"flex",
+  justifyContent:"center",
+  alignItems:"center",
+  })
 
   export const CommanBox = styled(Box)({
     display:"flex",
@@ -29,6 +33,9 @@ flexDirection:"column"
     },
   });
 
-  export const Form = styled('form')({
-
+  export const BreadCrumbsName = styled(Typography)({
+    color: "#002F57",
+    fontWeight: "bold",
+    textTransform: "capitalize",
+    padding: "6px",
   })

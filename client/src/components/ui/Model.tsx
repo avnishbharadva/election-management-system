@@ -4,18 +4,18 @@ import { ModelBox } from "../../style/ModelCss";
 
 interface ModalProps {
   open: boolean;
-  handleClose: () => void;
+  handleclose: () => void;
   children: React.ReactNode;
 }
 
-const Model: React.FC<ModalProps> = ({ open, handleClose, children }) => {
+const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
   return (
     <Modal
       keepMounted
       open={open}
       aria-labelledby="modal-title"
       BackdropProps={{
-        onClick: (e) => e.stopPropagation(), // Prevent closing modal on backdrop click
+        onClick: (e) => e.stopPropagation(), 
       }}
       sx={{
         display: "flex",
@@ -25,7 +25,7 @@ const Model: React.FC<ModalProps> = ({ open, handleClose, children }) => {
     >
       <ModelBox>
         {React.isValidElement(children) &&
-          React.cloneElement(children, { handleClose } as any)}
+          React.cloneElement(children, { handleclose } as any)}
       </ModelBox>
     </Modal>
   );
