@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -58,15 +59,17 @@ public class Voter extends AuditEntity {
     @JoinColumn(name = "party_id")
     private Party party;
 
-    @OneToMany(mappedBy = "voter")
-    @JsonManagedReference("address-voter")
-    @ToString.Exclude
-    private List<Address> address;
+    @OneToOne
+    @JoinColumn(name = "residential_address")
+    private Address residentialAddress;
+
+    @OneToOne
+    @JoinColumn(name = "mailing_address")
+    private Address mailingAddress;
 
     private String image;
 
     private String signature;
-
 
     @ManyToOne
     @JoinColumn(name = "voter_status_id")
@@ -79,4 +82,25 @@ public class Voter extends AuditEntity {
         }
     }
 
+    public Long getPartyId() {
+        return (party != null) ? party.getPartyId() : null;
+    }
+
+    public Long getVoterStatusId() {
+        return (voterStatus != null) ? voterStatus.getStatusId() : null;
+    }
+
+    public String getGenderAsString() {
+        return (gender != null) ? gender.name() : null;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return super.getCreatedAt();
+
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return super.getUpdatedAt();
+    }
 }
+

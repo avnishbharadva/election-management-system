@@ -1,45 +1,19 @@
 package com.ems.handlers;
 
+import lombok.extern.slf4j.Slf4j;
 import com.ems.dtos.ErrorResponse;
-import com.ems.exceptions.DataAlreadyExistException;
-import com.ems.exceptions.DataNotFoundException;
-import com.ems.exceptions.FileProcessingException;
-import com.ems.exceptions.IllegalCredentials;
-import org.openapitools.model.ErrorItem;
-import org.openapitools.model.ValidationErrorResponse;
+import com.ems.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-
-        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        FieldError::getDefaultMessage,
-                        (existing, replacement) -> existing // Keep the first error message encountered
-                ));
-
-        List<ErrorItem> errorItemList = fieldErrors.entrySet().stream()
-                .map(entry -> new ErrorItem(entry.getKey(), entry.getValue()))
-                .toList();
-
-        return new ResponseEntity<>(
-                new ValidationErrorResponse("Bad request, validation failed for fields", errorItemList),
-                HttpStatus.BAD_REQUEST
-        );
-    }
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
@@ -50,6 +24,13 @@ public class GlobalExceptionHandler {
         candidateErrorResponse.setMessage(String.valueOf(dataNotFoundException.getMessage()));
         candidateErrorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(candidateErrorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<org.openapitools.model.ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex){
+        log.info("Method argument not valid exception occurred error message: {}", ex.getMessage());
+        var errorItemList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> new org.openapitools.model.ErrorItem(fieldError.getField(), fieldError.getDefaultMessage())).toList();
+        return new ResponseEntity<>(new org.openapitools.model.ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({DataAlreadyExistException.class})
