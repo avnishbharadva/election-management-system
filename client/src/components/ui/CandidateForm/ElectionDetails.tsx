@@ -96,7 +96,6 @@ const ElectionDetails = ({ control, errors, register }: any) => {
           />
           {errors.partyId && <FormHelperText>{errors.partyId.message}</FormHelperText>}
         </FormControl>
-
         <TextField
           fullWidth
           label="State"

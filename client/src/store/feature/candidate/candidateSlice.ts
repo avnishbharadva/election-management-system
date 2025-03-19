@@ -12,6 +12,7 @@ import {  CandidateState } from './types';
     error: null,
     success: false,
     candidate:null,
+    candidates: [],
     currentPage: 0,
     totalPages:0,
     totalRecords:0,
@@ -26,7 +27,7 @@ const candidateSlice = createSlice({
     reducers: {
       setSearchQuery: (state, action: PayloadAction<string>) => {
         state.searchQuery = action.payload;
-        state.notFound = false; // Reset on new search
+        state.notFound = false; 
       },
       clearSearchQuery: (state) => {
         state.searchQuery = "";
@@ -42,7 +43,7 @@ const candidateSlice = createSlice({
         );
       },
       resetFilteredCandidate: (state) => {
-        state.filteredCandidate = null;  // Reset to show full list
+        state.filteredCandidate = null;  
       },
       setSearchedSSN: (state, action: PayloadAction<string>) => {
         state.searchedSSN = action.payload;
@@ -58,7 +59,7 @@ const candidateSlice = createSlice({
         state.sortDir = action.payload.sortDir;
       },
       clearCandidate(state) {
-        state.candidate = null; // Reset the candidate state
+        state.candidate = null;
       },
       resetState: (state) => {
         state.loading = false;
@@ -69,19 +70,27 @@ const candidateSlice = createSlice({
     },
     extraReducers: (builder) => {
       builder
-        // Fetch all candidates on mount
         .addCase(fetchCandidates.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
         .addCase(fetchCandidates.fulfilled, (state, action) => {
-          state.allCandidates = action.payload;
-          state.currentPage = action.payload.currentPage;
-          state.totalPages = action.payload.totalPages;
-          state.totalRecords = action.payload.totalRecords;
-          state.perPage = action.payload.perPage;
+          console.log("Redux API Response:", action.payload); // ✅ Debugging
+        
+          if (action.payload && action.payload.content) {
+            state.candidates = action.payload.content; // ✅ Correctly assigning candidates
+            state.currentPage = action.payload.pageable?.pageNumber || 0;
+            state.perPage = action.payload.pageable?.pageSize || 5;
+            state.totalRecords = action.payload.totalElements || 0;
+            state.totalPages = action.payload.totalPages || 0;
+          } else {
+            console.error("Unexpected API response format:", action.payload);
+            state.candidates = [];
+          }
+        
           state.loading = false;
         })
+        
         .addCase(fetchCandidates.rejected, (state, action) => {
           state.loading = false;
           state.error = action.error.message || "Error fetching candidates";
@@ -94,14 +103,14 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
           if (action.payload) {
-            state.filteredCandidate = [action.payload]; // Ensure it's an array
+            state.filteredCandidate = [action.payload]; 
           } else {
             state.filteredCandidate = [];
           }
           
           state.notFound = !action.payload;
           state.loading = false;
-          state.searchedSSN = state.searchQuery; // Make sure searched SSN is stored
+          state.searchedSSN = state.searchQuery; 
         })       
         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
           state.filteredCandidate = null;
@@ -154,14 +163,12 @@ const candidateSlice = createSlice({
           state.loading = false;
           state.error = action.payload as string || "Error updating candidate";
         })
-        //Delete candidate
         .addCase(deleteCandidateById.pending, (state) =>{
           state.loading = true;
           state.success = false;
           state.error = null;
         })
-        .addCase(deleteCandidateById.fulfilled, (state, action)=>{
-          // state.allCandidates = state.allCandidates.filter((candidate) => candidate.candidateId !== action.payload);
+        .addCase(deleteCandidateById.fulfilled, (state)=>{
           state.loading = false;
           state.success = true;
         })
@@ -175,3 +182,4 @@ const candidateSlice = createSlice({
 
   export const { clearCandidate,setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
   export default candidateSlice.reducer;
+

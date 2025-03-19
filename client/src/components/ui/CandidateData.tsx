@@ -71,8 +71,7 @@ const CandidateData = () => {
     setSelectedCandidateId(candidateId);
   };
 
-  const handleClose = () => {
-    
+  const handleClose = () => {   
     setAnchorEl(null);
     setSelectedCandidateId(null);
   };
@@ -126,32 +125,52 @@ const CandidateData = () => {
 
   const handlePageChange = (_event: unknown, newPage: number) => {
     dispatch(setPage(newPage));
-    dispatch(fetchCandidates({ page: newPage, perPage }));
+    dispatch(fetchCandidates({ page: newPage, perPage, sortBy, sortDir }));
   };
   
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPerPage = parseInt(event.target.value, 10);
     dispatch(setPerPage(newPerPage));
-    dispatch(setPage(0)); 
-    dispatch(fetchCandidates({ page: 0, perPage: newPerPage }));
+    dispatch(setPage(0));
+    dispatch(fetchCandidates({ page: 0, perPage: newPerPage, sortBy, sortDir }));
   };
 
   const handleSort = (column: string) => {
     const isAsc = sortBy === column && sortDir === "asc";
-    const newOrder = isAsc ? "desc" : "asc";  
+    const newOrder = isAsc ? "desc" : "asc";
     dispatch(setSort({ sortBy: column, sortDir: newOrder }));
+    dispatch(fetchCandidates({ page: currentPage, perPage, sortBy: column, sortDir: newOrder }));
   };
-
+  
   useEffect(() => {
+    console.log("Fetching candidates with params:", { currentPage, perPage, sortBy, sortDir });
     dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
+  
+  // const candidatesToDisplay = useMemo(() => {
+  //   if (filteredCandidate?.length > 0) {
+  //     return filteredCandidate;
+  //   }
+  //   return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
+  // }, [ filteredCandidate, allCandidates]);
+
   const candidatesToDisplay = useMemo(() => {
-    if (filteredCandidate?.length > 0) {
-      return filteredCandidate;
+    if (filteredCandidate && filteredCandidate.length > 0) {
+      return filteredCandidate;  // Show searched candidate
+    } 
+    if (allCandidates?.candidates?.length > 0) {
+      return allCandidates.candidates; // Show all candidates if no search is performed
     }
-    return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
-  }, [ filteredCandidate, allCandidates]);
+    return [];  // No candidates found
+  }, [filteredCandidate, allCandidates]);
+  
+  
+  
+console.log("Redux State - allCandidates:", allCandidates);
+console.log("Redux State - filteredCandidate:", filteredCandidate);
+console.log("Redux State - candidatesToDisplay:", candidatesToDisplay);
+console.log("Redux State - totalRecords:", totalRecords);
 
   const renderSortableColumn = (label: string, field: string) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -306,8 +325,8 @@ const CandidateData = () => {
             zIndex: 10,
           }}
           component="div"
-          count={totalRecords} 
-          page={currentPage} 
+          count={totalRecords}
+          page={currentPage}
           rowsPerPage={perPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}

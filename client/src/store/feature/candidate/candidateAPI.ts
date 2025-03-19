@@ -8,11 +8,10 @@ export const fetchCandidates = createAsyncThunk(
   async ({ page = 0, perPage = 10, sortBy = "candidateId", sortDir = "asc" }: { page?: number; perPage?: number; sortBy?: string; sortDir?: string }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `/api/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
+        `/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
       );
       if(response.status === 200){
-
-        return response.data;
+        return response?.data?.data;
       }
       if(response.status === 404){
         return response.data.message;
@@ -29,7 +28,7 @@ export const fetchCandidateBySSN = createAsyncThunk(
   "candidate/fetchBySSN",
   async (candidateSSN: string, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/api/candidates/by-ssn/${candidateSSN}`);
+      const response = await axiosInstance.get(`/candidates/by-ssn/${candidateSSN}`);
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
@@ -44,7 +43,7 @@ export const addCandidate = createAsyncThunk(
   "candidate/addCandidate",
   async (formData: FormData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/api/candidates", formData);
+      const response = await axiosInstance.post("/candidates", formData);
       if (response.status === 200) {
         return response.data;
       } 
@@ -70,7 +69,7 @@ export const fetchCandidateById = createAsyncThunk(
   async (candidateId: number, { dispatch, rejectWithValue }) => {
     try {      
       const response = await axiosInstance.get(
-        `api/candidates/${candidateId}`
+        `/candidates/${candidateId}`
       );
       return response.data;
     } catch (error: any) {
@@ -91,7 +90,7 @@ export const updateCandidateData = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.put(
-        `api/candidates/${candidateId}`,
+        `/candidates/${candidateId}`,
         candidateData, 
         {
           headers: {
@@ -112,7 +111,7 @@ export const deleteCandidateById = createAsyncThunk(
   async (candidateId: number, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `/api/candidates/${candidateId}`
+        `/candidates/${candidateId}`
       );
       toast.success("Candidate Deleted successfully!");     
       return response.data;

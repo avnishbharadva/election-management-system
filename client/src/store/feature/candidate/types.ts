@@ -46,6 +46,7 @@ export interface CandidateState {
   error: string | null;
   success: boolean;
   candidate: any | null;
+  candidates: any[];
   searchedSSN:string | null;
   currentPage: number;
   totalPages:number;
@@ -82,33 +83,3 @@ export interface ModalData {
     selectedCandidate: Candidate | null;
   }
 
-  const defaultValues = {
-  candidateName: {
-    firstName: null,
-    middleName: null,
-    lastName: null,
-  },
-  gender: "",
-  dateOfBirth: "",
-  partyId: "",
-  candidateEmail: "",
-  candidateSSN: searchQuery, // Preserving searchQuery
-  maritalStatus: "",
-  noOfChildren: null,
-  spouseName: "",
-  stateName: "New York",
-  residentialAddress: {
-    street: "",
-    city: "",
-    zipcode: "",
-  },
-  mailingAddress: {
-    street: "",
-    city: "",
-    zipcode: "",
-  },
-  bankDetails: {
-    bankName: "",
-    bankAddress: "",
-  },
-};

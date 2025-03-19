@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Officer } from "./types";
-import axios from "axios";
 import axiosInstance from "../../app/axiosInstance";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export const officerLogin = createAsyncThunk('officer/login',async(offcierData:Officer,{rejectWithValue})=>{
     try {
-          const response =await axios.post("http://localhost:8082/authenticate",offcierData);
+          const response =await axios.post("http://localhost:8082/officers/authenticate",offcierData);
           if (response.status === 200) {
             const token = response.data.token;
             localStorage.setItem("token", token);
