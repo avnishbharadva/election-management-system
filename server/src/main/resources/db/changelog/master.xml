@@ -8,6 +8,7 @@
 
     <!-- Include other changeset files -->
     <include file="classpath:db/changelog/voter_status.xml"/>
+    <include file="classpath:db/changelog/state_officer_insert.xml"/>
 <!--    <include file="classpath:db/changelog/cahngelogset-002.xml"/>-->
 
 </databaseChangeLog>
