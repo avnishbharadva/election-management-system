@@ -6,7 +6,11 @@ alignItems:"center",
 flexDirection:"column"
 })
 
-
+export const FlexBoxCenter = styled(Box)({
+  display:"flex",
+  justifyContent:"center",
+  alignItems:"center",
+  })
 
   export const CommanBox = styled(Box)({
     display:"flex",

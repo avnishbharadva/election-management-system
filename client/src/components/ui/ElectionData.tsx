@@ -1,4 +1,4 @@
-import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,Box,CircularProgress,Menu,MenuItem,ListItemIcon, TablePagination} from "@mui/material";
+import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,CircularProgress,Menu,MenuItem,ListItemIcon, TablePagination} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import {useEffect, useState} from 'react';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import DeleteDialog from "./DeleteDialog";
+import { FlexBoxCenter } from "../../style/CommanStyle";
 
 const ElectionData = ({ handleOpenModel }: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -70,9 +71,9 @@ const ElectionData = ({ handleOpenModel }: any) => {
     <>
     <BoxTableContainer>
       {loading ? (
-        <Box>
+        <FlexBoxCenter sx={{height: 200}}>
           <CircularProgress />
-        </Box>
+        </FlexBoxCenter>
       ) : (
         <>
           <Table stickyHeader>

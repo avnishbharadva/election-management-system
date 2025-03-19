@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import {
   Box,
   TextField,
-  Button,
   CircularProgress,
   Alert,
-  IconButton,
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +14,7 @@ import { Row, Section, Title } from "../../style/CandidateFormCss";
 import UpdateDialog from "./UpdateDialog";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormValues } from "../../store/feature/election/types";
+import { CloseIconButton, ElectionButtonSection, ElectionFormContainer, ElectionFormWrapper, StyledButtonEle } from "../../style/ElectionCss";
 
 const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -83,27 +82,17 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
   };
   
   return (
-    <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
-
+    <ElectionFormWrapper>
       {loading && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
-      <Box
-          position="relative"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          marginBottom={"1rem"}
-        >
+      <ElectionFormContainer>
           <Title variant="h5" gutterBottom mt="5px">
             {selectedElection ?  "EDIT ELECTION" : "ADD ELECTION"}
           </Title>
-          <IconButton
-            onClick={handleClose}
-            sx={{ position: "absolute", right: '-1rem', top:'-2rem' }}
-          >
+          <CloseIconButton onClick={handleClose}>
             <CloseIcon />
-          </IconButton>
-        </Box>
+          </CloseIconButton>
+        </ElectionFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" flexDirection="column" gap={2}>
           <Section>
@@ -130,14 +119,14 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
               })}
             />
           </Section>
-          <Section sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , gap:'1rem'}}>
-            <Button type="submit" variant="contained" sx={{ mt: 2, bgcolor: "#1976d2", width: '10.5rem' }}>
+          <ElectionButtonSection>
+            <StyledButtonEle type="submit" variant="contained">
               {selectedElection ? "Update Election" : "Add Election"}
-            </Button>
-            <Button variant="contained" onClick={handleClose} sx={{ mt: 2, bgcolor: "#1976d2", width: '10.5rem' }}>
+            </StyledButtonEle>
+            <StyledButtonEle variant="contained" onClick={handleClose}>
               Cancel
-            </Button>
-          </Section>
+            </StyledButtonEle>
+          </ElectionButtonSection>
         </Box>
       </form>
       <ToastContainer position="top-right" autoClose={3000} />   
@@ -151,7 +140,7 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
           handleConfirm={handleConfirmUpdate}
         />
       )}
-    </Box>
+    </ElectionFormWrapper>
   );
 };
 

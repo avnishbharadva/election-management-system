@@ -143,7 +143,6 @@ const CandidateData = () => {
   };
   
   useEffect(() => {
-    console.log("Fetching candidates with params:", { currentPage, perPage, sortBy, sortDir });
     dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
@@ -155,11 +154,6 @@ const CandidateData = () => {
     return Array.isArray(allCandidates) ? allCandidates : allCandidates || [];
   }, [ filteredCandidate, allCandidates]);
   
-console.log("Redux State - allCandidates:", allCandidates);
-console.log("Redux State - filteredCandidate:", filteredCandidate);
-console.log("Redux State - candidatesToDisplay:", candidatesToDisplay);
-console.log("Redux State - totalRecords:", totalRecords);
-
   const renderSortableColumn = (label: string, field: string) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
       <b>{label}</b>

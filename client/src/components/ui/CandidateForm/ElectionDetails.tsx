@@ -26,8 +26,8 @@ const ElectionDetails = ({ control, errors, register }: any) => {
 
   const fetchParties = async () => {
     try {
-      const response = await axiosInstance.get<{ partyId: number; partyName: string }[]>("/party/getAll");
-      setParties(response.data || []);
+      const response = await axiosInstance.get<{ partyId: number; partyName: string }[]>("/party");
+      setParties(response?.data?.data || []);
     } catch (error) {
       console.error("Error fetching parties:", error);
       setParties([]);
@@ -78,7 +78,7 @@ const ElectionDetails = ({ control, errors, register }: any) => {
               {...field}
               labelId="party-label"
               label="Party"
-              value={parties.some(p => p.partyId === field.value) ? field.value : ""} // Ensures valid value
+              value={ field.value ?? ""} // Ensures valid value
               onOpen={() => setDropdownOpened(true)}
               onChange={(event) => field.onChange(event.target.value)}
             >
