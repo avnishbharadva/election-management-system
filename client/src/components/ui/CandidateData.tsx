@@ -298,7 +298,7 @@ console.log("Redux State - totalRecords:", totalRecords);
             )}
           </TableBody>
         </Table>
-          <Model open={modalData.open} handleClose={handleCloseModal}>
+          <Model open={modalData.open} handleclose={handleCloseModal}>
             <CandidateContainer
               handleClose={handleCloseModal} 
               selectedCandidate={modalData.selectedCandidate}

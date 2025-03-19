@@ -15,15 +15,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Row, Section, Title } from "../../style/CandidateFormCss";
 import UpdateDialog from "./UpdateDialog";
 import CloseIcon from "@mui/icons-material/Close";
-
-type FormValues = {
-  electionId: number;
-  electionName: string;
-  electionType: string;
-  electionDate: string;
-  electionState: string;
-  totalSeats: number;
-};
+import { FormValues } from "../../store/feature/election/types";
 
 const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -90,7 +82,6 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
     setOpenUpdateDialog(false);
   };
   
-
   return (
     <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
 
@@ -121,14 +112,12 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
               <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
             </Row>
           </Section>
-
           <Section>
             <Row>
               <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
               <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
             </Row>
           </Section>
-
           <Section sx={{ width: "10.5rem" }}>
             <TextField
               fullWidth
@@ -141,7 +130,6 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
               })}
             />
           </Section>
-
           <Section sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , gap:'1rem'}}>
             <Button type="submit" variant="contained" sx={{ mt: 2, bgcolor: "#1976d2", width: '10.5rem' }}>
               {selectedElection ? "Update Election" : "Add Election"}
@@ -152,9 +140,7 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
           </Section>
         </Box>
       </form>
-
-      <ToastContainer position="top-right" autoClose={3000} />
-    
+      <ToastContainer position="top-right" autoClose={3000} />   
       {selectedElection && (
         <UpdateDialog
           open={openUpdateDialog}

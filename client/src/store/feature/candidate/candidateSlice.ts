@@ -93,13 +93,13 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
           if (action.payload) {
-            state.filteredCandidate = [action.payload.data]; // Ensure it's an array
+            state.filteredCandidate = [action.payload.data]; 
           } else {
             state.filteredCandidate = [];
           }          
           state.notFound = !action.payload;
           state.loading = false;
-          state.searchedSSN = state.searchQuery; // Make sure searched SSN is stored
+          state.searchedSSN = state.searchQuery; 
         })       
         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
           state.filteredCandidate = null;

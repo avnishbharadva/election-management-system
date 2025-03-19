@@ -1,13 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import CandidateForm from "./CandidateForm";
-import { Candidate } from "../../../store/feature/candidate/types";
-
-interface CandidateContainerProps {
-  handleClose: () => void;
-  selectedCandidate: Candidate | null;
-  actionType: "edit" | "add" | null;
-}
+import { CandidateContainerProps } from "../../../store/feature/candidate/types";
 
 const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, selectedCandidate }) => {
   const [profilePic, setProfilePic] = useState<File | null>(null);

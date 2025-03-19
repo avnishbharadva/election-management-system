@@ -8,14 +8,7 @@ import {
   FlexCenter,
   DropzoneContainer,
 } from "../../../style/CandidateFormCss";
-
-interface UploadDocumentsProps {
-  profilePic: File | string | null;
-  signature: File | string | null;
-  onDropProfile: (acceptedFiles: File[]) => void;
-  onDropSignature: (acceptedFiles: File[]) => void;
-  editId: number | null;
-}
+import { UploadDocumentsProps } from "../../../store/feature/candidate/types";
 
 const UploadDocuments: React.FC<UploadDocumentsProps> = ({
   profilePic,

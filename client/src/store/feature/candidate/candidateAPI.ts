@@ -31,6 +31,7 @@ export const fetchCandidateBySSN = createAsyncThunk(
       const response = await axiosInstance.get(`/candidates/by-ssn/${candidateSSN}`);
       return response.data;
     } catch (error: any) {
+      console.log(error)
       if (error.response && error.response.status === 404) {
         dispatch(setCandidateNotFound(true)); 
         return rejectWithValue("No candidate found");

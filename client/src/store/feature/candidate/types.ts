@@ -1,3 +1,5 @@
+import { Control, FieldError, FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
+
 interface Address {
   addressId: number;
   street: string;
@@ -80,4 +82,48 @@ export interface ModalData {
     open: boolean;
     actionType: "edit" | "add" | null;
     selectedCandidate: Candidate | null;
+}
+
+export interface AddressFormProps {
+  register: UseFormRegister<IFormInput>;
+  errors: FieldErrors<IFormInput>;
+  watch: UseFormWatch<IFormInput>;
+  setValue: UseFormSetValue<IFormInput>;
+}
+
+export interface BankDetailsProps {
+  register: UseFormRegister<IFormInput>;
+  errors: FieldErrors<IFormInput>;
+}
+
+export interface CandidateContainerProps {
+  handleClose: () => void;
+  selectedCandidate: Candidate | null;
+  actionType: "edit" | "add" | null;
+}
+
+export interface CandidateNameErrors {
+  firstName?: FieldError;
+  middleName?: FieldError;
+  lastName?: FieldError;
+}
+
+export interface PersonalInfoProps {
+  register: UseFormRegister<any>;
+  errors: FieldErrors & {
+    candidateName?: CandidateNameErrors;
+  };
+  control: Control<any>;
+  editId?: string | null;
+  candidate?: any;
+  searchQuery?: string; 
+  watch: (name: string) => any;
+}
+
+export interface UploadDocumentsProps {
+  profilePic: File | string | null;
+  signature: File | string | null;
+  onDropProfile: (acceptedFiles: File[]) => void;
+  onDropSignature: (acceptedFiles: File[]) => void;
+  editId: number | null;
 }

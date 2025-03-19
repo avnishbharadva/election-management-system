@@ -68,16 +68,16 @@ const ElectionData = ({ handleOpenModel }: any) => {
 
   return (
     <>
-    <BoxTableContainer sx={{ marginTop: 2, width: "100%", boxShadow: "0px 4px 10px rgba(128, 128, 128, 0.5)" }}>
+    <BoxTableContainer>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 200 }}>
+        <Box>
           <CircularProgress />
         </Box>
       ) : (
         <>
           <Table stickyHeader>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow>
                 <TableCell><b>Election Name</b></TableCell>
                 <TableCell><b>Election Type</b></TableCell>
                 <TableCell><b>Election Date</b></TableCell>
@@ -114,7 +114,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
                 )}
               </TableBody>
           </Table>
-
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -139,7 +138,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
               Delete
             </MenuItem>
           </Menu>
-
           <TablePagination
               sx={{
               position: "sticky", 
