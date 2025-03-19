@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -9,143 +8,106 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-
+import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogcss";
+ 
 interface UpdateDialogProps {
   open: boolean;
   title?: string;
-  handleClose: () => void;
+  handleClose: () => void | {};
   handleConfirm: (data: Record<string, any>) => void;
   originalData: Record<string, any>;
   updatedData: Record<string, any>;
-  ignoredKeys?: string[];
 }
-
+ 
 const UpdateDialog: React.FC<UpdateDialogProps> = ({
   open,
-  title = "Confirm Changes",
+  title = "",
   handleClose,
   handleConfirm,
   originalData = {},
   updatedData = {},
-  ignoredKeys = [],
 }) => {
-  // Compare objects and find differences
-  const compareObjects = (obj1: any, obj2: any): any => {
+  const handleConfirmClick = () => {
+    handleConfirm(updatedData);
+  };
+ 
+  const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
-
-    for (const key in obj1) {
-      if (ignoredKeys.includes(key)) continue;
-
-      const val1 = obj1[key];
-      const val2 = obj2?.[key]; // Handle undefined safely
-
-      if (typeof val1 === "object" && val1 !== null && !Array.isArray(val1)) {
-        const nestedDiff = compareObjects(val1, val2 || {});
-        if (Object.keys(nestedDiff).length > 0) diff[key] = nestedDiff;
+    const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);
+ 
+    allKeys.forEach((key) => {
+      const fullKey = parentKey ? `${parentKey}.${key}` : key;
+      const val1 = obj1?.[key] ?? "N/A";
+      const val2 = obj2?.[key];
+ 
+      if (typeof val2 === "object" && val2 !== null && !Array.isArray(val2)) {
+        const nestedDiff = compareObjects(val1 || {}, val2, fullKey);
+        if (Object.keys(nestedDiff).length > 0) {
+          diff = { ...diff, ...nestedDiff };
+        }
       } else if (val1 !== val2) {
-        diff[key] = { old: val1, new: val2 };
+        diff[fullKey] = { old: val1, new: val2 };
       }
-    }
-
+    });
     return diff;
   };
-
-  // Render changes in a readable format, including images
-  const renderChanges = (diff: any, parentKey = "") => {
+ 
+  const renderChanges = (diff: any) => {
     return Object.entries(diff).map(([key, value]: any) => (
-      <Grid item xs={12} key={parentKey + key}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            bgcolor: "#f5f5f5",
-            padding: "10px",
-            borderRadius: "8px",
-          }}
-        >
-          <Typography variant="body1" fontWeight="bold" sx={{ textTransform: "capitalize" }}>
-            {parentKey + key.replace(/([A-Z])/g, " $1")}:
+      <Grid item xs={12} key={key}>
+        <ChangeBox>
+          <Typography variant="body1" fontWeight="bold">
+            {key.replace(/([A-Z])/g, " $1")}:
           </Typography>
+ 
           {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              {value.old && (
-                <img
-                  src={value.old.startsWith("data:image") ? value.old : `data:image/png;base64,${value.old}`}
-                  alt="Old Signature"
-                  width="100"
-                  height="50"
-                  style={{ borderRadius: "4px", objectFit: "cover" }}
-                />
-              )}
-              <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>
-                →
-              </Typography>
-              {value.new && (
-                <img
-                  src={value.new.startsWith("data:image") ? value.new : `data:image/png;base64,${value.new}`}
-                  alt="New Signature"
-                  width="100"
-                  height="50"
-                  style={{ borderRadius: "4px", objectFit: "cover" }}
-                />
-              )}
+            <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              {value.old !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.old}`} alt="Old" />}
+              <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
+              {value.new !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.new}`} alt="New" />}
             </Box>
-          ) : typeof value === "object" && "old" in value ? (
-            <Typography variant="body1" color="error">
-              <span style={{ color: "red" }}>{value.old || "N/A"}</span> →{" "}
-              <span style={{ color: "green" }}>{value.new || "N/A"}</span>
-            </Typography>
           ) : (
-            renderChanges(value, `${key}.`)
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              <span style={{ color: "#D32F2F" }}>{value.old || "N/A"}</span>
+              <span style={{ margin: "0 8px", color: "#616161" }}>→</span>
+              <span style={{ color: "#388E3C" }}>{value.new || "N/A"}</span>
+            </Typography>
           )}
-        </Box>
+        </ChangeBox>
       </Grid>
     ));
   };
-
+ 
   const changes = compareObjects(originalData, updatedData);
-
+ 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle
-        sx={{
-          bgcolor: "#1976d2",
-          color: "#fff",
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
-        {title}
-      </DialogTitle>
-      <DialogContent sx={{ padding: "20px" }}>
-        {Object.keys(changes).length > 0 ? (
-          <Grid container spacing={2}>{renderChanges(changes)}</Grid>
-        ) : (
-          <Typography
-            sx={{ textAlign: "center", fontStyle: "italic", color: "gray", padding: "10px" }}
-          >
-            No changes made.
-          </Typography>
-        )}
+    <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent sx={{marginTop:"calc(1* 16px)"}}>
+        <Grid container spacing={2} sx={{marginTop:"calc(1* 16px)"}}>
+          {Object.keys(changes).length > 0 ? (
+            renderChanges(changes)
+          ) : (
+            <Typography variant="body1" color="textSecondary" sx={{ textAlign: "center", width: "100%"}}>
+              No changes detected.
+            </Typography>
+          )}
+        </Grid>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "center", padding: "15px" }}>
-        <Button onClick={handleClose} variant="outlined" color="secondary" sx={{ width: "120px" }}>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary" sx={{ fontWeight: "bold", textTransform: "none" }}>
           Cancel
         </Button>
         <Button
-          onClick={() => {
-            handleConfirm(changes); // Pass only changed data
-          }}
-          variant="contained"
+          onClick={handleConfirmClick}
           color="primary"
-          sx={{ width: "120px" }}
+          variant="contained"
         >
           Confirm
         </Button>
       </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
-
+ 
 export default UpdateDialog;
