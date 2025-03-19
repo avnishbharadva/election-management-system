@@ -1,4 +1,5 @@
 package com.ems.services.impls;
+
 import com.ems.entities.Election;
 import com.ems.exceptions.CandidateAssociatedException;
 import com.ems.exceptions.DataNotFoundException;
@@ -10,12 +11,12 @@ import com.ems.services.ElectionService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.*;
-import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;

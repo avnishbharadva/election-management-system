@@ -1,9 +1,6 @@
 package com.ems.handlers;
 
 import com.ems.dtos.ErrorResponse;
-import com.ems.exceptions.*;
-import lombok.extern.slf4j.Slf4j;
-
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.FileProcessingException;
@@ -16,46 +13,33 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-
-
-    @ExceptionHandler(CandidateAssociatedException.class)
-    public ResponseEntity<ErrorResponse> handleAssociatedCandidate(
-            CandidateAssociatedException candidateAssociatedException
-    ){
-        var errorResponse=new ErrorResponse();
-        errorResponse.setStatus(HttpStatus.CONFLICT .value());
-        errorResponse.setMessage(String.valueOf(candidateAssociatedException.getMessage()));
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
-
-    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-
-        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        FieldError::getDefaultMessage,
-                        (existing, replacement) -> existing // Keep the first error message encountered
-                ));
-
-        List<ErrorItem> errorItemList = fieldErrors.entrySet().stream()
-                .map(entry -> new ErrorItem(entry.getKey(), entry.getValue()))
-                .toList();
-
-        return new ResponseEntity<>(
-                new ValidationErrorResponse("Bad request, validation failed for fields", errorItemList),
-                HttpStatus.BAD_REQUEST
-        );
-
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+//
+//        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+//                .collect(Collectors.toMap(
+//                        FieldError::getField,
+//                        FieldError::getDefaultMessage,
+//                        (existing, replacement) -> existing // Keep the first error message encountered
+//                ));
+//
+//        List<ErrorItem> errorItemList = fieldErrors.entrySet().stream()
+//                .map(entry -> new ErrorItem(entry.getKey(), entry.getValue()))
+//                .toList();
+//
+//        return new ResponseEntity<>(
+//                new ValidationErrorResponse("Bad request, validation failed for fields", errorItemList),
+//                HttpStatus.BAD_REQUEST
+//        );
+//    }
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
@@ -96,4 +80,6 @@ public class GlobalExceptionHandler {
         errorResponse.setRequestTime(LocalDateTime.now());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
+
