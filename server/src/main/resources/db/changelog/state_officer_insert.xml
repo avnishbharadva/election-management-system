@@ -8,7 +8,7 @@
         <insert tableName="officers">
             <column name="email" value="stateofficer@gmail.com"/>
             <column name="password" value="$2a$12$LD12ngC16crMAHSxwiM05.8vVcWojuiZYRa6ZsJyYp.lRsMr1wHOi"/>
-            <column name="officer_id" value="1"/>
+            <column name="officer_id" value="9"/>
             <column name="role" value="STATE"/>
             <column name="ssn_number" value="834716378"/>
         </insert>
