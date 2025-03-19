@@ -26,7 +26,7 @@ const ElectionDetails = ({ control, errors, register }: any) => {
 
   const fetchParties = async () => {
     try {
-      const response = await axiosInstance.get<{ partyId: number; partyName: string }[]>("api/party");
+      const response = await axiosInstance.get<{ partyId: number; partyName: string }[]>("/party/getAll");
       setParties(response.data || []);
     } catch (error) {
       console.error("Error fetching parties:", error);

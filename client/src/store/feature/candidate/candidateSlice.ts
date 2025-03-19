@@ -12,7 +12,6 @@ import {  CandidateState } from './types';
     error: null,
     success: false,
     candidate:null,
-    candidates: [],
     currentPage: 0,
     totalPages:0,
     totalRecords:0,
@@ -27,7 +26,7 @@ const candidateSlice = createSlice({
     reducers: {
       setSearchQuery: (state, action: PayloadAction<string>) => {
         state.searchQuery = action.payload;
-        state.notFound = false; 
+        state.notFound = false; // Reset on new search
       },
       clearSearchQuery: (state) => {
         state.searchQuery = "";
@@ -43,7 +42,7 @@ const candidateSlice = createSlice({
         );
       },
       resetFilteredCandidate: (state) => {
-        state.filteredCandidate = null;  
+        state.filteredCandidate = null;  // Reset to show full list
       },
       setSearchedSSN: (state, action: PayloadAction<string>) => {
         state.searchedSSN = action.payload;
@@ -59,7 +58,7 @@ const candidateSlice = createSlice({
         state.sortDir = action.payload.sortDir;
       },
       clearCandidate(state) {
-        state.candidate = null;
+        state.candidate = null; 
       },
       resetState: (state) => {
         state.loading = false;
@@ -75,22 +74,13 @@ const candidateSlice = createSlice({
           state.error = null;
         })
         .addCase(fetchCandidates.fulfilled, (state, action) => {
-          console.log("Redux API Response:", action.payload); // ✅ Debugging
-        
-          if (action.payload && action.payload.content) {
-            state.candidates = action.payload.content; // ✅ Correctly assigning candidates
-            state.currentPage = action.payload.pageable?.pageNumber || 0;
-            state.perPage = action.payload.pageable?.pageSize || 5;
-            state.totalRecords = action.payload.totalElements || 0;
-            state.totalPages = action.payload.totalPages || 0;
-          } else {
-            console.error("Unexpected API response format:", action.payload);
-            state.candidates = [];
-          }
-        
+          state.allCandidates = action.payload.data.content;
+          state.currentPage = action.payload.data.number;
+          state.totalPages = action.payload.data.totalPages;
+          state.totalRecords = action.payload.data.totalElements;
+          state.perPage = action.payload.data.size;
           state.loading = false;
         })
-        
         .addCase(fetchCandidates.rejected, (state, action) => {
           state.loading = false;
           state.error = action.error.message || "Error fetching candidates";
@@ -103,14 +93,13 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
           if (action.payload) {
-            state.filteredCandidate = [action.payload]; 
+            state.filteredCandidate = [action.payload.data]; // Ensure it's an array
           } else {
             state.filteredCandidate = [];
-          }
-          
+          }          
           state.notFound = !action.payload;
           state.loading = false;
-          state.searchedSSN = state.searchQuery; 
+          state.searchedSSN = state.searchQuery; // Make sure searched SSN is stored
         })       
         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
           state.filteredCandidate = null;
@@ -142,7 +131,7 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateById.fulfilled, (state, action) => {
           state.loading = false;
-          state.candidate = action.payload;
+          state.candidate = action.payload.data;
           state.error = null;
           state.notFound = false;
         })
@@ -163,6 +152,7 @@ const candidateSlice = createSlice({
           state.loading = false;
           state.error = action.payload as string || "Error updating candidate";
         })
+        //Delete candidate
         .addCase(deleteCandidateById.pending, (state) =>{
           state.loading = true;
           state.success = false;
@@ -182,4 +172,3 @@ const candidateSlice = createSlice({
 
   export const { clearCandidate,setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
   export default candidateSlice.reducer;
-

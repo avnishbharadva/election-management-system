@@ -42,7 +42,9 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   useEffect(() => {
     if (candidate && Object.keys(candidate).length > 0) {
       setEditId(candidate.candidateId);
-      reset({ ...candidate, maritalStatus: candidate.maritialStatus || "" });
+      reset({
+        ...candidate
+      })
       setProfilePic(candidate.candidateImage || null);
       setSignature(candidate.candidateSignature || null);
     }

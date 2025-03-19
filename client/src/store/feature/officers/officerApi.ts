@@ -13,8 +13,7 @@ export const officerLogin = createAsyncThunk('officer/login',async(offcierData:O
            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
            toast.success("Signin successful!");
            return token
-          }
-           
+          }          
     } catch (error:any) {
       console.log(error);
         if (error.response?.status === 500) {

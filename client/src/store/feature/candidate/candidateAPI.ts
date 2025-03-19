@@ -11,7 +11,7 @@ export const fetchCandidates = createAsyncThunk(
         `/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
       );
       if(response.status === 200){
-        return response?.data?.data;
+        return response.data;
       }
       if(response.status === 404){
         return response.data.message;

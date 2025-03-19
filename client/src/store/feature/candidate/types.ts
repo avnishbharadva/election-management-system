@@ -18,11 +18,11 @@ interface BankDetails {
 }
 
 export interface Candidate {
-  candidateId: number;  // ✅ Added candidateId field
+  candidateId: number;  
   candidateName: CandidateName;
   candidateSSN: string;
   dateOfBirth: string;
-  gender: "MALE" | "FEMALE" | "OTHER";
+  gender: "MALE" | "FEMALE";
   maritalStatus: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
   noOfChildren: number;
   spouseName?: string;
@@ -46,7 +46,6 @@ export interface CandidateState {
   error: string | null;
   success: boolean;
   candidate: any | null;
-  candidates: any[];
   searchedSSN:string | null;
   currentPage: number;
   totalPages:number;
@@ -54,7 +53,7 @@ export interface CandidateState {
   perPage:5;
   sortBy: string;
   sortDir: string;
-  }
+}
 
 export interface IFormInput {
 candidateId?: number;
@@ -81,5 +80,4 @@ export interface ModalData {
     open: boolean;
     actionType: "edit" | "add" | null;
     selectedCandidate: Candidate | null;
-  }
-
+}

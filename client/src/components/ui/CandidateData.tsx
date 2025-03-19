@@ -148,24 +148,12 @@ const CandidateData = () => {
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
   
-  // const candidatesToDisplay = useMemo(() => {
-  //   if (filteredCandidate?.length > 0) {
-  //     return filteredCandidate;
-  //   }
-  //   return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
-  // }, [ filteredCandidate, allCandidates]);
-
   const candidatesToDisplay = useMemo(() => {
-    if (filteredCandidate && filteredCandidate.length > 0) {
-      return filteredCandidate;  // Show searched candidate
-    } 
-    if (allCandidates?.candidates?.length > 0) {
-      return allCandidates.candidates; // Show all candidates if no search is performed
+    if (filteredCandidate?.length > 0) {
+      return filteredCandidate;
     }
-    return [];  // No candidates found
-  }, [filteredCandidate, allCandidates]);
-  
-  
+    return Array.isArray(allCandidates) ? allCandidates : allCandidates || [];
+  }, [ filteredCandidate, allCandidates]);
   
 console.log("Redux State - allCandidates:", allCandidates);
 console.log("Redux State - filteredCandidate:", filteredCandidate);
