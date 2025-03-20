@@ -1,50 +1,21 @@
 
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { Checkbox, FormControlLabel} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import ImageUpload from '../Helpers/ImageUpload';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField } from '../Helpers/FormFields';
+import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
 import { StyledButton } from '../style/CommanStyle';
-// import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
 
-import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
+
+import { useEditVoterMutation, useRegisterVoterMutation, useSearchVotersQuery } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-import { HeaderStyles, Container, FormRow, DividerStyle, FormRowCenter, FormRowGap, FormRowWide, AddressField, UploadDocuments, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
+import { HeaderStyles, Container, FormRow, DividerStyle, FormRowCenter, FormRowGap, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
 
 import { updateFormValue } from '../Helpers/updateFormValue';
 import UpdateDialog from '../components/ui/UpdateDialog';
+import { FormData } from '../store/feature/voter/type';
 
-// import { voterStyles, dividerStyle } from '../style/VoterStyleCss';
- 
-type Address = {
-  addressLine: string;
-  aptNumber: string;
-  city: string;
-  county: string;
-  zipCode: number | null;
-  addressType: string;
-};
- 
-
-type FormData = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  suffixName: string;
-  email: string;
-  ssnNumber: number | null;
-  phoneNumber: number | null;
-  dmvNumber: number | null;
-  gender: string;
-  partyId: number| null;
-  dateOfBirth: string;
-  firstVotedYear?: number| null;
-  hasVotedBefore: boolean;
-  residentialAddress: Address;
-  mailingAddress?: Address;
-  statusId: number | null;
-};
 const defaultValues: FormData = {
   firstName: "",
   middleName: "",
@@ -76,11 +47,16 @@ const defaultValues: FormData = {
     zipCode: null,
     addressType: "MAILING",
   },
+  image:"",
+  signature:""
 };
  
- const VoterForm = ({ voter,ssnNumber,onClose}: any) => {
-  const [profilePic, setProfilePic] = useState<string | null>(null);
-  const [signature, setSignature] = useState<string | null>(null);
+ const VoterForm = ({ updateVoterSsnNumber,ssnNumber,onClose}: any) => {
+  
+  const {data}= useSearchVotersQuery({ssnNumber:updateVoterSsnNumber},
+    {skip: !updateVoterSsnNumber})
+    const voter= data?.data[0]  
+
   const [sameAddress, setSameAddress] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [oldVoterData,setOldVoter]= useState({});
@@ -92,11 +68,11 @@ const defaultValues: FormData = {
       mode: "onTouched",
     })
     const { isSubmitting,dirtyFields} = formState
-   
-
-      useEffect(() => {
+  
+    useEffect(() => {
+        reset(defaultValues)
         ssnNumber && reset((prv)=>({...prv,ssnNumber:ssnNumber}))
-        if (voter) {
+        if (updateVoterSsnNumber) {
           reset({
             ...defaultValues,
             ...voter
@@ -106,7 +82,7 @@ const defaultValues: FormData = {
     }, [voter, reset,ssnNumber]);
    
     const [voterPost, ] = useRegisterVoterMutation()
-    const [voterEdit] = useEditVoterMutation( )
+    const [voterEdit] = useEditVoterMutation()
    
     const onSubmit = async (data: Record<string, any>) => {
       const updateData = updateFormValue({
@@ -116,8 +92,8 @@ const defaultValues: FormData = {
    
       try {
         const result: any = await toast.promise(
-          voter?.voterId ? voterEdit({ voterId: voter?.voterId, post: updateData, image: profilePic, signature: signature }).unwrap()
-            : voterPost({ post: data, img: profilePic, sign: signature }).unwrap(),
+          voter?.voterId ? voterEdit({ voterId: voter?.voterId, post: updateData }).unwrap()
+            : voterPost({ post: data }).unwrap(),
           {
             pending: "please wait...",
             success: "Successfull!",
@@ -125,8 +101,6 @@ const defaultValues: FormData = {
           },
         )
         if(result){
-          setProfilePic(null)  
-          setSignature(null)
           setOpenDialog(false)
           reset()
           onClose()
@@ -134,7 +108,6 @@ const defaultValues: FormData = {
         }
       }
       catch (err:any) {
-        
         console.log(err)
         toast.error(`Error: ${err.data?.message || err.message || 'An unexpected error occurred'}`);
       }
@@ -148,7 +121,6 @@ const defaultValues: FormData = {
           addressType: "MAILING",
         });
       } else {
-        // If unchecked, reset mailingAddress to empty
         setValue("mailingAddress", {
           addressLine: "",
           aptNumber: "",
@@ -159,8 +131,9 @@ const defaultValues: FormData = {
         });
       }
     };
+
     const handleConfirmSubmit: SubmitHandler<FormData> = (data) => {
-      
+      console.log(data)
       if (voter?.voterId) {
         setOldVoter(voter);
         setUpdateVoterData(data);
@@ -266,8 +239,8 @@ const defaultValues: FormData = {
           </Title>
           <DividerStyle/>
           <FormRowCenterGap>
-            <ImageUpload label="Profile Picture" onImageUpload={setProfilePic} imagePreview={profilePic} />
-            <ImageUpload label="Signature" onImageUpload={setSignature} imagePreview={signature} borderRadius="0%" />
+            <FormImage label='Profile' control={control} name='image' />
+            <FormImage label= 'Signature' control={control} name='signature' / >
           </FormRowCenterGap>
 
           <FormRowCenterGap2 >

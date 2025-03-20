@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
@@ -22,6 +21,7 @@
             <column name="status_id" value="4"/>
             <column name="status_desc" value="Reject"/>
         </insert>
+
     </changeSet>
 </databaseChangeLog>
 

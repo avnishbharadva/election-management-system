@@ -10,3 +10,11 @@ export const ModelBox = styled(Box)({
         padding: "2rem",
       });
       
+   export  const ModalHeader = styled(Box)({
+        backgroundColor: '#1976d2',
+        color: 'white',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        padding: '16px',
+        fontSize: '1.5rem',
+      });

@@ -1,7 +1,8 @@
-import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel, FormHelperText, CircularProgress, Typography } from '@mui/material';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel, FormHelperText, CircularProgress, Typography, Box } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
 import { usePartyListQuery } from '../store/feature/party/partyAction'
+import ImageUpload from './ImageUpload';
 // Type for the props of each form field component
 type FieldProps = {
     control: any;
@@ -34,7 +35,7 @@ type FieldProps = {
     customfield = {}
 }: FieldProps) => {
     const validationRules: any = {
-        ...(isRequired && { required: `${label} is required` }),
+        ...(isRequired && { required: `*${label} is required` }),
         minLength: {
             value: minLength,
             message: `Minimum length is ${minLength} digits`
@@ -116,7 +117,7 @@ export const NameField = ({
             name={name}
             control={control}
             rules={{
-                ...(isRequired && { required: `${label} is required` }), // Conditionally add required rule
+                ...(isRequired && { required: `*${label} is required` }), // Conditionally add required rule
                 minLength: {
                     value: minLength,
                     message: `Minimum length is ${minLength} characters`,
@@ -146,7 +147,7 @@ export const EmailField = ({ control, name, label }: FieldProps) => {
             name={name}
             control={control}
             rules={{
-                required: `${label} is required`,
+                required: `*${label} is required`,
                 pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z]{2,8})?$/,
                     message: "Invalid email format"
@@ -172,7 +173,7 @@ export const GenderField = ({ control, name, label }: FieldProps) => {
             name={name}
             control={control}
             rules={{
-                required: `${label} is required`
+                required: `*${label} is required`
             }}
             render={({ field, fieldState }) => (
                 <>
@@ -200,112 +201,65 @@ export const GenderField = ({ control, name, label }: FieldProps) => {
 };
 
 
-// export const StatusField = ({ control, name }: FieldProps) => {
-//     const {data } = useStatusQuery({})
-//     const status = data?.data
-//     return (
-//       <Controller
-//         name={name}
-//         control={control}
-//         rules={{ required: "Status is required" }}
-//         defaultValue={1} 
-//         render={({ field, fieldState }) => (
-//           <>
-//             <FormLabel>Status:</FormLabel>
-//             <RadioGroup {...field} row>
-            
-//                 {status?.map((status:any, index:any) => {
-//                     return (
-//                         <FormControlLabel 
-//                             key={index} 
-//                             value={status?.statusId} 
-//                             control={<Radio />} 
-//                             label={status?.statusDesc} 
-//                         />
-//                     )
-//                 })}
-            
-//             </RadioGroup>
-//             {fieldState?.error && (
-//                         <FormHelperText style={{ color: 'red' }}>{fieldState?.error.message}</FormHelperText>
-//                     )}    </>
-//         )}
-//       />
-//     );
-// }
-
-// Party Selector Field
-
 export const StatusField = ({ control, name }: FieldProps) => {
-    const { data, isLoading, isError, error } = useStatusQuery({});
-  
-    // Loading state
+    const {data ,isLoading, isError,error:statusError} = useStatusQuery({})
+
     if (isLoading) {
-      return (
-        <FormControl>
-          <FormLabel>Status:</FormLabel>
-          <Typography>Loading statuses...</Typography>
-        </FormControl>
-      );
-    }
-  
-    // Error state
-    if (isError) {
-      return (
-        <FormControl error>
-          <FormLabel>Status:</FormLabel>
-          <FormHelperText>
-            {error instanceof Error 
-              ? `Error loading statuses: ${error.message}`
-              : 'Failed to load statuses'}
-          </FormHelperText>
-        </FormControl>
-      );
-    }
-  
-    const status = data?.data;
-  
-    // Handle case where data is empty
-    if (!status || status.length === 0) {
-      return (
-        <FormControl>
-          <FormLabel>Status:</FormLabel>
-          <FormHelperText>No status options available</FormHelperText>
-        </FormControl>
-      );
-    }
-  
+        return (
+          <div>
+            <FormLabel>Status:</FormLabel>
+            <CircularProgress size={24} />
+          </div>
+        );
+      }
+      if (isError) {
+        return (
+          <div>
+            <FormLabel>Status:</FormLabel>
+            <Typography color="error">
+              {statusError instanceof Error ? statusError.message : 'Failed to load status options'}
+            </Typography>
+          </div>
+        );
+      }
+
+    const status = data?.data
+
     return (
       <Controller
         name={name}
         control={control}
         rules={{ required: "Status is required" }}
+        defaultValue={1} 
         render={({ field, fieldState }) => (
-          <FormControl component="fieldset" error={!!fieldState?.error}>
-            <FormLabel component="legend">Status:</FormLabel>
+          <>
+            <FormLabel>Status:</FormLabel>
             <RadioGroup {...field} row>
-              {status.map((statusItem: any, index: number) => (
-                <FormControlLabel
-                  key={statusItem?.statusId || index} // Use statusId as key if available
-                  value={statusItem?.statusId}
-                  control={<Radio />}
-                  label={statusItem?.statusDesc || 'Unknown Status'}
-                />
-              ))}
+            
+                {status?.map((status:any, index:any) => {
+                    return (
+                        <FormControlLabel 
+                            key={index} 
+                            value={status?.statusId} 
+                            control={<Radio />} 
+                            label={status?.statusDesc} 
+                        />
+                    )
+                })}
+            
             </RadioGroup>
             {fieldState?.error && (
-              <FormHelperText style={{ color: 'red' }}>
-                {fieldState.error.message}
-              </FormHelperText>
-            )}
-          </FormControl>
+                        <FormHelperText style={{ color: 'red' }}>{fieldState?.error.message}</FormHelperText>
+                    )}    </>
         )}
       />
     );
-  };
+}
+
 
 export const PartyField = ({ control, name, label }: FieldProps) => {
     const { data, isLoading, isError, error } = usePartyListQuery({});
+const PartyData= data?.data
     return (
         <Controller
             name={name}
@@ -326,7 +280,7 @@ export const PartyField = ({ control, name, label }: FieldProps) => {
                             <MenuItem value="" disabled><CircularProgress size={20} /> Loading...</MenuItem>
                         ) : isError ? (
                             <MenuItem value="" disabled>Error loading parties</MenuItem>
-                        ) : data?.map((party: any) => (
+                        ) : PartyData?.map((party: any) => (
                             <MenuItem key={party.partyId} value={party.partyId}>{party.partyName}</MenuItem>
                         ))}
                     </Select>
@@ -361,7 +315,7 @@ export const DateOfBirthField = ({ control, name, label, rules }: FieldProps) =>
         name={name}
         control={control}
         rules={{
-          required: `${label} is required`,
+          required: `*${label} is required`,
           validate: validateDateOfBirth,
           ...rules, 
         }}
@@ -439,3 +393,31 @@ export const HasVotedBefore = ({ control, name , label}: FieldProps) => {
         />
     );
 };
+
+export const FormImage=({name,control,label, isRequired=true}:FieldProps)=>{
+    return(
+        <Controller
+        name={name}
+        control={control}
+        rules={{
+            required: isRequired ? ` *${label} is required` : false,
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <Box sx={{ display: 'flex', flexDirection:'column'}} >
+
+            <ImageUpload
+              label={label}
+              onImageUpload={(imageData) => field.onChange(imageData)}
+              imagePreview={field.value}
+              borderRadius="8px"
+            />
+            
+            <Typography color="error" variant="body2">
+              {error && error.message}
+            </Typography>
+        
+              </Box>
+          )}
+        />
+    )
+}

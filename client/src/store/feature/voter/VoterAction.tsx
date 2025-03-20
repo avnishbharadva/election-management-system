@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const voterApi = createApi({
     reducerPath: 'voters',
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8082/api/",
+        baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers: any) => {
             const token = localStorage.getItem('token');
 
@@ -23,7 +23,7 @@ const voterApi = createApi({
                     .filter(([_, value]) => value != null && value !== '')
                     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
                     .join('&');
-                return `voters/search?${queryParams}`;
+                return `voters?${queryParams}`;
             },
             transformResponse: (response: any) => {
                 return {
@@ -35,23 +35,11 @@ const voterApi = createApi({
         }),
 
         registerVoter: builder.mutation({
-            query: ({ post, img, sign }: any) => {
-                console.log(img)
-                console.log(sign)
-                if (!img) {
-                    console.error('voter image is not found')
-                }
-
-                if (!sign) {
-                    console.error('voter signature is not found')
-                }
-                const formData = { ...post, image: img, signature: sign }
-                console.log(formData)
-
+            query: ({ post}: any) => {
                 return {
                     url: 'voters',
                     method: 'POST',
-                    body: formData,
+                    body: post,
                 }
             },
             invalidatesTags: ['Voters'],
@@ -59,20 +47,13 @@ const voterApi = createApi({
         }),
 
         editVoter: builder.mutation({
-            query: ({ voterId, post, image, signature }: any) => {
+            query: ({ voterId, post }: any) => {
 
-                !image && console.error('in voter update image is undefine')
-                !signature && console.error('in voter update  sign  is undefine')
-                const payload = {
-                    ...post,
-                    image: image ? image : undefined,
-                    signature: signature ? signature : undefined,
-                };
             
                 return {
                     url: `voters/${voterId}`,
                     method: 'PATCH',
-                    body: payload,
+                    body: post,
                 };
             },
             invalidatesTags: ['Voters'],

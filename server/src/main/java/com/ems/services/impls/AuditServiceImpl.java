@@ -3,23 +3,22 @@ package com.ems.services.impls;
 import com.ems.entities.Address;
 import com.ems.entities.Audit;
 import com.ems.entities.Voter;
-import com.ems.events.AddressUpdateEvent;
 import com.ems.events.VoterUpdateEvent;
+import com.ems.exceptions.DataNotFoundException;
+import com.ems.mappers.GlobalMapper;
 import com.ems.mongo.repository.AuditRepository;
 import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.AuditDataDTO;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -27,22 +26,30 @@ import java.util.concurrent.CompletableFuture;
 @KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
-    private final KafkaTemplate<String,AddressUpdateEvent> kafkaTemplate;
     private final AuditRepository auditRepository;
+    private final GlobalMapper mapper;
 
-    @Async
+    @Async("taskExecutor")
     @KafkaHandler
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();
         var newVoter = event.getNewVoter();
         var fields = getUpdatedFields(oldVoter, newVoter, event.getOldAddress(), event.getNewAddress());
-
         if (!fields.isEmpty()) {
             Audit audit = getAudit(newVoter, fields);
             auditRepository.save(audit);
             log.info("thread - {}, Voter audited: {}", Thread.currentThread().getName(),fields);
         }
+    }
+
+    @Override
+    public List<AuditDataDTO> getAudit(String voterId) {
+        log.info("audit called for voterId : {}", voterId);
+        var auditList = auditRepository.findByVoterId(voterId);
+        if(auditList.isEmpty())
+            throw new DataNotFoundException("Voter Id not found : " + voterId);
+        return mapper.toAuditDataDTO(auditList);
     }
 
     private List<Map<String, Object>> getUpdatedFields(Voter oldVoter, Voter newVoter, List<Address> oldAddressList, List<Address> newAddressList) {
@@ -68,18 +75,12 @@ public class AuditServiceImpl implements AuditService {
             oldField.put("hasVoterBefore", oldVoter.isHasVotedBefore());
         }
 
-        if (oldVoter.getParty() != null && newVoter.getParty() != null) {
-            if (!oldVoter.getParty().equals(newVoter.getParty())) {
+        if (!oldVoter.getParty().equals(newVoter.getParty())) {
                 updateField.put("party", newVoter.getParty().getPartyName());
                 oldField.put("party", oldVoter.getParty().getPartyName());
-            }
-        } else if (oldVoter.getParty() == null && newVoter.getParty() != null) {
-            updateField.put("party", newVoter.getParty().getPartyName());
-            oldField.put("party", "None");
         }
-        if (oldVoter.getVoterStatus() != null && newVoter.getVoterStatus() != null &&
-                !oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
 
+        if (!oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
             updateField.put("status", newVoter.getVoterStatus().getStatusDesc());
             oldField.put("status", oldVoter.getVoterStatus().getStatusDesc());
         }
@@ -93,15 +94,6 @@ public class AuditServiceImpl implements AuditService {
             addressFields = getAddressUpdatedFields(oldAddress, newAddress);
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
-                CompletableFuture<SendResult<String,AddressUpdateEvent>> future=kafkaTemplate.send("address-update-event-topic","Address",new AddressUpdateEvent(newAddress));
-                future.whenComplete((result,exception)->{
-                    if(exception!=null){
-                        log.error("Failed to send message:"+exception.getMessage());
-                    }
-                    else{
-                        log.info("Message sent successfully:"+result.getRecordMetadata());
-                    }
-                });
                 if(i==0 && !addressFields.get(0).isEmpty()){
                     oldField.put("residentialAddress", addressFields.get(0));
                     updateField.put("residentialAddress", addressFields.get(1));
@@ -138,6 +130,10 @@ public class AuditServiceImpl implements AuditService {
             updatedFields.put("county", newAddress.getCounty());
             oldFields.put("county",oldAddress.getCounty());
         }
+        if(!Objects.equals(oldAddress.getTown(), newAddress.getTown())){
+            updatedFields.put("town", newAddress.getTown());
+            oldFields.put("town",oldAddress.getTown());
+        }
         if (!Objects.equals(oldAddress.getState(), newAddress.getState())) {
             updatedFields.put("state", newAddress.getState());
             oldFields.put("state",oldAddress.getState());
@@ -162,17 +158,9 @@ public class AuditServiceImpl implements AuditService {
     }
 
     private static Audit getAudit(Voter newVoter, List<Map<String, Object>> fieldList) {
-        Map<String,Object> voterData = Map.ofEntries(
-                Map.entry("voterId", newVoter.getVoterId()),
-                Map.entry("dateOfBirth", newVoter.getDateOfBirth()),
-                Map.entry("ssnNumber", newVoter.getSsnNumber()),
-                Map.entry("dmvNumber", newVoter.getDmvNumber()),
-                Map.entry("email", newVoter.getEmail())
-        );
-
         Audit audit = new Audit();
         audit.setTableName("Voter");
-        audit.setMetadata(voterData);
+        audit.setVoterId(newVoter.getVoterId());
         audit.setOldFields(fieldList.get(0));
         audit.setChangeFields(fieldList.get(1));
         audit.setCreatedBy("SYSTEM");

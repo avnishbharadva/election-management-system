@@ -16,7 +16,7 @@ public class VoterUpdateEvent {
     private List<Address> oldAddress;
     private List<Address> newAddress;
 
-    public VoterUpdateEvent(){};
+    public VoterUpdateEvent(){}
 
     public VoterUpdateEvent(Voter oldVoter, Voter newVoter, List<Address> oldAddress, List<Address> newAddress) {
         this.oldVoter = oldVoter;

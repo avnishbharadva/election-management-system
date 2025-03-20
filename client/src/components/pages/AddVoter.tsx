@@ -16,10 +16,9 @@ import SearchComponent from '../ui/SearchComponent';
 import VoterForm from '../../Voter/VoterForm';
 import ViewVoter from '../../Voter/ViewVoter';
 import { useSearchVotersQuery } from '../../store/feature/voter/VoterAction';
-// import { voterStyles } from '../../style/VoterStyleCss';
 import TableComponent from '../ui/TableComponent';
 import Pagination from '../ui/Pagination'
-import { Voter } from '../../store/feature/voter/type';
+import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
 
 
@@ -43,7 +42,7 @@ const AddVoter = () => {
     ssnNumber: '',
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedVoter, setSelectedVoter] = useState<Voter | null>(null);
+  const [selectedVoter, setSelectedVoter] = useState<FormData | null>(null);
   const [action, setAction] = useState({
     register: false,
     edit: false,
@@ -65,7 +64,7 @@ const AddVoter = () => {
    
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter: Voter) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter:FormData) => {
     setAnchorEl(event.currentTarget);
     setSelectedVoter(voter);
   };
@@ -75,7 +74,7 @@ const AddVoter = () => {
     setAnchorEl(null);
   };
 
-  const handleAction = (actionType: string, voter?: Voter) => {
+  const handleAction = (actionType: string, voter?: FormData) => {
     switch (actionType) {
       case 'register':
         setSelectedVoter(null);
@@ -93,12 +92,11 @@ const AddVoter = () => {
         handleMenuClose();
         break;
       default:
-        console.log('default');
         break;
     }
   };
   const totalElements = data?.totalElements || 0;
-  const voters = (data?.data || []).map((voter: Voter) => ({
+  const voters = (data?.data || []).map((voter: FormData) => ({
     status: voter.status,
     ssn: voter.ssnNumber,
     dmv: voter.dmvNumber,
@@ -196,14 +194,15 @@ ssnNumber= {searchParams.ssnNumber}
       >
         <VoterForm
           onClose={() => setAction((prev) => ({ ...prev, edit: false }))}
-          voter={selectedVoter}
+          updateVoterSsnNumber={selectedVoter?.ssnNumber}
         />
       </Model>
-      <ViewVoter
-        voter={selectedVoter}
+
+     {selectedVoter?.ssnNumber && <ViewVoter
+        ssnNumber={selectedVoter?.ssnNumber}
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
-      />
+      />}
     </Box>
   );
 };

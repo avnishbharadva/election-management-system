@@ -46,7 +46,7 @@ interface NestedObject {
       return {};
     }
   
-    console.log("Modified field values:", fieldValues);
+   
   
     const valuesObject: Record<string, any> = {};
   
@@ -64,7 +64,7 @@ interface NestedObject {
       current[parts[parts.length - 1]] = value;
     });
   
-    console.log("Nested key-value object:", valuesObject);
+  
   
     return valuesObject;
   };

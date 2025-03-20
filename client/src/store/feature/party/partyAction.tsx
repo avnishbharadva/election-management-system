@@ -5,7 +5,7 @@ const partyApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers:any) => {
             const token = localStorage.getItem('token');
-            // console.log(token)
+        
             if (token) {
               headers.set('Authorization', `Bearer ${token}`);
             }
@@ -17,7 +17,7 @@ const partyApi = createApi({
     endpoints: (builder) => ({
  
         PartyList: builder.query({
-            query: () => 'party/getAll',
+            query: () => 'party',
             providesTags: ['party'],
         }
         ),
@@ -53,14 +53,14 @@ const partyApi = createApi({
                 },
                 invalidatesTags: ['party'],
                 transformResponse: (response: any, meta, arg) => {
-                    console.log('Response:', response); // The server response
-                    console.log('Meta:', meta); // Additional fetch metadata (e.g., headers)
-                    console.log('Args:', arg); // Original arguments (post, img, metadata)
+                    console.log('Response:', response); 
+                    console.log('Meta:', meta); 
+                    console.log('Args:', arg); 
                     return {
                       data: response,
                       metadata: {
-                        responseReceivedAt: new Date().toISOString(), // Client-side metadata
-                        requestArgs: arg, // Include original args in response
+                        responseReceivedAt: new Date().toISOString(),
+                        requestArgs: arg, 
                     
                       },             
 

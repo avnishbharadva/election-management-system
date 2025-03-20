@@ -26,14 +26,10 @@ const SearchComponent = (props: SearchProps) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^0-9]/g, '');
     setSearchQuery(numericValue)
-
-    if (value.length === length && onChange) {
-      // onChange(value); 
-      console.log("search query is equal to length");
-    }
   }, [length, onChange]); 
 
 const handleReload=()=>{
+  setSearchQuery("")
   if (onReload) {
     onReload();
   }
@@ -62,7 +58,7 @@ const handleReload=()=>{
           endAdornment: searchQuery ? (
             <InputAdornment position="end">
               <Tooltip title="Clear">
-              <IconButton onClick={handleReload} edge="end">
+              <IconButton onClick={handleReload} edge="end" >
                 <CloseIcon className="clear-icon" />
               </IconButton>
               </Tooltip>

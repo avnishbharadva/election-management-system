@@ -1,10 +1,9 @@
-import { Divider} from "@mui/material";
+import { Card, CardContent, Divider, Typography} from "@mui/material";
 import {Box, TableContainer, Table, TableCell} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import { styled } from "@mui/system";
  
 export const HeaderStyles = styled(Box)({
-  // marginTop: '20px',
   margin: '20px',
 })
  
@@ -23,7 +22,7 @@ export const Head = styled(Title)({
 export const Container = styled(Box)({
      display: 'flex',
      flexDirection: 'column',
-     // gap: 2,
+ 
      flex: 1,
      overflowY: "auto",
      maxHeight: "60vh"
@@ -60,7 +59,7 @@ export const AddressField = styled(Box)({
  
 export const FormRowWide = styled(Box)({
   display: 'grid',
-  gap: '1rem',  // Space between grid items
+  gap: '1rem', 
   gridTemplateColumns: 'repeat(3, 1fr)',
   
 })
@@ -100,7 +99,7 @@ export const FormRowCenterGap = styled(Box)({
 })
  
  
-//AddVoter.tsx
+
  
 export const SearchContainer = styled(Box)({
     display: 'grid',
@@ -135,9 +134,9 @@ export const StyledTableDetails = styled(Box)({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  gap: '16px', // 2 * 8px (Material UI base unit)
-  padding: '24px', // 3 * 8px (Material UI base unit)
-  borderRadius: '16px', // 2 * 8px (Material UI base unit)
+  gap: '16px',
+  padding: '24px',
+  borderRadius: '16px', 
   backgroundColor: '#f9f9f9',  
 });
  
@@ -148,4 +147,42 @@ export const TableCellSticky = styled(TableCell)({
   zIndex: 1,
 })
  
+  
+//ViewVoter
  
+export const BoxContainer = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: 3,
+});
+ 
+export const CardContainer = styled(Card)({
+  boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
+  borderRadius: 2
+});
+ 
+export const MainContainer = styled(Box)({
+  fontWeight: "bold",
+  color: "#1976d2",
+})
+ 
+export const StyleDivider = styled(Divider)({
+  marginBottom: 2,
+})
+ 
+export const ImageContent = styled(CardContent)({
+  display: "flex",
+  flexDirection: "row",
+  gap: 3,
+  justifyContent: "center",
+  alignItems: "center",
+})
+ 
+export const TypographyStyle = styled(Box)({
+  textAlign: "center",
+  color: "#757575"
+})
+ 
+export const BoldTypography = styled(Typography)`
+  font-weight: bold;
+`;

@@ -3,13 +3,10 @@ import rootReducer from './rootReducer';
 import voterApi from '../feature/voter/VoterAction'
 import partyApi from '../feature/party/partyAction'; 
 
+
 const store = configureStore({
-    reducer: {
-        ...rootReducer, // Spread your rootReducer
-        [partyApi.reducerPath]: partyApi.reducer, // Add partyApi reducer
-        [voterApi.reducerPath]: voterApi.reducer
+    reducer:     rootReducer,
     
-    },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(partyApi.middleware)

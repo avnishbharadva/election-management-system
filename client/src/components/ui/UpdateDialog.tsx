@@ -8,7 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogcss";
+import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogCss";
  
 interface UpdateDialogProps {
   open: boolean;
@@ -31,6 +31,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
     handleConfirm(updatedData);
   };
  
+  
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
     const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);

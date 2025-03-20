@@ -1,0 +1,22 @@
+type: object
+description: Represents a record of status change history for a voter
+properties:
+  historyId:
+    type: integer
+    format: int64
+    example: 1
+    description: Auto-generated unique HistoryID
+  status:
+    type: string
+    example: "Active"
+    description: Voter's status
+  createdAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    description: "Creation time of status history"
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    description: "Updation time of status history"
