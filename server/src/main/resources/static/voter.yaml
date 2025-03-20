@@ -83,7 +83,7 @@ paths:
           required: true
           schema:
             type: integer
-            default: 1
+            default: 0
         - name: size
           in: query
           description: The number of voters per page.

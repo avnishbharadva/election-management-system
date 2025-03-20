@@ -19,9 +19,13 @@ paths:
               $ref: '#/components/schemas/OfficersRegisterDTO'
             example:
               ssnNumber: "123-45-6789"
-              role: "Admin"
+              role: "COUNTY"
               email: "officer@example.com"
               password: "SecurePass123"
+              firstName: "John"
+              middleName: "A."
+              lastName: "Doe"
+              county: "Orange County"
       responses:
         "201":
           description: Officer registered successfully
@@ -117,7 +121,7 @@ components:
         lastName:
           type: string
           example: "Doe"
-        countyName:
+        county:
           type: string
           example: "Orange County"
 
@@ -172,6 +176,6 @@ components:
         lastName:
           type: string
           example: "Doe"
-        countyName:
+        county:
           type: string
           example: "Orange County"

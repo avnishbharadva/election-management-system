@@ -133,7 +133,7 @@ public class VoterServiceImpl implements VoterService {
 
     @Override
     @Transactional
-    public VoterDataDTO updateVoter(String voterId, org.openapitools.model.VoterUpdateRequest voterUpdateRequest){
+    public VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterUpdateRequest){
         MDC.put("VoterId", voterId);
         log.info("Update process started for voter {}", voterId);
 
@@ -202,7 +202,7 @@ public class VoterServiceImpl implements VoterService {
         addressRepo.save(address);
     }
 
-    private String saveBase64Image(String base64String, String voterId, String directory) throws IOException {
+    public String saveBase64Image(String base64String, String voterId, String directory) throws IOException {
         if (base64String == null || base64String.isBlank()) throw new CustomException("Base64 string is empty or null");
 
         String base64Data = base64String.contains(",") ? base64String.split(",", 2)[1].trim() : base64String.trim();
@@ -229,7 +229,7 @@ public class VoterServiceImpl implements VoterService {
 
         var updatedVoter = globalMapper.changeVoterDTOtoVoter(changeVoterAddress, existingVoter);
         log.info("update voter details : {}", updatedVoter);
-        log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
+//        log.info("updatedVoter party : {},", updatedVoter.getParty().getPartyId());
         boolean isTownExist = townRepository.existsByTownName(changeVoterAddress.getTownName());
 
         if(isTownExist) {

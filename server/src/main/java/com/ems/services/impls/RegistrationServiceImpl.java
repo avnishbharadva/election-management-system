@@ -44,7 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         } catch (BadCredentialsException e) {
             log.warn("Invalid login credentials for email: {}", loginForm.getEmail());
-            throw new IllegalCredentials("Invalid email or password");
+            throw new IllegalCredentials("Invalid Credentials");
         } catch (UsernameNotFoundException e) {
             log.warn("User not found for email: {}", loginForm.getEmail());
             throw new IllegalCredentials("User not found");

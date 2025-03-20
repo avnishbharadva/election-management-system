@@ -3,6 +3,7 @@ package com.ems.entities;
 import com.ems.entities.constants.Gender;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
+
 public class Voter extends TimeStamp {
     @Id
     @Column(unique = true, nullable = false, length = 9)

@@ -35,12 +35,11 @@ public class VoterApiController implements VotersApi {
             Integer page, Integer size, String firstName, String lastName,
             LocalDate dateOfBirth, String dmvNumber, String ssnNumber,
             String city, List<String> sort) {
-
         log.info("Starting voter search with criteria: firstName={}, lastName={}, city={}", firstName, lastName, city);
         String[] sortArray = (sort != null) ? sort.toArray(new String[0]) : new String[0];
         VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, city);
-        Page<VoterDataDTO> voterDTOData = voterService.searchVoters(searchDTO, page, size, sortArray);
-        log.info("Voter search completed. Total results found: {}", voterDTOData.getTotalElements());
+        Page<VoterDataDTO> voterDTOData;
+        voterDTOData = voterService.searchVoters(searchDTO, page, size, sortArray);log.info("Voter search completed. Total results found: {}", voterDTOData.getTotalElements());
         PaginatedVoterDTO response = new PaginatedVoterDTO(voterDTOData.getContent(), voterDTOData.getTotalElements(), voterDTOData.getTotalPages(), voterDTOData.getSize(), voterDTOData.getNumber());
         return ResponseEntity.ok(response);
     }

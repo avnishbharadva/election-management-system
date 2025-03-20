@@ -17,7 +17,6 @@ public interface VoterRepository extends JpaRepository<Voter, String> {
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmail(String email);
 
-
     @Query("SELECT v FROM Voter v LEFT JOIN v.residentialAddress a WHERE " +
             "(:firstName IS NULL OR LOWER(v.firstName) LIKE LOWER(CONCAT('%', :firstName, '%'))) " +
             "AND (:lastName IS NULL OR LOWER(v.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))) " +
@@ -33,5 +32,4 @@ public interface VoterRepository extends JpaRepository<Voter, String> {
             @Param("ssnNumber") String ssnNumber,
             @Param("city") String city,
             Pageable pageable);
-
 }

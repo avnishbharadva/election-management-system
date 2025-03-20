@@ -40,11 +40,11 @@ public class OfficersServiceImpl implements OfficersService {
 
     @Override
     public OfficersResponseDTO createRole(OfficersRegisterDTO officersRegisterDTO) {
-        if (!countyRepository.existsByCountyName(officersRegisterDTO.getCountyName())) {
-            log.warn("County '{}' not found", officersRegisterDTO.getCountyName());
-            throw new DataNotFoundException("County '" + officersRegisterDTO.getCountyName() + "' does not exist.");
+        if (!countyRepository.existsByCountyName(officersRegisterDTO.getCounty())) {
+            log.warn("County '{}' not found", officersRegisterDTO.getCounty());
+            throw new DataNotFoundException("County '" + officersRegisterDTO.getCounty() + "' does not exist.");
         }
-        if (officersRepository.existsByEmailOrCountyNameOrSsnNumber(officersRegisterDTO.getEmail(), officersRegisterDTO.getCountyName(), officersRegisterDTO.getSsnNumber())) {
+        if (officersRepository.existsByEmailOrCountyNameOrSsnNumber(officersRegisterDTO.getEmail(), officersRegisterDTO.getCounty(), officersRegisterDTO.getSsnNumber())) {
             log.warn("Officer with given Email, County, or SSN already exists.");
             throw new DataAlreadyExistException("Officer with this Email, SSN, or County already exists.");
         }

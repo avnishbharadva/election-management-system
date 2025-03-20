@@ -9,9 +9,6 @@ properties:
   city:
     type: string
     example: "Springfield"
-  county:
-    type: string
-    example: "Clark"
   state:
     type: string
     example: "New York"

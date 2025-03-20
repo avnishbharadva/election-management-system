@@ -20,11 +20,19 @@ import java.io.IOException;
 
 
 @Configuration
-@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final MyUserDetailService myUserDetailService;
+    private final HandlerExceptionResolver exceptionResolver;
+
+    public JwtAuthenticationFilter(JwtService jwtService,
+                                   MyUserDetailService myUserDetailService,
+                                   @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+        this.jwtService = jwtService;
+        this.myUserDetailService = myUserDetailService;
+        this.exceptionResolver = exceptionResolver;
+    }
 
 
     @Override
@@ -53,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         catch (JwtException ex) {
-            throw new RuntimeException(ex.getMessage());
+            exceptionResolver.resolveException(request, response, null, ex);
         }
     }
 }
