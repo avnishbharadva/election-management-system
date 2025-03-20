@@ -1,4 +1,3 @@
-
 import { InputAdornment, IconButton} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../store/feature/candidate/candidateSlice";

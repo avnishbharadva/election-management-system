@@ -11,28 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { IFormInput } from "../../../store/feature/candidate/types";
-
-// interface AddressFormData {
-//   residentialAddress: {
-//     street: string;
-//     city: string;
-//     zipcode: string;
-//   };
-//   mailingAddress: {
-//     street: string;
-//     city: string;
-//     zipcode: string;
-//   };
-// }
-
-interface AddressFormProps {
-  register: UseFormRegister<IFormInput>;
-  errors: FieldErrors<IFormInput>;
-  watch: UseFormWatch<IFormInput>;
-  setValue: UseFormSetValue<IFormInput>;
-}
+import { AddressFormProps} from "../../../store/feature/candidate/types";
 
 export default function AddressForm({
   register,
@@ -51,7 +30,6 @@ export default function AddressForm({
 
   return (
     <>
-      {/* ✅ Residential Address Section */}
       <Section>
         <Title variant="h6">Residential Address</Title>
         <DividerStyle />
@@ -90,8 +68,6 @@ export default function AddressForm({
           />
         </Row>
       </Section>
-
-      {/* ✅ Checkbox for Same Mailing Address */}
       <Section>
         <Typography>
           <FormControlLabel
@@ -104,9 +80,7 @@ export default function AddressForm({
             label="Same as Residential Address"
           />
         </Typography>
-      </Section>
-
-      {/* ✅ Mailing Address Section */}
+      </Section>     
       <Section>
         <Title variant="h6">Mailing Address</Title>
         <DividerStyle />

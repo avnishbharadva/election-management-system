@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T17:13:43.223645500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-20T18:47:26.427641900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class PartyUpdateDTO {
 
   private String partyName;

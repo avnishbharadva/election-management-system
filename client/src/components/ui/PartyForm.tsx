@@ -2,7 +2,7 @@ import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { Dropzone, Imagepreview } from "../../style/PartyStyle";
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Form, StyledButton } from "../../style/CommanStyle";
+import {  StyledButton } from "../../style/CommanStyle";
 import { Resolver, useForm } from "react-hook-form";
 import { ErrorMsg } from "../../style/LoginStyle";
 
@@ -121,7 +121,7 @@ const PartyForm = () => {
       <Typography align="center" variant="h5" mb="15px">
         Register Party
       </Typography>
-      <Form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit}>
         <Box display="flex" flexDirection="column" gap={2}>
           <Box display="flex" flexDirection="row" gap={2}>
             <Box>
@@ -233,7 +233,7 @@ const PartyForm = () => {
             </StyledButton>
           </Box>
         </Box>
-      </Form>
+      </form>
     </Box>
   );
 };

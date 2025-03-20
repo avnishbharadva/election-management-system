@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T17:13:42.652187+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-20T18:47:25.931242+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class ElectionSortDTO {
 
   private Integer electionId;

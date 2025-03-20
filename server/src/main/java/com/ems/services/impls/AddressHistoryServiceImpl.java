@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
+//@KafkaListener(topics = "address-update-event-topic",groupId = "update-voter-events-topic")
 public class AddressHistoryServiceImpl implements AddressHistoryService {
 
     private final GlobalMapper globalMapper;
