@@ -47,6 +47,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
         }
       } else if (val1 !== val2) {
         diff[fullKey] = { old: val1, new: val2 };
+        diff[fullKey] = { old: val1, new: val2 };
       }
     });
     return diff;

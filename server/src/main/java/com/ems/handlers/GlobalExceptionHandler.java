@@ -1,5 +1,9 @@
 package com.ems.handlers;
 
+<<<<<<< HEAD
+=======
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.*;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
+<<<<<<< HEAD
+=======
+@Slf4j
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -25,12 +33,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        var errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getAllErrors().get(0).getDefaultMessage());
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setRequestTime(LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<org.openapitools.model.ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex){
+        log.info("Method argument not valid exception occurred error message: {}", ex.getMessage());
+        var errorItemList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> new org.openapitools.model.ErrorItem(fieldError.getField(), fieldError.getDefaultMessage())).toList();
+        return new ResponseEntity<>(new org.openapitools.model.ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({DataAlreadyExistException.class})
@@ -53,6 +59,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
+    @ExceptionHandler(FileProcessingException.class)
+    public ResponseEntity<ErrorResponse> handleFileProcessingException(FileProcessingException ex) {
+        var errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setMessage("File processing error: " + ex.getMessage());
+        errorResponse.setRequestTime(LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

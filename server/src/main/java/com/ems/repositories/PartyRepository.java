@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PartyRepository extends JpaRepository<Party, Long> {
 
+<<<<<<< HEAD
+=======
+    boolean existsByPartyNameOrPartyAbbreviationOrPartyLeaderName(String partyName,String partyAbbreviation,String partyLeaderName);
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

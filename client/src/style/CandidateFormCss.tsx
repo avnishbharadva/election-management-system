@@ -20,11 +20,7 @@ export const DropzoneContainer = styled(Box)({
   });
   
 export const Section = styled(Box)({
-<<<<<<< HEAD
-    // marginBottom: "3.5rem",
-=======
       gap: '2rem'
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
   });
   
 export const Row = styled(Box)({
@@ -53,10 +49,6 @@ export const DividerStyle = styled(Divider)({
   });
 
 export const Title = styled(Typography)({
-<<<<<<< HEAD
-    color:'#003153'
-})
-=======
     color:'#003153',
 });
 
@@ -90,4 +82,3 @@ export const FormContent = styled(Box)({
   padding: "16px",
   maxHeight: "50vh", // Control scrolling area
 });
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486

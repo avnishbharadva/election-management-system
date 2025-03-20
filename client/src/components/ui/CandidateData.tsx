@@ -5,11 +5,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -21,7 +19,6 @@ import {
 import { RootState, AppDispatch } from "../../store/app/store";
 import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
 import Model from "../ui/Model";
-import CandidateForm from "../ui/CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -47,7 +44,9 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
+
  console.log(allCandidates)
+
   const ITEM_HEIGHT = 48;
   const [modalData, setModalData] = useState<ModalData>({
     open: false,
@@ -56,7 +55,6 @@ const CandidateData = () => {
   });
 
   const handleOpenModal = (actionType: "add" | "edit", candidate?: Candidate) => {
-    console.log(candidate)
     if (actionType === "add") {
       dispatch(resetState());
     }
@@ -68,7 +66,6 @@ const CandidateData = () => {
     });
   };
   
-
   const handleCloseModal = () => {
     setModalData({ open: false, actionType: null, selectedCandidate: null });
   };
@@ -78,15 +75,14 @@ const CandidateData = () => {
     setSelectedCandidateId(candidateId);
   };
 
-  const handleClose = () => {
-    
+
+  const handleClose = () => {   
     setAnchorEl(null);
     setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
     try {
-      console.log("Viewing candidate:", candidateId);
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       setSelectedCandidate(data);
       setOpenViewDialog(true);
@@ -110,7 +106,7 @@ const CandidateData = () => {
     handleClose();
   };
 
-    // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
+
     const handleDeleteCandidate = async () => {
       if (selectedCandidateId) {
         try {
@@ -135,36 +131,36 @@ const CandidateData = () => {
 
   const handlePageChange = (_event: unknown, newPage: number) => {
     dispatch(setPage(newPage));
-    dispatch(fetchCandidates({ page: newPage, perPage }));
+    dispatch(fetchCandidates({ page: newPage, perPage, sortBy, sortDir }));
   };
   
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPerPage = parseInt(event.target.value, 10);
     dispatch(setPerPage(newPerPage));
-    dispatch(setPage(0)); 
-    dispatch(fetchCandidates({ page: 0, perPage: newPerPage }));
+
+    dispatch(setPage(0));
+    dispatch(fetchCandidates({ page: 0, perPage: newPerPage, sortBy, sortDir }));
   };
 
   const handleSort = (column: string) => {
     const isAsc = sortBy === column && sortDir === "asc";
-    const newOrder = isAsc ? "desc" : "asc";  
+    const newOrder = isAsc ? "desc" : "asc";
     dispatch(setSort({ sortBy: column, sortDir: newOrder }));
+    dispatch(fetchCandidates({ page: currentPage, perPage, sortBy: column, sortDir: newOrder }));
   };
-
+  
   useEffect(() => {
     dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
-  
-
-  // const {searchedSSN} = useSelector((state: RootState) => state.candidate);
-
+    
   const candidatesToDisplay = useMemo(() => {
     if (filteredCandidate?.length > 0) {
       return filteredCandidate;
     }
-    return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
+    return Array.isArray(allCandidates) ? allCandidates : allCandidates || [];
   }, [ filteredCandidate, allCandidates]);
 
+  
   const renderSortableColumn = (label: string, field: string) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
       <b>{label}</b>
@@ -303,13 +299,10 @@ const CandidateData = () => {
             )}
           </TableBody>
         </Table>
-        
-        {/* <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
-          <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
-        </Model> */}
-          <Model open={modalData.open} handleClose={handleCloseModal}>
+
+          <Model open={modalData.open} handleclose={handleCloseModal}>
             <CandidateContainer
-              handleClose={handleCloseModal}  // Pass handleClose to CandidateContainer
+              handleClose={handleCloseModal} 
               selectedCandidate={modalData.selectedCandidate}
               actionType={modalData.actionType}
             />
@@ -322,8 +315,8 @@ const CandidateData = () => {
             zIndex: 10,
           }}
           component="div"
-          count={totalRecords} 
-          page={currentPage} 
+          count={totalRecords}
+          page={currentPage}
           rowsPerPage={perPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}

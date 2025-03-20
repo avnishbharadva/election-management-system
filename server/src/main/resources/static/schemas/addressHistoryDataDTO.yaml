@@ -1,0 +1,47 @@
+type: object
+description: Address history record for a voter
+properties:
+  historyId:
+    type: integer
+    example: 1
+    description: Auto-generated unique history ID
+  addressLine:
+    type: string
+    example: "123 Main Street"
+    description: The primary street address
+  aptNumber:
+    type: string
+    example: "Apt 4B"
+    description: Apartment or unit number
+  city:
+    type: string
+    example: "New York"
+    description: City name
+  county:
+    type: string
+    example: "New York County"
+    description: County name
+  state:
+    type: string
+    example: "New York"
+    description: State name
+    default: "New York"
+  zipCode:
+    type: string
+    example: "10001"
+    description: Zip code (5-digit)
+  addressType:
+    type: string
+    enum: [RESIDENTIAL,MAILING]
+    example: "RESIDENTIAL"
+    description: Type of address (RESIDENTIAL or MAILING)
+  createdAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    description: Timestamp when the record was created
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T15:22:30.120Z"
+    description: Timestamp when the record was last updated

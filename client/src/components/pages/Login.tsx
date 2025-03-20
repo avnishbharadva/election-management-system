@@ -1,9 +1,8 @@
 import { Button, TextField, Typography } from "@mui/material";
 import bgImg from "../../assets/images/NYC_Flag.jpg";
-import { Resolver, useForm,SubmitHandler } from 'react-hook-form';
+import { useForm,SubmitHandler } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
-import {
- 
+import { 
   FormCard,
   LoginBox,
   LoginField,
@@ -15,14 +14,10 @@ import { AppDispatch } from "../../store/app/store";
 import { useDispatch } from "react-redux";
 import { officerLogin } from "../../store/feature/officers/officerApi";
 
-import Navbar from "../ui/Navbar";
-
 type FormValues = {
   email: string;
   password: string;
 };
-
-
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,9 +35,7 @@ const Login = () => {
         await dispatch(officerLogin(officerData)).unwrap()
        navigate("/dashboard");
     } catch (error) {
-      
-      // console.error("Login failed:", error);
-     
+           
     }
   };
   
@@ -50,8 +43,7 @@ const Login = () => {
   return (
     <>
          
-     <LoginBox>
-    {/* <Typography>Election Management System</Typography> */}
+<LoginBox>
   <LoginImg src={bgImg} alt="" />
   <FormCard>
   <LoginTitle>
@@ -62,8 +54,7 @@ const Login = () => {
       <Typography variant="h6">Sign In Here!</Typography>
       <LoginField>
         <TextField
-          fullWidth
-          
+          fullWidth         
           {...register("email", { 
             required: "Email is required", 
             pattern: { 
@@ -103,7 +94,6 @@ const Login = () => {
     </LoginForm>
   </FormCard>
 </LoginBox>
-
     </>
   );
 };

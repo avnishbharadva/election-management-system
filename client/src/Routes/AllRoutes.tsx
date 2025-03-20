@@ -8,7 +8,6 @@ import AddParty from "../components/pages/AddParty";
 import AddElection from "../components/pages/AddElection";
 import Layout from "../components/ui/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-
 import Cards from "../components/ui/Cards";
 import Dashboard from "../components/pages/Dashboard";
 
@@ -17,7 +16,6 @@ const AllRoutes = () => {
     <Routes>
       {/* Public Route */}
       <Route path="/" element={<Login />} />
-
 
       {/* Protected Routes */}
       <Route
@@ -28,7 +26,6 @@ const AllRoutes = () => {
           </ProtectedRoute>
         }
       >
-
        
         <Route index element={<Dashboard/>} /> 
         <Route path="candidate" element={<AddCandidate />} /> 

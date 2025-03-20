@@ -8,12 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Voter extends TimeStamp {
+public class Voter extends AuditEntity {
     @Id
     @Column(unique = true, nullable = false, length = 9)
     private String voterId;
@@ -58,16 +59,29 @@ public class Voter extends TimeStamp {
     @JoinColumn(name = "party_id")
     private Party party;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "voter")
     @JsonManagedReference("address-voter")
     @ToString.Exclude
     private List<Address> address;
+=======
+    @OneToOne
+    @JoinColumn(name = "residential_address")
+    private Address residentialAddress;
+
+    @OneToOne
+    @JoinColumn(name = "mailing_address")
+    private Address mailingAddress;
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
     private String image;
 
     private String signature;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     @ManyToOne
     @JoinColumn(name = "voter_status_id")
     private VoterStatus voterStatus;
@@ -79,4 +93,25 @@ public class Voter extends TimeStamp {
         }
     }
 
+    public Long getPartyId() {
+        return (party != null) ? party.getPartyId() : null;
+    }
+
+    public Long getVoterStatusId() {
+        return (voterStatus != null) ? voterStatus.getStatusId() : null;
+    }
+
+    public String getGenderAsString() {
+        return (gender != null) ? gender.name() : null;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return super.getCreatedAt();
+
+    }
+
+    public LocalDateTime getUpdated_at() {
+        return super.getUpdatedAt();
+    }
 }
+

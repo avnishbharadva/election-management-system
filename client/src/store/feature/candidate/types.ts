@@ -1,3 +1,5 @@
+import { Control, FieldError, FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
+
 interface Address {
   addressId: number;
   street: string;
@@ -18,11 +20,11 @@ interface BankDetails {
 }
 
 export interface Candidate {
-  candidateId: number;  // ✅ Added candidateId field
+  candidateId: number;  
   candidateName: CandidateName;
   candidateSSN: string;
   dateOfBirth: string;
-  gender: "MALE" | "FEMALE" | "OTHER";
+  gender: "MALE" | "FEMALE";
   maritalStatus: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
   noOfChildren: number;
   spouseName?: string;
@@ -53,7 +55,7 @@ export interface CandidateState {
   perPage:5;
   sortBy: string;
   sortDir: string;
-  }
+}
 
 export interface IFormInput {
 candidateId?: number;
@@ -74,45 +76,54 @@ bankDetails: BankDetails;
 candidateImage: string;
 candidateSignature: string;
 sameMailingAddress: boolean;
-<<<<<<< HEAD
-}
-=======
 }
 
 export interface ModalData {
     open: boolean;
     actionType: "edit" | "add" | null;
     selectedCandidate: Candidate | null;
-  }
+}
 
-  const defaultValues = {
-  candidateName: {
-    firstName: null,
-    middleName: null,
-    lastName: null,
-  },
-  gender: "",
-  dateOfBirth: "",
-  partyId: "",
-  candidateEmail: "",
-  candidateSSN: searchQuery, // Preserving searchQuery
-  maritalStatus: "",
-  noOfChildren: null,
-  spouseName: "",
-  stateName: "New York",
-  residentialAddress: {
-    street: "",
-    city: "",
-    zipcode: "",
-  },
-  mailingAddress: {
-    street: "",
-    city: "",
-    zipcode: "",
-  },
-  bankDetails: {
-    bankName: "",
-    bankAddress: "",
-  },
-};
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
+export interface AddressFormProps {
+  register: UseFormRegister<IFormInput>;
+  errors: FieldErrors<IFormInput>;
+  watch: UseFormWatch<IFormInput>;
+  setValue: UseFormSetValue<IFormInput>;
+}
+
+export interface BankDetailsProps {
+  register: UseFormRegister<IFormInput>;
+  errors: FieldErrors<IFormInput>;
+}
+
+export interface CandidateContainerProps {
+  handleClose: () => void;
+  selectedCandidate: Candidate | null;
+  actionType: "edit" | "add" | null;
+}
+
+export interface CandidateNameErrors {
+  firstName?: FieldError;
+  middleName?: FieldError;
+  lastName?: FieldError;
+}
+
+export interface PersonalInfoProps {
+  register: UseFormRegister<any>;
+  errors: FieldErrors & {
+    candidateName?: CandidateNameErrors;
+  };
+  control: Control<any>;
+  editId?: string | null;
+  candidate?: any;
+  searchQuery?: string; 
+  watch: (name: string) => any;
+}
+
+export interface UploadDocumentsProps {
+  profilePic: File | string | null;
+  signature: File | string | null;
+  onDropProfile: (acceptedFiles: File[]) => void;
+  onDropSignature: (acceptedFiles: File[]) => void;
+  editId: number | null;
+}

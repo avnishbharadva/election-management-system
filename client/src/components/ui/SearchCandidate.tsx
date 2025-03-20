@@ -1,6 +1,4 @@
-import { TextField, InputAdornment, IconButton, Box, Button } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
+import { InputAdornment, IconButton} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../store/feature/candidate/candidateSlice";
 import { AppDispatch } from "../../store/app/store";
@@ -39,11 +37,7 @@ const SearchComponent: React.FC = () => {
       <StyledSearchInput
         fullWidth
         variant="outlined"
-<<<<<<< HEAD
-        placeholder="Enter 9-digit SSN..."
-=======
         placeholder="Enter Last 9-digit SSN..."
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
         value={searchQuery}
         onChange={handleChange}
         type="text"

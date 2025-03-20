@@ -57,35 +57,28 @@ const candidateSlice = createSlice({
         state.sortBy = action.payload.sortBy;
         state.sortDir = action.payload.sortDir;
       },
-<<<<<<< HEAD
-=======
       clearCandidate(state) {
-        state.candidate = null; // Reset the candidate state
+        state.candidate = null; 
       },
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       resetState: (state) => {
         state.loading = false;
         state.success = false;
         state.error = null;
-<<<<<<< HEAD
-=======
         state.candidate = null
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
       },
     },
     extraReducers: (builder) => {
       builder
-        // Fetch all candidates on mount
         .addCase(fetchCandidates.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
         .addCase(fetchCandidates.fulfilled, (state, action) => {
-          state.allCandidates = action.payload;
-          state.currentPage = action.payload.currentPage;
-          state.totalPages = action.payload.totalPages;
-          state.totalRecords = action.payload.totalRecords;
-          state.perPage = action.payload.perPage;
+          state.allCandidates = action.payload.data.content;
+          state.currentPage = action.payload.data.number;
+          state.totalPages = action.payload.data.totalPages;
+          state.totalRecords = action.payload.data.totalElements;
+          state.perPage = action.payload.data.size;
           state.loading = false;
         })
         .addCase(fetchCandidates.rejected, (state, action) => {
@@ -100,14 +93,13 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateBySSN.fulfilled, (state, action) => {
           if (action.payload) {
-            state.filteredCandidate = [action.payload]; // Ensure it's an array
+            state.filteredCandidate = [action.payload.data]; 
           } else {
             state.filteredCandidate = [];
-          }
-          
+          }          
           state.notFound = !action.payload;
           state.loading = false;
-          state.searchedSSN = state.searchQuery; // Make sure searched SSN is stored
+          state.searchedSSN = state.searchQuery; 
         })       
         .addCase(fetchCandidateBySSN.rejected, (state, action) => {
           state.filteredCandidate = null;
@@ -139,7 +131,7 @@ const candidateSlice = createSlice({
         })
         .addCase(fetchCandidateById.fulfilled, (state, action) => {
           state.loading = false;
-          state.candidate = action.payload;
+          state.candidate = action.payload.data;
           state.error = null;
           state.notFound = false;
         })
@@ -166,8 +158,7 @@ const candidateSlice = createSlice({
           state.success = false;
           state.error = null;
         })
-        .addCase(deleteCandidateById.fulfilled, (state, action)=>{
-          // state.allCandidates = state.allCandidates.filter((candidate) => candidate.candidateId !== action.payload);
+        .addCase(deleteCandidateById.fulfilled, (state)=>{
           state.loading = false;
           state.success = true;
         })
@@ -179,9 +170,5 @@ const candidateSlice = createSlice({
     },
   });
 
-<<<<<<< HEAD
-  export const { setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
-=======
   export const { clearCandidate,setSearchedSSN,setSearchQuery, clearSearchQuery, setCandidateNotFound, resetState, resetFilteredCandidate, setPage,setPerPage, filterCandidateBySSN , setSort} = candidateSlice.actions;
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
   export default candidateSlice.reducer;

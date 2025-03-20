@@ -1,0 +1,382 @@
+openapi: 3.0.3
+info:
+  title: Voter API
+  version: 1.0.0
+  description: API for voter registration and management
+
+servers:
+  - url: http://localhost:8082
+
+paths:
+  /voters:
+    post:
+      summary: Register a new voter
+      description: Registers a new voter with the provided details.
+      operationId: registerVoter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoterRegisterDTO'
+      responses:
+        "201":
+          description: Voter successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        "400":
+          description: Invalid request data
+        "409":
+          description: Voter already exists
+        "500":
+          description: Internal server error
+      tags:
+        - Voter
+
+    get:
+      summary: Search voters with filters and pagination
+      description: Search for voters based on various filter criteria such as first name, last name, date of birth, etc.
+      operationId: searchVoters
+      parameters:
+        - name: firstName
+          in: query
+          description: The first name of the voter.
+          required: false
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          description: The last name of the voter.
+          required: false
+          schema:
+            type: string
+        - name: dateOfBirth
+          in: query
+          description: The date of birth of the voter.
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: dmvNumber
+          in: query
+          description: The DMV number of the voter.
+          required: false
+          schema:
+            type: string
+        - name: ssnNumber
+          in: query
+          description: The SSN number of the voter.
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          description: The city where the voter resides.
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: true
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          description: The number of voters per page.
+          required: true
+          schema:
+            type: integer
+            default: 10
+        - name: sort
+          in: query
+          description: Sorting order of the results. Use multiple `sort` parameters to specify multiple fields (e.g., `sort=firstName,asc&sort=lastName,desc`).
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          example:
+            - "firstName,asc"
+            - "lastName,desc"
+      responses:
+        "200":
+          description: Successfully retrieved paginated voter list
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/paginatedVoterDTO.yaml"
+        "400":
+          description: Invalid request parameters
+        "500":
+          description: Server error
+
+  /voters/status:
+    get:
+      summary: Get all voter statuses
+      operationId: getAllStatus
+      tags:
+        - Voter
+      responses:
+        "200":
+          description: Successfully retrieved voter statuses
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "./schemas/voterStatusDTO.yaml"
+        "500":
+          description: Internal Server Error
+
+  /voters/{voterId}:
+    patch:
+      summary: Update voter details
+      operationId: voterUpdate
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/voterUpdateRequest.yaml"
+
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
+  /voters/{voterId}/audit:
+    get:
+      summary: Get Voter Audit by Voter Id
+      operationId: getAudit
+      tags:
+        - Voter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Audit Details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/{voterId}/transfer:
+    patch:
+      summary: Transfer voter county details
+      description: Transfer a voter's county based on the provided voter ID.
+      operationId: transferVoter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/transferAddress.yaml"
+
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas/voterDTO.yaml"
+        '400':
+          description: Bad request, invalid input
+        '404':
+          description: Voter not found
+        '500':
+          description: Internal server error
+
+  /voters/{voterId}/change:
+    patch:
+      summary: Update voter details
+      operationId: changeVoter
+      description: Updates a voter's details based on the provided voter ID.
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique identifier of the voter
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/changeVoterAddress.yaml"
+      responses:
+        '200':
+          description: Voter details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoterDTO"
+        "400":
+          description: Bad Request (Invalid input)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid town ID. Please check and try again."
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Voter not found."
+
+  /voters/{voterId}/history/name:
+    get:
+      summary: Get Name History by Voter Id
+      operationId: nameHistory
+      tags:
+        - Voter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Name History retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NameHistoryDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/{voterId}/history/status:
+    get:
+      summary: Get Status History by Voter Id
+      operationId: statusHistory
+      tags:
+        - Voter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Status History retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusHistoryDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/{voterId}/history/address:
+    get:
+      summary: Get Address History by Voter Id
+      operationId: addressHistory
+      tags:
+        - Voter
+      parameters:
+        - name: voterId
+          in: path
+          required: true
+          description: Unique ID of the Voter
+          schema:
+            type: string
+            example: "000000001"
+      responses:
+        "200":
+          description: Address History retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressHistoryDTO"
+        "404":
+          description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    PaginatedVoterDTO:
+      $ref: './schemas/paginatedVoterDTO.yaml'
+    VoterRegisterDTO:
+      $ref: './schemas/voterRegisterDTO.yaml'
+    VoterDTO:
+      $ref: './schemas/voterDTO.yaml'
+    AddressDTO:
+      $ref: './schemas/addressDTO.yaml'
+    AuditDTO:
+      $ref: './schemas/auditDTO.yaml'
+    VoterStatusDTO:
+      $ref: './schemas/voterStatusDTO.yaml'
+    NameHistoryDTO:
+      $ref: "./schemas/nameHistoryDTO.yaml"
+    StatusHistoryDTO:
+      $ref: "./schemas/statusHistoryDTO.yaml"
+    AddressHistoryDTO:
+      $ref: "./schemas/addressHistoryDTO.yaml"
+    ErrorResponse:
+      $ref: './schemas/errorResponse.yaml'
+

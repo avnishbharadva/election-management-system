@@ -1,9 +1,8 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.Gender;
-import com.ems.entities.constants.MaritialStatus;
+import com.ems.entities.constants.MaritalStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @DynamicUpdate
 @Entity
-public class Candidate extends TimeStamp {
+public class Candidate extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_seq")
@@ -36,9 +35,8 @@ public class Candidate extends TimeStamp {
 
     private String candidateImage;
 
-
     @Enumerated(EnumType.STRING)
-    private MaritialStatus maritialStatus;
+    private MaritalStatus maritalStatus;
 
     private int noOfChildren;
     private String spouseName;
@@ -64,8 +62,7 @@ public class Candidate extends TimeStamp {
     @JoinColumn(name = "election_id")
     private Election election;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_details_id")
     private BankDetails bankDetails;
 

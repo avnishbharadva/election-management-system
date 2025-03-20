@@ -1,5 +1,4 @@
-
-import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,TablePagination,Box,CircularProgress,Menu,MenuItem,ListItemIcon} from "@mui/material";
+import { Table,TableBody,TableCell,TableHead,TableRow,IconButton,CircularProgress,Menu,MenuItem,ListItemIcon, TablePagination} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -11,13 +10,13 @@ import { toast, ToastContainer } from "react-toastify";
 import {useEffect, useState} from 'react';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import DeleteDialog from "./DeleteDialog";
+import { FlexBoxCenter } from "../../style/CommanStyle";
 
 const ElectionData = ({ handleOpenModel }: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { elections, loading, currentPage, perPage, totalRecords } = useSelector(
     (state: RootState) => state.election
   );
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedElection, setSelectedElection] = useState<any>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -27,40 +26,34 @@ const ElectionData = ({ handleOpenModel }: any) => {
       dispatch(fetchElection({ page: currentPage, perPage: perPage, order: "desc" }));
     }
   }, [dispatch, currentPage, perPage]);
-
   
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, electionData: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedElection(electionData); 
   };
 
-  // Close menu
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  // Edit button: Pass selected election data to modal
   const handleEditClick = () => {
     if (selectedElection) {
-      console.log("Editing election:", elections);
-      handleOpenModel(selectedElection); // Pass correct data to modal
+      handleOpenModel(selectedElection); 
     }
     handleMenuClose();
   };
 
-  // Delete function
-
-   const handleOpenDeleteDialog = (electionId: number) => {
+  const handleOpenDeleteDialog = (electionId: number) => {
       setSelectedElection(electionId);
       setOpenDeleteDialog(true);
-    };
+  };
     
-    const handleCloseDeleteDialog = () => {
+  const handleCloseDeleteDialog = () => {
       setOpenDeleteDialog(false);
       setSelectedElection(null);
-    };
+  };
     
-    const handleDeleteClick = async () => {
+  const handleDeleteClick = async () => {
       if (selectedElection?.electionId) {
         try {
           await dispatch(deleteElectionById(selectedElection.electionId)).unwrap();
@@ -72,21 +65,20 @@ const ElectionData = ({ handleOpenModel }: any) => {
       }
       handleCloseDeleteDialog();
       handleMenuClose();
-    };
+  };
 
   return (
     <>
-    <BoxTableContainer sx={{ marginTop: 2, width: "100%", boxShadow: "0px 4px 10px rgba(128, 128, 128, 0.5)" }}>
+    <BoxTableContainer>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 200 }}>
+        <FlexBoxCenter sx={{height: 200}}>
           <CircularProgress />
-        </Box>
+        </FlexBoxCenter>
       ) : (
         <>
           <Table stickyHeader>
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableRow>
                 <TableCell><b>Election Name</b></TableCell>
                 <TableCell><b>Election Type</b></TableCell>
                 <TableCell><b>Election Date</b></TableCell>
@@ -96,7 +88,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
               </TableRow>
             </TableHead>
             <TableBody>
-
                 {elections?.elections?.length > 0 ? (
                   elections?.elections?.map((election: any, index: number) => (
                     <TableRow key={election?.electionId ?? `election-${index}`}>
@@ -117,21 +108,13 @@ const ElectionData = ({ handleOpenModel }: any) => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} align="center" sx={{ 
-                      fontSize: "16px", 
-                      fontWeight: "bold", 
-                      color: "#757575", 
-                      padding: "20px",
-                      backgroundColor: "#f9f9f9"
-                    }}>
+                    <TableCell colSpan={6} align="center">
                       No elections available.
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
           </Table>
-
-          {/* Menu Component */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -149,7 +132,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
               </ListItemIcon>
               Edit
             </MenuItem>
-
             <MenuItem onClick={() => handleOpenDeleteDialog(selectedElection)}>
               <ListItemIcon>
                 <DeleteIcon />
@@ -157,17 +139,15 @@ const ElectionData = ({ handleOpenModel }: any) => {
               Delete
             </MenuItem>
           </Menu>
-
           <TablePagination
-
-            sx={{
+              sx={{
               position: "sticky", 
               bottom: 0, 
               backgroundColor: "white", 
               zIndex: 10,
             }}
-            rowsPerPageOptions={[2, 5, 10, 25]}
             component="div"
+            rowsPerPageOptions={[2, 5, 10, 25]}
             count={totalRecords}
             rowsPerPage={perPage}
             page={currentPage}
@@ -177,7 +157,6 @@ const ElectionData = ({ handleOpenModel }: any) => {
           <ToastContainer position="top-right" autoClose={3000} />
         </>
       )}
-
     </BoxTableContainer>
     <DeleteDialog
         open={openDeleteDialog}
