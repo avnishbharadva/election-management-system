@@ -89,6 +89,7 @@ const CandidateData = () => {
   };
 
   const handleCloseViewDialog = () => {
+    dispatch(resetState())
     setOpenViewDialog(false);
     setSelectedCandidate(null);
   };

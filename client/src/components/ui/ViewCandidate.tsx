@@ -1,4 +1,6 @@
 import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider,Grid, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { resetState } from "../../store/feature/candidate/candidateSlice";
 
 interface ViewCandidateProps {
   open: boolean;
@@ -6,11 +8,20 @@ interface ViewCandidateProps {
   selectedCandidate: any;
 }
 
-export default function ViewCandidate({ open, handleClose, selectedCandidate }: ViewCandidateProps) {
+
+
+export default function ViewCandidate({ open,handleClose, selectedCandidate }: ViewCandidateProps) {
+
+  const dispatch = useDispatch()
+  const handleCancel= ()=>{
+    resetState()
+    handleClose()
+  dispatch(resetState())
+  }
   return (
             <>
               {/* Candidate View Dialog */}
-              <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+              <Dialog open={open}  fullWidth maxWidth="md">
               {/* Header */}
               <DialogTitle sx={{ backgroundColor: "#1976d2", color: "white", textAlign: "center", fontWeight: "bold" }}>
                 Candidate Details
@@ -207,7 +218,7 @@ export default function ViewCandidate({ open, handleClose, selectedCandidate }: 
         
 
               <DialogActions sx={{ justifyContent: "center", padding: "10px", backgroundColor: "#f1f1f1" }}>
-                <Button onClick={handleClose} variant="contained" color="primary">
+                <Button onClick={handleCancel} variant="contained" color="primary">
                   Close
                 </Button>
               </DialogActions>

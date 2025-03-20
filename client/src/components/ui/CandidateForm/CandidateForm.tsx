@@ -11,7 +11,7 @@ import BankDetails from "./BankDetails";
 import UploadDocuments from "./UploadDocuments";
 import { FormContent, Heading, ModalFooter } from "../../../style/CandidateFormCss";
 import { Box, Button, IconButton } from "@mui/material";
-import { IFormInput } from "../../../store/feature/candidate/types";
+import { defaultValues, IFormInput } from "../../../store/feature/candidate/types";
 import { clearCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateDialog from "../UpdateDialog";
@@ -111,7 +111,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
       } else {
         await dispatch(addCandidate(newFormData)).unwrap();
         dispatch(fetchCandidates({ page: 0, perPage: 5 }));
-        toast.success("Candidate added successfully.");
         resetForm();
       }
     } catch (error) {
@@ -130,7 +129,7 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
       try {
         await dispatch(updateCandidateData({ candidateId: editId, candidateData: filteredData })).unwrap();
         dispatch(fetchCandidates({ page: 0, perPage: 5 }));
-        toast.success("Candidate updated successfully.");
+        
         resetForm();
       } catch (error) {
         toast.error("Failed to update candidate details.");
@@ -139,10 +138,11 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   };
    
   const resetForm = () => {
-    reset();
+    reset(defaultValues);
     setEditId(null);
     setProfilePic(null);
     setSignature(null);
+
     dispatch(clearCandidate());
     handleClose();
   };
