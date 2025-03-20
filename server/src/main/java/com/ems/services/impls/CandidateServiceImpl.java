@@ -360,7 +360,7 @@ public class CandidateServiceImpl implements CandidateService {
         CompletableFuture<SendResult<String, EmailSendEvent>> future = kafkaTemplate.send(
                 "email-send-event-topic",
                 String.valueOf(existingCandidate.getCandidateId()),
-                new EmailSendEvent(candidateDto.getCandidateEmail(), mailSubject, mailBody)
+                new EmailSendEvent(existingCandidate.getCandidateEmail(), mailSubject, mailBody)
         );
 
         future.whenComplete((result, exception) -> {

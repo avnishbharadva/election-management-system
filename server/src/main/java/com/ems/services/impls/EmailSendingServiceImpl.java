@@ -14,7 +14,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-@KafkaListener(topics = "email-send-event-topic" , groupId="update-voter-events-topic")
 @Data
 @Slf4j
 @Service

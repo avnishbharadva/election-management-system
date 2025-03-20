@@ -348,4 +348,5 @@ public class VoterServiceImpl implements VoterService {
         voterRepo.save(updatedVoter);
         return globalMapper.toVoterDTO(updatedVoter);
     }
+
 }

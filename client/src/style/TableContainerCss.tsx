@@ -8,12 +8,3 @@ export const BoxTableContainer = styled(TableContainer)({
     boxShadow: "0px 4px 10px rgba(128, 128, 128, 0.5)",
     textWrap:'wrap'
 });
-
-// .fade-in {
-//     opacity: 0;
-//     transition: opacity 0.3s ease-in-out;
-//   }
-  
-//   .fade-in-active {
-//     opacity: 1;
-//   }
