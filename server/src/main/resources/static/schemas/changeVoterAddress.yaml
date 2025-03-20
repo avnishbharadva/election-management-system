@@ -1,0 +1,22 @@
+type: object
+properties:
+  addressLine:
+    type: string
+    example: "123 Main St"
+  aptNumber:
+    type: string
+    example: "Apt 4B"
+  city:
+    type: string
+    example: "Springfield"
+  zipCode:
+    type: string
+    pattern: "\\d{5}"
+    example: "62704"
+  addressType:
+    type: string
+    enum: [RESIDENTIAL, MAILING]
+    example: "RESIDENTIAL"
+  town:
+    type: string
+    example: "Alexander Street"

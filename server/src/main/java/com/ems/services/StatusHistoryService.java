@@ -4,6 +4,6 @@ import com.ems.events.VoterUpdateEvent;
 import org.springframework.context.event.EventListener;
 
 public interface StatusHistoryService{
-    @EventListener
+//    @EventListener
     void statusHistory(VoterUpdateEvent voterUpdateEvent);
 }

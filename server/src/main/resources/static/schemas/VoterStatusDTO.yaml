@@ -1,9 +1,0 @@
-type: object
-properties:
-  statusId:
-    type: integer
-    format: int64
-    example: 1
-  statusDesc:
-    type: string
-    example: "Active"

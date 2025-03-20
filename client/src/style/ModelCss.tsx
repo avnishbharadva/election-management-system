@@ -2,11 +2,11 @@ import { Box, styled } from "@mui/material";
 
 export const ModelBox = styled(Box)({
         width: "auto",
-        maxWidth: "90vw", // Limits modal width
+        maxWidth: "90vw", 
         backgroundColor: "white",
         borderRadius: "10px",
-        overflow: "hidden", // Prevent extra scrollbars
-        maxHeight: "80vh", // Limits height
-        padding: "2rem",
-      });
+        overflow: "hidden", 
+        maxHeight: "80vh",
+        padding: "1rem",
+});
       

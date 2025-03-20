@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="11" author="Aryan">
+        <insert tableName="voter_status">
+            <column name="status_id" value="1"/>
+            <column name="status_desc" value="Active"/>
+        </insert>
+        <insert tableName="voter_status">
+            <column name="status_id" value="2"/>
+            <column name="status_desc" value="Inactive"/>
+        </insert>
+        <insert tableName="voter_status">
+            <column name="status_id" value="3"/>
+            <column name="status_desc" value="Pending"/>
+        </insert>
+        <insert tableName="voter_status">
+            <column name="status_id" value="4"/>
+            <column name="status_desc" value="Reject"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
+

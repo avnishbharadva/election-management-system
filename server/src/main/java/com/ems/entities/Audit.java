@@ -17,7 +17,8 @@ public class Audit {
     private String id;
 
     private String tableName;
-    private Map<String, Object> metadata;
+//    private Map<String, Object> voterData;
+    private String voterId;
     private Map<String, Object> oldFields;
     private Map<String, Object> changeFields;
 
