@@ -113,7 +113,7 @@ public class VoterServiceImpl implements VoterService {
     public Page<VoterDataDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort) {
         log.info("Searching voters with filters: {}", searchDTO);
         Pageable pageable = PageRequest.of(page, size, getSort(sort));
-        return voterRepo.searchVoters(
+        Page<VoterDataDTO> searchedVoters = voterRepo.searchVoters(
                 searchDTO.getFirstName(),
                 searchDTO.getLastName(),
                 searchDTO.getDateOfBirth(),
@@ -121,6 +121,9 @@ public class VoterServiceImpl implements VoterService {
                 searchDTO.getSsnNumber(),
                 searchDTO.getCity(),
                 pageable).map(globalMapper::toVoterDTO);
+        searchedVoters.forEach(voterDataDTO -> voterDataDTO.setImage(encodeFileToBase64(Path.of(PHOTO_DIR + "/" + voterDataDTO.getImage()))));
+        searchedVoters.forEach(voterDataDTO -> voterDataDTO.setSignature(encodeFileToBase64(Path.of(PHOTO_DIR + "/" + voterDataDTO.getSignature()))));
+        return searchedVoters;
     }
 
     private Sort getSort(String[] sort) {
