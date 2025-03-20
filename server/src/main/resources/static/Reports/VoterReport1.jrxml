@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Waves_Landscape" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="e115bc59-fd0f-446b-a585-04725e27d7f0">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQl"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+    <style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+    <style name="Column header" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="12"/>
+    <queryString language="SQL">
+        <![CDATA[select * from voter]]>
+    </queryString>
+    <field name="voterId" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="voterId"/>
+        <property name="com.jaspersoft.studio.field.label" value="voterId"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="created_at" class="java.time.LocalDateTime">
+        <property name="com.jaspersoft.studio.field.name" value="created_at"/>
+        <property name="com.jaspersoft.studio.field.label" value="created_at"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="updated_at" class="java.time.LocalDateTime">
+        <property name="com.jaspersoft.studio.field.name" value="updated_at"/>
+        <property name="com.jaspersoft.studio.field.label" value="updated_at"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="dateOfBirth" class="java.time.LocalDate">
+        <property name="com.jaspersoft.studio.field.name" value="date_of_birth"/>
+        <property name="com.jaspersoft.studio.field.label" value="date_of_birth"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="dmvNumber" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="dmv_number"/>
+        <property name="com.jaspersoft.studio.field.label" value="dmv_number"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="email" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="email"/>
+        <property name="com.jaspersoft.studio.field.label" value="email"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="firstName" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="firstName"/>
+        <property name="com.jaspersoft.studio.field.label" value="firstName"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="firstVotedYear" class="java.lang.Long">
+        <property name="com.jaspersoft.studio.field.name" value="firstVotedYear"/>
+        <property name="com.jaspersoft.studio.field.label" value="firstVotedYear"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="genderAsString" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="gender"/>
+        <property name="com.jaspersoft.studio.field.label" value="gender"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="hasVotedBefore" class="java.lang.Boolean">
+        <property name="com.jaspersoft.studio.field.name" value="hasVotedBefore"/>
+        <property name="com.jaspersoft.studio.field.label" value="hasVotedBefore"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="image" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="image"/>
+        <property name="com.jaspersoft.studio.field.label" value="image"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="lastName" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="lastName"/>
+        <property name="com.jaspersoft.studio.field.label" value="lastName"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="middleName" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="middleName"/>
+        <property name="com.jaspersoft.studio.field.label" value="middleName"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="phoneNumber" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="phoneNumber"/>
+        <property name="com.jaspersoft.studio.field.label" value="phoneNumber"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="signature" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="signature"/>
+        <property name="com.jaspersoft.studio.field.label" value="signature"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="ssnNumber" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="ssnNumber"/>
+        <property name="com.jaspersoft.studio.field.label" value="ssnNumber"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="suffixName" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="suffixName"/>
+        <property name="com.jaspersoft.studio.field.label" value="suffixName"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="voterStatusReport" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="voter_status_id"/>
+        <property name="com.jaspersoft.studio.field.label" value="voter_status_id"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="voter"/>
+    </field>
+    <field name="partyAbbreviationReport" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="partyId"/>
+        <property name="com.jaspersoft.studio.field.label" value="Party ID"/>
+    </field>
+    <background>
+        <band height="575" splitType="Stretch">
+            <image vAlign="Bottom">
+                <reportElement positionType="Float" x="-20" y="66" width="105" height="409" uuid="64ca4020-b604-4de9-9ed1-921b74cfd593"/>
+            </image>
+            <frame>
+                <reportElement mode="Opaque" x="-20" y="475" width="105" height="100" backcolor="#666666" uuid="6eb7cb61-0dd7-47a8-8475-5fa6c3a348dc"/>
+                <textField>
+                    <reportElement style="Column header" x="0" y="0" width="104" height="73" forecolor="#000000" uuid="db8457c8-99e9-434f-b439-2d400dff2bcd"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                        <font size="58" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                </textField>
+                <textField evaluationTime="Report">
+                    <reportElement style="Column header" x="0" y="77" width="104" height="20" forecolor="#000000" uuid="e20c8a65-aded-41dc-a107-108a9159af99"/>
+                    <box leftPadding="4" rightPadding="4"/>
+                    <textElement textAlignment="Center">
+                        <font size="16" isBold="false"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                </textField>
+                <line>
+                    <reportElement mode="Transparent" x="42" y="73" width="20" height="1" backcolor="#FFFFFF" uuid="db6d7ead-4383-4f8c-81cf-1e3064eb6924"/>
+                </line>
+            </frame>
+        </band>
+    </background>
+    <title>
+        <band height="104" splitType="Stretch">
+            <staticText>
+                <reportElement style="Title" x="0" y="0" width="802" height="67" uuid="1dcadd54-7d50-4470-85ed-189e4d910b25"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="44" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Voter Report]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="SubTitle" x="232" y="67" width="568" height="37" uuid="862cb50c-5a5e-4906-a495-226e25115fb6"/>
+                <textElement textAlignment="Right">
+                    <font size="22"/>
+                </textElement>
+                <text><![CDATA[All Voters Details]]></text>
+            </staticText>
+        </band>
+    </title>
+    <pageHeader>
+        <band splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <frame>
+                <reportElement mode="Opaque" x="0" y="5" width="802" height="20" backcolor="#666666" uuid="35d90a9b-bb7e-4ec4-bfa2-68be1967d6b2"/>
+                <staticText>
+                    <reportElement style="Column header" x="0" y="0" width="76" height="15" uuid="155aa9b6-0313-41e8-b583-ca7cafdf776b">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fb63c07b-af71-49b7-bce8-804896d62264"/>
+                    </reportElement>
+                    <text><![CDATA[voterId]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="336" y="0" width="110" height="15" uuid="a2e905c7-455f-4447-8bb7-2e55024b6d79">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83fd9897-c6cd-4937-b0da-9d0668a7abea"/>
+                    </reportElement>
+                    <text><![CDATA[Email]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="91" y="0" width="116" height="15" uuid="9ad8dd57-1e4a-4b1c-bf03-559534f19af5">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="94ef018a-6fc6-46f8-b64f-4c551bd3cf12"/>
+                    </reportElement>
+                    <text><![CDATA[FullName]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="286" y="0" width="50" height="15" uuid="a437ddc0-4514-428c-9d5a-cebeccde032d">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f5f932f7-b40f-4df2-8f88-5dde1d4c738b"/>
+                    </reportElement>
+                    <text><![CDATA[Gender]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="207" y="0" width="78" height="15" uuid="f39991c4-85c1-4f5e-bae5-aaadc7232642">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="89d330cc-03a8-4d3a-82c1-a46dbf1a6156"/>
+                    </reportElement>
+                    <text><![CDATA[SSN No.]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="77" y="0" width="14" height="15" uuid="631fc54e-66a1-4534-b25b-6441da8681cb">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c7bcba92-e440-4849-bf6b-63f25bdfcac7"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="10"/>
+                    </textElement>
+                    <text><![CDATA[SF]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="620" y="0" width="84" height="15" uuid="fd413a8b-fca5-4b28-bd47-3ed095e5141e">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dc264cef-b4cd-44d3-b239-01ab550b15a0"/>
+                    </reportElement>
+                    <text><![CDATA[Party]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="704" y="0" width="98" height="15" uuid="56f37db8-7c3b-42f0-93bd-33fef6909bfa">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="130e9fa0-30c4-45f8-810e-1e0eb8abb0f7"/>
+                    </reportElement>
+                    <text><![CDATA[Voter Status ]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="446" y="0" width="96" height="15" uuid="710e3e96-6a75-40d5-94ce-aa412b0a36d1">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dc264cef-b4cd-44d3-b239-01ab550b15a0"/>
+                    </reportElement>
+                    <text><![CDATA[Date Of Birth]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="543" y="0" width="77" height="15" uuid="7be8b846-15ef-43e1-b574-f4d23c6ab8b6">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dc264cef-b4cd-44d3-b239-01ab550b15a0"/>
+                    </reportElement>
+                    <text><![CDATA[Phone No.]]></text>
+                </staticText>
+            </frame>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="21" splitType="Stretch">
+            <frame>
+                <reportElement x="97" y="1" width="705" height="15" uuid="89a3da05-fdde-4ffe-965f-cc476f72e3ab"/>
+                <textField>
+                    <reportElement style="Detail" x="-97" y="0" width="76" height="15" uuid="a0c57f1a-7430-4987-a973-7d2d6632914e">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fb63c07b-af71-49b7-bce8-804896d62264"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{voterId}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="350" y="0" width="94" height="15" uuid="3490e2ac-0e9f-43d7-801c-96f4da0048aa">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="566c9823-ede0-4f42-af35-8048153cb54e"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{dateOfBirth}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="239" y="0" width="110" height="15" uuid="12cf236d-842a-4bd3-86f3-d69c60cae6c0">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83fd9897-c6cd-4937-b0da-9d0668a7abea"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="-7" y="0" width="117" height="15" uuid="9edeb6d2-fc99-4578-afcf-5ddb1456e7fb">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="94ef018a-6fc6-46f8-b64f-4c551bd3cf12"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{firstName}+" "+$F{middleName}+" "+$F{lastName}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="190" y="0" width="49" height="15" uuid="dfc15625-5842-43cf-b253-59673aa1da09">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f5f932f7-b40f-4df2-8f88-5dde1d4c738b"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{genderAsString}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="446" y="0" width="76" height="15" uuid="d794c217-9531-4ade-9cea-0390d632e24c">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="073a667f-d906-4988-a11c-c8f95383c43e"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{phoneNumber}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="110" y="0" width="78" height="15" uuid="1da7d0c4-f97e-4ac5-9b93-646bc829b602">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="89d330cc-03a8-4d3a-82c1-a46dbf1a6156"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{ssnNumber}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="-20" y="0" width="12" height="15" uuid="f6e1e4dd-08a9-4fde-9abe-e9e90dea0bd8">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c7bcba92-e440-4849-bf6b-63f25bdfcac7"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{suffixName}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="530" y="0" width="60" height="15" uuid="abc0ee85-b8bf-41ed-95a9-e0900ce09d39">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dc264cef-b4cd-44d3-b239-01ab550b15a0"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{partyAbbreviationReport}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="607" y="0" width="96" height="15" uuid="3c4c97f4-acc6-4991-8160-a3a1fb5e3b72">
+                        <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="130e9fa0-30c4-45f8-810e-1e0eb8abb0f7"/>
+                    </reportElement>
+                    <textFieldExpression><![CDATA[$F{voterStatusReport}]]></textFieldExpression>
+                </textField>
+                <line>
+                    <reportElement positionType="FixRelativeToBottom" x="-98" y="15" width="803" height="1" uuid="e5f21b91-7f24-498e-97a1-0e93db9225a4"/>
+                    <graphicElement>
+                        <pen lineWidth="0.5" lineColor="#999999"/>
+                    </graphicElement>
+                </line>
+            </frame>
+        </band>
+    </detail>
+    <columnFooter>
+        <band splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band height="39" splitType="Stretch">
+            <textField pattern="EEEEE dd MMMMM yyyy">
+                <reportElement style="Column header" x="671" y="0" width="131" height="20" forecolor="#000000" uuid="95484ca0-40b4-4752-95d8-1afbc33c820b"/>
+                <textElement textAlignment="Right">
+                    <font size="12" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    <summary>
+        <band splitType="Stretch"/>
+    </summary>
+</jasperReport>

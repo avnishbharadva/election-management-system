@@ -10,4 +10,6 @@ import java.util.List;
 public interface TownRepository extends JpaRepository<Town,Long> {
 
 
+    boolean existsByTownName(String townName);
+
 }

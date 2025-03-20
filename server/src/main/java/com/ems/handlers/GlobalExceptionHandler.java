@@ -2,6 +2,7 @@ package com.ems.handlers;
 
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
     public ProblemDetail handleGenericException(DataNotFoundException ex) {
+        log.info("DataNotFoundException Occures");
         ProblemDetail errorDetail = ProblemDetail
                 .forStatusAndDetail(HttpStatus.NOT_FOUND, "An unexpected error occurred");
         errorDetail.setProperty("details", ex.getMessage());

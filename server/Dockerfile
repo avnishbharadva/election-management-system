@@ -20,4 +20,3 @@
 
     # Run the application
     ENTRYPOINT ["java", "-jar", "/app/app.jar"]
-

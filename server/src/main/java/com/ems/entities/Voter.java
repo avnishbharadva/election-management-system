@@ -82,6 +82,14 @@ public class Voter extends TimeStamp {
         }
     }
 
+    public String getPartyAbbreviationReport() {
+        return (party != null) ? party.getPartyAbbreviation() : null;
+    }
+
+    public String getVoterStatusReport() {
+        return (voterStatus != null) ? voterStatus.getStatusDesc() : null;
+    }
+
     public Long getPartyId() {
         return (party != null) ? party.getPartyId() : null;
     }

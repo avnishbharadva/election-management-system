@@ -31,4 +31,8 @@ public class Address extends TimeStamp {
 
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
+
+    public String getAddressTypeAsString() {
+        return (addressType != null) ? addressType.name() : null;
+    }
 }

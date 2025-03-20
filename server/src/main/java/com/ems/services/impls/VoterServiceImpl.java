@@ -271,18 +271,24 @@ public class VoterServiceImpl implements VoterService {
     }
 
     @Override
-    public VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress){
-        log.info("Processing request for User ID: {} | Thread Name: {} | Request ID: {}",
-                voterId, Thread.currentThread().getName(), MDC.get("requestId"));
-
+    public VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress) {
         log.info("Voter Transfer process started for voter {}", voterId);
-
-        var existingVoter = voterRepo.findById(voterId)
-                .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
-
-        var updatedVoter = globalMapper.voterTransferDtotoVoter(transferAddress, existingVoter);
-        log.info("Transfer voter details : {}", updatedVoter);
-        Address address = new Address();
+        if (transferAddress.getAddressType() == null) {
+            throw new IllegalArgumentException("AddressType cannot be null");
+        }
+        var existingVoter = voterRepo.findById(voterId).orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
+        var voterTransfer = globalMapper.voterTransferDtotoVoter(transferAddress, existingVoter);
+        log.info("Transfer voter details : {}", voterTransfer);
+        boolean isCountyExist = countyRepository.existsByCountyName(transferAddress.getCountyName());
+        boolean isTownExist = townRepository.existsByTownName(transferAddress.getTownName());
+        if (!isCountyExist && !isTownExist) {
+            throw new DataNotFoundException("County '" + transferAddress.getCountyName() + "' and Town '" + transferAddress.getTownName() + "' not found.");
+        } else if (!isCountyExist) {
+            throw new DataNotFoundException("County '" + transferAddress.getCountyName() + "' not found.");
+        } else if (!isTownExist) {
+            throw new DataNotFoundException("Town '" + transferAddress.getTownName() + "' not found.");
+        }
+        var address = new Address();
         if (existingVoter.getResidentialAddress().getAddressType().toString().equals(transferAddress.getAddressType().toString())) {
             var oldAddress = addressRepo.findById(existingVoter.getResidentialAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
             address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
@@ -291,10 +297,8 @@ public class VoterServiceImpl implements VoterService {
             var oldAddress = addressRepo.findById(existingVoter.getMailingAddress().getAddressId()).orElseThrow(() -> new DataNotFoundException("AddressNot Found For Voter : " + voterId));
             address = globalMapper.transferVoterAddressToAddress(transferAddress, oldAddress);
         }
-                addressRepo.save(address);
-
-        voterRepo.save(updatedVoter);
-        var voterDTO = globalMapper.toVoterDTO(updatedVoter);
-        return voterDTO;
+        addressRepo.save(address);
+        voterRepo.save(voterTransfer);
+        return globalMapper.toVoterDTO(voterTransfer);
     }
 }
