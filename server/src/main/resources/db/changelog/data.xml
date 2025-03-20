@@ -1,0 +1,476 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Admin (generated)" id="1742301879283-1">
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="1"/>
+            <column name="created_at" value="2025-03-11T13:34:36.678352"/>
+            <column name="town_id" value="3"/>
+            <column name="updated_at" value="2025-03-11T15:49:01.904688"/>
+            <column name="address_line" value="123 Main St"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="2"/>
+            <column name="created_at" value="2025-03-11T13:34:36.729348"/>
+            <column name="town_id" value="2"/>
+            <column name="updated_at" value="2025-03-11T16:20:39.736098"/>
+            <column name="address_line" value="123 Main St"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="3"/>
+            <column name="created_at" value="2025-03-11T16:46:15.622682"/>
+            <column name="town_id" value="3"/>
+            <column name="updated_at" value="2025-03-17T17:48:31.425958"/>
+            <column name="address_line" value="SKHKBFFVRFYFJRYBFJHBCHGVCYEJHBRHG"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Lakeside"/>
+            <column name="county_name" value="kashyap"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="4"/>
+            <column name="created_at" value="2025-03-11T16:46:15.646925"/>
+            <column name="town_id" value="2"/>
+            <column name="updated_at" value="2025-03-17T17:48:31.284749"/>
+            <column name="address_line" value="SKHKBFFVRFYFJRYBFJHBCHGVCYEJHBRHG"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Lakeside"/>
+            <column name="county_name" value="kashyap"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="5"/>
+            <column name="created_at" value="2025-03-11T16:49:44.831606"/>
+            <column name="town_id" value="2"/>
+            <column name="updated_at" value="2025-03-17T17:48:43.306563"/>
+            <column name="address_line" value="SKHKBFFVRFYFJRYBFJHBCHGVCYEJHBRHG"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Lakeside"/>
+            <column name="county_name" value="kashyap"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="6"/>
+            <column name="created_at" value="2025-03-11T16:49:44.836592"/>
+            <column name="town_id" value="4"/>
+            <column name="updated_at" value="2025-03-11T19:29:39.590934"/>
+            <column name="address_line" value="700 Main St"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="MAILING"/>
+            <column name="voter_id"/>
+            <column name="town_name"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="7"/>
+            <column name="created_at" value="2025-03-13T15:33:30.457004"/>
+            <column name="town_id"/>
+            <column name="updated_at" value="2025-03-13T15:33:30.457004"/>
+            <column name="address_line" value="123 Main St"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New York"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Street"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="8"/>
+            <column name="created_at" value="2025-03-13T15:33:30.539006"/>
+            <column name="town_id"/>
+            <column name="updated_at" value="2025-03-13T15:34:22.702479"/>
+            <column name="address_line" value="123 Main St"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New York"/>
+            <column name="address_type" value="MAILING"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="DEEP"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="9"/>
+            <column name="created_at" value="2025-03-17T16:57:55.155675"/>
+            <column name="town_id"/>
+            <column name="updated_at" value="2025-03-17T16:57:55.156674"/>
+            <column name="address_line" value="SKHKBFFVRFYFJRYBFJHBCHGVCYEJHBRHG"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="RESIDENTIAL"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Lakeside"/>
+            <column name="county_name"/>
+        </insert>
+        <insert tableName="address">
+            <column name="zip_code" value="62704"/>
+            <column name="address_id" valueNumeric="10"/>
+            <column name="created_at" value="2025-03-17T16:57:55.194672"/>
+            <column name="town_id"/>
+            <column name="updated_at" value="2025-03-17T16:58:44.566077"/>
+            <column name="address_line" value="SKHKBFFVRFYFJRYBFJHBCHGVCYEJHBRHG"/>
+            <column name="apt_number" value="Apt 4B"/>
+            <column name="city" value="Springfield"/>
+            <column name="county" value="Clark"/>
+            <column name="state" value="New"/>
+            <column name="address_type" value="MAILING"/>
+            <column name="voter_id"/>
+            <column name="town_name" value="Riverside"/>
+            <column name="county_name"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-2">
+        <insert tableName="bank_details_seq">
+            <column name="next_val" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-3">
+        <insert tableName="candidate_address_seq">
+            <column name="next_val" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-4">
+        <insert tableName="candidate_sequence">
+            <column name="next_val" valueNumeric="2000"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-5">
+        <insert tableName="county">
+            <column name="county_id" valueNumeric="1"/>
+            <column name="county_name" value="New York"/>
+        </insert>
+        <insert tableName="county">
+            <column name="county_id" valueNumeric="2"/>
+            <column name="county_name" value="Las Vegas"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-6">
+        <insert tableName="election_seq">
+            <column name="next_val" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-7">
+        <insert tableName="officers">
+            <column name="officer_id" valueNumeric="1"/>
+            <column name="ssn_number" value="123456789"/>
+            <column name="email" value="kashyapjani50@gmail.com"/>
+            <column name="password" value="$2a$12$hGdYcYxGr.1sRT3TWOUPF.y6T3BafKO3UorQw7g1NQxX0lX5jcPLO"/>
+            <column name="role" value="STATE"/>
+            <column name="county_name" value=""/>
+            <column name="first_name" value=""/>
+            <column name="last_name" value=""/>
+            <column name="middle_name"/>
+        </insert>
+        <insert tableName="officers">
+            <column name="officer_id" valueNumeric="2"/>
+            <column name="ssn_number" value="123456780"/>
+            <column name="email" value="deep@gmail.com"/>
+            <column name="password" value="$2a$10$Hw/KtcRcwG9G8UydsyoX2eelaq5WHRQ8z5Ka7tS1cNTuEMvoK8L9u"/>
+            <column name="role" value="COUNTY"/>
+            <column name="county_name" value=""/>
+            <column name="first_name" value=""/>
+            <column name="last_name" value=""/>
+            <column name="middle_name"/>
+        </insert>
+        <insert tableName="officers">
+            <column name="officer_id" valueNumeric="5"/>
+            <column name="ssn_number" value="123456700"/>
+            <column name="email" value="officer@example.com"/>
+            <column name="password" value="$2a$10$OpvkCTDYI/cOaH.GhicaQuHpYaX7/2EjT38mO8aCf3GlaoHE4Z/za"/>
+            <column name="role" value="COUNTY"/>
+            <column name="county_name" value="Las Vegas"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+        </insert>
+        <insert tableName="officers">
+            <column name="officer_id" valueNumeric="6"/>
+            <column name="ssn_number" value="123406700"/>
+            <column name="email" value="officer1@example.com"/>
+            <column name="password" value="$2a$10$M/RZvJAKbCUv.aeN.PxB3.OpAyyHiugXuOoR7qMQ9ysnds1NLTg2C"/>
+            <column name="role" value="COUNTY"/>
+            <column name="county_name" value="Las Vegas"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+        </insert>
+        <insert tableName="officers">
+            <column name="officer_id" valueNumeric="8"/>
+            <column name="ssn_number" value="023456789"/>
+            <column name="email" value="officer12@example.com"/>
+            <column name="password" value="$2a$10$27Qn5JbGVkruLpLxK8ez.uQYghj7tTFIyTq4AaaLgl8GCX91fLIOy"/>
+            <column name="role" value="COUNTY"/>
+            <column name="county_name" value="New York"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-8">
+        <insert tableName="party">
+            <column name="party_foundation_year" valueNumeric="1828"/>
+            <column name="created_at"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="updated_at"/>
+            <column name="party_abbreviation" value="DEM"/>
+            <column name="founder_name" value="Andrew Jackson"/>
+            <column name="party_name" value="Democratic Party"/>
+            <column name="head_quarters" value="Washington, D.C."/>
+            <column name="party_symbol" value="Eagle"/>
+            <column name="party_web_site" value="https://www.democrats.org"/>
+        </insert>
+        <insert tableName="party">
+            <column name="party_foundation_year" valueNumeric="2000"/>
+            <column name="created_at" value="2025-03-17T13:32:19.694122"/>
+            <column name="party_id" valueNumeric="2"/>
+            <column name="updated_at" value="2025-03-17T13:32:19.694122"/>
+            <column name="party_abbreviation" value="TP"/>
+            <column name="founder_name" value="Test Founder"/>
+            <column name="party_name" value="Test Party"/>
+            <column name="head_quarters" value="Dehli"/>
+            <column name="party_symbol" value="Symbol"/>
+            <column name="party_web_site"/>
+        </insert>
+        <insert tableName="party">
+            <column name="party_foundation_year" valueNumeric="2000"/>
+            <column name="created_at" value="2025-03-17T13:35:18.388836"/>
+            <column name="party_id" valueNumeric="3"/>
+            <column name="updated_at" value="2025-03-17T13:35:18.388836"/>
+            <column name="party_abbreviation" value="TP"/>
+            <column name="founder_name" value="Test Founder"/>
+            <column name="party_name" value="Test Party"/>
+            <column name="head_quarters" value="Dehli"/>
+            <column name="party_symbol" value="Symbol"/>
+            <column name="party_web_site"/>
+        </insert>
+        <insert tableName="party">
+            <column name="party_foundation_year" valueNumeric="2000"/>
+            <column name="created_at" value="2025-03-17T13:41:21.218882"/>
+            <column name="party_id" valueNumeric="4"/>
+            <column name="updated_at" value="2025-03-17T13:41:21.218882"/>
+            <column name="party_abbreviation" value="TP"/>
+            <column name="founder_name" value="Test Founder"/>
+            <column name="party_name" value="Test Party"/>
+            <column name="head_quarters" value="Dehli"/>
+            <column name="party_symbol" value="Symbol"/>
+            <column name="party_web_site"/>
+        </insert>
+        <insert tableName="party">
+            <column name="party_foundation_year" valueNumeric="2000"/>
+            <column name="created_at" value="2025-03-17T13:44:09.956930"/>
+            <column name="party_id" valueNumeric="5"/>
+            <column name="updated_at" value="2025-03-17T13:44:09.956930"/>
+            <column name="party_abbreviation" value="TP"/>
+            <column name="founder_name" value="Test Founder"/>
+            <column name="party_name" value="Test Party"/>
+            <column name="head_quarters" value="Dehli"/>
+            <column name="party_symbol" value="Symbol"/>
+            <column name="party_web_site"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-9">
+        <insert tableName="town">
+            <column name="town_id" valueNumeric="4"/>
+            <column name="town_name" value="Greenville"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" valueNumeric="5"/>
+            <column name="town_name" value="Lakeside"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" valueNumeric="3"/>
+            <column name="town_name" value="Maplewood"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" valueNumeric="2"/>
+            <column name="town_name" value="Riverside"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" valueNumeric="1"/>
+            <column name="town_name" value="Springfield"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-10">
+        <insert tableName="voter">
+            <column name="date_of_birth" valueDate="2019-08-24"/>
+            <column name="has_voted_before" valueBoolean="false"/>
+            <column name="created_at" value="2025-03-11T13:34:36.623539"/>
+            <column name="first_voted_year" valueNumeric="2010"/>
+            <column name="mailing_address" valueNumeric="2"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="residential_address" valueNumeric="1"/>
+            <column name="updated_at" value="2025-03-11T13:34:36.764516"/>
+            <column name="voter_status_id" valueNumeric="1"/>
+            <column name="dmv_number" value="123456789"/>
+            <column name="ssn_number" value="987654321"/>
+            <column name="voter_id" value="000000005"/>
+            <column name="suffix_name" value="Jr."/>
+            <column name="phone_number" value="12345678901"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+            <column name="email" value="john.doe@example.com"/>
+            <column name="image" value="null.png"/>
+            <column name="signature" value="null.png"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+        <insert tableName="voter">
+            <column name="date_of_birth" valueDate="2019-08-24"/>
+            <column name="has_voted_before" valueBoolean="false"/>
+            <column name="created_at" value="2025-03-11T16:46:15.580223"/>
+            <column name="first_voted_year" valueNumeric="2010"/>
+            <column name="mailing_address" valueNumeric="4"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="residential_address" valueNumeric="3"/>
+            <column name="updated_at" value="2025-03-11T16:46:15.657280"/>
+            <column name="voter_status_id" valueNumeric="1"/>
+            <column name="dmv_number" value="123466789"/>
+            <column name="ssn_number" value="987604321"/>
+            <column name="voter_id" value="000000006"/>
+            <column name="suffix_name" value="Jr."/>
+            <column name="phone_number" value="12045678901"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+            <column name="email" value="john.doe@xample.com"/>
+            <column name="image" value="null.png"/>
+            <column name="signature" value="null.png"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+        <insert tableName="voter">
+            <column name="date_of_birth" valueDate="2019-08-24"/>
+            <column name="has_voted_before" valueBoolean="false"/>
+            <column name="created_at" value="2025-03-11T16:49:44.826587"/>
+            <column name="first_voted_year" valueNumeric="2010"/>
+            <column name="mailing_address" valueNumeric="6"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="residential_address" valueNumeric="5"/>
+            <column name="updated_at" value="2025-03-11T16:49:44.841592"/>
+            <column name="voter_status_id" valueNumeric="1"/>
+            <column name="dmv_number" value="123426789"/>
+            <column name="ssn_number" value="987624321"/>
+            <column name="voter_id" value="000000007"/>
+            <column name="suffix_name" value="Jr."/>
+            <column name="phone_number" value="12245678901"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+            <column name="email" value="john.doe@eample.com"/>
+            <column name="image" value="null.png"/>
+            <column name="signature" value="null.png"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+        <insert tableName="voter">
+            <column name="date_of_birth" valueDate="2019-08-24"/>
+            <column name="has_voted_before" valueBoolean="false"/>
+            <column name="created_at" value="2025-03-13T15:33:30.403918"/>
+            <column name="first_voted_year" valueNumeric="2010"/>
+            <column name="mailing_address" valueNumeric="8"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="residential_address" valueNumeric="7"/>
+            <column name="updated_at" value="2025-03-13T15:33:30.554917"/>
+            <column name="voter_status_id" valueNumeric="1"/>
+            <column name="dmv_number" value="103456789"/>
+            <column name="ssn_number" value="907654321"/>
+            <column name="voter_id" value="000000008"/>
+            <column name="suffix_name" value="Jr."/>
+            <column name="phone_number" value="12345608901"/>
+            <column name="first_name" value="Manoj"/>
+            <column name="last_name" value="Kumar"/>
+            <column name="middle_name" value="A."/>
+            <column name="email" value="manoj.doe@example.com"/>
+            <column name="image" value="null.png"/>
+            <column name="signature" value="null.png"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+        <insert tableName="voter">
+            <column name="date_of_birth" valueDate="2019-08-24"/>
+            <column name="has_voted_before" valueBoolean="false"/>
+            <column name="created_at" value="2025-03-17T16:57:55.078397"/>
+            <column name="first_voted_year" valueNumeric="2010"/>
+            <column name="mailing_address" valueNumeric="10"/>
+            <column name="party_id" valueNumeric="1"/>
+            <column name="residential_address" valueNumeric="9"/>
+            <column name="updated_at" value="2025-03-17T16:57:55.197671"/>
+            <column name="voter_status_id" valueNumeric="1"/>
+            <column name="dmv_number" value="120466789"/>
+            <column name="ssn_number" value="980604321"/>
+            <column name="voter_id" value="000000009"/>
+            <column name="suffix_name" value="Jr."/>
+            <column name="phone_number" value="12045078901"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="middle_name" value="A."/>
+            <column name="email" value="kashyap.doe@xample.com"/>
+            <column name="image" value="null.png"/>
+            <column name="signature" value="null.png"/>
+            <column name="gender" value="MALE"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-11">
+        <insert tableName="voter_sequence">
+            <column name="id" valueNumeric="5"/>
+        </insert>
+        <insert tableName="voter_sequence">
+            <column name="id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="voter_sequence">
+            <column name="id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="voter_sequence">
+            <column name="id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="voter_sequence">
+            <column name="id" valueNumeric="9"/>
+        </insert>
+    </changeSet>
+    <changeSet author="Admin (generated)" id="1742301879283-12">
+        <insert tableName="voter_status">
+            <column name="status_id" valueNumeric="1"/>
+            <column name="status_desc" value="ACTIVE"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
