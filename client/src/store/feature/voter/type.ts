@@ -3,6 +3,8 @@ export type Address = {
     aptNumber: string;
     city: string;
     county: string;
+    town:string;
+    state:string;
     zipCode: number | null;
     addressType: "RESIDENTIAL" | "MAILING"
 }

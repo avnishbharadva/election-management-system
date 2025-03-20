@@ -52,7 +52,7 @@ interface NestedObject {
   
     trueKeys.forEach((key: string, index: number) => {
       const value = fieldValues[index];
-      const parts: string[] = key.split('.'); // Split by dot notation
+      const parts: string[] = key.split('.');
   
       let current: Record<string, any> = valuesObject;
       // Handle all parts except the last one as objects

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Checkbox, FormControlLabel} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
-import ImageUpload from '../Helpers/ImageUpload';
 import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
 import { StyledButton } from '../style/CommanStyle';
 
@@ -37,6 +36,8 @@ const defaultValues: FormData = {
     city: "",
     county: "",
     zipCode: null,
+    town:"",
+    state:"",
     addressType: "RESIDENTIAL",
   },
   mailingAddress: {
@@ -44,6 +45,8 @@ const defaultValues: FormData = {
     aptNumber: "",
     city: "",
     county: "",
+    town:"",
+    state:"",
     zipCode: null,
     addressType: "MAILING",
   },
@@ -126,6 +129,8 @@ const defaultValues: FormData = {
           aptNumber: "",
           city: "",
           county: "",
+          town:"",
+          state:"",
           zipCode: null,
           addressType: "MAILING",
         });
@@ -204,6 +209,8 @@ const defaultValues: FormData = {
               <NameField label="Apt Number" name="residentialAddress.aptNumber" control={control} />
               <NameField label="City" name="residentialAddress.city" control={control} />
               <NameField label="County" name="residentialAddress.county" control={control} />
+              <NameField label='town' name="residentialAddress.town" control={control} isRequired={false} maxLength={30} />
+              <NameField label='state' name="residentialAddress.state" control={control} isRequired={false} maxLength={30} />
               <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />
          
             </FormRowWide>
@@ -228,7 +235,11 @@ const defaultValues: FormData = {
                 <NameField label="Apt Number" name="mailingAddress.aptNumber" control={control} isRequired={false} />
                 <NameField label="City" name="mailingAddress.city" control={control} isRequired={false} />
                 <NameField label="County" name="mailingAddress.county" control={control} isRequired={false} />
+                <NameField label='town' name="mailingAddress.town" control={control} isRequired={false} maxLength={30} />
+                <NameField label='state' name="mailingAddress.state" control={control} isRequired={false} maxLength={30} />
                 <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control} isRequired={false} maxLength={5} />
+          
+                
               </FormRowWide>
           
             </AddressField>
