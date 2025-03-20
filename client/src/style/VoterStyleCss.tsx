@@ -1,5 +1,4 @@
-import { Divider} from "@mui/material";
-import {Box, TableContainer, Table, TableCell} from '@mui/material';
+import {Box, TableContainer, Table, TableCell, Card, Divider, CardContent} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import { styled } from "@mui/system";
 
@@ -133,9 +132,9 @@ export const StyledTableDetails = styled(Box)({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  gap: '16px', // 2 * 8px (Material UI base unit)
-  padding: '24px', // 3 * 8px (Material UI base unit)
-  borderRadius: '16px', // 2 * 8px (Material UI base unit)
+  gap: '16px',
+  padding: '24px', 
+  borderRadius: '16px', 
   backgroundColor: '#f9f9f9',  
 });
 
@@ -144,4 +143,40 @@ export const TableCellSticky = styled(TableCell)({
   top: 0,
   background: 'white',
   zIndex: 1,
+})
+
+
+//ViewVoter
+
+export const BoxContainer = styled(Box)({
+  display: "flex", 
+  flexDirection: "column", 
+  gap: 3,
+});
+
+export const CardContainer = styled(Card)({
+  boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)', 
+  borderRadius: 2
+});
+
+export const MainContainer = styled(Box)({
+  fontWeight: "bold", 
+  color: "#1976d2",
+})
+
+export const StyleDivider = styled(Divider)({
+  marginBottom: 2,
+})
+
+export const ImageContent = styled(CardContent)({
+  display: "flex", 
+  flexDirection: "row", 
+  gap: 3, 
+  justifyContent: "center", 
+  alignItems: "center", 
+})
+
+export const TypographyStyle = styled(Box)({
+  textAlign: "center", 
+  color: "#757575" 
 })

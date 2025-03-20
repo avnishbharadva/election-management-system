@@ -34,6 +34,11 @@ const defaultValues: FormData = {
 
 const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
   const [logo, setLogo] = useState<any>(party?.partySymbol || null);
+    // State for UpdateDialog
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [originalPartyData, setOriginalPartyData] = useState<Record<string, any>>({});
+    const [updatedPartyData, setUpdatedPartyData] = useState<Record<string, any>>({}); 
+
   const isCancelled = useRef(false);
   const { control, handleSubmit, formState, reset, getValues } = useForm({
       defaultValues,
@@ -41,14 +46,16 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
   });
 
   const { isSubmitting } = formState;
-//   console.log("PartyForm: Party Data:", party.image);
+
   useEffect(() => {
+    setOriginalPartyData({...party, ...party?.partySymbol});
+    console.log("PartyForm: Party Data prop received:", party);
     if (party) {
         reset({
             ...defaultValues,
             ...party,
         });
-        setLogo(party?.partySymbol); // Update logo if party changes
+        setLogo(party?.partySymbol);
         console.log("Form values after reset:", getValues());
     } else {
         reset(defaultValues);
@@ -56,21 +63,21 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
     }
 }, [party, reset, getValues]);
 
-  console.log(isCancelled);
-
   const [registerParty] = useRegisterPartyMutation();
   const [editParty] = useEditPartyMutation();
 
-  // State for UpdateDialog
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [originalPartyData, setOriginalPartyData] = useState<Record<string, any>>({});
-  const [updatedPartyData, setUpdatedPartyData] = useState<Record<string, any>>({});
 
   const onSubmit = async (data: FormData) => {
+    console.log("data inside submit", data);
     if (!logo) {
         toast.error("Please upload Party Logo");
         return;
     }
+    if (party?.partyId) {
+        setUpdatedPartyData(data);
+        setOriginalPartyData(party); 
+        setIsDialogOpen(true);
+    } else {
     try {
         const result = await toast.promise(
             party?.partyId
@@ -90,32 +97,33 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
         console.log("PartyForm: Error on Party Submit:", error);
         toast.error("Error Submitting Party");
     }
+}
 };
-    console.log("PartyForm: Party Data:", party);
 
-  const handleConfirm = () => {
-    if (party?.partyId) {
-        setOriginalPartyData(party);
-        setUpdatedPartyData(updatedPartyData);
-        setIsDialogOpen(true);
-      }
-      else{
-      onSubmit(updatedPartyData as FormData);
-    }
-  };
+    const handleConfirm = async () => {
+        if (party?.partyId) {
+            try {
+                const result = await toast.promise(
+                    editParty({ post: updatedPartyData, img:logo, partyId: party?.partyId }).unwrap(),
+                    {
+                        pending: "please wait ...",
+                        success: "Successful",
+                    }
+                );
+                if (result) {
+                    reset(defaultValues);
+                    setLogo(true);
+                    onClose();
+                    setIsDialogOpen(false)
+                }
+            } catch (error) {
+                console.log("PartyForm: Error on Party Submit:", error);
+                toast.error("Error Submitting Party");
+            }
+        }
+    };
 
-  const handleCancel = () => {
-      console.log("handleCancel was called");
-      isCancelled.current = true;
-      reset(defaultValues);
-      setLogo(party?.partySymbol || null);
-      console.log("PartyForm onClose function:", onClose);
-      if (typeof onClose === 'function') {
-          onClose();
-      } else {
-          console.error("onClose is not a function:", onClose);
-      }
-  };
+    console.log("PartyForm: Party Data:", party?.partySymbol);
 
   return (
       <MainHead>
@@ -217,7 +225,7 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                           <StyledButton type="submit" variant="contained" disabled={isSubmitting}>
                               Submit
                           </StyledButton>
-                          <StyledButton variant="contained" onClick={handleCancel}>
+                          <StyledButton variant="contained" onClick={onClose}>
                               Cancel
                           </StyledButton>
                       </SubmitButtonContainer>
@@ -231,7 +239,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                 handleConfirm={handleConfirm}
                 originalData={originalPartyData}
                 updatedData={updatedPartyData}
-                ignoredKeys={["image"]} 
             />
         </MainHead>
     );

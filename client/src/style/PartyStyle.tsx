@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Box, TableCell, Table } from "@mui/material";
 import { styled } from "@mui/system";
 
@@ -16,7 +15,7 @@ export const TableContainerMain = styled(Box)({
 })
 
 export const TableMain = styled(Table)({
-  minWidth: 'max-content',
+  minWidth: '100px',
   tableLayout: 'auto',
   whiteSpace: 'nowrap',
 })
@@ -43,24 +42,39 @@ export const Form = styled(Box)({
 export const Container = styled(Box)({
      display: 'flex',
      flexDirection: 'column',
-     gap: 2,
+     gap: '16px', //new 
      flex: 1, 
      overflowY: "auto", 
      maxHeight: "60vh"
 })
 
 export const Row = styled(Box)({
-  marginTop:'15px',
+  marginTop:'10px',  //new
   display: 'flex',
   flexDirection: 'row',
-  gap: 9
+  gap: '16px',
+ flexWrap: 'wrap',
+'res': {
+    flex: '1 1 calc(50% - 8px)', 
+    minWidth: '250px',
+  },
+  '@media (max-width: 600px)': { 
+    flexDirection: 'column', 
+    'res': {
+      flexBasis: '100%',
+      minWidth: 'auto', 
+    },
+  },
 })
 
 export const GridContainer = styled(Box)({
-  marginTop:'15px',
+  marginTop:'10px',
   display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '10px',
+  gridTemplateColumns: ' 1fr',
+  gap: '16px',
+'@media (min-width: 600px)': { 
+    gridTemplateColumns: '1fr 1fr', 
+  },
 })
 
 export const SubmitButtonContainer = styled(Box)({
@@ -75,37 +89,10 @@ export const SubmitButtonContainer = styled(Box)({
      borderTop: "1px solid #ccc",
      zIndex: 10,
      gap:'2rem',
+'@media (max-width: 400px)': { 
+  flexDirection: 'column', 
+  alignItems: 'center', 
+  gap: '8px', 
+},
 })
-=======
-import { Box, styled } from "@mui/material";
 
-
-
-// partyForm
-
-export const Dropzone = styled(Box)({
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center", 
-    padding: "40px",
-   
-    borderRadius: "2px", 
-    border: "2px dashed #007bff" ,
-     
-    backgroundColor: "#f0f8ff", 
-    color: "#bdbdbd",
-    outline: "none",
-    transition: "border .24s ease-in-out",
-    "&:hover": {
-        backgroundColor: "#e0f0ff",
-        borderColor: "#0056b3",
-      },
-});
-export const Imagepreview = styled(Box)({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center", 
-    justifyContent:"center"
-})
->>>>>>> cf4afc743fe89eaec57d6809ebef6b51b80c0486
