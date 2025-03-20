@@ -8,7 +8,7 @@ import com.ems.repositories.NameHistoryRepository;
 import com.ems.services.NameHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,8 @@ public class NameHistoryServiceImpl implements NameHistoryService {
     private final GlobalMapper globalMapper;
     private final NameHistoryRepository nameHistoryRepo;
 
-    @Async
-    @EventListener
+    @Async("taskExecutor")
+    @KafkaHandler
     @Override
     public void nameHistory(VoterUpdateEvent voterUpdateEvent) {
         Voter oldVoter = voterUpdateEvent.getOldVoter();

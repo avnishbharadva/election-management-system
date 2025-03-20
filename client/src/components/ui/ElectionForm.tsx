@@ -1,32 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   TextField,
-  Typography,
-  Button,
   CircularProgress,
   Alert,
 } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addElection, fetchElection, updateElectionById } from "../../store/feature/election/electionApi";
-import { resetState } from "../../store/feature/election/electionSlice";
 import { AppDispatch } from "../../store/app/store";
 import { toast, ToastContainer } from "react-toastify";
-import { Row, Section } from "../../style/CandidateFormCss";
-
-type FormValues = {
-  electionId: number;
-  electionName: string;
-  electionType: string;
-  electionDate: string;
-  electionState: string;
-  totalSeats: number;
-};
+import { Row, Section, Title } from "../../style/CandidateFormCss";
+import UpdateDialog from "./UpdateDialog";
+import CloseIcon from "@mui/icons-material/Close";
+import { FormValues } from "../../store/feature/election/types";
+import { CloseIconButton, ElectionButtonSection, ElectionFormContainer, ElectionFormWrapper, StyledButtonEle } from "../../style/ElectionCss";
 
 const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, success } = useSelector((state: any) => state.election);
+  const { loading, error } = useSelector((state: any) => state.election);
+  
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [originalData, setOriginalData] = useState<FormValues | null>(null);
+  const [updatedData, setUpdatedData] = useState<FormValues | null>(null);
 
   const { register, handleSubmit, reset, setValue } = useForm<FormValues>({
     defaultValues: {
@@ -38,7 +34,6 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
     },
   });
 
-  // Populate form when editing
   useEffect(() => {
     if (selectedElection) {
       setValue("electionName", selectedElection.electionName);
@@ -46,82 +41,106 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
       setValue("electionDate", selectedElection.electionDate);
       setValue("electionState", selectedElection.electionState);
       setValue("totalSeats", selectedElection.totalSeats);
+      
+      setOriginalData({ ...selectedElection });
     } else {
       reset();
+      setOriginalData(null); 
     }
   }, [selectedElection, setValue, reset]);
-
-  useEffect(() => {
-    if (success) {
-      toast.success(selectedElection ? "Election updated successfully!" : "Election added successfully!");
-      closeModal();
-      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
-      dispatch(resetState()); 
-    }
-  }, [success, dispatch, closeModal]);
+  
+  const handleClose = () => {
+    closeModal();
+  };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (selectedElection) {
-      await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: data }));
-      closeModal();
-      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
-
+      const { electionId, ...dataWithoutId } = data; // Remove ID for comparison
+      setUpdatedData({ ...dataWithoutId, electionId: selectedElection.electionId });
+  
+      if (JSON.stringify(dataWithoutId) !== JSON.stringify(originalData)) {
+        setOpenUpdateDialog(true);
+      } else {
+        toast.info("No changes detected");
+      }
     } else {
       await dispatch(addElection(data));
-      // toast.success("Election Registered SuccessFully")
-      alert("hi")
+      toast.success("Election added successfully!");
       closeModal();
       dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
     }
   };
-
+  
+  const handleConfirmUpdate = async () => {
+    if (selectedElection && updatedData) {
+      await dispatch(updateElectionById({ electionId: selectedElection.electionId, updatedElection: updatedData }));
+      dispatch(fetchElection({ page: 0, perPage: 5, order: "desc" }));
+      toast.success("Election updated successfully!");
+      closeModal();
+    }
+    setOpenUpdateDialog(false);
+  };
+  
   return (
-    <Box sx={{ width: "400px", padding: "20px", backgroundColor: "#fff" }}>
+    <ElectionFormWrapper>
       {loading && <CircularProgress />}
-     
-      
-
-      <Typography align="center" variant="h5" mb={3}>
-        {selectedElection ? "Edit Election" : "Add Election"}
-      </Typography>
-
+      {error && <Alert severity="error">{error}</Alert>}
+      <ElectionFormContainer>
+          <Title variant="h5" gutterBottom mt="5px">
+            {selectedElection ?  "EDIT ELECTION" : "ADD ELECTION"}
+          </Title>
+          <CloseIconButton onClick={handleClose}>
+            <CloseIcon />
+          </CloseIconButton>
+        </ElectionFormContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexDirection="column" >
+        <Box display="flex" flexDirection="column" gap={2}>
           <Section>
             <Row>
-            <TextField fullWidth label="Election Name" {...register("electionName", { required: "Required" })} />
-            <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
+              <TextField fullWidth label="Election Name" {...register("electionName", { required: "Required" })} InputLabelProps={{ shrink: true }}/>
+              <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
             </Row>
           </Section>
-
           <Section>
             <Row>
-            <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
-            <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
-            </Row>  
+              <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
+              <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
+            </Row>
           </Section>
-
-          <Section sx={{width: "10.5rem"}}>
-          <TextField 
-            fullWidth 
-            label="Total Seats" 
-            type="number" 
-            {...register("totalSeats", 
-              { required: "Required", 
-                min: { value: 1, message: "Seats must be at least 1" } 
-              })
-            } 
+          <Section sx={{ width: "10.5rem" }}>
+            <TextField
+              fullWidth
+              label="Total Seats"
+              InputLabelProps={{ shrink: true }}
+              type="number"
+              {...register("totalSeats", {
+                required: "Required",
+                min: { value: 1, message: "Seats must be at least 1" }
+              })}
             />
           </Section>
-          <Section sx={{display:'flex',alignItems:'center', justifyContent:'center'}}>
-            <Button type="submit" variant="contained" sx={{ mt: 2, bgcolor: "#1976d2" , width:'10.5rem', }}>
+          <ElectionButtonSection>
+            <StyledButtonEle type="submit" variant="contained">
               {selectedElection ? "Update Election" : "Add Election"}
-            </Button>
-          </Section>
+            </StyledButtonEle>
+            <StyledButtonEle variant="contained" onClick={handleClose}>
+              Cancel
+            </StyledButtonEle>
+          </ElectionButtonSection>
         </Box>
       </form>
-      <ToastContainer position="top-right" autoClose={3000} />
-    </Box>
+      <ToastContainer position="top-right" autoClose={3000} />   
+      {selectedElection && (
+        <UpdateDialog
+          open={openUpdateDialog}
+          title="Confirm Election Updates"
+          originalData={originalData || {}} 
+          updatedData={updatedData || {}}  
+          handleClose={() => setOpenUpdateDialog(false)}
+          handleConfirm={handleConfirmUpdate}
+        />
+      )}
+    </ElectionFormWrapper>
   );
 };
 

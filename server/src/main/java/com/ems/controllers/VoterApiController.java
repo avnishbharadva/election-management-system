@@ -21,6 +21,8 @@ import java.util.List;
 public class VoterApiController implements VotersApi {
 
     private final VoterService voterService;
+    private final AuditService auditService;
+    private final HistoryService historyService;
 
     @Override
     public ResponseEntity<VoterDTO> registerVoter(VoterRegisterDTO voterRegisterDTO) {
@@ -61,6 +63,15 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
+    public ResponseEntity<AuditDTO> getAudit(String voterId) {
+        log.info("voter audit called for voterId : {}", voterId);
+        return new ResponseEntity<>(new AuditDTO(
+                "Voter Audit Details Successfully fetched for : " + voterId,
+                auditService.getAudit(voterId)
+        ), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
         log.info("Starting voter transfer for ID: {} | Request ID: {}", voterId, MDC.get("requestId"));
         VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress);
@@ -74,5 +85,32 @@ public class VoterApiController implements VotersApi {
         VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
         log.info("Voter address updated successfully for ID: {}", voterId);
         return ResponseEntity.ok(new VoterDTO("Voter Updated Successfully", updatedVoter));
+    }
+
+    Override
+    public ResponseEntity<NameHistoryDTO> nameHistory(String voterId) {
+        log.info("name history called for voterId : {}",voterId);
+        return new ResponseEntity<>(new NameHistoryDTO(
+                "Name history fetched for voter : " + voterId,
+                historyService.getNameHistory(voterId)
+        ), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<StatusHistoryDTO> statusHistory(String voterId) {
+        log.info("status history called for voterId : {}", voterId);
+        return new ResponseEntity<>(new StatusHistoryDTO(
+                "Status history fetched for voter : " + voterId,
+                historyService.getStatusHistory(voterId)
+        ), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<AddressHistoryDTO> addressHistory(String voterId) {
+        log.info("address history called for voterId : {}", voterId);
+        return new ResponseEntity<>(new AddressHistoryDTO(
+                "Address history fetched for voter : " + voterId,
+                historyService.getAddressHistory(voterId)
+        ), HttpStatus.OK);
     }
 }

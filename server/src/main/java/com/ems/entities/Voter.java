@@ -15,8 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-
-public class Voter extends TimeStamp {
+public class Voter extends AuditEntity {
     @Id
     @Column(unique = true, nullable = false, length = 9)
     private String voterId;

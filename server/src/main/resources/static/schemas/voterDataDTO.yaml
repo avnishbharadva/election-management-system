@@ -42,10 +42,9 @@ properties:
   firstVotedYear:
     type: integer
     example: 2010
-  partyId:
-    type: integer
-    format: int64
-    example: 1
+  party:
+    type: string
+    example: "Democratic Party"
   residentialAddress:
     $ref: "./addressDTO.yaml"
   mailingAddress:
@@ -56,7 +55,6 @@ properties:
   signature:
     type: string
     example: "base64-encoded-signature-string"
-  statusId:
-    type: integer
-    format: int64
-    example: 1
+  status:
+    type: string
+    example: "Active"

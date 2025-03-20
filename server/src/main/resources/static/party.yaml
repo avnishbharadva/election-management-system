@@ -1,12 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Party Management API
-  description: API for managing political parties
+  title: Party Management APIs
+  description: APIs for party management
   version: 1.0.0
 
 servers:
-  - url: http://localhost:8081
-    description: Local development server
+  - url: http://localhost:8082
 
 paths:
   /party:
@@ -20,85 +19,255 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PartyDTO"
+              $ref: "#/components/schemas/PartyRegisterDTO"
       responses:
-        "201":
+        "200":
           description: Party created successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PartyDTO"
         "400":
-          description: Bad request
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+    get:
+      summary: Get all parties
+      operationId: findAllParties
+      tags:
+        - Party
+      responses:
+        "200":
+          description: List of all parties retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartyListDTO"
 
   /party/{partyId}:
     get:
-      summary: Get Party by ID
-      description: Fetch details of a party by its ID
+      summary: Get party by ID
       operationId: findByPartyId
+      tags:
+        - Party
       parameters:
         - name: partyId
           in: path
           required: true
-          description: ID of the party to fetch
+          description: Unique ID of the party
           schema:
             type: integer
             format: int64
       responses:
         "200":
-          description: Party details retrieved successfully
+          description: Party retrieved successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PartyDTO"
         "404":
           description: Party not found
-        "500":
-          description: Internal server error
-
-  /party/getAll:
-    get:
-      summary: Get All Parties
-      description: Retrieve a list of all registered political parties
-      operationId: findAllParties
-      responses:
-        "200":
-          description: List of parties retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PartyDTO"
-        "500":
-          description: Internal server error
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      summary: Update party details
+      operationId: updateParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          description: Unique ID of the party
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartyUpdateDTO"
+      responses:
+        "200":
+          description: Party updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartyDTO"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "404":
+          description: Party not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: Delete party details
+      operationId: deleteParty
+      tags:
+        - Party
+      parameters:
+        - name: partyId
+          in: path
+          required: true
+          description: Unique id of the party
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Party deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartyDTO"
+        "404":
+          description: Party not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
-    PartyDTO:
+    PartyBaseDTO:
       type: object
       properties:
-        partyId:
-          type: integer
-          example: 1
         partyName:
           type: string
-          example: "Democratic Party"
+          minLength: 3
+          maxLength: 30
+          example: "Democratic Alliance"
+          description: "Party name must be between 3 and 30 characters."
         partyAbbreviation:
           type: string
-          example: "DP"
+          minLength: 1
+          maxLength: 10
+          example: "DA"
+          description: "Party abbreviation must not exceed 10 characters."
         partySymbol:
           type: string
-          example: "dp_logo.png"
+          description: "Party Symbol String in Base64 format"
+        partyFounderName:
+          type: string
+          minLength: 2
+          maxLength: 20
+          example: "John Smith"
+          description: "Party Founder name must be between 2 and 20 characters."
         partyFoundationYear:
           type: integer
-          example: 1990
+          example: 1998
+          minimum: 1900
+          maximum: 2025
+          description: "Foundation year must be between 1900 and 2025."
+        partyLeaderName:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: "Narendra Modi"
+          description: "Party Leader name must be between 3 and 20 characters."
         partyWebSite:
           type: string
-          example: "https://www.democraticparty.org"
+          maxLength: 200
+          example: "https://www.democraticalliance.org"
+          description: "Website URL (Max 200 characters)."
         headQuarters:
           type: string
-          example: "New Delhi"
-        founderName:
+          minLength: 3
+          maxLength: 30
+          example: "Washington, D.C."
+          description: "Headquarter field must be between 3 and 30 characters."
+
+    PartyRegisterDTO:
+      allOf:
+        - $ref: "#/components/schemas/PartyBaseDTO"
+        - type: object
+          required:
+            - partyName
+            - partyAbbreviation
+            - partySymbol
+            - partyFounderName
+            - partyFoundationYear
+            - partyLeaderName
+            - headQuarters
+
+    PartyDataDTO:
+      allOf:
+        - $ref: "#/components/schemas/PartyBaseDTO"
+        - type: object
+          required: []
+          properties:
+            partyId:
+              type: integer
+              format: int64
+              example: 1
+
+    PartyUpdateDTO:
+      allOf:
+        - $ref: "#/components/schemas/PartyBaseDTO"
+        - type: object
+          required: []
+
+    PartyDTO:
+      type: object
+      description: Party Response format
+      properties:
+        message:
           type: string
-          example: "John Doe"
+          example: "Success"
+          description: "Operation Response message"
+        data:
+          type: object
+          $ref: "#/components/schemas/PartyDataDTO"
+          description: "Party Details"
+
+    PartyListDTO:
+      type: object
+      description: Party Response format
+      properties:
+        message:
+          type: string
+          example: "Success"
+          description: "Operation Response message"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/PartyDataDTO"
+          description: "All Party Details"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Validation failed for request."
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorItem"
+
+    ErrorItem:
+      type: object
+      properties:
+        field:
+          type: string
+          example: "partyName"
+        errorMessage:
+          type: string
+          example: "Party name must be between 3 and 30 characters."
+
+    ErrorResponse:
+      $ref: 'schemas/errorResponse.yaml'

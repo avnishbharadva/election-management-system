@@ -1,7 +1,8 @@
 type: object
 properties:
-  msg:
+  message:
     type: string
     example: "Success"
   data:
     $ref: "voterDataDTO.yaml"
+

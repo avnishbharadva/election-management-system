@@ -1,113 +1,130 @@
 package com.ems.services.impls;
 
-import com.ems.dtos.*;
 import com.ems.entities.Candidate;
+import com.ems.entities.CandidateAddress;
+import com.ems.events.EmailSendEvent;
+import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.exceptions.DataNotFoundException;
+import com.ems.exceptions.FileProcessingException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.repositories.CandidateRepository;
 import com.ems.repositories.ElectionRepository;
 import com.ems.repositories.PartyRepository;
 import com.ems.services.CandidateService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openapitools.model.CandidateDetailsDto;
+import org.openapitools.model.CandidateUpdateDto;
+import org.openapitools.model.ResponseDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CandidateServiceImpl implements CandidateService {
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private final KafkaTemplate<String, EmailSendEvent> kafkaTemplate;
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
     private final ElectionRepository electionRepository;
     private final PartyRepository partyRepository;
     private final JavaMailSender mailSender;
-    private static final String CANDIDATE_IMAGE = "candidateImage";
-    private static final String CANDIDATE_SIGNATURE = "candidateSignature";
-    private static final String ELECTION_NOT_FOUND_MSG = "Election not found with ID: ";
-
     @Value("${file.upload-dir}")
     private String uploadDir;
+    private static final String CANDIDATE_NOT_FOUND="Candidate not found with ID";
+    private static final String EMAIL_ERROR="Skipping email notification: Candidate email is null or empty.";
+    private static final String CANDIDATE_IMG_ERROR="Error saving candidate image";
+    private static final String CANDIDATE_SIGN_ERROR="Error saving candidate signature";
+    private static final String ELECTION_NOT_FOUND_MSG = "Election not found with ID: ";
 
     @Override
-    public CandidateDetailsDTO findByCandidateSSN(String candidateSSN) {
-        return candidateRepository.findByLast4SSN(candidateSSN)
-                .map(candidateMapper::toCandidateDetailsDTO)
-                .orElseThrow(() -> new DataNotFoundException("No Candidate found with SSN: " + candidateSSN));
+    public ResponseDto findByCandidateSSN(String candidateSSN) {
+        log.info("Fetching candidate details for SSN: {}", candidateSSN);
+        org.openapitools.model.CandidateDetailsDto candidateBySSN= candidateRepository.findByLast4SSN(candidateSSN)
+                .map(candidateMapper::toCandidateDetailsDto)
+                .orElseThrow(() -> {
+                    log.error("No Candidate found with SSN: {}", candidateSSN);
+                    return new DataNotFoundException("No Candidate found with SSN: " + candidateSSN);
+                });
+        log.info("Successfully fetched Candidate details - id:{} ,Name :{} ,Email:{}",candidateBySSN.getCandidateId(),candidateBySSN.getCandidateName(),candidateBySSN.getCandidateEmail());
+        return new ResponseDto(String.format("Data for Candidate with SSN: %s retrieved successfully", candidateSSN) ,candidateBySSN, LocalDateTime.now().atOffset(ZoneOffset.UTC),true);
     }
 
     @Override
     @Transactional
-    public Candidate saveCandidate(CandidateDTO candidateDTO) throws IOException {
-        if (candidateRepository.findByCandidateSSN(candidateDTO.getCandidateSSN()).isPresent()) {
-            throw new DataNotFoundException("Candidate with SSN " + candidateDTO.getCandidateSSN() + " already exists.");
+    public org.openapitools.model.ResponseDto saveCandidate(org.openapitools.model.CandidateDto candidateDto) {
+        if (candidateRepository.findByCandidateSSN(candidateDto.getCandidateSSN()).isPresent()) {
+            throw new DataAlreadyExistException("Candidate with SSN " + candidateDto.getCandidateSSN() + " already exists.");
         }
-
-        var candidate = candidateMapper.toCandidate(candidateDTO);
-        var election = electionRepository.findById(candidateDTO.getElectionId())
-                .orElseThrow(() -> new DataNotFoundException(ELECTION_NOT_FOUND_MSG + candidateDTO.getElectionId()));
-        var party = partyRepository.findById(candidateDTO.getPartyId())
-                .orElseThrow(() -> new DataNotFoundException("Party not found with ID: " + candidateDTO.getPartyId()));
+        var candidate = candidateMapper.toCandidate(candidateDto);
+        var election = electionRepository.findById(candidateDto.getElectionId())
+                .orElseThrow(() -> new DataNotFoundException(ELECTION_NOT_FOUND_MSG + candidateDto.getElectionId()));
+        var party = partyRepository.findById(candidateDto.getPartyId())
+                .orElseThrow(() -> new DataNotFoundException("Party not found with ID: " + candidateDto.getPartyId()));
 
         candidate.setElection(election);
         candidate.setParty(party);
         String imagePath = null;
-
-        if (candidateDTO.getCandidateImage() != null) {
-            String imageName = candidateDTO.getCandidateSSN() + ".png";
+        if (candidateDto.getCandidateImage() != null && !candidateDto.getCandidateImage().isEmpty()) {
+            String imageName = candidateDto.getCandidateSSN() + ".png";
             try {
-                imagePath = decodeAndSaveBase64Image(candidateDTO.getCandidateImage(), uploadDir, imageName);
+                imagePath = decodeAndSaveBase64Image(candidateDto.getCandidateImage(), uploadDir, imageName);
+                log.info("Candidate image saved at: " + imagePath);
             } catch (IOException e) {
-                throw new DataNotFoundException("No image is fetched");
+                log.error(CANDIDATE_IMG_ERROR, e);
+                throw new FileProcessingException("Failed to save candidate image");
             }
         }
 
         String signaturePath = null;
-        if (candidateDTO.getCandidateSignature() != null) {
-            String signName = candidateDTO.getCandidateSSN() + "_sign.png";
+        if (candidateDto.getCandidateSignature() != null && !candidateDto.getCandidateSignature().isEmpty()) {
+            String signName = candidateDto.getCandidateSSN() + "_sign.png";
             try {
-                signaturePath = decodeAndSaveBase64Image(candidateDTO.getCandidateSignature(), uploadDir, signName);
+                signaturePath = decodeAndSaveBase64Image(candidateDto.getCandidateSignature(), uploadDir, signName);
+                log.info("Candidate signature saved at: " + signaturePath);
             } catch (IOException e) {
-                throw new DataNotFoundException("No image is being fetched");
+                log.error(CANDIDATE_SIGN_ERROR, e);
+                throw new FileProcessingException("Failed to save candidate signature");
             }
+
         }
 
-        if (candidateDTO.getCandidateImage() != null)
+        // Set image and signature paths in candidate entity
+        if (imagePath != null) {
             candidate.setCandidateImage(imagePath);
-        if (candidateDTO.getCandidateSignature() != null)
+        } else {
+            log.warn("Candidate image path is null.");
+        }
+
+        if (signaturePath != null) {
             candidate.setCandidateSignature(signaturePath);
+        } else {
+            log.warn("Candidate signature path is null.");
+        }
 
-        var residentialAddress = candidateDTO.getResidentialAddress();
-        var mailingAddress = residentialAddress.equals(candidateDTO.getMailingAddress())
+        var residentialAddress = candidate.getResidentialAddress();
+        var mailingAddress = residentialAddress.equals(candidate.getMailingAddress())
                 ? residentialAddress
-                : candidateDTO.getMailingAddress();
-
+                : candidate.getMailingAddress();
         candidate.setResidentialAddress(residentialAddress);
         candidate.setMailingAddress(mailingAddress);
 
@@ -115,303 +132,310 @@ public class CandidateServiceImpl implements CandidateService {
                 (candidate.getCandidateName().getMiddleName() != null ? candidate.getCandidateName().getMiddleName() + " " : "") +
                 candidate.getCandidateName().getLastName();
 
-        if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
-            sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate Registration Successful – Welcome to the Election!",
-                    "<div style='font-family: Arial, sans-serif; color: #333;'>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
-                            "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
-                            "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
-                            "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+            String mailSubject="Candidate Registration Successful – Welcome to the Election!";
+            String mailBody="<div style='font-family: Arial, sans-serif; color: #333;'>" +
+                    "<img src='cid:companyLogo' style='width:150px; height:auto; margin-bottom: 10px;'/><br>" +
+                    "<h2 style='color: #2c3e50;'>Dear " + fullName + ",</h2>" +
+                    "<p>We are pleased to inform you that your registration as a candidate for the upcoming election has been successfully completed.</p>" +
+                    "<p>Your participation in this election is a significant step toward making a difference, and we appreciate your commitment.</p>" +
+                    "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
+                    "<ul>" +
+                    "<li><b>Candidate Name:</b> " + fullName + "</li>" +
+                    "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
+                    "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
+                    "</ul>" +
 
-                            "<h3 style='color: #2980b9;'>🔹 Registration Details:</h3>" +
-                            "<ul>" +
-                            "<li><b>Candidate Name:</b> " + fullName + "</li>" +
-                            "<li><b>Party:</b> " + candidate.getParty().getPartyName() + "</li>" +
-                            "<li><b>Election Type:</b> " + candidate.getElection().getElectionType() + "</li>" +
-                            "</ul>" +
+                    "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
+                    "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
 
-                            "<h3 style='color: #27ae60;'> What’s Next?</h3>" +
-                            "<p>As a candidate, you are now officially part of the electoral process. Keep an eye on upcoming announcements and campaign guidelines.</p>" +
-
-                            "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
-
-                            "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
-                            "<b>Election Commission Team</b></p>" +
-                            "</div>"
-            );
-        } else {
-            log.info("Skipping email notification: Candidate email is null or empty.");
+                    "<p>If you have any questions or need further assistance, feel free to contact us.</p>" +
+                    "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
+                    "<b>Election Commission Team</b></p>" +
+                    "</div>";
+        CompletableFuture<SendResult<String,EmailSendEvent>> future=kafkaTemplate.send("email-send-event-topic", String.valueOf(candidate.getCandidateId()),new EmailSendEvent(candidateDto.getCandidateEmail(),mailSubject,mailBody));
+        future.whenComplete((result, exception) -> {
+            if (exception != null) {
+                log.error("Failed to send Kafka message. Candidate SSN: {}, Email: {}, Error: {}",
+                        candidate.getCandidateSSN(), candidate.getCandidateEmail(), exception.getMessage(), exception);
+            } else {
+                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, CandidateSSN: {}, Email: {}",
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition(),
+                        result.getRecordMetadata().offset(),
+                        candidate.getCandidateSSN(),
+                        candidate.getCandidateEmail());
+            }
+        });
+        log.info("Saving candidate to database...");
+        Candidate savedCandidateUnmapped = candidateRepository.save(candidate);
+        org.openapitools.model.CandidateDto savedCandidate=candidateMapper.toCandidateDto(savedCandidateUnmapped);
+        log.info("Candidate created with ID:{} ,firstName:{},lastName:{},SSN:{} ", savedCandidate.getCandidateId(),savedCandidate.getCandidateName().getFirstName(),savedCandidate.getCandidateName().getLastName(),savedCandidate.getCandidateSSN());
+        return new org.openapitools.model.ResponseDto("Candidate Saved Successfully",savedCandidate, LocalDateTime.now().atOffset(ZoneOffset.UTC),true);
         }
 
-
-        return candidateRepository.save(candidate);
-    }
-
-
     private String decodeAndSaveBase64Image(String base64, String directory, String fileName) throws IOException {
-        if (base64 == null || base64.isEmpty()) return null;  // No image provided
+        if (base64 == null || base64.isEmpty()) {
+            log.warn("Base64 string is null or empty. Skipping image saving.");
+            return null;
+        }
 
-        byte[] decodedBytes = Base64.getDecoder().decode(base64);
-        Path filePath = Paths.get(directory, fileName);
-        Files.createDirectories(filePath.getParent());
-        Files.write(filePath, decodedBytes);
-        return filePath.toString();  // Return file path
-    }
-
-
-    private void sendEmail(String to, String subject, String content) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            byte[] decodedBytes = Base64.getDecoder().decode(base64);
 
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(content, true);
 
-            ClassPathResource image = new ClassPathResource("static/image.png");// true enables HTML content
+            Path dirPath = Paths.get(directory);
+            if (!Files.exists(dirPath)) {
+                Files.createDirectories(dirPath);
+                log.info("Created directory: {}", dirPath.toAbsolutePath());
+            }
 
-            helper.addInline("companyLogo", image);
-            mailSender.send(message);
-            log.info("Email sent successfully to {}", to);
-        } catch (MessagingException e) {
-            log.error("Failed to send email to {}: {}", to, e.getMessage());
+            Path filePath = dirPath.resolve(fileName);
+            Files.write(filePath, decodedBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+            log.info("Image saved successfully at: {}", filePath.toAbsolutePath());
+            return fileName;
+
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid Base64 string: {}", e.getMessage());
+            throw new IOException("Invalid Base64 string", e);
+        } catch (IOException e) {
+            log.error("Error writing file: {}", e.getMessage());
+            throw new IOException("Error saving image file", e);
         }
     }
 
     @Override
-    public CandidateDataDTO findById(Long candidateId) {
-        Path candidateImagePath = Path.of(uploadDir, CANDIDATE_IMAGE);
-        Path candidateSignaturePath = Path.of(uploadDir, CANDIDATE_SIGNATURE);
-        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                new RuntimeException("Candidate not found with ID: " + candidateId));
-        var candidateDto = candidateMapper.toCandidateDTO(candidate);
+    public ResponseDto findById(Long candidateId) {
+        Path candidateImagePath = Path.of(uploadDir);
+        Path candidateSignaturePath = Path.of(uploadDir);
+
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
+
+        var candidateDto = candidateMapper.toCandidateDto(candidate);
+
         Path imagePath = candidateImagePath.resolve(candidate.getCandidateImage());
         Path signaturePath = candidateSignaturePath.resolve(candidate.getCandidateSignature());
-        logger.info("Candidate Signature Path: {}", signaturePath);
+
+        log.info("Fetching candidate details for ID: {}", candidateId);
+        log.info("Candidate image path: {}", imagePath);
+        log.info("Candidate signature path: {}", signaturePath);
+
+        if (!Files.exists(imagePath)) {
+            log.error("Candidate image file not found at path: {}", imagePath);
+            throw new DataNotFoundException("Candidate image file not found for ID: " + candidateId);
+        }
+
+        if (!Files.exists(signaturePath)) {
+            log.error("Candidate signature file not found at path: {}", signaturePath);
+            throw new DataNotFoundException("Candidate signature file not found for ID: " + candidateId);
+        }
 
         String candidateImageResource = encodeFileToBase64(imagePath);
         String signatureResource = encodeFileToBase64(signaturePath);
-        logger.info("Encoded Candidate Signature: {}", signatureResource);
 
-        return new CandidateDataDTO(candidateDto, candidateImageResource, signatureResource);
+        log.info("Successfully encoded candidate image and signature for ID: {}", candidateId);
+
+        candidateDto.setCandidateImage(candidateImageResource);
+        candidateDto.setCandidateSignature(signatureResource);
+        return new ResponseDto(String.format("Data for Candidate with ID: %d retrieved successfully", candidateId) ,candidateDto, LocalDateTime.now().atOffset(ZoneOffset.UTC),true) ;
     }
+
 
     private String encodeFileToBase64(Path filePath) {
         try {
             if (Files.exists(filePath)) {
                 byte[] fileContent = Files.readAllBytes(filePath);
                 String encodedString = Base64.getEncoder().encodeToString(fileContent);
-                logger.info("Encoded file to Base64: {}", encodedString);
+                log.info("Encoded file to Base64");
                 return encodedString;
             } else {
-                logger.warn("File does not exist at path: {}", filePath);
+                log.warn("File does not exist at path: {}", filePath);
             }
         } catch (Exception e) {
-            logger.error("Error encoding file to Base64 at path: {}", filePath, e);
+            log.error("Error encoding file to Base64 at path: {}", filePath, e);
         }
         return null;
     }
-
     @Override
     @Transactional
-    public Candidate update(Long candidateId, CandidateDTO candidateDTO) {
+    public ResponseDto update(Long candidateId, CandidateUpdateDto candidateDto) {
+        log.info("Starting candidate update process for ID: {}", candidateId);
+
         Candidate existingCandidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new DataNotFoundException("Candidate not found with ID: " + candidateId));
+                .orElseThrow(() -> {
+                    log.error("Candidate not found with ID: {}", candidateId);
+                    return new DataNotFoundException("Candidate not found with ID: " + candidateId);
+                });
 
-        candidateMapper.updateCandidateFromDTO(candidateDTO, existingCandidate);
+        log.info("Candidate found: {} {}", existingCandidate.getCandidateName().getFirstName(), existingCandidate.getCandidateName().getLastName());
 
-        if (candidateDTO.getPartyId() != null && candidateDTO.getPartyId() > 0) {
-            existingCandidate.setParty(partyRepository.findById(candidateDTO.getPartyId())
-                    .orElseThrow(() -> new RuntimeException("Party not found with ID: " + candidateDTO.getPartyId())));
+        // Map DTO to existing entity
+        candidateMapper.updateCandidateFromDto(candidateDto, existingCandidate);
+        log.info("Candidate details successfully mapped from DTO.");
+
+        // Update Party if provided
+        if (candidateDto.getPartyId() != null && candidateDto.getPartyId() > 0) {
+            existingCandidate.setParty(partyRepository.findById(candidateDto.getPartyId())
+                    .orElseThrow(() -> {
+                        log.error("Party not found with ID: {}", candidateDto.getPartyId());
+                        return new RuntimeException("Party not found with ID: " + candidateDto.getPartyId());
+                    }));
+            log.info("Updated candidate's party to ID: {}", candidateDto.getPartyId());
         }
 
-        if (candidateDTO.getElectionId() != null && candidateDTO.getElectionId() > 0) {
-            existingCandidate.setElection(electionRepository.findById(candidateDTO.getElectionId())
-                    .orElseThrow(() -> new DataNotFoundException(ELECTION_NOT_FOUND_MSG + candidateDTO.getElectionId())));
+        // Update Election if provided
+        if (candidateDto.getElectionId() != null && candidateDto.getElectionId() > 0) {
+            existingCandidate.setElection(electionRepository.findById(candidateDto.getElectionId())
+                    .orElseThrow(() -> {
+                        log.error("Election not found with ID: {}", candidateDto.getElectionId());
+                        return new DataNotFoundException(ELECTION_NOT_FOUND_MSG + candidateDto.getElectionId());
+                    }));
+            log.info("Updated candidate's election to ID: {}", candidateDto.getElectionId());
         }
 
-        var residentialAddress = candidateDTO.getResidentialAddress();
-        var mailingAddress = candidateDTO.getMailingAddress();
+        // Address Mapping Logic
+        CandidateAddress residentialAddress = candidateMapper.toCandidateAddress(candidateDto.getResidentialAddress());
+        CandidateAddress mailingAddress = candidateMapper.toCandidateAddress(candidateDto.getMailingAddress());
 
-        if (residentialAddress == null) {
-            residentialAddress = mailingAddress;
-        } else if (mailingAddress == null) {
-            mailingAddress = residentialAddress;
-        } else if (residentialAddress.equals(mailingAddress)) {
-            mailingAddress = residentialAddress;
-        }
+        if (residentialAddress == null) residentialAddress = mailingAddress;
+        if (mailingAddress == null || residentialAddress.equals(mailingAddress)) mailingAddress = residentialAddress;
 
         existingCandidate.setResidentialAddress(residentialAddress);
         existingCandidate.setMailingAddress(mailingAddress);
 
-        // Update candidate image if provided
-        if (candidateDTO.getCandidateImage() != null && !candidateDTO.getCandidateImage().isEmpty()) {
+        log.info("Updated candidate addresses. Residential: {}, Mailing: {}", residentialAddress, mailingAddress);
+
+        // Candidate Image Update
+        if (candidateDto.getCandidateImage() != null && !candidateDto.getCandidateImage().isEmpty()) {
             String imageName = candidateId + ".png";
             try {
-                String imagePath = decodeAndSaveBase64Image(candidateDTO.getCandidateImage(), uploadDir, imageName);
+                String imagePath = decodeAndSaveBase64Image(candidateDto.getCandidateImage(), uploadDir, imageName);
                 existingCandidate.setCandidateImage(imagePath);
+                log.info("Candidate image updated successfully. Image Path: {}", imagePath);
             } catch (IOException e) {
-                throw new DataNotFoundException("Error saving candidate image");
+                log.error("Failed to update candidate image for ID {}: {}", candidateId, e.getMessage(), e);
+                throw new FileProcessingException("Error updating candidate image");
             }
         }
 
-        // Update candidate signature if provided
-        if (candidateDTO.getCandidateSignature() != null && !candidateDTO.getCandidateSignature().isEmpty()) {
+        // Candidate Signature Update
+        if (candidateDto.getCandidateSignature() != null && !candidateDto.getCandidateSignature().isEmpty()) {
             String signName = candidateId + "_sign.png";
             try {
-                String signaturePath = decodeAndSaveBase64Image(candidateDTO.getCandidateSignature(), uploadDir, signName);
+                String signaturePath = decodeAndSaveBase64Image(candidateDto.getCandidateSignature(), uploadDir, signName);
                 existingCandidate.setCandidateSignature(signaturePath);
+                log.info("Candidate signature updated successfully. Signature Path: {}", signaturePath);
             } catch (IOException e) {
-                throw new DataNotFoundException("Error saving candidate signature");
+                log.error("Failed to update candidate signature for ID {}: {}", candidateId, e.getMessage(), e);
+                throw new FileProcessingException("Error updating candidate signature");
             }
         }
 
+        // Construct full name
         StringBuilder fullName = new StringBuilder(existingCandidate.getCandidateName().getFirstName());
         if (existingCandidate.getCandidateName().getMiddleName() != null) {
             fullName.append(" ").append(existingCandidate.getCandidateName().getMiddleName());
         }
         fullName.append(" ").append(existingCandidate.getCandidateName().getLastName());
 
+        // Fetch Party and Election Details
         String partyName = (existingCandidate.getParty() != null) ? existingCandidate.getParty().getPartyName() : "N/A";
         String electionType = (existingCandidate.getElection() != null) ? existingCandidate.getElection().getElectionType() : "N/A";
 
-        if (candidateDTO.getCandidateEmail() != null && !candidateDTO.getCandidateEmail().isEmpty()) {
-            sendEmail(candidateDTO.getCandidateEmail(),
-                    "Candidate updation Successfully",
-                    "<div>" +
-                            "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +  // Replace with your logo URL
-                            "<h3>Dear " + fullName + ",</h3>" +
-                            "<p>Your data is successfully updated!</p>" +
-                            "<b>Party:</b> " + partyName + "<br>" +
-                            "<b>Election Type:</b> " + electionType + "<br>" +
-                            "</div>"
-            );
-        } else {
-            log.info("Skipping email notification: Candidate email is null or empty.");
-        }
+        log.info("Candidate Full Name: {}", fullName);
+        log.info("Candidate Party: {}", partyName);
+        log.info("Candidate Election Type: {}", electionType);
 
-        return candidateRepository.save(existingCandidate);
-    }
+        // Send Email Notification
+        String mailSubject = "Candidate Update Successful";
+        String mailBody = "<div>" +
+                "<img src='cid:companyLogo' style='width:150px; height:auto;'/><br>" +
+                "<h3>Dear " + fullName + ",</h3>" +
+                "<p>Your data has been successfully updated!</p>" +
+                "<b>Party:</b> " + partyName + "<br>" +
+                "<b>Election Type:</b> " + electionType + "<br>" +
+                "</div>";
 
-    @Override
-    public List<CandidateByPartyDTO> findByPartyName(String candidatePartyName) {
-        if (candidatePartyName == null || candidatePartyName.isBlank()) {
-            throw new IllegalArgumentException("Party name cannot be null or blank.");
-        }
+        CompletableFuture<SendResult<String, EmailSendEvent>> future = kafkaTemplate.send(
+                "email-send-event-topic",
+                String.valueOf(existingCandidate.getCandidateId()),
+                new EmailSendEvent(existingCandidate.getCandidateEmail(), mailSubject, mailBody)
+        );
 
-        List<Candidate> candidates = Optional.ofNullable(candidateRepository.findByParty_PartyName(candidatePartyName))
-                .filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new DataNotFoundException("Party with the given name not found: " + candidatePartyName));
+        future.whenComplete((result, exception) -> {
+            if (exception != null) {
+                log.error("Failed to send Kafka message. Candidate ID: {}, Email: {}, Error: {}",
+                        candidateId, candidateDto.getCandidateEmail(), exception.getMessage(), exception);
+            } else {
+                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, Candidate ID: {}, Email: {}",
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition(),
+                        result.getRecordMetadata().offset(),
+                        candidateId,
+                        candidateDto.getCandidateEmail());
+            }
+        });
 
-        return candidates.stream()
-                .map(candidateMapper::toCandidateByPartyDTO)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
+        // Save and return updated candidate
+        Candidate updatedCandidateEntity = candidateRepository.save(existingCandidate);
+        org.openapitools.model.CandidateDto updatedCandidateDto = candidateMapper.toCandidateDto(updatedCandidateEntity);
 
-    @Override
-    public void deleteCandidateByCandidateId(Long candidateId) {
-        candidateRepository.deleteById(candidateId);
-    }
+        log.info("Candidate update process completed successfully for ID: {}", updatedCandidateDto.getCandidateId());
 
-    @Override
-    public Page<CandidateDetailsDTO> getPagedCandidate(int page, int perPage, Sort sort) {
-        Pageable pageable = PageRequest.of(page, perPage, sort);
-        Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
-        return candidatePage.map(candidateMapper::toCandidateDetailsDTO);
-    }
-
-    @Override
-    public CandidatePageResponse getCandidateByElectionId(Long electionId, int page, int perPage) {
-        if (!electionRepository.existsById(electionId)) {
-            throw new DataNotFoundException("Election not found with id:" + electionId);
-        }
-
-        Pageable pageable = PageRequest.of(page, perPage);
-        Page<Candidate> candidatePage = candidateRepository.findByElection_electionId(electionId, pageable);
-
-        if (candidatePage.isEmpty()) {
-            throw new DataNotFoundException("No candidates found for Election ID: " + electionId);
-        }
-
-        Page<CandidateDetailsDTO> candidateDTOPage = candidatePage.map(candidateMapper::toCandidateDetailsDTO);
-        return new CandidatePageResponse(
-                candidateDTOPage.getContent(),
-                candidateDTOPage.getNumber(),
-                candidateDTOPage.getTotalPages(),
-                candidateDTOPage.getTotalElements(),
-                candidateDTOPage.getSize()
+        return new ResponseDto(
+                String.format("Data for Candidate with ID: %d updated successfully", candidateId),
+                updatedCandidateDto,
+                LocalDateTime.now().atOffset(ZoneOffset.UTC),
+                true
         );
     }
 
-    @Override
-    public List<CandidateDetailsDTO> getCandidateInfo() {
-        List<Candidate> candidates = candidateRepository.findAll();
 
-        if (candidates.isEmpty()) {
-            throw new DataNotFoundException("No candidates found");
+    @Override
+    public ResponseDto deleteCandidateByCandidateId(Long candidateId) {
+        var candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new DataNotFoundException(CANDIDATE_NOT_FOUND +":"+candidateId));
+
+        // Delete Candidate Image
+        if (candidate.getCandidateImage() != null) {
+            Path uploadDirPath=Path.of(uploadDir);
+            Path candidateImagePath=uploadDirPath.resolve(candidate.getCandidateImage());
+            File candidateImageFile = new File(String.valueOf(candidateImagePath));
+
+            if (candidateImageFile.exists() && candidateImageFile.delete()) {
+                log.info("Deleted candidate image: {}", candidate.getCandidateImage());
+            } else {
+                log.warn("Failed to delete candidate image: {}", candidate.getCandidateImage());
+            }
         }
-        return candidates.stream().map(candidateMapper::toCandidateDetailsDTO).
-                toList();
+
+        if (candidate.getCandidateSignature() != null) {
+            Path signaurePath=Path.of(uploadDir);
+            Path signaturePath1=signaurePath.resolve(candidate.getCandidateSignature());
+            File signatureFile = new File(String.valueOf(signaturePath1));
+            if (signatureFile.exists() && signatureFile.delete()) {
+                log.info("Deleted candidate signature: {}", candidate.getCandidateSignature());
+            } else {
+                log.warn("Failed to delete candidate signature: {}", candidate.getCandidateSignature());
+            }
+        }
+
+        candidateRepository.deleteById(candidateId);
+        log.info("Successfully deleted candidate with ID: {}", candidateId);
+        return new ResponseDto("Candidate Deleted Successfully",null, LocalDateTime.now().atOffset(ZoneOffset.UTC),true);
     }
 
+
     @Override
-    public Page<CandidateDTO> searchCandidates(CandidateDTO searchCriteria, int page, int perPage, Sort sort) {
+    public ResponseDto getPagedCandidate(int page, int perPage,String sortBy, String sortDir) {
+        log.info("Fetching paged candidates. Page: {}, PerPage: {}", page, perPage);
+        Sort sort=Sort.by(Sort.Direction.fromString(sortDir),sortBy);
         Pageable pageable = PageRequest.of(page, perPage, sort);
-        Specification<Candidate> spec = buildSearchSpecification(searchCriteria);
-        Page<Candidate> candidatePage = candidateRepository.findAll(spec, pageable);
-        if (candidatePage.isEmpty()) {
-            throw new DataNotFoundException("No such candidate with this filters");
-        }
-        return candidatePage.map(candidateMapper::toCandidateDTO);
+        Page<Candidate> candidatePage = candidateRepository.findAll(pageable);
+
+        log.info("Fetched {} candidates for page: {}", candidatePage.getContent().size(), page);
+        Page<CandidateDetailsDto> candidateDetailsDtoS=candidatePage.map(candidateMapper::toCandidateDetailsDto);
+        return new ResponseDto(String.format("Successfully retrieved %d candidates for page %d.", candidatePage.getContent().size(), page),candidateDetailsDtoS, LocalDateTime.now().atOffset(ZoneOffset.UTC),true);
     }
-
-    private Specification<Candidate> buildSearchSpecification(CandidateDTO searchCriteria) {
-        return (root, query, criteriaBuilder) -> {
-            Predicate predicate = criteriaBuilder.conjunction();
-
-            if (searchCriteria.getCandidateSSN() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("candidateSSN"), searchCriteria.getCandidateSSN()));
-            }
-
-            if (searchCriteria.getCandidateName() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateName"), "%" + searchCriteria.getCandidateName() + "%"));
-            }
-
-            if (searchCriteria.getGender() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("gender"), searchCriteria.getGender()));
-            }
-
-            if (searchCriteria.getMaritialStatus() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("maritialStatus"), searchCriteria.getMaritialStatus()));
-            }
-
-            if (searchCriteria.getStateName() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("stateName"), "%" + searchCriteria.getStateName() + "%"));
-            }
-
-            if (searchCriteria.getCandidateEmail() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("candidateEmail"), "%" + searchCriteria.getCandidateEmail() + "%"));
-            }
-
-            if (searchCriteria.getPartyId() != null && searchCriteria.getPartyId() != 0) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("party").get("partyId"), searchCriteria.getPartyId()));
-            }
-
-            if (searchCriteria.getElectionId() != null && searchCriteria.getElectionId() != 0) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("election").get("electionId"), searchCriteria.getElectionId()));
-            }
-
-            if (searchCriteria.getNoOfChildren() != 0) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("noOfChildren"), searchCriteria.getNoOfChildren()));
-            }
-
-            if (searchCriteria.getSpouseName() != null) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("spouseName"), "%" + searchCriteria.getSpouseName() + "%"));
-            }
-            return predicate;
-        };
-    }
-
-
 }

@@ -1,7 +1,6 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.AddressType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class Address extends TimeStamp {
+public class Address extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
@@ -24,8 +23,9 @@ public class Address extends TimeStamp {
 
     private String state = "New York";
 
-    private String countyName;
-    private String townName;
+    private String county;
+
+    private String town;
 
     @Column(length = 5, nullable = false)
     private String zipCode;

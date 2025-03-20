@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+//import org.springframework.kafka.core.KafkaTemplate;
+//import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -65,32 +69,18 @@ public class VoterServiceImpl implements VoterService {
         var voter = globalMapper.toVoter(voterRegisterDTO);
         voter.setParty(party);
 
-        String imagePath = null;
-        if (voterRegisterDTO.getImage() != null) {
-
-            try {
-                imagePath = saveBase64Image(voterRegisterDTO.getImage(), voter.getVoterId(),PHOTO_DIR);
-            } catch (IOException | IllegalArgumentException ex) {
-                throw new CustomException(ex.getMessage());
-            }
-        }
-
-        String signaturePath = null;
-        if (voterRegisterDTO.getSignature() != null) {
-            try {
-                signaturePath = saveBase64Image(voterRegisterDTO.getSignature(), voter.getVoterId(),SIGNATURE_DIR);
-            } catch (IOException | IllegalArgumentException ex) {
-                throw new CustomException(ex.getMessage());
-            }
-        }
-
-        if(voterRegisterDTO.getImage()!=null)
-            voter.setImage(imagePath);
-        if(voterRegisterDTO.getSignature()!=null)
-            voter.setSignature(signaturePath);
-
         var voterStatus = voterStatusRepo.findById(voterRegisterDTO.getStatusId()).orElseThrow(() -> new DataNotFoundException("Voter Status Not Found"));
         voter.setVoterStatus(voterStatus);
+
+        if (voterRegisterDTO.getImage() != null) {
+            var imagePath = saveDocument(voterRegisterDTO.getImage(), voterRegisterDTO.getSsnNumber(), PHOTO_DIR);
+            voter.setImage(imagePath);
+        }
+
+        if (voterRegisterDTO.getSignature() != null) {
+            var signaturePath = saveDocument(voterRegisterDTO.getSignature(), voterRegisterDTO.getSsnNumber(), SIGNATURE_DIR);
+            voter.setSignature(signaturePath);
+
         var savedVoter = voterRepo.save(voter);
 
         var residentialAddress = globalMapper.toAddress(voterRegisterDTO.getResidentialAddress());
@@ -98,12 +88,17 @@ public class VoterServiceImpl implements VoterService {
         var mailingAddress = globalMapper.toAddress(voterRegisterDTO.getMailingAddress());
         mailingAddress.setAddressType(AddressType.MAILING);
 
-        var addressList = List.of(residentialAddress, mailingAddress);
-        addressRepo.saveAll(addressList);
+        addressRepo.saveAll(List.of(residentialAddress, mailingAddress));
         savedVoter.setResidentialAddress(residentialAddress);
         savedVoter.setMailingAddress(mailingAddress);
-        log.info("voter registration completed for : {}", savedVoter.getSsnNumber());
-        return globalMapper.toVoterDTO(savedVoter);
+
+        var voterResponse = globalMapper.toVoterDTO(savedVoter);
+        Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());
+        voterResponse.setImage(encodeFileToBase64(imagePath));
+        Path signaturePath = Path.of(SIGNATURE_DIR + "/" + voterResponse.getSignature());
+        voterResponse.setSignature(encodeFileToBase64(signaturePath));
+        log.info("voter registration completed for : {}", voterResponse.getSsnNumber());
+        return voterResponse;
     }
 
     @Override
@@ -133,57 +128,66 @@ public class VoterServiceImpl implements VoterService {
 
     @Override
     @Transactional
-    public VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterUpdateRequest){
+    public VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterUpdateRequest) {
         MDC.put("VoterId", voterId);
-        log.info("Update process started for voter {}", voterId);
+        log.info("Update process started for voter {}, data {}", voterId, voterUpdateRequest);
 
         var existingVoter = voterRepo.findById(voterId)
                 .orElseThrow(() -> new DataNotFoundException("Voter not found with voter id: " + voterId));
 
         var oldVoter = new Voter();
         BeanUtils.copyProperties(existingVoter, oldVoter);
+        Address oldResidentialAddress = new Address();
+        BeanUtils.copyProperties(oldVoter.getResidentialAddress(), oldResidentialAddress);
+        Address oldMailingAddress = new Address();
+        BeanUtils.copyProperties(oldVoter.getMailingAddress(), oldMailingAddress);
 
         var updatedVoter = globalMapper.voterDTOtoVoter(voterUpdateRequest, existingVoter);
-        log.info("Updated Voter details : {}", updatedVoter);
-        log.info("Updated Voter party : {},", updatedVoter.getParty().getPartyId());
+        log.info("update voter details : {}", updatedVoter);
 
-        if (voterUpdateRequest.getImage() != null) {
-            try {
-                updatedVoter.setImage(saveBase64Image(voterUpdateRequest.getImage(), updatedVoter.getVoterId(), PHOTO_DIR));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        if (voterUpdateRequest.getImage() != null)
+            updatedVoter.setImage(saveDocument(voterUpdateRequest.getImage(), updatedVoter.getSsnNumber(), PHOTO_DIR));
 
-        if (voterUpdateRequest.getSignature() != null) {
-            try {
-                updatedVoter.setSignature(saveBase64Image(voterUpdateRequest.getSignature(), updatedVoter.getVoterId(), SIGNATURE_DIR));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        if (voterUpdateRequest.getSignature() != null)
+            updatedVoter.setSignature(saveDocument(voterUpdateRequest.getSignature(), updatedVoter.getSsnNumber(), SIGNATURE_DIR));
 
         if (voterUpdateRequest.getPartyId() != null) {
-            log.info("voterDto party : {}", voterUpdateRequest.getPartyId());
+            log.info("updated voterDto party : {}", voterUpdateRequest.getPartyId());
             var party = partyRepo.findById(voterUpdateRequest.getPartyId())
                     .orElseThrow(() -> new DataNotFoundException("Party not found with id: " + voterUpdateRequest.getPartyId()));
             updatedVoter.setParty(party);
         }
         updateVoterStatus(updatedVoter, voterUpdateRequest);
+
         voterRepo.save(updatedVoter);
 
-        if (voterUpdateRequest.getResidentialAddress() != null) {
+        if (voterUpdateRequest.getResidentialAddress() != null)
             updateAddress(voterId, voterUpdateRequest.getResidentialAddress(), updatedVoter.getResidentialAddress().getAddressId());
         }
 
-        if(voterUpdateRequest.getMailingAddress() != null) {
+        if (voterUpdateRequest.getMailingAddress() != null)
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
-        }
 
-        return globalMapper.toVoterDTO(updatedVoter);
+        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
+        future.whenComplete((result,exception)->{
+            if(exception!=null){
+                log.info("Failed to send message: {}",exception.getMessage());
+            }
+            else{
+                log.info("Message sent successfully: {}",result.getRecordMetadata());
+            }
+        });
+
+        VoterDataDTO voterResponse = globalMapper.toVoterDTO(updatedVoter);
+        Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());
+        voterResponse.setImage(encodeFileToBase64(imagePath));
+        Path signaturePath = Path.of(SIGNATURE_DIR + "/" + voterResponse.getSignature());
+        voterResponse.setSignature(encodeFileToBase64(signaturePath));
+        log.info("{} voter updated successfully - {}",voterId,voterResponse);
+        return voterResponse;
     }
 
-    private void updateVoterStatus(Voter updatedVoter, org.openapitools.model.VoterUpdateRequest voterUpdateRequest) {
+    private void updateVoterStatus(Voter updatedVoter, VoterUpdateRequest voterUpdateRequest) {
         if (voterUpdateRequest.getStatusId() == null) return;
 
         var voterStatus = voterStatusRepo.findById(voterUpdateRequest.getStatusId())
@@ -202,20 +206,73 @@ public class VoterServiceImpl implements VoterService {
         addressRepo.save(address);
     }
 
-    public String saveBase64Image(String base64String, String voterId, String directory) throws IOException {
-        if (base64String == null || base64String.isBlank()) throw new CustomException("Base64 string is empty or null");
+    private String saveDocument(String file, String ssnNumber, String directory){
+        String extension = extractExtension(file);
+        if (extension == null) {
+            throw new CustomException("Invalid Base64 image format");
+        }
+        String fileName = ssnNumber + "." + extension;
+        String pureBase64 = file.contains(",") ? file.split(",")[1] : file;
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(pureBase64);
+            Path filePath = Paths.get(directory, fileName);
+            log.info("Filepath : {} of voter document : {}",filePath,ssnNumber);
+            log.info("get parent for party symbol to create directory : {}", filePath.getParent());
+            Files.createDirectories(filePath.getParent());
+            deleteExistingFiles(fileName, directory);
+            Files.write(filePath, decodedBytes);
+        } catch (IOException | IllegalArgumentException ex) {
+            throw new CustomException("Failed to save party symbol: " + ex.getMessage());
+        }
+        return fileName;
+    }
 
-        String base64Data = base64String.contains(",") ? base64String.split(",", 2)[1].trim() : base64String.trim();
-        base64Data = base64Data.replaceAll("[^A-Za-z0-9+/=]", "");
+    private String extractExtension(String base64) {
+        if (base64.startsWith("data:image/")) {
+            String[] parts = base64.split(";")[0].split("/");
+            return parts.length > 1 ? parts[1] : null;
+        }
+        return null;
+    }
 
-        byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
-        Path filePath = Paths.get(directory, voterId + ".png");
+    private void deleteExistingFiles(String fileName, String directory) {
+        if (fileName == null || fileName.isBlank())
+            return;
 
-        Files.createDirectories(filePath.getParent());
-        Files.write(filePath, decodedBytes);
+        try {
+            Path dirPath = Paths.get(directory);
+            String baseName = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
 
-        log.info("Image saved at: {}", filePath);
-        return filePath.getFileName().toString();
+            try (Stream<Path> files = Files.list(dirPath)) {
+                files.filter(file -> file.getFileName().toString().startsWith(baseName))
+                        .forEach(file -> {
+                            try {
+                                Files.deleteIfExists(file);
+                                log.info("Deleted old voter file: {}", file);
+                            } catch (IOException e) {
+                                log.warn("Failed to delete old voter file: {}. Reason: {}", file, e.getMessage());
+                            }
+                        });
+            }
+        } catch (IOException e) {
+            log.warn("Failed to list files in directory: {}. Reason: {}", directory, e.getMessage());
+        }
+    }
+
+    private String encodeFileToBase64(Path filePath) {
+        try {
+            if (Files.exists(filePath)) {
+                byte[] fileContent = Files.readAllBytes(filePath);
+                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                log.info("{} : Encoded file to Base64", filePath.getFileName());
+                return encodedString;
+            } else {
+                log.info("File does not exist at path: {}", filePath);
+            }
+        } catch (Exception e) {
+            log.error("Error encoding file to Base64 at path: {}", filePath, e);
+        }
+        return null;
     }
 
     @Transactional

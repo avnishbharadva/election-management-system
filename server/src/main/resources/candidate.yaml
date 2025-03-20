@@ -1,0 +1,628 @@
+openapi: 3.0.1
+info:
+  title: Election Management System Candidate Management API
+  description: API for managing election candidates
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8082/api
+    description: Local development server
+
+paths:
+  /candidates/by-ssn/{candidateSSN}:
+    get:
+      summary: Get candidate by SSN
+      operationId: getCandidateBySSN
+      tags:
+        - Candidate
+      parameters:
+        - name: candidateSSN
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^\\d{9}$"
+      responses:
+        "200":
+          description: Candidate details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+        "404":
+          description: No candidate found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /candidates:
+    post:
+      summary: Add a new candidate
+      operationId: createCandidate
+      tags:
+        - Candidate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CandidateDto"
+      responses:
+        "200":
+          description: Candidate created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+        "404":
+          description: Error while creating candidate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      summary: Get a paginated list of candidates
+      operationId: getCandidates
+      tags:
+        - Candidate
+      parameters:
+        - name: page
+          in: query
+          description: Page number (zero-based index)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: perPage
+          in: query
+          description: Number of candidate per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            default: "candidateId"
+        - name: sortDir
+          in: query
+          description: Sorting direction (asc or desc)
+          required: false
+          schema:
+            type: string
+            enum: [ asc, desc ]
+            default: "asc"
+      responses:
+        "200":
+          description: Successfully retrieved paginated list of candidates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+
+  /candidates/{candidateId}:
+    get:
+      summary: Get candidate by Id
+      operationId: getCandidateById
+      tags:
+        - Candidate
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          description: Unique ID for every Candidate
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Candidate Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+        "404":
+          description: Error retrieving Candidate Data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update Candidate Details
+      operationId: updateCandidate
+      tags:
+        - Candidate
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          description: Unique ID for every Candidate
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CandidateUpdateDto"
+      responses:
+        "200":
+          description: Candidate Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+        "404":
+          description: No candidate Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete Candidate
+      operationId: deleteById
+      tags:
+        - Candidate
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          description: Unique ID for every Candidate
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Candidate Deleted Successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDto"
+        "404":
+          description: Error Deleting Candidate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    CandidateDto:
+      type: object
+      required:
+        - candidateName
+        - candidateSSN
+        - gender
+        - maritalStatus
+        - partyId
+        - residentialAddress
+        - mailingAddress
+        - candidateEmail
+        - electionId
+        - bankDetails
+      properties:
+        candidateId:
+          type: integer
+          format: int64
+          description: Candidate ID (optional, auto-generated)
+          example: 2001
+
+        candidateName:
+          $ref: "#/components/schemas/CandidateName"
+
+        candidateSSN:
+          type: string
+          description: Social Security Number (SSN) - must contain exactly 9 digits
+          x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{9}$\", message = \"SSN must contain exactly 9 digits\")"
+          example: "123456789"
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth (must be in the past)
+          x-field-extra-annotation: "@com.ems.customvalidator.MinAge(value=19,message = \"Candidate must be at least 19 years old \")"
+          example: "1990-05-15"
+
+        gender:
+          $ref: "#/components/schemas/Gender"
+
+        maritalStatus:
+          $ref: "#/components/schemas/MaritalStatus"
+
+        noOfChildren:
+          type: integer
+          description: Number of children (cannot be negative)
+          minimum: 0
+          example: 2
+
+        spouseName:
+          type: string
+          description: Spouse's name (only alphabets and spaces allowed)
+          pattern: "^[A-Za-z ]*$"
+          example: "Jane Doe"
+
+        partyId:
+          type: integer
+          format: int64
+          description: ID of the political party
+          example: 101
+
+        residentialAddress:
+          $ref: "#/components/schemas/CandidateAddress"
+
+        mailingAddress:
+          $ref: "#/components/schemas/CandidateAddress"
+
+        stateName:
+          type: string
+          description: State name (only alphabets and spaces allowed)
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "California"
+
+        candidateEmail:
+          type: string
+          format: email
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          description: Candidate's email address
+          example: "candidate@example.com"
+
+        electionId:
+          type: integer
+          format: int64
+          description: Election ID
+          example: 3001
+
+        electionName:
+          type: string
+          description: Name of the election
+          example: "Presidential Election 2024"
+
+        partyName:
+          type: string
+          description: Name of the political party
+          example: "Democratic Party"
+
+        bankDetails:
+          $ref: "#/components/schemas/BankDetails"
+
+        candidateImage:
+          type: string
+          description: URL or path of the candidate's image
+          example: "/images/candidate123.jpg"
+
+        candidateSignature:
+          type: string
+          description: Candidate's digital signature
+          example: "/signatures/candidate123.png"
+    CandidateUpdateDto:
+      type: object
+      properties:
+        candidateId:
+          type: integer
+          format: int64
+          description: Candidate ID (optional, auto-generated)
+          example: 2001
+
+        candidateName:
+          $ref: "#/components/schemas/CandidateNameNoValidation"
+
+        candidateSSN:
+          type: string
+          description: Social Security Number (SSN) - must contain exactly 9 digits
+          pattern: "^\\d{9}$"
+          example: "123456789"
+
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth (must be in the past)
+          example: "1990-05-15"
+
+        gender:
+          $ref: "#/components/schemas/Gender"
+
+        maritalStatus:
+          $ref: "#/components/schemas/MaritalStatus"
+
+        noOfChildren:
+          type: integer
+          description: Number of children (cannot be negative)
+          minimum: 0
+          example: 2
+
+        spouseName:
+          type: string
+          description: Spouse's name (only alphabets and spaces allowed)
+          pattern: "^[A-Za-z ]*$"
+          example: "Jane Doe"
+
+        partyId:
+          type: integer
+          format: int64
+          description: ID of the political party
+          example: 101
+
+        residentialAddress:
+          $ref: "#/components/schemas/CandidateAddressNoValidation"
+
+        mailingAddress:
+          $ref: "#/components/schemas/CandidateAddressNoValidation"
+
+        stateName:
+          type: string
+          description: State name (only alphabets and spaces allowed)
+          pattern: "^[A-Za-z ]+$"
+          example: "California"
+
+        candidateEmail:
+          type: string
+          format: email
+          description: Candidate's email address
+          example: "candidate@example.com"
+
+        electionId:
+          type: integer
+          format: int64
+          description: Election ID
+          example: 3001
+
+        electionName:
+          type: string
+          description: Name of the election
+          example: "Presidential Election 2024"
+
+        partyName:
+          type: string
+          description: Name of the political party
+          example: "Democratic Party"
+
+        bankDetails:
+          $ref: "#/components/schemas/BankDetailsNoValidation"
+
+        candidateImage:
+          type: string
+          description: URL or path of the candidate's image
+          example: "/images/candidate123.jpg"
+
+        candidateSignature:
+          type: string
+          description: Candidate's digital signature
+          example: "/signatures/candidate123.png"
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - message
+        - errors
+
+      properties:
+        message:
+          type: string
+          example: "Validation failed for request."
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorItem"
+
+    ErrorItem:
+      type: object
+      required:
+        - field
+        - errorMessage
+      properties:
+        field:
+          type: string
+          example: "partyName"
+        errorMessage:
+          type: string
+          example: "Party name must be between 3 and 30 characters."
+
+
+    CandidateName:
+      type: object
+      properties:
+        firstName:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "John"
+        middleName:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "A."
+        lastName:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "Doe"
+
+    CandidateNameNoValidation:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "John"
+        middleName:
+          type: string
+          example: "A."
+        lastName:
+          type: string
+          example: "Doe"
+
+    Gender:
+      type: string
+      enum: [MALE, FEMALE]
+      example: "MALE"
+
+    MaritalStatus:
+      type: string
+      enum: [SINGLE, MARRIED, DIVORCED, WIDOWED]
+      example: "MARRIED"
+
+    CandidateAddress:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+          example: 1
+        street:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "123 Main St"
+        city:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "New York"
+        zipcode:
+          type: integer
+          x-field-extra-annotation: "@jakarta.validation.constraints.Min(value = 10000, message = \"Zipcode must be 5 digits\") @jakarta.validation.constraints.Max(value = 99999, message = \"Zipcode must be 5 digits\")"
+          example: 10001
+
+    CandidateAddressNoValidation:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+          example: 1
+        street:
+          type: string
+          example: "123 Main St"
+        city:
+          type: string
+          example: "New York"
+        zipcode:
+          type: integer
+          example: 10001
+
+    BankDetails:
+      type: object
+      properties:
+        bankDetailsId:
+          type: integer
+          format: int64
+          example: 10
+        bankName:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "Bank of America"
+        bankAddress:
+          type: string
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
+          example: "123 Wall Street, New York, NY"
+
+    BankDetailsNoValidation:
+      type: object
+      properties:
+        bankDetailsId:
+          type: integer
+          format: int64
+          example: 10
+        bankName:
+          type: string
+          example: "Bank of America"
+        bankAddress:
+          type: string
+          example: "123 Wall Street, New York, NY"
+
+    ResponseDto:
+      type: object
+      required:
+        - message
+        - data
+        - timeStamp
+        - isSuccess
+      properties:
+        message:
+          type: string
+          example: "Request processed successfully"
+        data:
+          type: object
+
+        timeStamp:
+          type: string
+          format: date-time
+          example: "2024-03-10T12:34:56Z"
+        isSuccess:
+          type: boolean
+          example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Detailed error message
+          example: Detailed error message
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of when the error occurred
+          example: "2025-03-05T10:30:15"
+
+    CandidateDetailsDto:
+      type: object
+      description: "Candidate details including personal information and election-related data."
+      required:
+        - candidateId
+        - candidateName
+        - candidateSSN
+        - gender
+        - partyName
+        - stateName
+        - candidateEmail
+        - electionName
+      properties:
+        candidateId:
+          type: integer
+          format: int64
+          example: 12345
+          description: "Unique identifier for the candidate"
+
+        candidateName:
+          $ref: "#/components/schemas/CandidateName"
+
+        candidateSSN:
+          type: string
+          pattern: "^\\d{9}$"
+          example: "123456789"
+          description: "Social Security Number (SSN) - exactly 9 digits"
+
+        gender:
+          $ref: "#/components/schemas/Gender"
+
+        spouseName:
+          type: string
+          pattern: "^[A-Za-z ]*$"
+          example: "Jane Doe"
+          description: "Spouse's name (optional, must contain only alphabets and spaces)"
+
+        partyName:
+          type: string
+          pattern: "^[A-Za-z ]+$"
+          example: "Democratic Party"
+          description: "Name of the political party"
+
+        stateName:
+          type: string
+          pattern: "^[A-Za-z ]+$"
+          example: "California"
+          description: "State in which the candidate is running"
+
+        candidateEmail:
+          type: string
+          format: email
+          example: "candidate@example.com"
+          description: "Email address of the candidate"
+
+        electionName:
+          type: string
+          example: "Presidential Election 2024"
+          description: "The name of the election in which the candidate is participating"
+
