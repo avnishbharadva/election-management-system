@@ -17,7 +17,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ label, onImageUpload, imagePr
   const acceptedFileTypes = [
     'image/jpeg', 
     'image/png', 
-    'image/svg+xml', 
+    'image/jpg', 
   ]
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -48,7 +48,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ label, onImageUpload, imagePr
       <DropzoneContainer {...getRootProps()}>
         <input {...getInputProps()} />
         {imagePreview ? (
-          <img src={`data:image/png;base64,${imagePreviewUrl}`} alt={label} width="100" height="100" style={{ borderRadius: borderRadius }}  />
+          <img src={`data:image/png/jpeg/jpg;base64,${imagePreviewUrl}`} alt={label} width="100" height="100" style={{ borderRadius: borderRadius }}  />
         ) : (
           <Typography>Drag & Drop or Click to upload {label}</Typography>
         )}  
