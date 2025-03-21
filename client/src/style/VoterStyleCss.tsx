@@ -186,3 +186,8 @@ export const TypographyStyle = styled(Box)({
 export const BoldTypography = styled(Typography)`
   font-weight: bold;
 `;
+
+export const CenterBox= styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+})

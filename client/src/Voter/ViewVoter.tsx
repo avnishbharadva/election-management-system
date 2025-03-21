@@ -1,20 +1,17 @@
 import { Box, Card, CardContent, Typography, Divider, Grid, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { BoxContainer, CardContainer, MainContainer, StyleDivider, ImageContent,BoldTypography } from '../style/VoterStyleCss'; 
-import { useSearchVotersQuery } from '../store/feature/voter/VoterAction';
+import { FormData } from '../store/feature/voter/type';
+
 interface ViewVoterProps {
     handleClose: () => void;
-    ssnNumber?: number | null ;
+    voter?:FormData ;
     open:  boolean;
   }
  
  
-const ViewVoter =  ({ handleClose, ssnNumber,open }: ViewVoterProps) => {
-   
-  const {data}= useSearchVotersQuery({ssnNumber:ssnNumber},
-    {skip: !ssnNumber}
-  ) 
+const ViewVoter =  ({ handleClose, voter,open }: ViewVoterProps) => {
 
-const voter=data?.data[0]
+
  
  
   return (
@@ -25,7 +22,7 @@ const voter=data?.data[0]
           </DialogTitle>
 
           <DialogContent sx={{ padding: "20px", backgroundColor: "#f9f9f9" }}>
-          {ssnNumber &&  (
+          {voter &&  (
         <BoxContainer>
             <CardContainer>
                 <CardContent>

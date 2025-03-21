@@ -54,11 +54,9 @@ const defaultValues: FormData = {
   signature:""
 };
  
- const VoterForm = ({ updateVoterSsnNumber,ssnNumber,onClose}: any) => {
+ const VoterForm = ({ voter,ssnNumber,onClose}: any) => {
   
-  const {data}= useSearchVotersQuery({ssnNumber:updateVoterSsnNumber},
-    {skip: !updateVoterSsnNumber})
-    const voter= data?.data[0]  
+  
 
   const [sameAddress, setSameAddress] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -75,7 +73,7 @@ const defaultValues: FormData = {
     useEffect(() => {
         reset(defaultValues)
         ssnNumber && reset((prv)=>({...prv,ssnNumber:ssnNumber}))
-        if (updateVoterSsnNumber) {
+        if (voter) {
           reset({
             ...defaultValues,
             ...voter
@@ -138,10 +136,15 @@ const defaultValues: FormData = {
     };
 
     const handleConfirmSubmit: SubmitHandler<FormData> = (data) => {
+
+      const imageurl = data?.image && data?.image.replace(/^data:image\/(png|jpeg|svg\+xml);base64,/, '') 
+      const SignatureUrl= data?.signature && data?.signature.replace(/^data:image\/(png|jpeg|svg\+xml);base64,/, '')
+
+      const updateData= {...data,image:imageurl,signature:SignatureUrl}
       console.log(data)
       if (voter?.voterId) {
         setOldVoter(voter);
-        setUpdateVoterData(data);
+        setUpdateVoterData(updateData);
         setOpenDialog(true);
       } else {
         onSubmit(data);

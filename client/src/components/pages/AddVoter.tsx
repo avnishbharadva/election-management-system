@@ -132,6 +132,8 @@ const AddVoter = () => {
       </>
     ),
   }));
+
+  console.log(voters)
   return (
     
           <Box>
@@ -194,12 +196,12 @@ ssnNumber= {searchParams.ssnNumber}
       >
         <VoterForm
           onClose={() => setAction((prev) => ({ ...prev, edit: false }))}
-          updateVoterSsnNumber={selectedVoter?.ssnNumber}
+          voter={selectedVoter}
         />
       </Model>
 
-     {selectedVoter?.ssnNumber && <ViewVoter
-        ssnNumber={selectedVoter?.ssnNumber}
+     {selectedVoter && <ViewVoter
+        voter={selectedVoter}
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
       />}

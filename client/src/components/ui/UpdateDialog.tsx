@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -8,20 +9,19 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogCss";
- 
+
 interface UpdateDialogProps {
   open: boolean;
   title?: string;
-  handleClose: () => void | {};
+  handleClose: () => void;
   handleConfirm: (data: Record<string, any>) => void;
   originalData: Record<string, any>;
   updatedData: Record<string, any>;
 }
- 
+
 const UpdateDialog: React.FC<UpdateDialogProps> = ({
   open,
-  title = "",
+  title = "Confirm Candidate Updates",
   handleClose,
   handleConfirm,
   originalData = {},
@@ -30,17 +30,16 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   const handleConfirmClick = () => {
     handleConfirm(updatedData);
   };
-
- 
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
+  
     const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);
-
+  
     allKeys.forEach((key) => {
       const fullKey = parentKey ? `${parentKey}.${key}` : key;
       const val1 = obj1?.[key] ?? "N/A";
       const val2 = obj2?.[key];
-
+  
       if (typeof val2 === "object" && val2 !== null && !Array.isArray(val2)) {
         const nestedDiff = compareObjects(val1 || {}, val2, fullKey);
         if (Object.keys(nestedDiff).length > 0) {
@@ -50,7 +49,6 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
         diff[fullKey] = { old: val1, new: val2 };
       }
     });
-
   
     return diff;
   };
@@ -69,12 +67,9 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
           }}
         >
           <Typography variant="body1" fontWeight="bold" sx={{ textTransform: "capitalize" }}>
-
             {key.replace(/([A-Z])/g, " $1")}:
           </Typography>
- 
           {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") ? (
-
             <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
               {value.old !== "N/A" && (
                 <img
@@ -104,18 +99,16 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
               <span style={{ color: "green" }}>
                 {typeof value.new === "object" ? JSON.stringify(value.new) : value.new || "N/A"}
               </span>
-
             </Typography>
           )}
-        </ChangeBox>
+        </Box>
       </Grid>
     ));
   };
- 
-  const changes = compareObjects(originalData, updatedData);
- 
-  return (
 
+  const changes = compareObjects(originalData, updatedData);
+
+  return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
@@ -132,11 +125,11 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
       <DialogActions>
         <Button onClick={handleClose} color="secondary">Cancel</Button>
         <Button onClick={handleConfirmClick} color="primary" variant="contained">
-
           Confirm
         </Button>
       </DialogActions>
-    </StyledDialog>
+    </Dialog>
   );
 };
+
 export default UpdateDialog;

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextField, Button, InputAdornment, IconButton, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import '../../style/Search.css';
+// import '../../style/Search.css';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CenterBox } from '../../style/VoterStyleCss';
 
 type SearchProps = {
   input: string;  
@@ -36,7 +37,7 @@ const handleReload=()=>{
 }
 
   return (
-    <Box className="search-container">
+    <CenterBox>
       <Box display={'flex'} sx={{gap:'8px'}}>
       <TextField
       id={name}
@@ -85,7 +86,7 @@ const handleReload=()=>{
         Search
       </Button>
       </Box>
-    </Box>
+    </CenterBox>
   );
 };
 
