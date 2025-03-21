@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Election, FormValues } from "./types";
-// import axios from "axios";
 import axiosInstance from "../../app/axiosInstance";
 import { toast } from "react-toastify";
  
@@ -8,12 +7,12 @@ export const addElection = createAsyncThunk(
     "election/addElection",
     async (election: Election, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.post("/elections/addElection", election);
+        const response = await axiosInstance.post("/elections", election);
         if(response.status === 200){
           toast.success("Election Registerd SuccessFully!")
         }
         console.log(response)
-        return response.data; // Return response data if needed
+        return response.data; 
       } catch (error: any) {
         toast.error("Something went wrong ")
         return rejectWithValue(error.response?.data?.message || "Failed to add election");
@@ -28,27 +27,20 @@ export const addElection = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.get(`/elections/sorted?page=${page}&size=${perPage}&order=${order}`);
-      console.log("sorted Election:", response.data);
-
-      // Map response to only necessary data
-      console.log("api"+response.data)
-      return response.data
-       
+      return response.data   
     } catch (error: any) {
       console.error("Error fetching elections:", error);
       return rejectWithValue(error.response?.data || error.message || "Failed to fetch elections");
     }
   }
 );
-  
- 
  
   export const updateElectionById = createAsyncThunk(
     "election/updateElection",
     async ({ electionId, updatedElection }: { electionId: number, updatedElection: FormValues }, { rejectWithValue }) => {
       console.log(electionId, updatedElection);
       try{
-        const response = await axiosInstance.put(`/elections/update/${electionId}`, updatedElection);
+        const response = await axiosInstance.put(`/elections/${electionId}`, updatedElection);
         console.log(response);
         return response.data;
       }catch(error:any){
@@ -60,7 +52,7 @@ export const addElection = createAsyncThunk(
     "election/deleteElection",
     async (electionId: number, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.delete(`/elections/delete/${electionId}`);
+        const response = await axiosInstance.delete(`/elections/${electionId}`);
         console.log(response);
         return response.data;
       }
@@ -74,12 +66,11 @@ export const addElection = createAsyncThunk(
     "election/fetchAllElection",
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.get("/elections/getAllElection");
-        return response.data;
+        const response = await axiosInstance.get("/elections");
+        return response?.data?.data;
       } catch (error: any) {
         console.error("Failed to fetch elections:", error);
         return rejectWithValue(error.response?.data || "Failed to fetch elections");
       }
     }
   );
- 

@@ -43,12 +43,4 @@ public class CustomExceptionHandler {
         errorDetail.setProperty("access_denied_reason", "Invalid JWT signature or token");
         return errorDetail;
     }
-
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleGenericException(Exception ex) {
-        ProblemDetail errorDetail = ProblemDetail
-                .forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
-        errorDetail.setProperty("details", ex.getMessage());
-        return errorDetail;
-    }
 }

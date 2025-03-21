@@ -1,9 +1,0 @@
-type: object
-properties:
-  townId:
-    type: integer
-    format: int64
-    example: "4"
-  townName:
-    type: string
-    example: "Delhi"

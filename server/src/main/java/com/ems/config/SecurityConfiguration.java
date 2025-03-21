@@ -53,10 +53,9 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs" , "/report/**" , "/actuator/**").permitAll();
-                    registry.requestMatchers("/actuator/health", "/actuator/info").permitAll();
+                    registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
                     registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
-                    registry.requestMatchers("/officers/register/**","/officers/**","/api/elections/**","/api/party/**").hasRole("STATE");
+                    registry.requestMatchers("/officers/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.requestMatchers(
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
@@ -72,9 +71,9 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         // configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Replace with your allowed origins
         configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

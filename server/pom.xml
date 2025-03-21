@@ -39,7 +39,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+        <dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>openapi-generator-maven-plugin</artifactId>
+			<version>7.6.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -120,25 +125,18 @@
 			<version>3.4.2</version>
 		</dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.21.2</version>
-        </dependency>
+        </dependency><!-- iText for PDF Export -->
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
             <version>2.1.7</version>
-        </dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-			<version>3.4.2</version>
-		</dependency>
-
-
-		<dependency>
+        </dependency><!-- Commons BeanUtils (if needed) -->
+        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>
@@ -155,8 +153,6 @@
 			<artifactId>hibernate-envers</artifactId>
 			<version>6.5.2.Final</version>
 		</dependency>
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -172,27 +168,45 @@
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
         </dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.kafka</groupId>-->
-<!--			<artifactId>spring-kafka</artifactId>-->
-<!--			<version>3.3.1</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.kafka</groupId>-->
-<!--			<artifactId>spring-kafka-test</artifactId>-->
-<!--			<version>3.3.1</version>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
             <version>0.2.6</version>
         </dependency>
-        <!--  <dependency>-->
-        <!--   <groupId>org.hibernate</groupId>-->
-        <!--   <artifactId>hibernate-validator</artifactId>-->
-        <!--   <version>8.0.1.Final</version>-->
-        <!--  </dependency>-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <version>3.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>3.4.2</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -221,14 +235,20 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.10.0</version>
-				<executions>
+                <version>7.10.0</version>
+                <executions>
                     <execution>
                         <id>generate-voter-api</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=java.time.LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
                             <inputSpec>${project.basedir}/src/main/resources/static/voter.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
@@ -236,36 +256,33 @@
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
-<!--								<useBeanValidation>true</useBeanValidation>-->
-<!--								<useLombok>true</useLombok>-->
                                 <useJakartaEe>true</useJakartaEe>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipApiUtil>true</skipApiUtil>
                             </configOptions>
                         </configuration>
                     </execution>
-					<execution>
-						<id>generate-contract-api</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/election.yaml</inputSpec>
-							<generatorName>spring</generatorName>
-							<output>${project.build.directory}/generated-sources/openapi</output>
-							<configOptions>
-								<additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
+                    <execution>
+                        <id>generate-contract-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/election.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <configOptions>
+                                <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
+                                </additionalModelTypeAnnotations>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipApiUtil>true</skipApiUtil>
+                            </configOptions>
+                        </configuration>
+                    </execution>
 
-								</additionalModelTypeAnnotations>
-								<interfaceOnly>true</interfaceOnly>
-								<useJakartaEe>true</useJakartaEe>
-								<useSpringBoot3>true</useSpringBoot3>
-								<skipApiUtil>true</skipApiUtil>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<execution>
+                    <execution>
                         <id>generate-registration-api</id>
                         <goals>
                             <goal>generate</goal>
@@ -276,7 +293,6 @@
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
@@ -291,17 +307,41 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <typeMappings>
+                                <typeMapping>time=LocalTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>LocalTime=java.time.LocalTime</importMapping>
+                            </importMappings>
                             <inputSpec>${project.basedir}/src/main/resources/static/party.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <configOptions>
                                 <additionalModelTypeAnnotations>@lombok.NoArgsConstructor @lombok.AllArgsConstructor
-
                                 </additionalModelTypeAnnotations>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <skipApiUtil>true</skipApiUtil>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-candidate-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/candidate.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <configOptions>
+                                <useBeanValidation>true</useBeanValidation>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipApiUtil>true</skipApiUtil>
+                                <jacksonNullable>false</jacksonNullable>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -340,4 +380,3 @@
 	</build>
 
 </project>
-

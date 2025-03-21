@@ -2,16 +2,16 @@ import { AppBar, Button } from "@mui/material";
 import { styled } from "@mui/system";
 // Styled Navbar Container
 export const StyledAppBar = styled(AppBar)({
-    backgroundColor: "#FFFFFF", // White background
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.4)", // Subtle shadow
-    color: "#000", // Black text
+    backgroundColor: "#FFFFFF", 
+    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.4)", 
+    color: "#000", 
   });
   
   // Styled Button
  export const StyledButton = styled(Button)({
-    color: "#1C39BB", // Persian Blue (to match sidebar)
+    color: "#1C39BB",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "rgba(28, 57, 187, 0.1)", // Light hover effect
+      backgroundColor: "rgba(28, 57, 187, 0.1)",
     },
   });

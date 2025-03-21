@@ -1,0 +1,14 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Success"
+  data:
+    type: array
+    items:
+      $ref: "#/components/schemas/AuditDataDTO"
+
+components:
+  schemas:
+    AuditDataDTO:
+      $ref: "./auditDataDTO.yaml"

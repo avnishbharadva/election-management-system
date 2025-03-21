@@ -1,5 +1,6 @@
-import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { Breadcrumbs, Link } from "@mui/material";
 import { useLocation, Link as RouterLink } from "react-router-dom";
+import { BreadCrumbsName } from "../../style/CommanStyle";
 
 export default function BreadCrumbs() {
   const location = useLocation();
@@ -7,45 +8,30 @@ export default function BreadCrumbs() {
 
   return (
     <Breadcrumbs sx={{ padding: "8px 16px" }} separator="›" aria-label="breadcrumb">
-      <Link component={RouterLink} to="/" sx={{ color: "inherit", textDecoration: "none" }}>
+      <Link component={RouterLink} to="/dashboard" sx={{ color: "inherit", textDecoration: "none" }}>
         Dashboard
       </Link>
-      {pathnames.map((value, index) => {
-        const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-        const isLast = index === pathnames.length - 1;
+      {pathnames.slice(1).map((value, index) => {
+        const to = `/${pathnames.slice(0, index + 2).join("/")}`;
+        const isLast = index === pathnames.length - 2;
+
+        const formattedValue = value.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+
         return isLast ? (
-          <Typography 
-            key={to} 
+          <BreadCrumbsName
+            key={to}
             color="textPrimary"
-            sx={{
-              // backgroundColor: "rgba(0, 48, 87, 0.1)", // Light blue background
-              color: "#002F57", // Dark blue text
-              borderRadius: "20px", // Rounded edges
-              fontWeight: "bold",
-              textTransform: "none", // Keep text case normal
-              padding: "6px",
-              // "&:hover": {
-              //   backgroundColor: "rgba(0, 48, 87, 0.2)", // Slightly darker hover effect
-              // },
-            }}
-            >{value}</Typography>
+            aria-current="page"
+          >
+            {formattedValue}
+          </BreadCrumbsName>
         ) : (
-          <Link 
-            key={to} 
-            component={RouterLink} 
-            to={to} 
-            sx={{
-              // backgroundColor: "rgba(0, 48, 87, 0.1)", // Light blue background
-              color: "#002F57", // Dark blue text
-              borderRadius: "20px", // Rounded edges
-              fontWeight: "bold",
-              textTransform: "none", // Keep text case normal
-              padding: "6px",
-              // "&:hover": {
-              //   backgroundColor: "rgba(0, 48, 87, 0.2)", 
-              // },
-            }}>
-            {value}
+          <Link
+            key={to}
+            component={RouterLink}
+            to={to}
+          >
+            {formattedValue}
           </Link>
         );
       })}

@@ -19,5 +19,4 @@ public class BankDetails {
     private String bankName;
 
     private String bankAddress;
-
 }

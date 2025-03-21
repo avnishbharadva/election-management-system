@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/counts")
+@RequestMapping("/counts")
 public class CountController {
 
     private final CountService countService;

@@ -5,11 +5,9 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   ListItemIcon,
@@ -19,20 +17,21 @@ import {
   CircularProgress
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
-import { fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
+import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
 import Model from "../ui/Model";
-import CandidateForm from "../ui/CandidateForm";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
-import DeleteCandidateDialog from "./DeleteDialog";
+import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
+import { Candidate, ModalData } from "../../store/feature/candidate/types";
+import CandidateContainer from "./CandidateForm/CandidatePage";
+import DeleteDialog from "./DeleteDialog";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -44,20 +43,27 @@ const CandidateData = () => {
   const { allCandidates = { candidates: [] }, filteredCandidate, loading, error, notFound, currentPage, totalRecords, perPage, sortBy, sortDir } = useSelector(
     (state: RootState) => state.candidate
   );
-  
   const ITEM_HEIGHT = 48;
-  const [modalData, setModalData] = useState<{ open: boolean; actionType: "add" | "edit"; selectedCandidate?: any }>({
+  const [modalData, setModalData] = useState<ModalData>({
     open: false,
-    actionType: "add",
+    actionType: null,
     selectedCandidate: null,
   });
 
-  const handleOpenModal = (actionType: "add" | "edit", candidate?: any) => {
-    setModalData({ open: true, actionType, selectedCandidate: candidate || null });
+  const handleOpenModal = (actionType: "add" | "edit", candidate?: Candidate) => {
+    if (actionType === "add") {
+      dispatch(resetState());
+    }
+  
+    setModalData({
+      open: true,
+      actionType,
+      selectedCandidate: candidate || null,
+    });
   };
-
+  
   const handleCloseModal = () => {
-    setModalData({ open: false, actionType: "add", selectedCandidate: null });
+    setModalData({ open: false, actionType: null, selectedCandidate: null });
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, candidateId: number) => {
@@ -65,14 +71,13 @@ const CandidateData = () => {
     setSelectedCandidateId(candidateId);
   };
 
-  const handleClose = () => {
+  const handleClose = () => {   
     setAnchorEl(null);
     setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
     try {
-      console.log("Viewing candidate:", candidateId);
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
       setSelectedCandidate(data);
       setOpenViewDialog(true);
@@ -96,6 +101,18 @@ const CandidateData = () => {
     handleClose();
   };
 
+    const handleDeleteCandidate = async () => {
+      if (selectedCandidateId) {
+        try {
+          await dispatch(deleteCandidateById(selectedCandidateId));
+          dispatch(fetchCandidates({ page: currentPage, perPage }));
+        } catch (error) {
+          console.error("Error deleting candidate:", error);
+        }
+      }
+      handleCloseDeleteDialog();
+    };
+
   const handleOpenDeleteDialog = (candidateId: number) => {
     setSelectedCandidateId(candidateId);
     setOpenDeleteDialog(true);
@@ -108,36 +125,35 @@ const CandidateData = () => {
 
   const handlePageChange = (_event: unknown, newPage: number) => {
     dispatch(setPage(newPage));
-    dispatch(fetchCandidates({ page: newPage, perPage }));
+    dispatch(fetchCandidates({ page: newPage, perPage, sortBy, sortDir }));
   };
   
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPerPage = parseInt(event.target.value, 10);
     dispatch(setPerPage(newPerPage));
-    dispatch(setPage(0)); // Reset to page 0
-    dispatch(fetchCandidates({ page: 0, perPage: newPerPage }));
+    dispatch(setPage(0));
+    dispatch(fetchCandidates({ page: 0, perPage: newPerPage, sortBy, sortDir }));
   };
 
   const handleSort = (column: string) => {
     const isAsc = sortBy === column && sortDir === "asc";
-    const newOrder = isAsc ? "desc" : "asc";  
+    const newOrder = isAsc ? "desc" : "asc";
     dispatch(setSort({ sortBy: column, sortDir: newOrder }));
+    dispatch(fetchCandidates({ page: currentPage, perPage, sortBy: column, sortDir: newOrder }));
   };
-
+  
   useEffect(() => {
     dispatch(fetchCandidates({ page: currentPage, perPage, sortBy, sortDir }));
   }, [dispatch, currentPage, perPage, sortBy, sortDir]);
   
-
-  const {searchedSSN} = useSelector((state: RootState) => state.candidate);
-
+  
   const candidatesToDisplay = useMemo(() => {
-    if (searchedSSN?.length === 9 && filteredCandidate?.length > 0) {
+    if (filteredCandidate?.length > 0) {
       return filteredCandidate;
     }
-    return Array.isArray(allCandidates) ? allCandidates : allCandidates.candidates || [];
-  }, [searchedSSN, filteredCandidate, allCandidates]);
-
+    return Array.isArray(allCandidates) ? allCandidates : allCandidates || [];
+  }, [ filteredCandidate, allCandidates]);
+  
   const renderSortableColumn = (label: string, field: string) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
       <b>{label}</b>
@@ -182,7 +198,7 @@ const CandidateData = () => {
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={9} align="center">{error}</TableCell>
+                <TableCell colSpan={9} align="center">No candidates Found !</TableCell>
               </TableRow>
             ) : notFound ? (
               <TableRow>
@@ -276,9 +292,12 @@ const CandidateData = () => {
             )}
           </TableBody>
         </Table>
-        
-        <Model open={modalData.open} handleClose={handleCloseModal} actionType={modalData.actionType} selectedCandidate={modalData.selectedCandidate}>
-          <CandidateForm handleClose={handleCloseModal} selectedCandidate={modalData.selectedCandidate} />
+          <Model open={modalData.open} handleclose={handleCloseModal}>
+            <CandidateContainer
+              handleClose={handleCloseModal} 
+              selectedCandidate={modalData.selectedCandidate}
+              actionType={modalData.actionType}
+            />
         </Model>
         <TablePagination
           sx={{
@@ -288,8 +307,8 @@ const CandidateData = () => {
             zIndex: 10,
           }}
           component="div"
-          count={totalRecords} 
-          page={currentPage} 
+          count={totalRecords}
+          page={currentPage}
           rowsPerPage={perPage}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
@@ -301,10 +320,12 @@ const CandidateData = () => {
           handleClose={handleCloseViewDialog}
           selectedCandidate={selectedCandidate}
         />
-        <DeleteCandidateDialog
+        <DeleteDialog
           open={openDeleteDialog}
           handleClose={handleCloseDeleteDialog}
-          candidateId={selectedCandidateId ?? 0}
+          handleDelete={handleDeleteCandidate}
+          title="Delete Candidate"
+          message="Are you sure you want to delete this candidate? This action cannot be undone."
         />
     </>
   );

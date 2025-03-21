@@ -17,7 +17,6 @@ properties:
     type: string
     enum: [RESIDENTIAL, MAILING]
     example: "RESIDENTIAL"
-  townId:
-    type: integer
-    format: int64
-    example: 1
+  town:
+    type: string
+    example: "Alexander Street"

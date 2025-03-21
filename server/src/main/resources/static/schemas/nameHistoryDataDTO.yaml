@@ -1,0 +1,33 @@
+type: object
+description: Name history record for a voter
+properties:
+  id:
+    type: integer
+    example: 1
+    description: Auto-generated unique ID
+  firstName:
+    type: string
+    example: "John"
+    description: First name of the voter
+  middleName:
+    type: string
+    example: "A."
+    description: Middle name of the voter (optional)
+  lastName:
+    type: string
+    example: "Doe"
+    description: Last name of the voter
+  suffixName:
+    type: string
+    example: "Jr."
+    description: Suffix for the voter's name (e.g., Jr., Sr., III)
+  createdAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    description: "Creation time of name history"
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2025-03-11T13:07:06.270Z"
+    description: "Updation time of name history"

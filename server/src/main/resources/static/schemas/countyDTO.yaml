@@ -1,9 +1,0 @@
-type: object
-properties:
-  countyId:
-    type: integer
-    format: int64
-    example: "4"
-  countyName:
-    type: string
-    example: "Delhi"

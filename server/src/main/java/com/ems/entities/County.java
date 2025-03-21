@@ -12,6 +12,6 @@ public class County {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long countyId;
+    private Long countyId;
     private String countyName;
 }

@@ -1,4 +1,4 @@
-services: 
+services:
   backend:
     build: .
     image: shyamaghara/ems-backendimage1
@@ -6,6 +6,7 @@ services:
       - "8082:8082"
     depends_on:
       - db
+      - kafka-1
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydb
       SPRING_DATASOURCE_USERNAME: user
@@ -27,7 +28,26 @@ services:
     volumes:
       - db-data:/var/lib/mysql
 
+  kafka-1:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_KRAFT_CLUSTER_ID=JX30lTg9Q-a7zMWRwdMbKg
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9091
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    volumes:
+      - kafka-data:/bitnami/kafka
+
 volumes:
   db-data:
     name: server_db-data
+    driver: local
+  kafka-data:
     driver: local

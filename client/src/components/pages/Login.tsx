@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from "@mui/material";
 import bgImg from "../../assets/images/NYC_Flag.jpg";
-import { Resolver, useForm,SubmitHandler } from 'react-hook-form';
+import { useForm,SubmitHandler } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import {
  
@@ -9,6 +9,7 @@ import {
   LoginField,
   LoginForm,
   LoginImg,
+  LoginTitle,
 } from "../../style/LoginStyle";
 import { AppDispatch } from "../../store/app/store";
 import { useDispatch } from "react-redux";
@@ -18,8 +19,6 @@ type FormValues = {
   email: string;
   password: string;
 };
-
-
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,21 +31,30 @@ const Login = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
-    await dispatch(officerLogin(officerData));
-    navigate("/app/dashboard");
+    try {
+        await dispatch(officerLogin(officerData)).unwrap()
+       navigate("/dashboard");
+    } catch (error) {
+           
+    }
   };
+  
 
   return (
     <>
-     <LoginBox>
+         
+<LoginBox>
   <LoginImg src={bgImg} alt="" />
   <FormCard>
+  <LoginTitle>
+          
+          Election Management System
+        </LoginTitle>
     <LoginForm onSubmit={handleSubmit(onSubmit)}>
-      <Typography variant="h5">Sign In Here!</Typography>
+      <Typography variant="h6">Sign In Here!</Typography>
       <LoginField>
         <TextField
-          fullWidth
-          
+          fullWidth         
           {...register("email", { 
             required: "Email is required", 
             pattern: { 
@@ -86,7 +94,6 @@ const Login = () => {
     </LoginForm>
   </FormCard>
 </LoginBox>
-
     </>
   );
 };
