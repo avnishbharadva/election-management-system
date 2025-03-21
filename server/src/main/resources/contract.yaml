@@ -3,12 +3,9 @@ info:
   title: Election Management System Election APIs
   description: APIs for managing elections
   version: 1.0.1
-  x-logo:
-    url: C:\Users\Lenovo\Desktop\election-management-system\server\src\main\resources\static\image.png
-    altText: Logo of EMS
 
 servers:
-  - url: http://localhost:8082/api
+  - url: http://localhost:8081/api
 
 paths:
   /elections:
@@ -97,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrorResponseDto"
+                $ref: "#/components/schemas/ValidationErrorResponseDTO"
         "404":
           description: Election not found
 
@@ -200,7 +197,6 @@ components:
           description: "Minimum one seat should be there to create an election"
     ElectionDTO:
       type: object
-
       properties:
         electionId:
           type: long
@@ -209,6 +205,7 @@ components:
           type: string
           maxLength: 255
           example: "Presidential Election"
+          x-field-extra-annotation: "@com.ems.customvalidator.NotEmptyOrBlank"
           description: "Election name must have length less than 255"
         electionType:
           type: string
@@ -231,7 +228,6 @@ components:
           x-custom-message: "Minimum 1 seat is required"
           description: "Minimum one seat should be there to create an election"
       required:
-        - electionName
         - electionType
         - electionDate
         - electionState
@@ -239,6 +235,9 @@ components:
     ApiResponse:
       type: object
       properties:
+        message:
+          type: string
+          example: "Success"
         data:
           type: object
         timestamp:
@@ -247,6 +246,18 @@ components:
         success:
           type: boolean
           example: true
+
+    ValidationErrorResponseDTO:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+
     ElectionPageResponse:
       type: object
       properties:
@@ -271,7 +282,7 @@ components:
       type: object
       properties:
         electionId:
-          type: integer
+          type: long
           example: 1
         electionName:
           type: string
@@ -289,36 +300,3 @@ components:
         totalSeats:
           type: integer
           example: 100
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Detailed error message
-          example: Detailed error message
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp of when the error occurred
-          example: "2025-03-05T10:30:15"
-
-    ValidationErrorResponseDto:
-      type: object
-      properties:
-        message:
-          type: string
-          example: "Validation failed for request."
-        errors:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorItem"
-
-    ErrorItem:
-      type: object
-      properties:
-        field:
-          type: string
-          example: "electionType"
-        errorMessage:
-          type: string
-          example: "Election Type must be less that 100 characters"

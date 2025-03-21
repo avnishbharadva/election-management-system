@@ -30,8 +30,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>, Jpa
 
     Page<Candidate> findByElection_electionId(Long electionId, Pageable pageable);
 
-    @Query("SELECT c from Candidate c where c.candidateSSN LIKE CONCAT('%', :last4DIGIT)")
-    Optional<Candidate> findByLast4SSN(@Param("last4DIGIT") String last4DIGIT);
 
     boolean existsByElection_ElectionId(Long electionId);
 }

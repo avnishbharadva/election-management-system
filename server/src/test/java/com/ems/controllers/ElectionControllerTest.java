@@ -1,5 +1,6 @@
 package com.ems.controllers;
 
+import com.ems.entities.Election;
 import com.ems.services.ElectionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.openapitools.model.ElectionUpdateDTO;
 import org.openapitools.model.ModelApiResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -25,6 +27,8 @@ class ElectionControllerTest {
 
     @Mock
     private ElectionService electionService;
+
+    private static Election election;
 
     @InjectMocks
     private ElectionController electionController;
@@ -39,9 +43,25 @@ class ElectionControllerTest {
         electionDTO = new ElectionDTO();
         electionDTO.setElectionId(1L);
         electionDTO.setElectionName("General Election");
+        electionDTO.setElectionType("State");
+        electionDTO.setElectionState("New York");
+        electionDTO.setElectionDate(LocalDate.of(2025, 11, 9));
+        electionDTO.setTotalSeats(200);
 
         electionUpdateDTO = new ElectionUpdateDTO();
         electionUpdateDTO.setElectionName("Updated Election");
+        electionUpdateDTO.setElectionType("Federal");
+        electionUpdateDTO.setElectionState("California");
+        electionUpdateDTO.setElectionDate(LocalDate.of(2026, 5, 15));
+        electionUpdateDTO.setTotalSeats(250);
+
+        election = new Election();
+        election.setElectionId(1L);
+        election.setElectionName("General Election");
+        election.setElectionType("State");
+        election.setElectionState("New York");
+        election.setElectionDate(LocalDate.of(2025, 11, 9));
+        election.setTotalSeats(200);
 
         apiResponse = new ModelApiResponse();
         apiResponse.setSuccess(true);
@@ -49,13 +69,16 @@ class ElectionControllerTest {
         apiResponse.setData("Election Created Successfully");
 
         pageResponse = new ElectionPageResponse();
+        pageResponse.setCurrentPage(1);
+        pageResponse.setPerPage(10);
+        pageResponse.setTotalPages(1);
+        pageResponse.setTotalRecords(1);
     }
 
     @Test
     void createElection_Success() {
         when(electionService.saveElection(electionDTO)).thenReturn(apiResponse);
         ResponseEntity<ModelApiResponse> response = electionController.createElection(electionDTO);
-
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().getSuccess());

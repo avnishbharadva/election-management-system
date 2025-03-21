@@ -2,6 +2,7 @@ package com.ems.services.impls;
 
 import com.ems.entities.Election;
 import com.ems.exceptions.CandidateAssociatedException;
+import com.ems.exceptions.CustomValidationException;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.GlobalMapper;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,16 +37,15 @@ public class ElectionServiceImpl implements ElectionService {
     public ModelApiResponse getElectionById(Long electionId) {
         log.info("Fetching election details for ID: {}", electionId);
         Optional<Election> electionDTO = electionRepository.findById(electionId);
-
         if (electionDTO.isEmpty()) {
             log.warn("No election found with ID: {}", electionId);
             throw new DataNotFoundException("No election found with id:"+electionId);
         } else {
             log.debug("Election details found: {}", electionDTO.get().getElectionId());
         }
-
         return new ModelApiResponse()
                 .success(true)
+                .message("Election retrieved successfully")
                 .timestamp(OffsetDateTime.now())
                 .data(electionDTO);
     }
@@ -57,6 +58,9 @@ public class ElectionServiceImpl implements ElectionService {
             log.error("Invalid total seats value: {}", electionDTO.getTotalSeats());
             throw new IllegalArgumentException("Total seats cannot be null or less than 1");
         }
+        if (electionDTO.getElectionDate().isBefore(LocalDate.now())){
+            throw new CustomValidationException("Election date can't be past");
+        }
 
         Election election = globalMapper.toElectionDTO(electionDTO);
         Election savedElection = electionRepository.save(election);
@@ -64,6 +68,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         return new ModelApiResponse()
                 .data(savedElection)
+                .message("Election saved successfully")
                 .timestamp(OffsetDateTime.now())
                 .success(true);
     }
@@ -71,6 +76,7 @@ public class ElectionServiceImpl implements ElectionService {
     @Override
     public ModelApiResponse updateElection(Long electionId, ElectionUpdateDTO electionDTO) {
         log.info("Updating election with ID: {}", electionId);
+
         var existingElection = electionRepository.findById(electionId)
                 .orElseThrow(() -> {
                     log.warn("No election found with ID: {}", electionId);
@@ -78,6 +84,10 @@ public class ElectionServiceImpl implements ElectionService {
                 });
 
         log.debug("Existing election details: {}", existingElection);
+
+        if (existingElection.getElectionDate() != null && existingElection.getElectionDate().isBefore(LocalDate.now())) {
+            throw new CustomValidationException("Election is completed and cannot be updated.");
+        }
 
         Optional.ofNullable(electionDTO.getElectionName()).ifPresent(existingElection::setElectionName);
         Optional.ofNullable(electionDTO.getElectionDate()).ifPresent(existingElection::setElectionDate);
@@ -87,12 +97,16 @@ public class ElectionServiceImpl implements ElectionService {
         if (electionDTO.getTotalSeats() != null) {
             existingElection.setTotalSeats(electionDTO.getTotalSeats());
         }
+        if(electionDTO.getTotalSeats()==null || electionDTO.getTotalSeats()<1){
+            throw new CustomValidationException("Total seats cannot be null or less than 1");
+        }
 
         Election updatedElection = electionRepository.save(existingElection);
         log.info("Election with ID {} updated successfully", electionId);
 
         return new ModelApiResponse()
                 .data(updatedElection)
+                .message("Election updated successfully")
                 .timestamp(OffsetDateTime.now())
                 .success(true);
     }
@@ -149,6 +163,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         return new ModelApiResponse()
                 .success(true)
+                .message("Election deleted successfully")
                 .timestamp(OffsetDateTime.now());
     }
 
@@ -168,6 +183,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         return new ModelApiResponse()
                 .data(electionDTOs)
+                .message("Election details fetched successfully")
                 .timestamp(OffsetDateTime.now())
                 .success(true);
     }

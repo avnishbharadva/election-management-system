@@ -3,6 +3,7 @@ package com.ems.services.impls;
 import com.ems.entities.Candidate;
 import com.ems.entities.CandidateAddress;
 import com.ems.events.EmailSendEvent;
+import com.ems.exceptions.CustomValidationException;
 import com.ems.exceptions.DataAlreadyExistException;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.exceptions.FileProcessingException;
@@ -26,6 +27,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,16 +60,30 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public ResponseDto findByCandidateSSN(String candidateSSN) {
+
+
         log.info("Fetching candidate details for SSN: {}", candidateSSN);
-        org.openapitools.model.CandidateDetailsDto candidateBySSN= candidateRepository.findByLast4SSN(candidateSSN)
+
+        if (candidateSSN.length()!=9) {
+            log.error("SSN length is not equal to 9: {}",candidateSSN);
+            throw new CustomValidationException("SSN length should be 9");
+        }
+
+        CandidateDetailsDto candidateBySSN = candidateRepository.findByCandidateSSN(candidateSSN)
                 .map(candidateMapper::toCandidateDetailsDto)
                 .orElseThrow(() -> {
                     log.error("No Candidate found with SSN: {}", candidateSSN);
                     return new DataNotFoundException("No Candidate found with SSN: " + candidateSSN);
                 });
-        log.info("Successfully fetched Candidate details - id:{} ,Name :{} ,Email:{}",candidateBySSN.getCandidateId(),candidateBySSN.getCandidateName(),candidateBySSN.getCandidateEmail());
-        return new ResponseDto(String.format("Data for Candidate with SSN: %s retrieved successfully", candidateSSN) ,candidateBySSN, LocalDateTime.now().atOffset(ZoneOffset.UTC),true);
+
+        return new ResponseDto(
+                String.format("Data for Candidate with SSN: %s retrieved successfully", candidateSSN),
+                candidateBySSN,
+                LocalDateTime.now().atOffset(ZoneOffset.UTC),
+                true
+        );
     }
+
 
     @Override
     @Transactional
