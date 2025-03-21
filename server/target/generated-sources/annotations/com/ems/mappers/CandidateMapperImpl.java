@@ -352,6 +352,20 @@ public class CandidateMapperImpl implements CandidateMapper {
         return bankDetails1;
     }
 
+    protected BankDetails bankDetailsToBankDetails1(org.openapitools.model.BankDetails bankDetails) {
+        if ( bankDetails == null ) {
+            return null;
+        }
+
+        BankDetails bankDetails1 = new BankDetails();
+
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
+        bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
+        bankDetails1.setBankName( bankDetails.getBankName() );
+
+        return bankDetails1;
+    }
+
     protected CandidateName candidateNameToCandidateName1(org.openapitools.model.CandidateName candidateName) {
         if ( candidateName == null ) {
             return null;

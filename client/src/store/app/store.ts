@@ -1,9 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './rootReducer';
+import voterApi from '../feature/voter/VoterAction'
+import partyApi from '../feature/party/partyAction'; 
 
 
 const store = configureStore({
-    reducer: rootReducer 
+    reducer:     rootReducer,
+    
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware()
+            .concat(partyApi.middleware)
+            .concat(voterApi.middleware),
+  
+
 });
 
 export type RootState = ReturnType<typeof store.getState>;
