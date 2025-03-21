@@ -122,7 +122,7 @@ public class VoterServiceImpl implements VoterService {
                 searchDTO.getCity(),
                 pageable).map(globalMapper::toVoterDTO);
         searchedVoters.forEach(voterDataDTO -> voterDataDTO.setImage(encodeFileToBase64(Path.of(PHOTO_DIR + "/" + voterDataDTO.getImage()))));
-        searchedVoters.forEach(voterDataDTO -> voterDataDTO.setSignature(encodeFileToBase64(Path.of(PHOTO_DIR + "/" + voterDataDTO.getSignature()))));
+        searchedVoters.forEach(voterDataDTO -> voterDataDTO.setSignature(encodeFileToBase64(Path.of(SIGNATURE_DIR + "/" + voterDataDTO.getSignature()))));
         return searchedVoters;
     }
 
