@@ -1,9 +1,8 @@
-import {Box, TableContainer, Table, TableCell, Card, Divider, CardContent} from '@mui/material';
+import {Box, Card, Divider, CardContent} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import { styled } from "@mui/system";
 
 export const HeaderStyles = styled(Box)({
-  // marginTop: '20px',
   margin: '20px',
 })
 
@@ -22,7 +21,6 @@ export const Head = styled(Title)({
 export const Container = styled(Box)({
      display: 'flex',
      flexDirection: 'column',
-     // gap: 2,
      flex: 1, 
      overflowY: "auto", 
      maxHeight: "60vh"
@@ -100,7 +98,6 @@ export const FormRowCenterGap = styled(Box)({
 
 
 //AddVoter.tsx
-
 export const SearchContainer = styled(Box)({
     display: 'grid',
     gridTemplateColumns: '1fr auto',
@@ -108,46 +105,8 @@ export const SearchContainer = styled(Box)({
     gap: 2,
 })
 
-export const TableContainerMain = styled(TableContainer)({
-    marginTop: 2,
-    overflow: 'auto',
-    maxHeight: '461px',
-})
-
-export const TableMain = styled(Table)({
-  minWidth: 'max-content',
-  tableLayout: 'auto',
-  whiteSpace: 'nowrap',
-})
-
-export const TableHead = styled(Box)({
-  position: 'sticky',
-  top: 0,
-  background: 'white',
-  zIndex: 1,
-})
-
-export const StyledTableDetails = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: '16px',
-  padding: '24px', 
-  borderRadius: '16px', 
-  backgroundColor: '#f9f9f9',  
-});
-
-export const TableCellSticky = styled(TableCell)({
-  position: 'sticky',
-  top: 0,
-  background: 'white',
-  zIndex: 1,
-})
-
 
 //ViewVoter
-
 export const BoxContainer = styled(Box)({
   display: "flex", 
   flexDirection: "column", 

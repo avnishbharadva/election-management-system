@@ -40,15 +40,10 @@ public class RegistrationApiController implements OfficersApi {
     }
 
     @Override
-<<<<<<< HEAD
-    public ResponseEntity<List<OfficersResponseDTO>> getAllRoles() {
-        return ResponseEntity.ok(officersService.getAllRoles());
-=======
     public ResponseEntity<List<OfficersResponseDTO>> getAllOfficers() {
         log.info("Fetching all officers.");
         List<OfficersResponseDTO> officers = officersService.getAllRoles();
         log.info("Successfully fetched {} officers.", officers.size());
         return ResponseEntity.ok(officers);
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     }
 }

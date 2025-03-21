@@ -18,7 +18,8 @@ import { useSearchVotersQuery } from '../../store/feature/voter/VoterAction';
 import TableComponent from '../ui/TableComponent';
 import Pagination from '../ui/Pagination';
 import { Voter } from '../../store/feature/voter/type';
-import { SearchContainer, StyledTableDetails } from '../../style/VoterStyleCss';
+import { SearchContainer } from '../../style/VoterStyleCss';
+import { StyledTableDetails } from '../../style/TableStyleCss';
  
 const voterHeader = [
   { id: 'status', label: 'Status' },

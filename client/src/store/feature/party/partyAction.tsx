@@ -4,13 +4,14 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
  
 const partyApi = createApi({
     reducerPath: 'partyApi',
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8082/api/",
+    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers:any) => {
             const token = localStorage.getItem('token');
             if (token) {
               headers.set('Authorization', `Bearer ${token}`);
             }
-            return headers;
+            return headers;             
+            //                    
           },
      }),  
     tagTypes: ['party'],
@@ -22,16 +23,15 @@ const partyApi = createApi({
             providesTags: ['party'],
         }
         ),
+        
         PartyById: builder.query({
             query: (partyId) => `party/${partyId}`
         }),
  
         registerParty: builder.mutation({
-            query: ({ post, img }: any) => {
-                if(!img){
-                    console.error("party symbol is required")
-                }
-                const formData = {...post ,partySymbol: img}
+            query: ({ post }: any) => {
+                
+                const formData = {...post }
                 console.log(formData)
                  return {
                     url: 'party',

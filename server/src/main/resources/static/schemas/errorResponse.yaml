@@ -1,0 +1,11 @@
+type: object
+properties:
+  message:
+    type: string
+    description: Detailed error message
+    example: Detailed error message
+  timestamp:
+    type: string
+    format: time
+    description: Timestamp of when the error occurred
+    example: "10:30:15"

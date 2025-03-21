@@ -1,6 +1,7 @@
 
-import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel } from '@mui/material';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel, Box, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
+import ImageUpload from './ImageUpload';
 
 // Type for the props of each form field component
 type FieldProps = {
@@ -340,4 +341,32 @@ export const HasVotedBefore = ({ control, name , label}: FieldProps) => {
             )}
         />
     );
+};
+
+export const FormImage=({name,control,label, isRequired=true}:FieldProps)=>{
+    return(
+        <Controller
+        name={name}
+        control={control}
+        rules={{
+            required: isRequired ? ` *${label} is required` : false,
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <Box sx={{ display: 'flex', flexDirection:'column'}} >
+ 
+            <ImageUpload
+              label={label}
+              onImageUpload={(imageData) => field.onChange(imageData)}
+              imagePreview={field.value}
+              borderRadius="8px"
+            />
+           
+            <Typography color="error" variant="body2">
+              {error && error.message}
+            </Typography>
+       
+              </Box>
+          )}
+        />
+    )
 };

@@ -59,12 +59,6 @@ public class Voter extends AuditEntity {
     @JoinColumn(name = "party_id")
     private Party party;
 
-<<<<<<< HEAD
-    @OneToMany(mappedBy = "voter")
-    @JsonManagedReference("address-voter")
-    @ToString.Exclude
-    private List<Address> address;
-=======
     @OneToOne
     @JoinColumn(name = "residential_address")
     private Address residentialAddress;
@@ -72,16 +66,11 @@ public class Voter extends AuditEntity {
     @OneToOne
     @JoinColumn(name = "mailing_address")
     private Address mailingAddress;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
     private String image;
 
     private String signature;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     @ManyToOne
     @JoinColumn(name = "voter_status_id")
     private VoterStatus voterStatus;

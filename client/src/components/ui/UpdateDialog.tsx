@@ -30,6 +30,8 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   const handleConfirmClick = () => {
     handleConfirm(updatedData);
   };
+  console.log("Original", originalData)
+  console.log("Updated", updatedData)
  
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};

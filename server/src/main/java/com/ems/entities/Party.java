@@ -31,13 +31,8 @@ public class Party extends AuditEntity {
     private String headQuarters;
 
     @Column(length = 30,nullable = false)
-<<<<<<< HEAD
-    private String founderName;
-
-=======
     private String partyFounderName;
 
     @Column(length = 30, nullable = false)
     private String partyLeaderName;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

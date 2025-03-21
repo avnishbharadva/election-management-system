@@ -11,11 +11,4 @@ public class VoterStatus {
     private Long statusId;
 
     private String statusDesc;
-<<<<<<< HEAD
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "voterStatus")
-    private List<Voter> voters;
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

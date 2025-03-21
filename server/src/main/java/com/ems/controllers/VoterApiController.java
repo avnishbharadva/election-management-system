@@ -1,16 +1,6 @@
 package com.ems.controllers;
 
 import com.ems.dtos.VoterSearchDTO;
-<<<<<<< HEAD
-import com.ems.services.impls.VoterServiceImpl;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.openapitools.api.VotersApi;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDTO;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.VoterStatusDTO;
-=======
 import com.ems.services.AuditService;
 import com.ems.services.HistoryService;
 import com.ems.services.VoterService;
@@ -18,14 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
 import org.slf4j.MDC;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
-
-=======
 import org.openapitools.model.VoterDTO;
 import org.openapitools.model.VoterRegisterDTO;
 import org.openapitools.model.PaginatedVoterDTO;
@@ -39,7 +25,6 @@ import org.openapitools.model.ChangeVoterAddress;
 import org.openapitools.model.NameHistoryDTO;
 import org.openapitools.model.StatusHistoryDTO;
 import org.openapitools.model.AddressHistoryDTO;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import java.time.LocalDate;
 import java.util.List;
 
@@ -48,16 +33,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VoterApiController implements VotersApi {
 
-<<<<<<< HEAD
-    private final VoterServiceImpl voterService;
-
-    @Override
-    public ResponseEntity<VoterDTO> registerVoter(VoterRegisterDTO voterRegisterDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(voterService.register(voterRegisterDTO));
-    }
-
-
-=======
     private final VoterService voterService;
     private final AuditService auditService;
     private final HistoryService historyService;
@@ -70,7 +45,6 @@ public class VoterApiController implements VotersApi {
         ));
     }
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     @Override
     public ResponseEntity<PaginatedVoterDTO> searchVoters(
             Integer page, Integer size, String firstName, String lastName,
@@ -80,16 +54,6 @@ public class VoterApiController implements VotersApi {
         String[] sortArray = (sort != null) ? sort.toArray(new String[0]) : new String[0];
         VoterSearchDTO searchDTO = new VoterSearchDTO(firstName, lastName, dateOfBirth, dmvNumber, ssnNumber, city);
 
-<<<<<<< HEAD
-        Page<VoterDTO> voterPage = voterService.searchVoters(searchDTO, page, size, sortArray);
-
-        PaginatedVoterDTO response = new PaginatedVoterDTO();
-        response.setData(voterPage.getContent());
-        response.setNumber(voterPage.getNumber());
-        response.setSize(voterPage.getSize());
-        response.setTotalElements(voterPage.getTotalElements());
-        response.setTotalPages(voterPage.getTotalPages());
-=======
         Page<VoterDataDTO> voterDTOData = voterService.searchVoters(searchDTO, page, size, sortArray);
 
         PaginatedVoterDTO response = new PaginatedVoterDTO();
@@ -98,13 +62,10 @@ public class VoterApiController implements VotersApi {
         response.setSize(voterDTOData.getSize());
         response.setTotalElements(voterDTOData.getTotalElements());
         response.setTotalPages(voterDTOData.getTotalPages());
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
         return ResponseEntity.ok(response);
     }
 
-<<<<<<< HEAD
-=======
     @Override
     public ResponseEntity<VoterDTO> voterUpdate(String voterId, VoterUpdateRequest voterUpdateRequest) {
         return ResponseEntity.ok(new VoterDTO(
@@ -121,7 +82,6 @@ public class VoterApiController implements VotersApi {
                 statusList
         ));
     }
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
     @Override
     public ResponseEntity<AuditDTO> getAudit(String voterId) {
@@ -140,8 +100,6 @@ public class VoterApiController implements VotersApi {
         return ResponseEntity.ok(new VoterDTO("Voter Transferred Successfully", transferredVoter));
     }
 
-<<<<<<< HEAD
-=======
     @Override
     public ResponseEntity<VoterDTO> changeVoter(String voterId, ChangeVoterAddress changeVoterAddress) {
         log.info("Starting address change for voter ID: {} | Address type: {}", voterId, changeVoterAddress.getAddressType());
@@ -176,5 +134,4 @@ public class VoterApiController implements VotersApi {
                 historyService.getAddressHistory(voterId)
         ), HttpStatus.OK);
     }
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

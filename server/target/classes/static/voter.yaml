@@ -251,7 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoterDTO"
+                $ref: "./schemas/voterDTO.yaml"
         "400":
           description: Bad Request (Invalid input)
           content:
@@ -362,9 +362,9 @@ components:
     PaginatedVoterDTO:
       $ref: './schemas/paginatedVoterDTO.yaml'
     VoterRegisterDTO:
-      $ref: './schemas/voterRegisterDTO.yaml'
+      $ref: 'schemas/voterRegisterDTO.yaml'
     VoterDTO:
-      $ref: './schemas/voterDTO.yaml'
+      $ref: 'schemas/voterDTO.yaml'
     AddressDTO:
       $ref: './schemas/addressDTO.yaml'
     AuditDTO:

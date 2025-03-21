@@ -3,10 +3,6 @@ package com.ems.services.impls;
 import com.ems.entities.Address;
 import com.ems.entities.Audit;
 import com.ems.entities.Voter;
-<<<<<<< HEAD
-import com.ems.events.AddressUpdateEvent;
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import com.ems.events.VoterUpdateEvent;
 import com.ems.exceptions.DataNotFoundException;
 import com.ems.mappers.GlobalMapper;
@@ -17,21 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.AuditDataDTO;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
-<<<<<<< HEAD
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-<<<<<<< HEAD
-import java.util.concurrent.CompletableFuture;
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
 @Slf4j
 @Service
@@ -42,21 +29,13 @@ public class AuditServiceImpl implements AuditService {
     private final AuditRepository auditRepository;
     private final GlobalMapper mapper;
 
-<<<<<<< HEAD
-    @Async
-=======
     @Async("taskExecutor")
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     @KafkaHandler
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();
         var newVoter = event.getNewVoter();
         var fields = getUpdatedFields(oldVoter, newVoter, event.getOldAddress(), event.getNewAddress());
-<<<<<<< HEAD
-
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
         if (!fields.isEmpty()) {
             Audit audit = getAudit(newVoter, fields);
             auditRepository.save(audit);
@@ -96,27 +75,12 @@ public class AuditServiceImpl implements AuditService {
             oldField.put("hasVoterBefore", oldVoter.isHasVotedBefore());
         }
 
-<<<<<<< HEAD
-        if (oldVoter.getParty() != null && newVoter.getParty() != null) {
-            if (!oldVoter.getParty().equals(newVoter.getParty())) {
-                updateField.put("party", newVoter.getParty().getPartyName());
-                oldField.put("party", oldVoter.getParty().getPartyName());
-            }
-        } else if (oldVoter.getParty() == null && newVoter.getParty() != null) {
-            updateField.put("party", newVoter.getParty().getPartyName());
-            oldField.put("party", "None");
-        }
-        if (oldVoter.getVoterStatus() != null && newVoter.getVoterStatus() != null &&
-                !oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
-
-=======
         if (!oldVoter.getParty().equals(newVoter.getParty())) {
                 updateField.put("party", newVoter.getParty().getPartyName());
                 oldField.put("party", oldVoter.getParty().getPartyName());
         }
 
         if (!oldVoter.getVoterStatus().equals(newVoter.getVoterStatus())) {
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
             updateField.put("status", newVoter.getVoterStatus().getStatusDesc());
             oldField.put("status", oldVoter.getVoterStatus().getStatusDesc());
         }
@@ -130,18 +94,6 @@ public class AuditServiceImpl implements AuditService {
             addressFields = getAddressUpdatedFields(oldAddress, newAddress);
             log.info("iteration {} : {}",i,addressFields);
             if (!addressFields.isEmpty()) {
-<<<<<<< HEAD
-                CompletableFuture<SendResult<String,AddressUpdateEvent>> future=kafkaTemplate.send("address-update-event-topic","Address",new AddressUpdateEvent(newAddress));
-                future.whenComplete((result,exception)->{
-                    if(exception!=null){
-                        log.error("Failed to send message:"+exception.getMessage());
-                    }
-                    else{
-                        log.info("Message sent successfully:"+result.getRecordMetadata());
-                    }
-                });
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
                 if(i==0 && !addressFields.get(0).isEmpty()){
                     oldField.put("residentialAddress", addressFields.get(0));
                     updateField.put("residentialAddress", addressFields.get(1));

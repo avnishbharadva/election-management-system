@@ -33,11 +33,4 @@ public class Address extends AuditEntity {
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
-<<<<<<< HEAD
-    @ManyToOne
-    @JoinColumn(name = "voter_id")
-    @JsonBackReference("address-voter")
-    private Voter voter;
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

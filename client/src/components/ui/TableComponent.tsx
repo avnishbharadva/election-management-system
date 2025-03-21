@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography } from '@mui/material';
 // import { tableStyles } from '../../style/PartyStyle';
-import { TableMain, TableCellSticky, TableContainerMain } from '../../style/VoterStyleCss';
+import { TableMain, TableCellSticky, TableContainerMain } from '../../style/TableStyleCss';
  
 interface Header {
     label: string;
@@ -48,6 +48,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                                 >
                                     <b>{header.label}</b>
                                 </TableCellSticky>
+                                
                             ))}
                         </TableRow>
                     </TableHead>
@@ -66,12 +67,14 @@ const TableComponent: React.FC<TableComponentProps> = ({
                             </TableRow>
                         ) : rows.length > 0 ? (
                             rows.map((row, rowIndex) => (
+                                
                                 <TableRow key={rowIndex}>
-                                    {headers.map((header, cellIndex) => (
-                                        <TableCell key={cellIndex} align={header.align || 'left'}>
+                                    {headers.map((header, cellIndex) => (<>
+
+                                        <TableCell key={cellIndex} align={header.align || 'left'} >
                                             {resolveToReactNode(row[header.id])}
                                         </TableCell>
-                                    ))}
+                                        </>))}
                                 </TableRow>
                             ))
                         ) : (

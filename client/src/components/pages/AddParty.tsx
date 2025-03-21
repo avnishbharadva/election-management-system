@@ -9,14 +9,16 @@ import {
   Button,
 } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
-import ModelComponent from '../ui/ModelComponent';
+import Model from '../ui/Model';
 import PartyForm from '../../Party/PartyForm';
 import { usePartyListQuery, useDeletePartyMutation } from '../../store/feature/party/partyAction';
-import ViewParty from '../../Party/ViewParty';
+import ViewParty, { partySections } from '../../Party/ViewParty';
 import Pagination from '../ui/Pagination';
 import TableComponent from '../ui/TableComponent';
 import { AddButtonContainer } from '../../style/PartyStyle';
 import DeleteDialog from '../ui/DeleteDialog';
+import ViewPartyDialog from '../ui/ViewDetailsDialog';
+import ViewDetailsDialog from '../ui/ViewDetailsDialog';
  
 interface Party {
   partyId: string;
@@ -37,7 +39,6 @@ const partyHeader = [
   { id: "partyFoundationYear", label: "Foundation Year" },
   { id: "partyWebSite", label: "Website" },
   { id: "headQuarters", label: "Headquarters" },
-  // { id: "partyFounderName", label: "Founder Name" },
   {id: "partyLeaderName", label: "Leader Name"},
   { id: "actions", label: "Actions" },
 ];
@@ -58,7 +59,7 @@ const AddParty = () => {
   const [partyToDeleteId, setPartyToDeleteId] = useState<string | null>(null);
  
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, party: Party) => {
-    console.log(party)
+    // console.log(party)
     setAnchorEl(event.currentTarget);
     setSelectedParty(party);
   };
@@ -69,7 +70,8 @@ const AddParty = () => {
  
   const handleAction = (actionType: string, party?: Party) => {
  
-    console.log(actionType, party);
+    // console.log(actionType, party);
+    console.log("addmparty", party)
     switch (actionType) {
       case "register":
         setSelectedParty(null);
@@ -77,11 +79,13 @@ const AddParty = () => {
         handleMenuClose();
         break;
       case "edit":
+        console.log("edit"+party)
         party &&setSelectedParty(party);
         setAction({ register: false, edit: true, view: false });
         handleMenuClose();
         break;
       case "view":
+        console.log("heloo"+party)
         party && setSelectedParty(party);
         setAction({ register: false, edit: false, view: true });
         handleMenuClose();
@@ -113,7 +117,7 @@ const AddParty = () => {
     setPartyToDeleteId(null);
   };
 
-  console.log("Party data", data?.data);
+  // console.log("Party data", data?.data);
  
   const totalElements = data?.data.length || 0;
   const visibleParties = data?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) || [];
@@ -125,6 +129,10 @@ const AddParty = () => {
     partyWebSite: party.partyWebSite,
     headQuarters: party.headQuarters,
     partyLeaderName: party.partyLeaderName,
+    // partySymbol:(
+    //   <img src={`data:image/*;base64,${party.partySymbol}`} height="100px" alt="" />
+
+    // ),
     actions: (
       <>
         <IconButton onClick={(e) => handleMenuClick(e, party)} color="primary">
@@ -159,16 +167,19 @@ const AddParty = () => {
     ),
   }));
 
+  // console.log("Selcted Party in Add Party",selectedParty);
+  console.log("Selected Party:", selectedParty); 
+
 
  
   return (
-    <Paper>
+    <>
       <AddButtonContainer>
         <Button onClick={() => handleAction('register')} variant="contained">
           Add Party
         </Button>
       </AddButtonContainer>
- 
+      <Paper>
       <TableComponent
         headers={partyHeader}
         rows={partys}
@@ -185,15 +196,16 @@ const AddParty = () => {
         />
       </TableComponent>
  
-      <ModelComponent
+      <Model
         open={ action.register}
         handleClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
       >
         <PartyForm
           onClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
+          party={selectedParty}
         />
-      </ModelComponent>
-      <ModelComponent
+      </Model>
+      <Model
         open={ action.edit}
         handleClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
       >
@@ -201,12 +213,22 @@ const AddParty = () => {
           onClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
           party={selectedParty}
         />
-      </ModelComponent>
+      </Model>
+
       <ViewParty
         party={selectedParty}
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
       />
+
+{/* <ViewDetailsDialog 
+  open={action.view}
+  handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
+  data={selectedParty}
+  sections={partySections}
+  imageKeys={["partySymbol"]} // Ensure this key matches your API response
+/> */}
+      
        <DeleteDialog
         open={deleteDialogOpen}
         handleClose={handleDeleteCancel}
@@ -215,6 +237,7 @@ const AddParty = () => {
         message={`Are you sure you want to delete ${selectedParty?.partyName}?`}
       />
     </Paper>
+    </>
   );
 };
 export default AddParty;

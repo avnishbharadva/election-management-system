@@ -55,11 +55,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
                     registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
-<<<<<<< HEAD
-                    registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
-=======
                     registry.requestMatchers("/officers/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
                     registry.requestMatchers(
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
@@ -75,15 +71,9 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         // configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Replace with your allowed origins
         configuration.setAllowedOriginPatterns(List.of("*"));
-<<<<<<< HEAD
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-=======
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,40 +1,31 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import { ModelBox } from "../../style/ModelCss";
  
 interface ModalProps {
   open: boolean;
-  handleClose: () => void;
+  handleclose: () => void;
   children: React.ReactNode;
 }
  
-const Model: React.FC<ModalProps> = ({
-  open,
-  handleClose,
-  children,
-}) => {
- 
+const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
   return (
-    <Modal keepMounted open={open} aria-labelledby="modal-title" >
+    <Modal
+      keepMounted
+      open={open}
+      aria-labelledby="modal-title"
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation(),
+      }}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <ModelBox>
-        {/* Close Icon */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: "17px",
-            right: "19px",
-            zIndex: "99"
-          }}
-        >
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
         {React.isValidElement(children) &&
-          React.cloneElement(children, { handleClose } as any)}
+          React.cloneElement(children, { handleclose } as any)}
       </ModelBox>
     </Modal>
   );
@@ -42,6 +33,8 @@ const Model: React.FC<ModalProps> = ({
  
 export default Model;
  
+ 
+
 
 
 

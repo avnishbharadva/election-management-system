@@ -1,9 +1,6 @@
 package com.ems.handlers;
 
-<<<<<<< HEAD
-=======
 import lombok.extern.slf4j.Slf4j;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import com.ems.dtos.ErrorResponse;
 import com.ems.exceptions.*;
 import org.springframework.http.HttpStatus;
@@ -14,10 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-<<<<<<< HEAD
-=======
 @Slf4j
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -68,8 +62,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 }

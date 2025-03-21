@@ -33,6 +33,8 @@ import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
 import CandidateContainer from "./CandidateForm/CandidatePage";
 import DeleteDialog from "./DeleteDialog";
+import ViewDetailsDialog from "./ViewDetailsDialog";
+import { candidateSections } from "./CandidateSection";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -323,10 +325,12 @@ const CandidateData = () => {
           rowsPerPageOptions={[5, 10, 20]}
         />
       </BoxTableContainer>
-        <ViewCandidate
+      <ViewDetailsDialog
           open={openViewDialog}
           handleClose={handleCloseViewDialog}
-          selectedCandidate={selectedCandidate}
+          data={selectedCandidate?.data}
+          sections={candidateSections}
+          imageKeys={["candidateImage", "candidateSignature"]}
         />
         <DeleteDialog
           open={openDeleteDialog}

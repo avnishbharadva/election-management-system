@@ -1,31 +1,31 @@
-import { Box, TableCell, Table } from "@mui/material";
+import { Box, TableCell, Table, IconButton } from "@mui/material";
 import { styled } from "@mui/system";
 
 //AddParty.tsx
 export const AddButtonContainer = styled(Box)({
      display: 'flex',
      justifyContent: 'flex-end',
-     marginBottom: 2,
+     marginBottom: '20px',
 })
 
-export const TableContainerMain = styled(Box)({
-   marginTop: 2,
-   overflow: 'auto',
-   maxHeight: '461px',
-})
+// export const TableContainerMain = styled(Box)({
+//    marginTop: 2,
+//    overflow: 'auto',
+//    maxHeight: '461px',
+// })
 
-export const TableMain = styled(Table)({
-  minWidth: '100px',
-  tableLayout: 'auto',
-  whiteSpace: 'nowrap',
-})
+// export const TableMain = styled(Table)({
+//   minWidth: '100px',
+//   tableLayout: 'auto',
+//   whiteSpace: 'nowrap',
+// })
 
-export const TableCellSticky = styled(TableCell)({
-  position: 'sticky',
-  top: 0,
-  background: 'white',
-  zIndex: 1,
-})
+// export const TableCellSticky = styled(TableCell)({
+//   position: 'sticky',
+//   top: 0,
+//   background: 'white',
+//   zIndex: 1,
+// })
 
 
 //Partyform.tsx
@@ -94,5 +94,19 @@ export const SubmitButtonContainer = styled(Box)({
   alignItems: 'center', 
   gap: '8px', 
 },
+})
+
+export const CloseIconButton = styled(IconButton)({
+    position: "absolute", 
+    right: '0rem', 
+    top:'-1rem'
+})
+
+export const PartyFormContainer = styled(Box)({
+  position:"relative",
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  marginBottom:"1rem"
 })
 

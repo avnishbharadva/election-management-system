@@ -8,10 +8,7 @@ import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
 import com.ems.services.ElectionService;
 import lombok.Data;
-<<<<<<< HEAD
-=======
 import org.joda.time.field.OffsetDateTimeField;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 import org.openapitools.model.ElectionDTO;
 import org.openapitools.model.ElectionPageResponse;
 import org.openapitools.model.ElectionSortDTO;
@@ -24,10 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-<<<<<<< HEAD
-=======
 import org.w3c.dom.html.HTMLImageElement;
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -47,15 +41,6 @@ public class ElectionServiceImpl implements ElectionService {
 
         if(electionDTO.isEmpty())
             throw new DataNotFoundException("No election found");
-<<<<<<< HEAD
-        return new ModelApiResponse()
-                .success(true)
-                .message("Election retrieved successfully")
-                .timestamp(OffsetDateTime.now())
-                .data(electionDTO);
-    }
-
-=======
         return new ModelApiResponse("Election retrieved successfully", electionDTO , OffsetDateTime.now(),true);
 
     }
@@ -63,7 +48,6 @@ public class ElectionServiceImpl implements ElectionService {
 
 
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     @Override
     public ModelApiResponse saveElection(ElectionDTO electionDTO) {
         if (electionDTO.getTotalSeats() == null || electionDTO.getTotalSeats() < 1) {
@@ -73,16 +57,8 @@ public class ElectionServiceImpl implements ElectionService {
         Election election = globalMapper.toElectionDTO(electionDTO);
         Election savedElection = electionRepository.save(election);
 
-<<<<<<< HEAD
-        return new ModelApiResponse()
-                .message("Election saved successfully")
-                .data(savedElection)  // Set the saved election data
-                .timestamp(OffsetDateTime.now())  // Use OffsetDateTime for timestamp
-                .success(true);  // Set success flag
-=======
         return new ModelApiResponse("Election saved successfully", savedElection , OffsetDateTime.now(),true);
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     }
 
 
@@ -103,16 +79,8 @@ public class ElectionServiceImpl implements ElectionService {
         }
 
         electionRepository.save(existingElection);
-<<<<<<< HEAD
-
-        return new ModelApiResponse().message("Election updated successfully")
-                .data(existingElection) // Return the updated entity instead of DTO
-                .timestamp(OffsetDateTime.now())
-                .success(true);
-=======
         return new ModelApiResponse("Election updated successfully", existingElection , OffsetDateTime.now(),true);
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     }
 
 
@@ -138,11 +106,7 @@ public class ElectionServiceImpl implements ElectionService {
 
         return response;
     }
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
 
     @Override
     public ModelApiResponse deleteElectionById(Long electionId) {
@@ -150,14 +114,8 @@ public class ElectionServiceImpl implements ElectionService {
             throw new DataNotFoundException("Election not found");
 
         electionRepository.deleteById(electionId);
-<<<<<<< HEAD
-        return new ModelApiResponse().message("Election deleted successfully")
-                .success(true)
-                .timestamp(OffsetDateTime.now());
-=======
         return new ModelApiResponse("Election deleted successfully",null , OffsetDateTime.now(),true);
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
     }
 
     @Override
@@ -167,17 +125,8 @@ public class ElectionServiceImpl implements ElectionService {
             throw new DataNotFoundException("No elections found");
         }
         List<ElectionDTO> electionDTOs = elections.stream().map(globalMapper::toElection).toList();
-<<<<<<< HEAD
-        return new ModelApiResponse().message("Elections retrieved successfully")
-                .data(electionDTOs)
-                .timestamp(OffsetDateTime.now())
-                .success(true);
-    }
-}
-=======
         return new ModelApiResponse("Election retrieved successfully", electionDTOs , OffsetDateTime.now(),true);
 
     }
 }
 
->>>>>>> b0277a2782c5b0b7c4aff00361e9cd7f5828c511
