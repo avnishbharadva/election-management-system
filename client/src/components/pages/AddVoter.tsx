@@ -193,6 +193,8 @@ const AddVoter = () => {
         sections={viewVoter}
         imageKey="image"
         signatureKey="signature"
+        imagelabel='Image'
+        signaturelabel='Signature'
 
       />
     </Box>

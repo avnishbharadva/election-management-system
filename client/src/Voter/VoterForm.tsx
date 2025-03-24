@@ -7,7 +7,7 @@ import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirt
 import { StyledButton } from '../style/CommanStyle';
 import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-import { HeaderStyles, Container, FormRow, DividerStyle, FormRowCenter, FormRowGap, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
+import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
 
 import { updateFormValue } from '../Helpers/updateFormValue';
 import UpdateDialog from '../components/ui/UpdateDialog';
@@ -51,8 +51,13 @@ const defaultValues: FormData = {
   image:"",
   signature:""
 };
- 
- const VoterForm = ({ voter,ssnNumber,onClose}: any) => {
+type  voterFormProps{
+  voter:FormData,
+  ssnNumber:number,
+  onClose:() => void
+}
+
+ const VoterForm = ({ voter,ssnNumber,onClose}:voterFormProps) => {
   const [sameAddress, setSameAddress] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [oldVoterData,setOldVoter]= useState({});
@@ -94,7 +99,7 @@ const defaultValues: FormData = {
             pending: "please wait...",
             success: {
               render({ data }) {
-              console.log(data)
+        
                 const successMessage = data?.message || "Successful!";
                 return successMessage;
               }
@@ -110,7 +115,7 @@ const defaultValues: FormData = {
         }
       }
       catch (err:any) {
-        console.log(err)
+        console.error(err)
         toast.error(`Error: ${err.data?.message || err.message || 'An unexpected error occurred'}`);
       }
     }
@@ -122,10 +127,7 @@ const defaultValues: FormData = {
         watch("mailingAddress", {
           ...residentialAddress,
           addressType: "MAILING",
-        });
-        console.log(getValues("residentialAddress"))
-          console.log(getValues("mailingAddress")
-        )
+        });   
       } else {
         setValue("mailingAddress", {
           addressLine: "",
@@ -137,7 +139,7 @@ const defaultValues: FormData = {
           zipCode: null,
           addressType: "MAILING",
         });
-        console.log(getValues("mailingAddress"))
+        
       }
     };
 
@@ -173,37 +175,33 @@ const defaultValues: FormData = {
             Personal Information
           </Title>
           <DividerStyle/>
-          <FormRow>
+          <FormRowWide>
             <NameField control={control} name="firstName" label="First Name" minLength={3} maxLength={100} />
             <NameField control={control} name="middleName" label="Middle Name" minLength={3} maxLength={100} />
             <NameField control={control} name="lastName" label="Last Name" minLength={3} maxLength={100} />
-          </FormRow>
-
-          <FormRowCenter>
             <DateOfBirthField control={control} name="dateOfBirth" label="Date of Birth" />
             <EmailField control={control} name="email" label="Email" />
             <NumberField control={control} name="phoneNumber" label="Phone Number" fixedLength={11} />
-          </FormRowCenter>
+          </FormRowWide>
 
           <FormRow>
             <GenderField label="Gender: " name="gender" control={control} />
           </FormRow>
 
-          <FormRow>
+          <FormRowWide>
             <NameField control={control} name="suffixName" label="Suffix Name" minLength={3} maxLength={7} />
             <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{ readOnly: true }} />
             <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
-          </FormRow>
+          </FormRowWide>
 
           <VotingInfo>
             <Title variant="h6">Voting Information</Title>
             <DividerStyle/>
-            <FormRowGap>
+            <FormRowWide>
               <PartyField name="partyId" control={control} label={"Select Party"} />
               <HasVotedBefore name="hasVotedBefore" control={control} label="Has Voted Before" />
               <FirstVotedYear name="firstVotedYear" control={control} label='firstVotedYear' disabled={hasVoted} />
-            </FormRowGap>
-
+            </FormRowWide>
             <FormRow>
               <StatusField label="status: " name="statusId" control={control} />
             </FormRow>
@@ -219,10 +217,8 @@ const defaultValues: FormData = {
               <NameField label="County" name="residentialAddress.county" control={control} />
               <NameField label='town' name="residentialAddress.town" control={control}  maxLength={30} />
               <NameField label='state' name="residentialAddress.state" control={control}  maxLength={30} />
-              <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />
-         
-            </FormRowWide>
-         
+              <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />  
+            </FormRowWide>     
           </AddressField>
 
           <FormControlLabel

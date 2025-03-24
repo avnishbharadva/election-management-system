@@ -1,4 +1,4 @@
-
+import React from "react";
 import {
   Box,
   Button,
@@ -19,23 +19,27 @@ interface SectionConfig {
 }
  
 interface ViewDetailsDialogProps {
-    title: string;
   open: boolean;
   handleClose: () => void;
   data: any;
   sections: SectionConfig[];
   imageKey?: string; // Candidate Image or Party Symbol
   signatureKey?: string; // Candidate Signature
+  title: string;
+  imagelabel : string,
+  signaturelabel: string
 }
  
 export default function ViewDetailsDialog({
-    title,
   open,
   handleClose,
   data,
   sections,
   imageKey,
   signatureKey,
+  title,
+  imagelabel,
+  signaturelabel
 }: ViewDetailsDialogProps) {
   if (!data) return null;
  
@@ -123,7 +127,7 @@ export default function ViewDetailsDialog({
                               }}
                             />
                             <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2", marginTop: 1 }}>
-                              {imageKey === "partySymbol" ? "Party Symbol" : "Candidate Image"}
+                             {imagelabel}
                             </Typography>
  
                             {/* ✍️ Candidate Signature (Below Image) */}
@@ -144,7 +148,7 @@ export default function ViewDetailsDialog({
                                   }}
                                 />
                                 <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2", marginTop: 1 }}>
-                                  Candidate Signature
+                                  {signaturelabel}
                                 </Typography>
                               </Box>
                             )}
