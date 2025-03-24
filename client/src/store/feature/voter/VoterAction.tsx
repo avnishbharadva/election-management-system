@@ -27,7 +27,7 @@ const voterApi = createApi({
             },
             transformResponse: (response: any) => {
                 return {
-                    data: response.data,
+                    data: response.data,    
                     totalElements: response.totalElements,
                 };
             },
