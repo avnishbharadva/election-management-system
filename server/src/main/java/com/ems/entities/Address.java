@@ -30,7 +30,4 @@ public class Address extends AuditEntity {
     @Column(length = 5, nullable = false)
     private String zipCode;
 
-    @Enumerated(EnumType.STRING)
-    private AddressType addressType;
-
 }

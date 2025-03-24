@@ -7,24 +7,13 @@ import com.ems.services.VoterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.VotersApi;
+import org.openapitools.model.*;
 import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.openapitools.model.VoterDTO;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.PaginatedVoterDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterStatusDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.VoterStatusDataDTO;
-import org.openapitools.model.AuditDTO;
-import org.openapitools.model.TransferAddress;
-import org.openapitools.model.ChangeVoterAddress;
-import org.openapitools.model.NameHistoryDTO;
-import org.openapitools.model.StatusHistoryDTO;
-import org.openapitools.model.AddressHistoryDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -84,6 +73,23 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
+    public ResponseEntity<CountyDTO> getAllCounties() {
+        List<CountyDataDTO> countyList = voterService.getAllCounties();
+        return ResponseEntity.ok(new CountyDTO(
+                "Successfully Fetched All Counties",
+                countyList
+        ));
+    }
+
+    @Override
+    public ResponseEntity<TownDTO> getAllTowns() {
+        return ResponseEntity.ok(new TownDTO(
+                "Successfully Fetched All Towns",
+                voterService.getAllTowns()
+        ));
+    }
+
+    @Override
     public ResponseEntity<AuditDTO> getAudit(String voterId) {
         log.info("voter audit called for voterId : {}", voterId);
         return new ResponseEntity<>(new AuditDTO(
@@ -93,17 +99,17 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
+    public ResponseEntity<VoterDTO> transferVoter(String voterId, String addressType, TransferAddress transferAddress) {
         log.info("Starting voter transfer for ID: {} | Request ID: {}", voterId, MDC.get("requestId"));
-        VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress);
+        VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress, addressType);
         log.info("Voter transfer successful for ID: {}", voterId);
         return ResponseEntity.ok(new VoterDTO("Voter Transferred Successfully", transferredVoter));
     }
 
     @Override
-    public ResponseEntity<VoterDTO> changeVoter(String voterId, ChangeVoterAddress changeVoterAddress) {
-        log.info("Starting address change for voter ID: {} | Address type: {}", voterId, changeVoterAddress.getAddressType());
-        VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
+    public ResponseEntity<VoterDTO> changeVoter(String voterId, String addressType, ChangeVoterAddress changeVoterAddress) {
+        log.info("Starting address change for voter ID: {} | Address type: {}", voterId, addressType);
+        VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress, addressType);
         log.info("Voter address changed successfully for ID: {}", voterId);
         return ResponseEntity.ok(new VoterDTO("Voter address changed Successfully", updatedVoter));
     }

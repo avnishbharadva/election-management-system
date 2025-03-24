@@ -1,11 +1,4 @@
 type: object
-required:
-  - addressLine
-  - city
-  - state
-  - county
-  - town
-  - zipCode
 properties:
   addressLine:
     type: string
