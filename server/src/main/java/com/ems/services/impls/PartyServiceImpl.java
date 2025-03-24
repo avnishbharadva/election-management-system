@@ -31,7 +31,11 @@ public class PartyServiceImpl implements PartyService {
     public PartyDataDTO partyById(long partyId) {
         log.info("party searching for id : {}", partyId);
         var party = partyRepository.findById(partyId).orElseThrow(() -> new DataNotFoundException("Party not found with id : " + partyId));
-        return globalMapper.toPartyDTO(party);
+        var partyResponse = globalMapper.toPartyDTO(party);
+        Path imagePath = Path.of(UPLOAD_DIR + "/" + partyResponse.getPartySymbol());
+        partyResponse.setPartySymbol(encodeFileToBase64(imagePath));
+        log.info("party id : {}, data : {}", partyId, party);
+        return partyResponse;
     }
 
     @Override
