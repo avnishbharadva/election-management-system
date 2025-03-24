@@ -215,26 +215,26 @@ const AddParty = () => {
         />
       </Model>
 
-      <ViewParty
+      {/* <ViewParty
         party={selectedParty}
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
-      />
+      /> */}
 
-{/* <ViewDetailsDialog 
+<ViewDetailsDialog 
   open={action.view}
   handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
   data={selectedParty}
   sections={partySections}
-  imageKeys={["partySymbol"]} // Ensure this key matches your API response
-/> */}
+  imageKey="partySymbol"// Ensure this key matches your API response
+/>
       
        <DeleteDialog
         open={deleteDialogOpen}
         handleClose={handleDeleteCancel}
         handleDelete={handleDeleteConfirm}
         title="Delete Party"
-        message={`Are you sure you want to delete ${selectedParty?.partyName}?`}
+        message={`Are you sure you want to delete ${selectedParty?.partyName}? This action cannot be undone. `}
       />
     </Paper>
     </>

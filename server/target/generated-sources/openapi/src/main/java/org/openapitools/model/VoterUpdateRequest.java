@@ -25,7 +25,7 @@ import jakarta.annotation.Generated;
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
 @JsonTypeName("voterUpdateRequest")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T21:34:08.123886700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T23:59:08.019607+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class VoterUpdateRequest {
 
   private String firstName;

@@ -18,14 +18,18 @@ const partyApi = createApi({
    
     endpoints: (builder) => ({
  
-        PartyList: builder.query({
-            query: () => 'party',
-            providesTags: ['party'],
-        }
-        ),
+            PartyList: builder.query({
+                query: () => {
+                    console.log('Fetching data for party...'); // Log request or other information
+                    return 'party';
+                }, 
+                providesTags: ['party'],
+            }
+            ),
         
         PartyById: builder.query({
-            query: (partyId) => `party/${partyId}`
+            query: (partyId) => `party/${partyId}`,
+            providesTags: ['party']
         }),
  
         registerParty: builder.mutation({

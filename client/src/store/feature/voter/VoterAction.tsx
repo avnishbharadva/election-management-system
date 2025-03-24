@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const voterApi = createApi({
     reducerPath: 'voters',
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8082/api/",
+        baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers: any) => {
             const token = localStorage.getItem('token');
  

@@ -24,7 +24,7 @@ import jakarta.annotation.Generated;
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
 @Schema(name = "PartyListDTO", description = "Party Response format")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T21:34:10.137891+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T23:59:10.067434300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class PartyListDTO {
 
   private String message;
