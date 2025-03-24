@@ -14,12 +14,12 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 import Model from '../ui/Model';
 import SearchComponent from '../ui/SearchComponent';
 import VoterForm from '../../Voter/VoterForm';
-import ViewVoter from '../../Voter/ViewVoter';
 import { useSearchVotersQuery } from '../../store/feature/voter/VoterAction';
 import TableComponent from '../ui/TableComponent';
 import Pagination from '../ui/Pagination'
 import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
+import ViewDetailsDialog from '../ui/viewDetailsDialog';
 
 
 const voterHeader = [
@@ -52,23 +52,23 @@ const AddVoter = () => {
   const { data, isLoading, isError } = useSearchVotersQuery({
     page: searchParams.page,
     size: searchParams.size,
-    ssnNumber:searchParams.ssnNumber 
+    ssnNumber: searchParams.ssnNumber
   });
 
   const handleSearchChange = (value: string) => {
     setSearchParams((prev) => ({
       ...prev,
       ssnNumber: value,
-      page: 0, 
+      page: 0,
     }));
-   
+
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter:FormData) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter: FormData) => {
     setAnchorEl(event.currentTarget);
     setSelectedVoter(voter);
   };
-  
+
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -82,12 +82,12 @@ const AddVoter = () => {
         handleMenuClose();
         break;
       case 'edit':
-      voter && setSelectedVoter(voter);
+        voter && setSelectedVoter(voter);
         setAction({ register: false, edit: true, view: false });
         handleMenuClose();
         break;
       case 'view':
-      voter && setSelectedVoter(voter);
+        voter && setSelectedVoter(voter);
         setAction({ register: false, edit: false, view: true });
         handleMenuClose();
         break;
@@ -132,11 +132,9 @@ const AddVoter = () => {
       </>
     ),
   }));
-
-  console.log(voters)
   return (
-    
-          <Box>
+
+    <Box>
       <SearchContainer>
         <SearchComponent
           name="SSN Number"
@@ -149,10 +147,10 @@ const AddVoter = () => {
               ssnNumber: '',
               page: 0,
             }));
-         
+
           }}
         />
-      </SearchContainer>  
+      </SearchContainer>
 
       <TableComponent
         headers={voterHeader}
@@ -160,7 +158,7 @@ const AddVoter = () => {
         loading={isLoading}
         error={isError}
         noDataFound={
-          <Box sx={{ display: 'flex', alignItems: 'center',flexDirection:"column", gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: "column", gap: 2 }}>
             <PersonOffIcon sx={{ fontSize: 48, color: '#b0bec5' }} />
             <Typography variant="h6" color="textSecondary">
               No Voter Found!
@@ -182,29 +180,88 @@ const AddVoter = () => {
 
       <Model
         open={action.register}
-        handleClose={() => setAction((prev) => ({ ...prev, register: false }))}
+        handleclose={() => setAction((prev) => ({ ...prev, register: false }))}
       >
         <VoterForm
-ssnNumber= {searchParams.ssnNumber}
+          ssnNumber={searchParams.ssnNumber}
           onClose={() => setAction((prev) => ({ ...prev, register: false }))}
-         
+
         />
       </Model>
       <Model
         open={action.edit}
-        handleClose={() => setAction((prev) => ({ ...prev, edit: false }))}
+        handleclose={() => setAction((prev) => ({ ...prev, edit: false }))}
       >
         <VoterForm
           onClose={() => setAction((prev) => ({ ...prev, edit: false }))}
           voter={selectedVoter}
         />
       </Model>
-
+      {/* 
      {selectedVoter && <ViewVoter
         voter={selectedVoter}
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
-      />}
+      />} */}
+
+      <ViewDetailsDialog
+        title='Voter Details'
+        open={action.view}
+        handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
+        data={selectedVoter}
+        sections={[
+          {
+            title: 'Personal Details', fields: [
+              { label: 'voterId', key: 'voterId' },
+              { label: 'SSN Number', key: 'ssnNumber' },
+              { label: 'DMV Number', key: 'dmvNumber' },
+              { label: 'First Name', key: 'firstName' },
+              { label: 'Middle Name', key: 'middleName' },
+              { label: 'Last Name', key: 'lastName' },
+              { label: "Suffix Name", key: "suffixName" },
+              { label: 'Date of Birth', key: 'dateOfBirth' },
+              {label:"Gender", key:"gender"},
+             
+
+            ]
+          },
+          {
+            title: 'Contact Details', fields: [
+              { label: 'Email', key: 'email' },
+              { label: 'Phone', key: 'phoneNumber' },
+
+            ]
+          },
+          
+          { title: 'voting details', fields: [
+            {label:"Status", key:"status"},
+            {label:"HasVotedBefore", key:"hasVotedBefore"}
+          
+        ]},
+        { title: 'ResidentialAddress', fields: [
+          {label:"AddressLine", key:"residentialAddress.addressLine"},
+          {label:"City", key:"residentialAddress.city"},
+          {label:"State", key:"residentialAddress.state"},
+          {label:"County", key:"residentialAddress.county"},
+          {label:"Town", key:"residentialAddress.town"},
+          {label:"aptNumber", key:"residentialAddress.aptNumber"},
+          {label:"ZipCode", key:"residentialAddress.zipCode"}
+        ]}, 
+        { title: 'MailingAddress', fields: [
+          {label:"AddressLine", key:"mailingAddress.addressLine"},
+          {label:"City", key:"mailingAddress.city"},
+          {label:"State", key:"mailingAddress.state"},
+          {label:"County", key:"mailingAddress.county"},
+          {label:"Town", key:"mailingAddress.town"},
+          {label:"aptNumber", key:"mailingAddress.aptNumber"},
+          {label:"ZipCode", key:"mailingAddress.zipCode"}
+        ]},
+        
+        ]}
+        imageKey="image"
+        signatureKey="signature"
+
+      />
     </Box>
   );
 };

@@ -5,9 +5,7 @@ import { Checkbox, FormControlLabel} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
 import { StyledButton } from '../style/CommanStyle';
-
-
-import { useEditVoterMutation, useRegisterVoterMutation, useSearchVotersQuery } from '../store/feature/voter/VoterAction';
+import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
 import { HeaderStyles, Container, FormRow, DividerStyle, FormRowCenter, FormRowGap, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
 
@@ -55,9 +53,6 @@ const defaultValues: FormData = {
 };
  
  const VoterForm = ({ voter,ssnNumber,onClose}: any) => {
-  
-  
-
   const [sameAddress, setSameAddress] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [oldVoterData,setOldVoter]= useState({});
@@ -97,7 +92,13 @@ const defaultValues: FormData = {
             : voterPost({ post: data }).unwrap(),
           {
             pending: "please wait...",
-            success: "Successfull!",
+            success: {
+              render({ data }) {
+              console.log(data)
+                const successMessage = data?.message || "Successful!";
+                return successMessage;
+              }
+            },
          
           },
         )
@@ -117,10 +118,14 @@ const defaultValues: FormData = {
     const handleSameAddressChange = (checked: boolean) => {
       setSameAddress(checked);
       if (checked) {
-        setValue("mailingAddress", {
-          ...defaultValues.residentialAddress,
+        const residentialAddress = getValues("residentialAddress");
+        watch("mailingAddress", {
+          ...residentialAddress,
           addressType: "MAILING",
         });
+        console.log(getValues("residentialAddress"))
+          console.log(getValues("mailingAddress")
+        )
       } else {
         setValue("mailingAddress", {
           addressLine: "",
@@ -132,6 +137,7 @@ const defaultValues: FormData = {
           zipCode: null,
           addressType: "MAILING",
         });
+        console.log(getValues("mailingAddress"))
       }
     };
 
@@ -141,7 +147,6 @@ const defaultValues: FormData = {
       const SignatureUrl= data?.signature && data?.signature.replace(/^data:image\/(png|jpeg|svg\+xml);base64,/, '')
 
       const updateData= {...data,image:imageurl,signature:SignatureUrl}
-      console.log(data)
       if (voter?.voterId) {
         setOldVoter(voter);
         setUpdateVoterData(updateData);
@@ -212,8 +217,8 @@ const defaultValues: FormData = {
               <NameField label="Apt Number" name="residentialAddress.aptNumber" control={control} />
               <NameField label="City" name="residentialAddress.city" control={control} />
               <NameField label="County" name="residentialAddress.county" control={control} />
-              <NameField label='town' name="residentialAddress.town" control={control} isRequired={false} maxLength={30} />
-              <NameField label='state' name="residentialAddress.state" control={control} isRequired={false} maxLength={30} />
+              <NameField label='town' name="residentialAddress.town" control={control}  maxLength={30} />
+              <NameField label='state' name="residentialAddress.state" control={control}  maxLength={30} />
               <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />
          
             </FormRowWide>
@@ -234,13 +239,13 @@ const defaultValues: FormData = {
               <Title variant="h6">Mailing Address</Title>
               <DividerStyle/>
               <FormRowWide>
-                <NameField label="Address Line" name="mailingAddress.addressLine" control={control} isRequired={false} />
-                <NameField label="Apt Number" name="mailingAddress.aptNumber" control={control} isRequired={false} />
-                <NameField label="City" name="mailingAddress.city" control={control} isRequired={false} />
-                <NameField label="County" name="mailingAddress.county" control={control} isRequired={false} />
-                <NameField label='town' name="mailingAddress.town" control={control} isRequired={false} maxLength={30} />
-                <NameField label='state' name="mailingAddress.state" control={control} isRequired={false} maxLength={30} />
-                <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control} isRequired={false} maxLength={5} />
+                <NameField label="Address Line" name="mailingAddress.addressLine" control={control}  />
+                <NameField label="Apt Number" name="mailingAddress.aptNumber" control={control}  />
+                <NameField label="City" name="mailingAddress.city" control={control}  />
+                <NameField label="County" name="mailingAddress.county" control={control}  />
+                <NameField label='town' name="mailingAddress.town" control={control}  maxLength={30} />
+                <NameField label='state' name="mailingAddress.state" control={control}  maxLength={30} />
+                <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control}  maxLength={5} />
           
                 
               </FormRowWide>
@@ -271,12 +276,12 @@ const defaultValues: FormData = {
     </form>
   
     <UpdateDialog
+    title="update Voter"
       open={openDialog}
       handleClose={() => setOpenDialog(false)}
       handleConfirm={onSubmit}
       originalData={oldVoterData}
-      updatedData={updateVoterData}
-     
+      updatedData={updateVoterData}  
     />
 
   </>

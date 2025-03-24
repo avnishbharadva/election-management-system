@@ -66,7 +66,7 @@ type FieldProps = {
             name={name}
             control={control}
             rules={validationRules}
-            defaultValue="" // Ensure it starts as controlled with an empty string
+        
             render={({ field, fieldState }) => (
                 <TextField
                     {...field}
