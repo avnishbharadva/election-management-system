@@ -7,7 +7,7 @@ import com.ems.repositories.StatusHistoryRepository;
 import com.ems.services.StatusHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaHandler;
+//import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
     private final StatusHistoryRepository statusHistoryRepo;
 
     @Async("taskExecutor")
-    @KafkaHandler
+//    @KafkaHandler
     @Override
     public void statusHistory(VoterUpdateEvent voterUpdateEvent) {
         Voter oldVoter = voterUpdateEvent.getOldVoter();

@@ -41,6 +41,7 @@ class OfficersServiceTest {
 
     private OfficersRegisterDTO validOfficer;
     private Officers officer;
+    private OfficersResponseDTO officerResponseDTO;
 
     @BeforeEach
     void setUp() {
@@ -58,19 +59,31 @@ class OfficersServiceTest {
         officer.setEmail(validOfficer.getEmail());
         officer.setCountyName(validOfficer.getCounty());
         officer.setSsnNumber(validOfficer.getSsnNumber());
+
+        officerResponseDTO = new OfficersResponseDTO();
     }
 
     @Test
     void createRole_Success() {
         when(countyRepository.existsByCountyName(validOfficer.getCounty())).thenReturn(true);
         when(officersRepository.existsByEmailOrCountyNameOrSsnNumber(validOfficer.getEmail(),validOfficer.getCounty(), validOfficer.getSsnNumber())).thenReturn(false);
+        when(passwordEncoder.encode(validOfficer.getPassword())).thenReturn("encodedPassword");
         when(globalMapper.toOfficer(validOfficer)).thenReturn(officer);
         when(officersRepository.save(any(Officers.class))).thenReturn(officer);
         when(globalMapper.toOfficerResponseDTO(any(Officers.class))).thenReturn(new OfficersResponseDTO());
 
+        OfficersResponseDTO response = officersService.createRole(validOfficer);
+        assertNotNull(response, "Response should not be null");
+        assertEquals(officerResponseDTO, response, "Response should match the mapped DTO");
+
         assertDoesNotThrow(() ->  officersService.createRole(validOfficer));
         assertInstanceOf(OfficersResponseDTO.class, officersService.createRole(validOfficer));
-        verify(officersRepository, times(2)).save(any());
+        verify(officersRepository, times(3)).existsByEmailOrCountyNameOrSsnNumber(validOfficer.getEmail(), validOfficer.getCounty(), validOfficer.getSsnNumber());
+        verify(countyRepository, times(1)).existsByCountyName(validOfficer.getCounty());
+        verify(passwordEncoder, times(1)).encode(validOfficer.getPassword());
+        verify(globalMapper, times(1)).toOfficer(validOfficer);
+        verify(officersRepository, times(1)).save(officer);
+        verify(globalMapper, times(1)).toOfficerResponseDTO(officer);
     }
 
     @Test
@@ -80,6 +93,7 @@ class OfficersServiceTest {
                 () -> officersService.createRole(validOfficer));
         assertEquals("County 'Orange County' does not exist.", exception.getMessage());
         verify(officersRepository, never()).save(any());
+
     }
 
     @Test

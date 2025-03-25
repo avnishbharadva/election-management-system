@@ -1,7 +1,6 @@
 package com.ems.mappers;
 
 import com.ems.dtos.*;
-import org.openapitools.model.*;
 import com.ems.entities.*;
 import org.mapstruct.*;
 import org.openapitools.model.ElectionDTO;
@@ -15,79 +14,77 @@ public interface GlobalMapper {
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
     @Mapping(target = "voterStatus", ignore = true)
-    Voter toVoter(VoterRegisterDTO voterRegisterDTO);
+    Voter toVoter(org.openapitools.model.VoterRegisterDTO voterRegisterDTO);
 
     Voter toVoter(VoterSearchDTO voterSearchDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Voter voterDTOtoVoter(VoterUpdateRequest voterDTO, @MappingTarget Voter voter);
+    Voter voterDTOtoVoter(org.openapitools.model.VoterUpdateRequest voterDTO, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
+    void addressDTOToAddress(org.openapitools.model.AddressDTO addressDTO, @MappingTarget Address address);
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
     @Mapping(source = "party.partyId", target = "partyId")
-    VoterRegisterDTO toVoterRegisterDTO(Voter voter);
+    org.openapitools.model.VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
     @Mapping(target = "party", source = "party.partyName")
     @Mapping(target = "status", source = "voterStatus.statusDesc")
-    VoterDataDTO toVoterDTO(Voter voter);
+    org.openapitools.model.VoterDataDTO toVoterDTO(Voter voter);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
-    Party toParty(PartyRegisterDTO partyDTO);
+    Party toParty(org.openapitools.model.PartyRegisterDTO partyDTO);
 
     @Mapping(source = "partySymbol", target = "partySymbol")
-    PartyDataDTO toPartyDTO(Party party);
+    org.openapitools.model.PartyDataDTO toPartyDTO(Party party);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partyUpdateDTOToParty(PartyUpdateDTO partyUpdateDTO, @MappingTarget Party party);
+    void partyUpdateDTOToParty(org.openapitools.model.PartyUpdateDTO partyUpdateDTO, @MappingTarget Party party);
 
     @Mapping(target = "addressId", ignore = true)
 //    @Mapping(target = "voter", ignore = true)
-    Address toAddress(AddressDTO addressDTO);
+    Address toAddress(org.openapitools.model.AddressDTO addressDTO);
 
 //    @Mapping(source = "voter.voterId", target = "voterId")
-    AddressDTO toAddressDTO(Address address);
+    org.openapitools.model.AddressDTO toAddressDTO(Address address);
 
-    List<Address> toAddressList(List<AddressDTO> addressDTOList);
-    List<AddressDTO> toAddressDTOList(List<Address> addressList);
+    List<Address> toAddressList(List<org.openapitools.model.AddressDTO> addressDTOList);
+    List<org.openapitools.model.AddressDTO> toAddressDTOList(List<Address> addressList);
 
 
     Election toElectionDTO(org.openapitools.model.ElectionDTO electionDTO);
     ElectionDTO toElection(Election election);
 
 
-    List<VoterStatusDataDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
+    List<org.openapitools.model.VoterStatusDataDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
 
 //    @Mapping(source = "address.voter.voterId", target = "voterId")
     AddressHistory toAddressHistory(Address address);
 
     NameHistory toNameHistory(Voter voter);
 
-    Officers toOfficer(OfficersRegisterDTO officersRegisterDTO);
-    OfficersResponseDTO toOfficerResponseDTO(Officers officers);
+    Officers toOfficer(org.openapitools.model.OfficersRegisterDTO officersRegisterDTO);
+    org.openapitools.model.OfficersResponseDTO toOfficerResponseDTO(Officers officers);
     List<org.openapitools.model.OfficersResponseDTO> toOfficerResponseDTO(List<Officers> officers);
 
-    List<NameHistoryDataDTO> toNameHistoryDataDTO(List<NameHistory> nameHistory);
-    List<StatusHistoryDataDTO> toStatusHistoryDataDTO(List<StatusHistory> statusHistory);
-    List<AddressHistoryDataDTO> toAddressHistoryDataDTO(List<AddressHistory> addressHistoryList);
-    List<AuditDataDTO> toAuditDataDTO(List<Audit> auditList);
+    List<org.openapitools.model.NameHistoryDataDTO> toNameHistoryDataDTO(List<NameHistory> nameHistory);
+    List<org.openapitools.model.StatusHistoryDataDTO> toStatusHistoryDataDTO(List<StatusHistory> statusHistory);
+    List<org.openapitools.model.AddressHistoryDataDTO> toAddressHistoryDataDTO(List<AddressHistory> addressHistoryList);
+    List<org.openapitools.model.AuditDataDTO> toAuditDataDTO(List<Audit> auditList);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Voter voterTransferDtotoVoter(TransferAddress transferAddress, @MappingTarget Voter voter);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Address transferVoterAddressToAddress(TransferAddress transferAddress, @MappingTarget Address address);
-
+    Voter voterTransferDtotoVoter(org.openapitools.model.TransferAddress transferAddress, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Voter voterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+    Address transferVoterAddressToAddress(org.openapitools.model.TransferAddress transferAddress, @MappingTarget Address address);
+
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Address changeAddressDTOToAddress(ChangeVoterAddress addressDTO, @MappingTarget Address address);
+    Voter voterDTOtoVoter(org.openapitools.model.ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Voter changeVoterDTOtoVoter(ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
+    Address changeAddressDTOToAddress(org.openapitools.model.ChangeVoterAddress addressDTO, @MappingTarget Address address);
 
-
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Voter changeVoterDTOtoVoter(org.openapitools.model.ChangeVoterAddress voterDTO, @MappingTarget Voter voter);
 }

@@ -53,12 +53,12 @@ public class VoterChangeVoterTest {
 
         residentialAddress = new Address();
         residentialAddress.setAddressId(1L);
-        residentialAddress.setTownName("Las Vegas");
+        residentialAddress.setTown("Las Vegas");
         residentialAddress.setAddressType(AddressType.RESIDENTIAL);
 
         mailingAddress = new Address();
         mailingAddress.setAddressId(2L);
-        mailingAddress.setTownName("New York");
+        mailingAddress.setTown("New York");
         mailingAddress.setAddressType(AddressType.MAILING);
 
         existingVoter.setResidentialAddress(residentialAddress);
@@ -66,7 +66,7 @@ public class VoterChangeVoterTest {
 
         changeRequest = new ChangeVoterAddress();
         changeRequest.setAddressType(ChangeVoterAddress.AddressTypeEnum.valueOf("RESIDENTIAL"));
-        changeRequest.setTownName("Miami");
+        changeRequest.setTown("Miami");
 
         voterDataDTO = new VoterDataDTO();
     }
@@ -82,16 +82,16 @@ public class VoterChangeVoterTest {
     @Test
     void townNotFound() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(false);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(false);
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
                 () -> voterService.changeVoterAddress(existingVoter.getVoterId(), changeRequest));
-        assertEquals("Town Not Found With TownID : " + changeRequest.getTownName(), exception.getMessage());
+        assertEquals("Town Not Found With TownID : " + changeRequest.getTown(), exception.getMessage());
     }
 
     @Test
     void residentialAddressNotFound() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(residentialAddress.getAddressId())).thenReturn(Optional.empty());
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
                 () -> voterService.changeVoterAddress(existingVoter.getVoterId(), changeRequest));
@@ -102,7 +102,7 @@ public class VoterChangeVoterTest {
     void mailingAddressNotFound() {
         changeRequest.setAddressType(ChangeVoterAddress.AddressTypeEnum.valueOf("MAILING"));
         when(voterRepo.findById("V123")).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(mailingAddress.getAddressId())).thenReturn(Optional.of(mailingAddress));
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
                 () -> voterService.changeVoterAddress(existingVoter.getVoterId(), changeRequest));
@@ -112,7 +112,7 @@ public class VoterChangeVoterTest {
     @Test
     void addressSaveFails() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(residentialAddress.getAddressId())).thenReturn(Optional.of(residentialAddress));
         when(globalMapper.changeAddressDTOToAddress(any(), any())).thenReturn(new Address());
 
@@ -126,7 +126,7 @@ public class VoterChangeVoterTest {
     @Test
     void address_Success() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(anyLong())).thenReturn(Optional.of(new Address()));
         when(globalMapper.changeAddressDTOToAddress(any(), any())).thenReturn(new Address());
         when(globalMapper.toVoterDTO(any())).thenReturn(voterDataDTO);

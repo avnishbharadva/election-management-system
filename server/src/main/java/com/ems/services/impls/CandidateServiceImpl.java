@@ -22,8 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
+//import org.springframework.kafka.core.KafkaTemplate;
+//import org.springframework.kafka.support.SendResult;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 public class CandidateServiceImpl implements CandidateService {
-    private final KafkaTemplate<String, EmailSendEvent> kafkaTemplate;
+//    private final KafkaTemplate<String, EmailSendEvent> kafkaTemplate;
     private final CandidateRepository candidateRepository;
     private final CandidateMapper candidateMapper;
     private final ElectionRepository electionRepository;
@@ -152,20 +152,20 @@ public class CandidateServiceImpl implements CandidateService {
                     "<p style='margin-top: 20px;'><b>Best regards,</b><br>" +
                     "<b>Election Commission Team</b></p>" +
                     "</div>";
-        CompletableFuture<SendResult<String,EmailSendEvent>> future=kafkaTemplate.send("email-send-event-topic", String.valueOf(candidate.getCandidateId()),new EmailSendEvent(candidateDto.getCandidateEmail(),mailSubject,mailBody));
-        future.whenComplete((result, exception) -> {
-            if (exception != null) {
-                log.error("Failed to send Kafka message. Candidate SSN: {}, Email: {}, Error: {}",
-                        candidate.getCandidateSSN(), candidate.getCandidateEmail(), exception.getMessage(), exception);
-            } else {
-                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, CandidateSSN: {}, Email: {}",
-                        result.getRecordMetadata().topic(),
-                        result.getRecordMetadata().partition(),
-                        result.getRecordMetadata().offset(),
-                        candidate.getCandidateSSN(),
-                        candidate.getCandidateEmail());
-            }
-        });
+//        CompletableFuture<SendResult<String,EmailSendEvent>> future=kafkaTemplate.send("email-send-event-topic", String.valueOf(candidate.getCandidateId()),new EmailSendEvent(candidateDto.getCandidateEmail(),mailSubject,mailBody));
+//        future.whenComplete((result, exception) -> {
+//            if (exception != null) {
+//                log.error("Failed to send Kafka message. Candidate SSN: {}, Email: {}, Error: {}",
+//                        candidate.getCandidateSSN(), candidate.getCandidateEmail(), exception.getMessage(), exception);
+//            } else {
+//                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, CandidateSSN: {}, Email: {}",
+//                        result.getRecordMetadata().topic(),
+//                        result.getRecordMetadata().partition(),
+//                        result.getRecordMetadata().offset(),
+//                        candidate.getCandidateSSN(),
+//                        candidate.getCandidateEmail());
+//            }
+//        });
         log.info("Saving candidate to database...");
         Candidate savedCandidateUnmapped = candidateRepository.save(candidate);
         org.openapitools.model.CandidateDto savedCandidate=candidateMapper.toCandidateDto(savedCandidateUnmapped);
@@ -357,25 +357,25 @@ public class CandidateServiceImpl implements CandidateService {
                 "<b>Election Type:</b> " + electionType + "<br>" +
                 "</div>";
 
-        CompletableFuture<SendResult<String, EmailSendEvent>> future = kafkaTemplate.send(
-                "email-send-event-topic",
-                String.valueOf(existingCandidate.getCandidateId()),
-                new EmailSendEvent(existingCandidate.getCandidateEmail(), mailSubject, mailBody)
-        );
-
-        future.whenComplete((result, exception) -> {
-            if (exception != null) {
-                log.error("Failed to send Kafka message. Candidate ID: {}, Email: {}, Error: {}",
-                        candidateId, candidateDto.getCandidateEmail(), exception.getMessage(), exception);
-            } else {
-                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, Candidate ID: {}, Email: {}",
-                        result.getRecordMetadata().topic(),
-                        result.getRecordMetadata().partition(),
-                        result.getRecordMetadata().offset(),
-                        candidateId,
-                        candidateDto.getCandidateEmail());
-            }
-        });
+//        CompletableFuture<SendResult<String, EmailSendEvent>> future = kafkaTemplate.send(
+//                "email-send-event-topic",
+//                String.valueOf(existingCandidate.getCandidateId()),
+//                new EmailSendEvent(existingCandidate.getCandidateEmail(), mailSubject, mailBody)
+//        );
+//
+//        future.whenComplete((result, exception) -> {
+//            if (exception != null) {
+//                log.error("Failed to send Kafka message. Candidate ID: {}, Email: {}, Error: {}",
+//                        candidateId, candidateDto.getCandidateEmail(), exception.getMessage(), exception);
+//            } else {
+//                log.info("Kafka message sent successfully. Topic: {}, Partition: {}, Offset: {}, Candidate ID: {}, Email: {}",
+//                        result.getRecordMetadata().topic(),
+//                        result.getRecordMetadata().partition(),
+//                        result.getRecordMetadata().offset(),
+//                        candidateId,
+//                        candidateDto.getCandidateEmail());
+//            }
+//        });
 
         // Save and return updated candidate
         Candidate updatedCandidateEntity = candidateRepository.save(existingCandidate);

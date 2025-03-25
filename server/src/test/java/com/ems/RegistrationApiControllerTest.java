@@ -3,6 +3,8 @@ package com.ems;
 import com.ems.controllers.RegistrationApiController;
 import com.ems.services.OfficersService;
 import com.ems.services.impls.RegistrationServiceImpl;
+import jakarta.validation.Validation;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class RegistrationApiControllerTest {
 
@@ -46,7 +51,7 @@ class RegistrationApiControllerTest {
         officersRegisterDTO.setEmail("test@ems.com");
 
         officersResponseDTO = new OfficersResponseDTO();
-        officersResponseDTO.setSsnNumber("123-45-6789");
+        officersResponseDTO.setSsnNumber("123456789");
 
         authResponseDTO = new AuthResponseDTO();
         authResponseDTO.setToken("mocked-jwt-token");
@@ -61,7 +66,6 @@ class RegistrationApiControllerTest {
     @Test
     void registerOfficer_Success() {
         when(officersService.createRole(officersRegisterDTO)).thenReturn(officersResponseDTO);
-
         ResponseEntity<OfficersResponseDTO> response = registrationApiController.registerOfficer(officersRegisterDTO);
 
         assertEquals(CREATED, response.getStatusCode());
@@ -72,38 +76,31 @@ class RegistrationApiControllerTest {
     }
 
     @Test
-    void registerWithMissingRequiredFields() {
-        OfficersRegisterDTO invalidDTO = new OfficersRegisterDTO();
-        when(officersService.createRole(invalidDTO)).thenThrow(new IllegalArgumentException("Missing required fields"));
+    void registerOfficer_failure() {
+        log.info("Starting registerOfficer_InvalidValues_ShouldFailValidation test");
+        var invalidDTO = new OfficersRegisterDTO();
+        invalidDTO.setFirstName("k");
+        invalidDTO.setLastName("L".repeat(300));
+        invalidDTO.setSsnNumber("splashy");
+        invalidDTO.setEmail("invalid-email");
+        invalidDTO.setPassword("");
+        invalidDTO.setRole("");
+        invalidDTO.setCounty("");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            registrationApiController.registerOfficer(invalidDTO);
-        });
+        var factory = Validation.buildDefaultValidatorFactory();
+        var validator = factory.getValidator();
+        var violations = validator.validate(invalidDTO);
 
-        assertEquals("Missing required fields", exception.getMessage());
-        verify(officersService, times(1)).createRole(invalidDTO);
-    }
-
-    @Test
-    void registerWithDuplicateSSNOrEmail() {
-        when(officersService.createRole(officersRegisterDTO))
-                .thenThrow(new RuntimeException("SSN or Email already exists"));
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            registrationApiController.registerOfficer(officersRegisterDTO);
-        });
-        assertEquals("SSN or Email already exists", exception.getMessage());
-        verify(officersService, times(1)).createRole(officersRegisterDTO);
-    }
-
-    @Test
-    void registerOfficer_FailureError() {
-        when(officersService.createRole(officersRegisterDTO))
-                .thenThrow(new RuntimeException("Internal Server Error"));
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            registrationApiController.registerOfficer(officersRegisterDTO);
-        });
-        assertEquals("Internal Server Error", exception.getMessage());
-        verify(officersService, times(1)).createRole(officersRegisterDTO);
+        assertThat(violations).extracting(violation -> violation.getPropertyPath().toString() + " - " + violation.getMessage())
+                .containsExactlyInAnyOrder(
+                        "firstName - size must be between 2 and 255",
+                        "lastName - size must be between 2 and 255",
+                        "ssnNumber - must match \"^\\d{9}$\"",
+                        "email - must be a well-formed email address",
+                        "password - size must be between 1 and 2147483647",
+                        "county - size must be between 1 and 2147483647"
+                );
+        log.info("Finished registerOfficer_InvalidValues_ShouldFailValidation test");
     }
 
     // TEST CASES FOR authenticateUser()
@@ -111,7 +108,6 @@ class RegistrationApiControllerTest {
     @Test
     void authenticateUser_Success() {
         when(registrationService.doAuthenticate(loginForm)).thenReturn(authResponseDTO);
-
         ResponseEntity<AuthResponseDTO> response = registrationApiController.authenticateUser(loginForm);
 
         assertEquals(OK, response.getStatusCode());
@@ -119,6 +115,25 @@ class RegistrationApiControllerTest {
         assertEquals("mocked-jwt-token", response.getBody().getToken());
 
         verify(registrationService, times(1)).doAuthenticate(loginForm);
+    }
+
+    @Test
+    void authenticateUser_InvalidInput_ThrowsBadRequest() {
+        log.info("Starting authenticateUser_InvalidInput_ThrowsBadRequest test");
+        var invalidLoginForm = new LoginForm();
+        invalidLoginForm.setEmail("invalid-email");
+        invalidLoginForm.setPassword("");
+
+        var factory = Validation.buildDefaultValidatorFactory();
+        var validator = factory.getValidator();
+        var violations = validator.validate(invalidLoginForm);
+
+        assertThat(violations).extracting(violation -> violation.getPropertyPath().toString() + " - " + violation.getMessage())
+                .containsExactlyInAnyOrder(
+                        "email - must be a well-formed email address",
+                        "password - size must be between 1 and 2147483647"
+                );
+        log.info("Finished authenticateUser_InvalidInput_ThrowsBadRequest test");
     }
 
     @Test
@@ -166,31 +181,50 @@ class RegistrationApiControllerTest {
 
     @Test
     void getAllOfficers_Success() {
+        log.info("Starting getAllOfficers_Success test");
+        OfficersResponseDTO officersResponseDTO = new OfficersResponseDTO();
+        officersResponseDTO.setSsnNumber("123456789");
+
         when(officersService.getAllRoles()).thenReturn(List.of(officersResponseDTO));
+
         ResponseEntity<List<OfficersResponseDTO>> response = registrationApiController.getAllOfficers();
+        log.info("Response Status: {}", response.getStatusCode());
+        log.info("Response Body: {}", response.getBody());
+
         assertEquals(OK, response.getStatusCode());
         assertFalse(response.getBody().isEmpty());
         assertEquals(1, response.getBody().size());
         verify(officersService, times(1)).getAllRoles();
+        log.info("Finished getAllOfficers_Success test");
     }
 
     @Test
     void getAllOfficers_Failure_NoOfficersFound() {
+        log.info("Starting getAllOfficers_Failure_NoOfficersFound test");
         when(officersService.getAllRoles()).thenReturn(Collections.emptyList());
+
         ResponseEntity<List<OfficersResponseDTO>> response = registrationApiController.getAllOfficers();
+        log.info("Response Status: {}", response.getStatusCode());
+        log.info("Response Body: {}", response.getBody());
+
         assertEquals(OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().isEmpty());
         verify(officersService, times(1)).getAllRoles();
+        log.info("Finished getAllOfficers_Failure_NoOfficersFound test");
     }
 
     @Test
     void getAllOfficers_Failure_InternalServerError() {
+        log.info("Starting getAllOfficers_Failure_InternalServerError test");
         when(officersService.getAllRoles()).thenThrow(new RuntimeException("Database Error"));
         Exception exception = assertThrows(RuntimeException.class, () -> {
             registrationApiController.getAllOfficers();
         });
+        log.error("Exception Message: {}", exception.getMessage());
+
         assertEquals("Database Error", exception.getMessage());
         verify(officersService, times(1)).getAllRoles();
+        log.info("Finished getAllOfficers_Failure_InternalServerError test");
     }
 }

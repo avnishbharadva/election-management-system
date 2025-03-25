@@ -1,11 +1,8 @@
 package com.ems.mappers;
 
-import com.ems.entities.Candidate;
-import com.ems.entities.CandidateName;
-import com.ems.entities.Election;
-import com.ems.entities.Party;
+import com.ems.entities.*;
 import org.mapstruct.*;
-import org.openapitools.model.*;
+
 
 @Mapper(componentModel = "spring")
 public interface CandidateMapper {
@@ -15,26 +12,26 @@ public interface CandidateMapper {
     @Mapping(target = "bankDetails", source = "bankDetails")
     @Mapping(target = "partyName", source = "party.partyName")
     @Mapping(target = "electionName", source = "election.electionName")
-    CandidateDto toCandidateDto(Candidate candidate);
+    org.openapitools.model.CandidateDto toCandidateDto(Candidate candidate);
 
-    Candidate toCandidate(CandidateDto candidateDto);
+    Candidate toCandidate(org.openapitools.model.CandidateDto candidateDto);
     com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddress candidateAddress);
-    com.ems.entities.CandidateAddress toCandidateAddress(CandidateAddressNoValidation candidateAddress);
+    com.ems.entities.CandidateAddress toCandidateAddress(org.openapitools.model.CandidateAddressNoValidation candidateAddress);
 
     @Mapping(target = "partyName", source = "party.partyName")
     @Mapping(target = "electionName", source = "election.electionName")
-    CandidateDetailsDto toCandidateDetailsDto(Candidate candidate);
+    org.openapitools.model.CandidateDetailsDto toCandidateDetailsDto(Candidate candidate);
 
 
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCandidateFromDto(CandidateUpdateDto candidateDto, @MappingTarget Candidate candidate);
+    void updateCandidateFromDto(org.openapitools.model.CandidateUpdateDto candidateDto, @MappingTarget Candidate candidate);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCandidateNameFromDto(CandidateName newName, @MappingTarget CandidateName existingName);
 
 
-    ElectionSortDTO toElectionSortDTO(Election election);
+    org.openapitools.model.ElectionSortDTO toElectionSortDTO(Election election);
 
 
     default Long mapPartyToId(Party party) {

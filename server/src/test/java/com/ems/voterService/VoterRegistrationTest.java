@@ -98,8 +98,8 @@ class VoterRegistrationTest {
         expectedResponse.setDmvNumber(voterRegisterDTO.getDmvNumber());
         expectedResponse.setPhoneNumber(voterRegisterDTO.getPhoneNumber());
         expectedResponse.setEmail(voterRegisterDTO.getEmail());
-        expectedResponse.setPartyId(party.getPartyId());
-        expectedResponse.setStatusId(voterStatus.getStatusId());
+        expectedResponse.setParty(party.getPartyName());
+        expectedResponse.setStatus(voterStatus.getStatusDesc());
     }
 
     @Test

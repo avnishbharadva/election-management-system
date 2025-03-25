@@ -11,8 +11,8 @@ import com.ems.services.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.AuditDataDTO;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
+//import org.springframework.kafka.annotation.KafkaHandler;
+//import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
@@ -23,14 +23,14 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
+//@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
     private final AuditRepository auditRepository;
     private final GlobalMapper mapper;
 
     @Async("taskExecutor")
-    @KafkaHandler
+//    @KafkaHandler
     @Override
     public void voterAudit(VoterUpdateEvent event) {
         var oldVoter = event.getOldVoter();

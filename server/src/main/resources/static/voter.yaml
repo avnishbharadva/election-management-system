@@ -136,6 +136,7 @@ paths:
   /voters/{voterId}:
     patch:
       summary: Update voter details
+      operationId: updateVoter
       description: Updates a voter's details based on the provided voter ID.
       parameters:
         - name: voterId

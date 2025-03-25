@@ -3,6 +3,7 @@ package com.ems.services.impls;
 
 import com.ems.entities.Election;
 import com.ems.exceptions.DataNotFoundException;
+//import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.CandidateMapper;
 import com.ems.mappers.GlobalMapper;
 import com.ems.repositories.ElectionRepository;
@@ -45,9 +46,6 @@ public class ElectionServiceImpl implements ElectionService {
 
     }
 
-
-
-
     @Override
     public ModelApiResponse saveElection(ElectionDTO electionDTO) {
         if (electionDTO.getTotalSeats() == null || electionDTO.getTotalSeats() < 1) {
@@ -60,8 +58,6 @@ public class ElectionServiceImpl implements ElectionService {
         return new ModelApiResponse("Election saved successfully", savedElection , OffsetDateTime.now(),true);
 
     }
-
-
 
     public ModelApiResponse updateElection(Long electionId, ElectionDTO electionDTO) {
         var existingElection = electionRepository.findById(electionId)
@@ -83,7 +79,6 @@ public class ElectionServiceImpl implements ElectionService {
 
     }
 
-
     @Override
     public ElectionPageResponse getElectionsSorted(String order, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, "desc".equalsIgnoreCase(order)
@@ -102,7 +97,6 @@ public class ElectionServiceImpl implements ElectionService {
         response.setElections(electionDTOs);
         response.setTotalPages(electionsPage.getTotalPages());
         response.setTotalRecords((int) electionsPage.getTotalElements());
-
 
         return response;
     }

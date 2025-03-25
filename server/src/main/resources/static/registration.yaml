@@ -101,7 +101,8 @@ components:
       properties:
         ssnNumber:
           type: string
-          example: "123-45-6789"
+          example: "123456789"
+          pattern: "^\\d{9}$"
         role:
           type: string
           example: "COUNTY"
@@ -112,18 +113,32 @@ components:
         password:
           type: string
           example: "SecurePass123"
+          minLength: 1
         firstName:
           type: string
           example: "John"
+          minLength: 2
+          maxLength: 255
         middleName:
           type: string
           example: "A."
         lastName:
           type: string
           example: "Doe"
+          minLength: 2
+          maxLength: 255
         county:
           type: string
           example: "Orange County"
+          minLength: 1
+      required:
+        - ssnNumber
+        - role
+        - email
+        - password
+        - firstName
+        - lastName
+        - county
 
     LoginForm:
       type: object
@@ -135,6 +150,7 @@ components:
         password:
           type: string
           example: "SecurePass123"
+          minLength: 1
 
     AuthResponseDTO:
       type: object

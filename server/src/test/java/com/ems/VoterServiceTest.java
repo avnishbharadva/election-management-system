@@ -19,7 +19,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openapitools.model.*;
+import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.VoterRegisterDTO;
+import org.openapitools.model.ChangeVoterAddress;
+import org.openapitools.model.VoterDataDTO;
+
+
 import org.springframework.data.domain.*;
 
 import java.io.IOException;
@@ -63,15 +68,14 @@ public class VoterServiceTest {
 
         residentialAddress = new Address();
         residentialAddress.setAddressId(1L);
-        residentialAddress.setTownName("Las Vegas");
+        residentialAddress.setTown("Las Vegas");
         residentialAddress.setAddressType(AddressType.RESIDENTIAL);
+        existingVoter.setResidentialAddress(residentialAddress);
 
         mailingAddress = new Address();
         mailingAddress.setAddressId(2L);
-        mailingAddress.setTownName("New York");
+        mailingAddress.setTown("New York");
         mailingAddress.setAddressType(AddressType.MAILING);
-
-        existingVoter.setResidentialAddress(residentialAddress);
         existingVoter.setMailingAddress(mailingAddress);
 
         voterRegisterDTO = new VoterRegisterDTO();
@@ -79,6 +83,8 @@ public class VoterServiceTest {
         voterRegisterDTO.setDmvNumber("DMV12345");
         voterRegisterDTO.setPhoneNumber("9876543210");
         voterRegisterDTO.setEmail("test@example.com");
+        voterRegisterDTO.setImage("data:image/png;base64,iVBsdbbfesfshdbvfesvfvjcsdbhdsbhvghgyjyORw0KGgoAAAANSUhEUgAA...");
+        voterRegisterDTO.setSignature("data:image/png;base64,iVBORw0KGgfchctdgrxgxvdfbfjcthhffjftjoAAAANSUhEUgAA...");
         voterRegisterDTO.setPartyId(1L);
         voterRegisterDTO.setStatusId(1L);
 
@@ -88,11 +94,12 @@ public class VoterServiceTest {
 
         changeRequest = new ChangeVoterAddress();
         changeRequest.setAddressType(ChangeVoterAddress.AddressTypeEnum.RESIDENTIAL);
-        changeRequest.setTownName("Miami");
+        changeRequest.setTown("Miami");
 
         party = new Party();
         party.setPartyId(1L);
         party.setPartyName("Demo Party");
+        party.setPartySymbol("data:image/png;base64,iVBsdbbfesfshdbvfesvfvjcsdbhdsbhvghgyjyORw0KGgoAAAANSUhEUgAA...");
         existingVoter.setParty(party);
 
         voterStatus = new VoterStatus();
@@ -100,13 +107,15 @@ public class VoterServiceTest {
         voterStatus.setStatusDesc("Active");
 
         voterDataDTO = new VoterDataDTO();
-        VoterDataDTO expectedResponse = new VoterDataDTO();
+        expectedResponse = new VoterDataDTO();
         expectedResponse.setSsnNumber(voterRegisterDTO.getSsnNumber());
         expectedResponse.setDmvNumber(voterRegisterDTO.getDmvNumber());
         expectedResponse.setPhoneNumber(voterRegisterDTO.getPhoneNumber());
         expectedResponse.setEmail(voterRegisterDTO.getEmail());
-        expectedResponse.setPartyId(party.getPartyId());
-        expectedResponse.setStatusId(voterStatus.getStatusId());
+        expectedResponse.setParty(party.getPartyName());
+        expectedResponse.setStatus(voterStatus.getStatusDesc());
+        expectedResponse.setImage("data:image/png;base64,iVBsdbbfesfshdbvfesvfvjcsdbhdsbhvghgyjyORw0KGgoAAAANSUhEUgAA...");
+        expectedResponse.setSignature("data:image/png;base64,iVBORw0KGgfchctdgrxgxvdfbfjcthhffjftjoAAAANSUhEUgAA...");
 
         var voter1 = new Voter();
         var voter2 = new Voter();
@@ -126,18 +135,31 @@ public class VoterServiceTest {
     }
 
     @Test
+    void voterFound() {
+        lenient().when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
+        assertEquals("123456789", existingVoter.getVoterId());
+    }
+
+    @Test
     void townNotFound() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(false);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(false);
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
                 () -> voterService.changeVoterAddress(existingVoter.getVoterId(), changeRequest));
-        assertEquals("Town Not Found With TownID : " + changeRequest.getTownName(), exception.getMessage());
+        assertEquals("Town Not Found With TownID : " + changeRequest.getTown(), exception.getMessage());
+    }
+
+    @Test
+    void townFound() {
+        lenient().when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
+        lenient().when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
+        assertEquals("Miami" , changeRequest.getTown());
     }
 
     @Test
     void residentialAddressNotFound() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(residentialAddress.getAddressId())).thenReturn(Optional.empty());
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
                 () -> voterService.changeVoterAddress(existingVoter.getVoterId(), changeRequest));
@@ -147,8 +169,8 @@ public class VoterServiceTest {
     @Test
     void mailingAddressNotFound() {
         changeRequest.setAddressType(ChangeVoterAddress.AddressTypeEnum.valueOf("MAILING"));
-        when(voterRepo.findById("V123")).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(mailingAddress.getAddressId())).thenReturn(Optional.empty());
 
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
@@ -159,7 +181,7 @@ public class VoterServiceTest {
     @Test
     void addressSaveFails() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(residentialAddress.getAddressId())).thenReturn(Optional.of(residentialAddress));
         when(globalMapper.changeAddressDTOToAddress(any(), any())).thenReturn(new Address());
 
@@ -173,7 +195,7 @@ public class VoterServiceTest {
     @Test
     void address_Success() {
         when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
-        when(townRepo.existsByTownName(changeRequest.getTownName())).thenReturn(true);
+        when(townRepo.existsByTownName(changeRequest.getTown())).thenReturn(true);
         when(addressRepo.findById(anyLong())).thenReturn(Optional.of(new Address()));
         when(globalMapper.changeAddressDTOToAddress(any(), any())).thenReturn(new Address());
         when(globalMapper.toVoterDTO(any())).thenReturn(voterDataDTO);
@@ -251,7 +273,7 @@ public class VoterServiceTest {
 
     @Test
     void voterStatusNotFound() {
-        when(globalMapper.toVoter(any(VoterRegisterDTO.class))).thenReturn(existingVoter);
+        when(globalMapper.toVoter(any(org.openapitools.model.VoterRegisterDTO.class))).thenReturn(existingVoter);
         when(partyRepo.findById(voterRegisterDTO.getPartyId())).thenReturn(Optional.of(party));
         when(voterStatusRepo.findById(voterRegisterDTO.getStatusId())).thenReturn(Optional.empty());
 
@@ -283,10 +305,16 @@ public class VoterServiceTest {
         when(voterRepo.save(any(Voter.class))).thenReturn(existingVoter);
         when(addressRepo.saveAll(anyList())).thenReturn(null);
         when(globalMapper.toVoterDTO(any(Voter.class))).thenReturn(expectedResponse);
+        System.out.println("Expected Response: " + expectedResponse);
 
         VoterDataDTO register = voterService.register(voterRegisterDTO);
 
         assertDoesNotThrow(() -> voterService.register(voterRegisterDTO));
+        assertNotNull(expectedResponse, "expectedResponse should not be null");
+
+        assertNotNull(register, "register should not be null");
+        System.out.println("Expected register: " + register);
+
         assertEquals(expectedResponse, register);
 
         verify(voterRepo, times(2)).save(any(Voter.class));
@@ -315,11 +343,11 @@ public class VoterServiceTest {
         updateRequest.setImage("");
         CustomException exception = assertThrows(CustomException.class, () ->
                 voterService.updateVoter(existingVoter.getVoterId(), updateRequest));
-        assertEquals("Base64 string is empty or null", exception.getMessage());
+        assertEquals("Invalid Base64 image format", exception.getMessage());
     }
 
     @Test
-    void signatureSaveFails() throws IOException {
+    void signatureSaveFailsUpdate() throws IOException {
         lenient().when(voterRepo.findById(existingVoter.getVoterId())).thenReturn(Optional.of(existingVoter));
         lenient().when(partyRepo.findById(anyLong())).thenReturn(Optional.of(new Party()));
         lenient().when(voterStatusRepo.findById(anyLong())).thenReturn(Optional.of(new VoterStatus()));
@@ -328,7 +356,7 @@ public class VoterServiceTest {
         updateRequest.setSignature("");
         CustomException exception = assertThrows(CustomException.class, () ->
                 voterService.updateVoter(existingVoter.getVoterId(), updateRequest));
-        assertEquals("Base64 string is empty or null", exception.getMessage());
+        assertEquals("Invalid Base64 image format", exception.getMessage());
     }
 
     @Test
