@@ -2,28 +2,37 @@ type: object
 properties:
   addressLine:
     type: string
+    minLength: 3
+    maxLength: 30
     example: "123 Main St"
   aptNumber:
+    minLength: 2
+    maxLength: 30
     type: string
     example: "Apt 4B"
   city:
     type: string
+    minLength: 3
+    maxLength: 20
     example: "Springfield"
-  state:
-    type: string
-    example: "New York"
   zipCode:
     type: string
-    pattern: "\\d{5}"
-    example: "62704"
-  addressType:
-    type: string
-    enum: [RESIDENTIAL, MAILING]
-    example: "RESIDENTIAL"
+    x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{5}$\", message = \"Zip Code must contain exactly 5 digits\")"
+    description: 5-digit ZIP code
+    example: "10001"
   county:
     type: string
+    minLength: 3
+    maxLength: 20
     example: "1"
   town:
     type: string
+    minLength: 3
+    maxLength: 20
     example: "Alexander Street"
-
+required:
+  - addressLine
+  - city
+  - zipCode
+  - county
+  - town

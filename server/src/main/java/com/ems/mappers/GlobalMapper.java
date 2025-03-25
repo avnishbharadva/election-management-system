@@ -1,24 +1,8 @@
 package com.ems.mappers;
 
 //import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.VoterUpdateRequest;
+import org.openapitools.model.*;
 
-import org.openapitools.model.AddressDTO;
-import org.openapitools.model.ChangeVoterAddress;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.PartyRegisterDTO;
-import org.openapitools.model.AuditDataDTO;
-import org.openapitools.model.NameHistoryDataDTO;
-import org.openapitools.model.TransferAddress;
-import org.openapitools.model.StatusHistoryDataDTO;
-import org.openapitools.model.AddressHistoryDataDTO;
-import org.openapitools.model.PartyDataDTO;
-import org.openapitools.model.PartyUpdateDTO;
-import org.openapitools.model.ElectionDTO;
-import org.openapitools.model.VoterStatusDataDTO;
-import org.openapitools.model.OfficersRegisterDTO;
-
-import org.openapitools.model.VoterRegisterDTO;
 import com.ems.entities.*;
 import org.mapstruct.*;
 
@@ -30,19 +14,20 @@ public interface GlobalMapper {
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
     @Mapping(target = "voterStatus", ignore = true)
+    @Mapping(target = "party", ignore = true)
     Voter toVoter(VoterRegisterDTO voterRegisterDTO);
 
-//    Voter toVoter(VoterSearchDTO voterSearchDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "party", ignore = true)
     Voter voterDTOtoVoter(VoterUpdateRequest voterDTO, @MappingTarget Voter voter);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Address addressDTOToAddress(AddressDTO addressDTO, @MappingTarget Address address);
+    Address addressDTOToAddress(AddressUpdateDTO addressDTO, @MappingTarget Address address);
 
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "signature", ignore = true)
-    @Mapping(source = "party.partyId", target = "partyId")
+    @Mapping(source = "party.partyName", target = "party")
     VoterRegisterDTO toVoterRegisterDTO(Voter voter);
 
     @Mapping(target = "party", source = "party.partyName")
@@ -59,10 +44,8 @@ public interface GlobalMapper {
     void partyUpdateDTOToParty(PartyUpdateDTO partyUpdateDTO, @MappingTarget Party party);
 
     @Mapping(target = "addressId", ignore = true)
-//    @Mapping(target = "voter", ignore = true)
     Address toAddress(AddressDTO addressDTO);
 
-//    @Mapping(source = "voter.voterId", target = "voterId")
     AddressDTO toAddressDTO(Address address);
 
     List<Address> toAddressList(List<AddressDTO> addressDTOList);
@@ -74,6 +57,9 @@ public interface GlobalMapper {
 
 
     List<VoterStatusDataDTO> toVoterStatusDTOList(List<VoterStatus> voterStatusList);
+
+    List<CountyDataDTO> toCountyDTOList(List<County> countyList);
+    List<TownDataDTO> toTownDTOList(List<Town> townList);
 
 //    @Mapping(source = "address.voter.voterId", target = "voterId")
     AddressHistory toAddressHistory(Address address);

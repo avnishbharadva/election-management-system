@@ -28,10 +28,22 @@ paths:
                 $ref: "./schemas/voterDTO.yaml"
         "400":
           description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "409":
           description: Voter already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
       tags:
         - Voter
 
@@ -113,8 +125,16 @@ paths:
                 $ref: "./schemas/paginatedVoterDTO.yaml"
         "400":
           description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /voters/status:
     get:
@@ -132,6 +152,52 @@ paths:
                 $ref: "./schemas/voterStatusDTO.yaml"
         "500":
           description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/counties:
+    get:
+      summary: Get all counties
+      operationId: getAllCounties
+      tags:
+        - Voter
+      responses:
+        "200":
+          description: Successfully retrieved all counties
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/CountyDTO"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /voters/towns:
+    get:
+      summary: Get all towns
+      operationId: getAllTowns
+      tags:
+        - Voter
+      responses:
+        "200":
+          description: Successfully retrieved all towns
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/TownDTO"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /voters/{voterId}:
     patch:
@@ -161,10 +227,22 @@ paths:
                 $ref: "./schemas/voterDTO.yaml"
         '400':
           description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '404':
           description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /voters/{voterId}/audit:
     get:
@@ -194,7 +272,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /voters/{voterId}/transfer:
+  /voters/{voterId}/transfer/{addressType}:
     patch:
       summary: Transfer voter county details
       description: Transfer a voter's county based on the provided voter ID.
@@ -204,6 +282,12 @@ paths:
           in: path
           required: true
           description: Unique identifier of the voter
+          schema:
+            type: string
+        - name: addressType
+          in: path
+          required: true
+          description: Type of the address
           schema:
             type: string
       requestBody:
@@ -222,12 +306,24 @@ paths:
                 $ref: "./schemas/voterDTO.yaml"
         '400':
           description: Bad request, invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '404':
           description: Voter not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
-  /voters/{voterId}/change:
+  /voters/{voterId}/change/{addressType}:
     patch:
       summary: Update voter details
       operationId: changeVoter
@@ -237,6 +333,12 @@ paths:
           in: path
           required: true
           description: Unique identifier of the voter
+          schema:
+            type: string
+        - name: addressType
+          in: path
+          required: true
+          description: Type of the address
           schema:
             type: string
       requestBody:
@@ -367,10 +469,16 @@ components:
       $ref: 'schemas/voterDTO.yaml'
     AddressDTO:
       $ref: './schemas/addressDTO.yaml'
+    AddressUpdateDTO:
+      $ref: './schemas/addressUpdateDTO.yaml'
     AuditDTO:
       $ref: './schemas/auditDTO.yaml'
     VoterStatusDTO:
       $ref: './schemas/voterStatusDTO.yaml'
+    CountyDTO:
+      $ref: "./schemas/countyDTO.yaml"
+    TownDTO:
+      $ref: "./schemas/townDTO.yaml"
     NameHistoryDTO:
       $ref: "./schemas/nameHistoryDTO.yaml"
     StatusHistoryDTO:
@@ -379,4 +487,3 @@ components:
       $ref: "./schemas/addressHistoryDTO.yaml"
     ErrorResponse:
       $ref: './schemas/errorResponse.yaml'
-
