@@ -3,23 +3,8 @@ import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
 import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
+import { FieldProps } from '../Types/FormField.types';
 // Type for the props of each form field component
-type FieldProps = {
-    control: any;
-    name: string;
-    label: string;
-    fixedLength?: number;
-    minLength?: number;
-    maxLength?: number;
-    isRequired?: boolean;
-    rules?: any;
-    disabled?:boolean
-
-    customfield?: {
-        readOnly?: boolean;
-        [key: string]: any;
-
-    }};
 
  
     
@@ -117,7 +102,7 @@ export const NameField = ({
             name={name}
             control={control}
             rules={{
-                ...(isRequired && { required: `*${label} is required` }), // Conditionally add required rule
+                ...(isRequired && { required: `*${label} is required` }), 
                 minLength: {
                     value: minLength,
                     message: `Minimum length is ${minLength} characters`,

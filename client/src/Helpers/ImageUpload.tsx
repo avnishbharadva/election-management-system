@@ -2,14 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { DropzoneContainer } from '../style/CandidateFormCss';
-
- 
-interface ImageUploadProps {
-  label: string; 
-  onImageUpload: (imageData: string) => void; 
-  imagePreview: string | null;
-  borderRadius?: string
-}
+import {ImageUploadProps} from "../Types/imageUpload.types"
  
 const ImageUpload: React.FC<ImageUploadProps> = ({ label, onImageUpload, imagePreview, borderRadius = "50%" }) => {
   const [alert, setAlert]= useState("")

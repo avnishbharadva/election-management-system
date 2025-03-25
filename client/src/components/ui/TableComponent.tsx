@@ -2,7 +2,7 @@
 import React from 'react';
 import { TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
 import {TableMain,  TableCellSticky, TableContainerMain } from '../../style/VoterStyleCss';
-import {TableComponentProps} from '../../Types/TypeTable'
+import {TableComponentProps} from '../../Types/tableComponentProps.types';
  
 const resolveToReactNode = (value: string | React.ReactNode | (() => React.ReactNode)): React.ReactNode => {
     return typeof value === 'function' ? value() : value;

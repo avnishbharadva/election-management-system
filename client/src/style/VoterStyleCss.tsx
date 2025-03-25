@@ -1,4 +1,4 @@
-import { Card, CardContent, Divider, Typography} from "@mui/material";
+import { Card,  Divider, Typography} from "@mui/material";
 import {Box, TableContainer, Table, TableCell} from '@mui/material';
 import { Title } from '../style/CandidateFormCss';
 import { styled } from "@mui/system";
@@ -147,9 +147,7 @@ export const TableCellSticky = styled(TableCell)({
   zIndex: 1,
 })
  
-  
-//ViewVoter
- 
+   
 export const BoxContainer = styled(Box)({
   display: "flex",
   flexDirection: "column",
@@ -170,13 +168,7 @@ export const StyleDivider = styled(Divider)({
   marginBottom: 2,
 })
  
-export const ImageContent = styled(CardContent)({
-  display: "flex",
-  flexDirection: "row",
-  gap: 3,
-  justifyContent: "center",
-  alignItems: "center",
-})
+
  
 export const TypographyStyle = styled(Box)({
   textAlign: "center",

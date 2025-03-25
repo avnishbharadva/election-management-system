@@ -1,14 +1,5 @@
+  import { NestedObject, UpdateFormValueProps } from '../Types/updateFormValue.types';
 
-interface NestedObject {
-    [key: string]: boolean | NestedObject | null;
-  }
-  
-  // Define the props interface for the function
-  interface UpdateFormValueProps {
-    dirtyFields: NestedObject;
-    getValues: (keys: string[]) => any[] | {};
-  }
-  
   export const updateFormValue = ({ dirtyFields, getValues }: UpdateFormValueProps): Record<string, any> => {
     if (!dirtyFields || !getValues) {
       console.error("Missing required parameters: getValues or dirtyFields. Returning empty object.");
