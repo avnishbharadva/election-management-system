@@ -20,8 +20,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-19T15:41:03+0530",
-    comments = "version: 1.6.2, compiler: Eclipse JDT (IDE) 3.41.0.z20250213-2037, environment: Java 21.0.6 (Eclipse Adoptium)"
+    date = "2025-03-25T10:00:07+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class CandidateMapperImpl implements CandidateMapper {
@@ -39,20 +39,20 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidateDto.setBankDetails( bankDetailsToBankDetails( candidate.getBankDetails() ) );
         candidateDto.setPartyName( candidatePartyPartyName( candidate ) );
         candidateDto.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDto.setCandidateEmail( candidate.getCandidateEmail() );
         candidateDto.setCandidateId( candidate.getCandidateId() );
-        candidateDto.setCandidateImage( candidate.getCandidateImage() );
         candidateDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
         candidateDto.setCandidateSSN( candidate.getCandidateSSN() );
-        candidateDto.setCandidateSignature( candidate.getCandidateSignature() );
         candidateDto.setDateOfBirth( candidate.getDateOfBirth() );
         candidateDto.setGender( genderToGender( candidate.getGender() ) );
-        candidateDto.setMailingAddress( candidateAddressToCandidateAddress( candidate.getMailingAddress() ) );
         candidateDto.setMaritalStatus( maritalStatusToMaritalStatus( candidate.getMaritalStatus() ) );
         candidateDto.setNoOfChildren( candidate.getNoOfChildren() );
+        candidateDto.setSpouseName( candidate.getSpouseName() );
         candidateDto.setResidentialAddress( candidateAddressToCandidateAddress( candidate.getResidentialAddress() ) );
-        candidateDto.spouseName( candidate.getSpouseName() );
-        candidateDto.stateName( candidate.getStateName() );
+        candidateDto.setMailingAddress( candidateAddressToCandidateAddress( candidate.getMailingAddress() ) );
+        candidateDto.setStateName( candidate.getStateName() );
+        candidateDto.setCandidateEmail( candidate.getCandidateEmail() );
+        candidateDto.setCandidateImage( candidate.getCandidateImage() );
+        candidateDto.setCandidateSignature( candidate.getCandidateSignature() );
 
         return candidateDto;
     }
@@ -65,23 +65,23 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         Candidate candidate = new Candidate();
 
-        candidate.setBankDetails( bankDetailsToBankDetails1( candidateDto.getBankDetails() ) );
-        candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
         candidate.setCandidateId( candidateDto.getCandidateId() );
-        candidate.setCandidateImage( candidateDto.getCandidateImage() );
         candidate.setCandidateName( candidateNameToCandidateName1( candidateDto.getCandidateName() ) );
         candidate.setCandidateSSN( candidateDto.getCandidateSSN() );
-        candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
         candidate.setDateOfBirth( candidateDto.getDateOfBirth() );
         candidate.setGender( genderToGender1( candidateDto.getGender() ) );
-        candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
+        candidate.setCandidateImage( candidateDto.getCandidateImage() );
         candidate.setMaritalStatus( maritalStatusToMaritalStatus1( candidateDto.getMaritalStatus() ) );
         if ( candidateDto.getNoOfChildren() != null ) {
             candidate.setNoOfChildren( candidateDto.getNoOfChildren() );
         }
-        candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
         candidate.setSpouseName( candidateDto.getSpouseName() );
         candidate.setStateName( candidateDto.getStateName() );
+        candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
+        candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
+        candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
+        candidate.setBankDetails( bankDetailsToBankDetails1( candidateDto.getBankDetails() ) );
+        candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
 
         return candidate;
     }
@@ -95,8 +95,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         com.ems.entities.CandidateAddress candidateAddress1 = new com.ems.entities.CandidateAddress();
 
         candidateAddress1.setAddressId( candidateAddress.getAddressId() );
-        candidateAddress1.setCity( candidateAddress.getCity() );
         candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
         if ( candidateAddress.getZipcode() != null ) {
             candidateAddress1.setZipcode( candidateAddress.getZipcode() );
         }
@@ -113,8 +113,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         com.ems.entities.CandidateAddress candidateAddress1 = new com.ems.entities.CandidateAddress();
 
         candidateAddress1.setAddressId( candidateAddress.getAddressId() );
-        candidateAddress1.setCity( candidateAddress.getCity() );
         candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
         if ( candidateAddress.getZipcode() != null ) {
             candidateAddress1.setZipcode( candidateAddress.getZipcode() );
         }
@@ -132,13 +132,13 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         candidateDetailsDto.setPartyName( candidatePartyPartyName( candidate ) );
         candidateDetailsDto.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDetailsDto.setCandidateEmail( candidate.getCandidateEmail() );
         candidateDetailsDto.setCandidateId( candidate.getCandidateId() );
         candidateDetailsDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
         candidateDetailsDto.setCandidateSSN( candidate.getCandidateSSN() );
         candidateDetailsDto.setGender( genderToGender( candidate.getGender() ) );
-        candidateDetailsDto.spouseName( candidate.getSpouseName() );
-        candidateDetailsDto.stateName( candidate.getStateName() );
+        candidateDetailsDto.setSpouseName( candidate.getSpouseName() );
+        candidateDetailsDto.setStateName( candidate.getStateName() );
+        candidateDetailsDto.setCandidateEmail( candidate.getCandidateEmail() );
 
         return candidateDetailsDto;
     }
@@ -149,20 +149,8 @@ public class CandidateMapperImpl implements CandidateMapper {
             return;
         }
 
-        if ( candidateDto.getBankDetails() != null ) {
-            if ( candidate.getBankDetails() == null ) {
-                candidate.setBankDetails( new BankDetails() );
-            }
-            bankDetailsNoValidationToBankDetails( candidateDto.getBankDetails(), candidate.getBankDetails() );
-        }
-        if ( candidateDto.getCandidateEmail() != null ) {
-            candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
-        }
         if ( candidateDto.getCandidateId() != null ) {
             candidate.setCandidateId( candidateDto.getCandidateId() );
-        }
-        if ( candidateDto.getCandidateImage() != null ) {
-            candidate.setCandidateImage( candidateDto.getCandidateImage() );
         }
         if ( candidateDto.getCandidateName() != null ) {
             if ( candidate.getCandidateName() == null ) {
@@ -173,17 +161,14 @@ public class CandidateMapperImpl implements CandidateMapper {
         if ( candidateDto.getCandidateSSN() != null ) {
             candidate.setCandidateSSN( candidateDto.getCandidateSSN() );
         }
-        if ( candidateDto.getCandidateSignature() != null ) {
-            candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
-        }
         if ( candidateDto.getDateOfBirth() != null ) {
             candidate.setDateOfBirth( candidateDto.getDateOfBirth() );
         }
         if ( candidateDto.getGender() != null ) {
             candidate.setGender( genderToGender1( candidateDto.getGender() ) );
         }
-        if ( candidateDto.getMailingAddress() != null ) {
-            candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
+        if ( candidateDto.getCandidateImage() != null ) {
+            candidate.setCandidateImage( candidateDto.getCandidateImage() );
         }
         if ( candidateDto.getMaritalStatus() != null ) {
             candidate.setMaritalStatus( maritalStatusToMaritalStatus1( candidateDto.getMaritalStatus() ) );
@@ -191,14 +176,29 @@ public class CandidateMapperImpl implements CandidateMapper {
         if ( candidateDto.getNoOfChildren() != null ) {
             candidate.setNoOfChildren( candidateDto.getNoOfChildren() );
         }
-        if ( candidateDto.getResidentialAddress() != null ) {
-            candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
-        }
         if ( candidateDto.getSpouseName() != null ) {
             candidate.setSpouseName( candidateDto.getSpouseName() );
         }
         if ( candidateDto.getStateName() != null ) {
             candidate.setStateName( candidateDto.getStateName() );
+        }
+        if ( candidateDto.getCandidateEmail() != null ) {
+            candidate.setCandidateEmail( candidateDto.getCandidateEmail() );
+        }
+        if ( candidateDto.getResidentialAddress() != null ) {
+            candidate.setResidentialAddress( toCandidateAddress( candidateDto.getResidentialAddress() ) );
+        }
+        if ( candidateDto.getMailingAddress() != null ) {
+            candidate.setMailingAddress( toCandidateAddress( candidateDto.getMailingAddress() ) );
+        }
+        if ( candidateDto.getBankDetails() != null ) {
+            if ( candidate.getBankDetails() == null ) {
+                candidate.setBankDetails( new BankDetails() );
+            }
+            bankDetailsNoValidationToBankDetails( candidateDto.getBankDetails(), candidate.getBankDetails() );
+        }
+        if ( candidateDto.getCandidateSignature() != null ) {
+            candidate.setCandidateSignature( candidateDto.getCandidateSignature() );
         }
     }
 
@@ -211,11 +211,11 @@ public class CandidateMapperImpl implements CandidateMapper {
         if ( newName.getFirstName() != null ) {
             existingName.setFirstName( newName.getFirstName() );
         }
-        if ( newName.getLastName() != null ) {
-            existingName.setLastName( newName.getLastName() );
-        }
         if ( newName.getMiddleName() != null ) {
             existingName.setMiddleName( newName.getMiddleName() );
+        }
+        if ( newName.getLastName() != null ) {
+            existingName.setLastName( newName.getLastName() );
         }
     }
 
@@ -227,14 +227,14 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         ElectionSortDTO electionSortDTO = new ElectionSortDTO();
 
-        electionSortDTO.setElectionDate( election.getElectionDate() );
         if ( election.getElectionId() != null ) {
             electionSortDTO.setElectionId( election.getElectionId().intValue() );
         }
         electionSortDTO.setElectionName( election.getElectionName() );
-        electionSortDTO.setElectionState( election.getElectionState() );
         electionSortDTO.setElectionType( election.getElectionType() );
-        electionSortDTO.totalSeats( election.getTotalSeats() );
+        electionSortDTO.setElectionDate( election.getElectionDate() );
+        electionSortDTO.setElectionState( election.getElectionState() );
+        electionSortDTO.setTotalSeats( election.getTotalSeats() );
 
         return electionSortDTO;
     }
@@ -246,9 +246,9 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         org.openapitools.model.BankDetails bankDetails1 = new org.openapitools.model.BankDetails();
 
-        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
         bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
         bankDetails1.setBankName( bankDetails.getBankName() );
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
 
         return bankDetails1;
     }
@@ -277,8 +277,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         org.openapitools.model.CandidateName candidateName1 = new org.openapitools.model.CandidateName();
 
         candidateName1.setFirstName( candidateName.getFirstName() );
-        candidateName1.setLastName( candidateName.getLastName() );
         candidateName1.setMiddleName( candidateName.getMiddleName() );
+        candidateName1.setLastName( candidateName.getLastName() );
 
         return candidateName1;
     }
@@ -291,29 +291,14 @@ public class CandidateMapperImpl implements CandidateMapper {
         Gender gender1;
 
         switch ( gender ) {
-            case FEMALE: gender1 = Gender.FEMALE;
-            break;
             case MALE: gender1 = Gender.MALE;
+            break;
+            case FEMALE: gender1 = Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
 
         return gender1;
-    }
-
-    protected CandidateAddress candidateAddressToCandidateAddress(com.ems.entities.CandidateAddress candidateAddress) {
-        if ( candidateAddress == null ) {
-            return null;
-        }
-
-        CandidateAddress candidateAddress1 = new CandidateAddress();
-
-        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
-        candidateAddress1.setCity( candidateAddress.getCity() );
-        candidateAddress1.street( candidateAddress.getStreet() );
-        candidateAddress1.zipcode( candidateAddress.getZipcode() );
-
-        return candidateAddress1;
     }
 
     protected org.openapitools.model.MaritalStatus maritalStatusToMaritalStatus(MaritalStatus maritalStatus) {
@@ -324,11 +309,11 @@ public class CandidateMapperImpl implements CandidateMapper {
         org.openapitools.model.MaritalStatus maritalStatus1;
 
         switch ( maritalStatus ) {
-            case DIVORCED: maritalStatus1 = org.openapitools.model.MaritalStatus.DIVORCED;
+            case SINGLE: maritalStatus1 = org.openapitools.model.MaritalStatus.SINGLE;
             break;
             case MARRIED: maritalStatus1 = org.openapitools.model.MaritalStatus.MARRIED;
             break;
-            case SINGLE: maritalStatus1 = org.openapitools.model.MaritalStatus.SINGLE;
+            case DIVORCED: maritalStatus1 = org.openapitools.model.MaritalStatus.DIVORCED;
             break;
             case WIDOWED: maritalStatus1 = org.openapitools.model.MaritalStatus.WIDOWED;
             break;
@@ -338,18 +323,19 @@ public class CandidateMapperImpl implements CandidateMapper {
         return maritalStatus1;
     }
 
-    protected BankDetails bankDetailsToBankDetails1(org.openapitools.model.BankDetails bankDetails) {
-        if ( bankDetails == null ) {
+    protected CandidateAddress candidateAddressToCandidateAddress(com.ems.entities.CandidateAddress candidateAddress) {
+        if ( candidateAddress == null ) {
             return null;
         }
 
-        BankDetails bankDetails1 = new BankDetails();
+        CandidateAddress candidateAddress1 = new CandidateAddress();
 
-        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
-        bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
-        bankDetails1.setBankName( bankDetails.getBankName() );
+        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
+        candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
+        candidateAddress1.setZipcode( candidateAddress.getZipcode() );
 
-        return bankDetails1;
+        return candidateAddress1;
     }
 
     protected CandidateName candidateNameToCandidateName1(org.openapitools.model.CandidateName candidateName) {
@@ -360,8 +346,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         CandidateName candidateName1 = new CandidateName();
 
         candidateName1.setFirstName( candidateName.getFirstName() );
-        candidateName1.setLastName( candidateName.getLastName() );
         candidateName1.setMiddleName( candidateName.getMiddleName() );
+        candidateName1.setLastName( candidateName.getLastName() );
 
         return candidateName1;
     }
@@ -374,9 +360,9 @@ public class CandidateMapperImpl implements CandidateMapper {
         com.ems.entities.constants.Gender gender1;
 
         switch ( gender ) {
-            case FEMALE: gender1 = com.ems.entities.constants.Gender.FEMALE;
-            break;
             case MALE: gender1 = com.ems.entities.constants.Gender.MALE;
+            break;
+            case FEMALE: gender1 = com.ems.entities.constants.Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
@@ -392,11 +378,11 @@ public class CandidateMapperImpl implements CandidateMapper {
         MaritalStatus maritalStatus1;
 
         switch ( maritalStatus ) {
-            case DIVORCED: maritalStatus1 = MaritalStatus.DIVORCED;
+            case SINGLE: maritalStatus1 = MaritalStatus.SINGLE;
             break;
             case MARRIED: maritalStatus1 = MaritalStatus.MARRIED;
             break;
-            case SINGLE: maritalStatus1 = MaritalStatus.SINGLE;
+            case DIVORCED: maritalStatus1 = MaritalStatus.DIVORCED;
             break;
             case WIDOWED: maritalStatus1 = MaritalStatus.WIDOWED;
             break;
@@ -406,20 +392,18 @@ public class CandidateMapperImpl implements CandidateMapper {
         return maritalStatus1;
     }
 
-    protected void bankDetailsNoValidationToBankDetails(BankDetailsNoValidation bankDetailsNoValidation, BankDetails mappingTarget) {
-        if ( bankDetailsNoValidation == null ) {
-            return;
+    protected BankDetails bankDetailsToBankDetails1(org.openapitools.model.BankDetails bankDetails) {
+        if ( bankDetails == null ) {
+            return null;
         }
 
-        if ( bankDetailsNoValidation.getBankAddress() != null ) {
-            mappingTarget.setBankAddress( bankDetailsNoValidation.getBankAddress() );
-        }
-        if ( bankDetailsNoValidation.getBankDetailsId() != null ) {
-            mappingTarget.setBankDetailsId( bankDetailsNoValidation.getBankDetailsId() );
-        }
-        if ( bankDetailsNoValidation.getBankName() != null ) {
-            mappingTarget.setBankName( bankDetailsNoValidation.getBankName() );
-        }
+        BankDetails bankDetails1 = new BankDetails();
+
+        bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
+        bankDetails1.setBankName( bankDetails.getBankName() );
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
+
+        return bankDetails1;
     }
 
     protected void candidateNameNoValidationToCandidateName(CandidateNameNoValidation candidateNameNoValidation, CandidateName mappingTarget) {
@@ -430,11 +414,27 @@ public class CandidateMapperImpl implements CandidateMapper {
         if ( candidateNameNoValidation.getFirstName() != null ) {
             mappingTarget.setFirstName( candidateNameNoValidation.getFirstName() );
         }
+        if ( candidateNameNoValidation.getMiddleName() != null ) {
+            mappingTarget.setMiddleName( candidateNameNoValidation.getMiddleName() );
+        }
         if ( candidateNameNoValidation.getLastName() != null ) {
             mappingTarget.setLastName( candidateNameNoValidation.getLastName() );
         }
-        if ( candidateNameNoValidation.getMiddleName() != null ) {
-            mappingTarget.setMiddleName( candidateNameNoValidation.getMiddleName() );
+    }
+
+    protected void bankDetailsNoValidationToBankDetails(BankDetailsNoValidation bankDetailsNoValidation, BankDetails mappingTarget) {
+        if ( bankDetailsNoValidation == null ) {
+            return;
+        }
+
+        if ( bankDetailsNoValidation.getBankDetailsId() != null ) {
+            mappingTarget.setBankDetailsId( bankDetailsNoValidation.getBankDetailsId() );
+        }
+        if ( bankDetailsNoValidation.getBankName() != null ) {
+            mappingTarget.setBankName( bankDetailsNoValidation.getBankName() );
+        }
+        if ( bankDetailsNoValidation.getBankAddress() != null ) {
+            mappingTarget.setBankAddress( bankDetailsNoValidation.getBankAddress() );
         }
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Data
 @Slf4j
 @Service
-@KafkaListener(topics = "email-send-event-topic" , groupId="update-voter-events-topic")
+//@KafkaListener(topics = "email-send-event-topic" , groupId="update-voter-events-topic")
 public class EmailSendingServiceImpl {
 
     private final JavaMailSender mailSender;

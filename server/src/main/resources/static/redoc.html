@@ -35,7 +35,7 @@
 
       messageElement.textContent = "Validating token...";
 
-      fetch("http://localhost:8082/api/voters", {
+      fetch("http://localhost:8082/voters", {
           method: "GET",
           headers: { "Authorization": `Bearer ${token}` }
       })

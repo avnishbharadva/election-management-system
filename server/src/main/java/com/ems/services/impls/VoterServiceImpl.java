@@ -183,15 +183,15 @@ public class VoterServiceImpl implements VoterService {
         if (voterUpdateRequest.getMailingAddress() != null)
             updateAddress(voterId, voterUpdateRequest.getMailingAddress(), updatedVoter.getMailingAddress().getAddressId());
 
-        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
-        future.whenComplete((result,exception)->{
-            if(exception!=null){
-                log.info("Failed to send message: {}",exception.getMessage());
-            }
-            else{
-                log.info("Message sent successfully: {}",result.getRecordMetadata());
-            }
-        });
+//        CompletableFuture<SendResult<String,VoterUpdateEvent>> future=kafkaTemplate.send("update-voter-events-topic",voterId,new VoterUpdateEvent( oldVoter, updatedVoter, List.of(oldResidentialAddress,oldMailingAddress), List.of(updatedVoter.getResidentialAddress(), updatedVoter.getMailingAddress())));
+//        future.whenComplete((result,exception)->{
+//            if(exception!=null){
+//                log.info("Failed to send message: {}",exception.getMessage());
+//            }
+//            else{
+//                log.info("Message sent successfully: {}",result.getRecordMetadata());
+//            }
+//        });
 
         VoterDataDTO voterResponse = globalMapper.toVoterDTO(updatedVoter);
         Path imagePath = Path.of(PHOTO_DIR + "/" + voterResponse.getImage());

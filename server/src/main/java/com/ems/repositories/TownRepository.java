@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TownRepository extends JpaRepository<Town, Long> {
     boolean existsByTownName(String townName);
-
-    boolean existsByTownName(String townName);
-
 }

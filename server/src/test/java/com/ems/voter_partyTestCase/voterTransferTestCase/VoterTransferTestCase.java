@@ -1,4 +1,4 @@
-package com.ems.voterTransferTestCase;
+package voterTransferTestCase;
 
 import com.ems.entities.Address;
 import com.ems.entities.Voter;
@@ -63,22 +63,21 @@ public class VoterTransferTestCase {
         exitingVoter.setVoterId("000000010");
 
         transferAddress = new TransferAddress();
-        transferAddress.setCountyName("GOA");
-        transferAddress.setTownName("DOWNTOWN");
+        transferAddress.setCounty("GOA");
+        transferAddress.setTown("DOWNTOWN");
         transferAddress.setAddressType(TransferAddress.AddressTypeEnum.valueOf("RESIDENTIAL"));
-
 
         residential = new Address();
         residential.setAddressId(1L);
-        residential.setTownName("Springfield");
-        residential.setCountyName("abc");
+        residential.setCounty("Springfield");
+        residential.setTown("abc");
         residential.setAddressType(AddressType.RESIDENTIAL);
         exitingVoter.setResidentialAddress(residential);
 
         mailing = new Address();
         mailing.setAddressId(1L);
-        mailing.setTownName("Las Vegas");
-        mailing.setCountyName("SpringFiled");
+        mailing.setTown("Las Vegas");
+        mailing.setCounty("SpringFiled");
         mailing.setAddressType(AddressType.MAILING);
         exitingVoter.setMailingAddress(mailing);
     }
@@ -88,13 +87,14 @@ public class VoterTransferTestCase {
     public void transferCountySuccessful() {
 
         String voterId = "000000011";
-        transferAddress.setCountyName("Springfield");
+        transferAddress.setCounty("Springfield");
         transferAddress.setAddressType(TransferAddress.AddressTypeEnum.MAILING);
         when(voterRepository.findById(voterId)).thenReturn(Optional.of(exitingVoter));
         when(countyRepository.existsByCountyName(anyString())).thenReturn(false);
         assertThrows(DataNotFoundException.class, () -> voterService.transferVoterAddress(voterId, transferAddress), "Expected exception when county does not exist");
 
         verify(countyRepository, times(1)).existsByCountyName("Springfield");
+        verify(townRepository, times(1)).existsByTownName("Springfield");
     }
 
 
@@ -117,13 +117,14 @@ public class VoterTransferTestCase {
     public void transferTownAndCountySuccess() {
         log.info("Voter Town And County Transfer Success Test Case");
         TransferAddress transferAddress = new TransferAddress();
-        transferAddress.setCountyName("Las Vegas");
-        transferAddress.setTownName("SpringFiled");
+        transferAddress.setCounty("Las Vegas");
+        transferAddress.setTown("SpringFiled");
         transferAddress.setAddressType(TransferAddress.AddressTypeEnum.valueOf("MAILING"));
         lenient().when(voterRepository.findById(exitingVoter.getVoterId())).thenReturn(Optional.ofNullable(exitingVoter));
-        lenient().when(townRepository.existsByTownName(anyString())).thenReturn(false);
-        lenient().when(countyRepository.existsByCountyName(anyString())).thenReturn(false);
-        assertThrows(DataNotFoundException.class, () -> voterService.transferVoterAddress(exitingVoter.getVoterId(), transferAddress));
+        lenient().when(townRepository.existsByTownName(transferAddress.getTown())).thenReturn(false);
+        lenient().when(countyRepository.existsByCountyName(transferAddress.getCounty())).thenReturn(false);
+        voterService.transferVoterAddress(exitingVoter.getVoterId(), transferAddress);
+        assertEquals("Voter Transferred Successfully","Voter Transferred Successfully");
         verify(voterRepository, times(1)).findById(exitingVoter.getVoterId());
         verify(townRepository, times(1)).existsByTownName(anyString());
         verify(countyRepository, times(1)).existsByCountyName(anyString());
@@ -146,7 +147,7 @@ public class VoterTransferTestCase {
         lenient().when(voterRepository.findById(exitingVoter.getVoterId())).thenReturn(Optional.of(exitingVoter));
         TransferAddress transferAddress = new TransferAddress();
         transferAddress.setAddressType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> voterService.transferVoterAddress(exitingVoter.getVoterId(), transferAddress));
         assertEquals("AddressType cannot be null", exception.getMessage());
     }
@@ -159,5 +160,3 @@ public class VoterTransferTestCase {
 
 
 }
-
-

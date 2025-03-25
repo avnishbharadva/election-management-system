@@ -23,7 +23,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
+//@KafkaListener(topics = "update-voter-events-topic" , groupId="update-voter-events-topic")
 public class AuditServiceImpl implements AuditService {
 
     private final AuditRepository auditRepository;

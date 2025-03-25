@@ -21,7 +21,7 @@ public class NameHistoryServiceImpl implements NameHistoryService {
     private final NameHistoryRepository nameHistoryRepo;
 
     @Async("taskExecutor")
-    @KafkaHandler
+    //@KafkaHandler
     @Override
     public void nameHistory(VoterUpdateEvent voterUpdateEvent) {
         Voter oldVoter = voterUpdateEvent.getOldVoter();

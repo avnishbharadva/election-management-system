@@ -24,7 +24,7 @@ public class AddressHistoryServiceImpl implements AddressHistoryService {
     private final AddressHistoryRepository addressHistoryRepo;
 
     @Async("taskExecutor")
-    @KafkaHandler
+//    @KafkaHandler
     @Override
     public void addressHistory(VoterUpdateEvent event){
 

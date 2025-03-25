@@ -39,8 +39,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-19T15:41:05+0530",
-    comments = "version: 1.6.2, compiler: Eclipse JDT (IDE) 3.41.0.z20250213-2037, environment: Java 21.0.6 (Eclipse Adoptium)"
+    date = "2025-03-25T10:00:10+0530",
+    comments = "version: 1.6.2, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class GlobalMapperImpl implements GlobalMapper {
@@ -53,24 +53,24 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         Voter voter = new Voter();
 
-        voter.setDateOfBirth( voterRegisterDTO.getDateOfBirth() );
-        voter.setDmvNumber( voterRegisterDTO.getDmvNumber() );
-        voter.setEmail( voterRegisterDTO.getEmail() );
         voter.setFirstName( voterRegisterDTO.getFirstName() );
-        if ( voterRegisterDTO.getFirstVotedYear() != null ) {
-            voter.setFirstVotedYear( voterRegisterDTO.getFirstVotedYear().longValue() );
-        }
+        voter.setMiddleName( voterRegisterDTO.getMiddleName() );
+        voter.setLastName( voterRegisterDTO.getLastName() );
+        voter.setSuffixName( voterRegisterDTO.getSuffixName() );
+        voter.setDateOfBirth( voterRegisterDTO.getDateOfBirth() );
         voter.setGender( genderEnumToGender( voterRegisterDTO.getGender() ) );
+        voter.setDmvNumber( voterRegisterDTO.getDmvNumber() );
+        voter.setSsnNumber( voterRegisterDTO.getSsnNumber() );
+        voter.setEmail( voterRegisterDTO.getEmail() );
+        voter.setPhoneNumber( voterRegisterDTO.getPhoneNumber() );
         if ( voterRegisterDTO.getHasVotedBefore() != null ) {
             voter.setHasVotedBefore( voterRegisterDTO.getHasVotedBefore() );
         }
-        voter.setLastName( voterRegisterDTO.getLastName() );
-        voter.setMailingAddress( toAddress( voterRegisterDTO.getMailingAddress() ) );
-        voter.setMiddleName( voterRegisterDTO.getMiddleName() );
-        voter.setPhoneNumber( voterRegisterDTO.getPhoneNumber() );
+        if ( voterRegisterDTO.getFirstVotedYear() != null ) {
+            voter.setFirstVotedYear( voterRegisterDTO.getFirstVotedYear().longValue() );
+        }
         voter.setResidentialAddress( toAddress( voterRegisterDTO.getResidentialAddress() ) );
-        voter.setSsnNumber( voterRegisterDTO.getSsnNumber() );
-        voter.setSuffixName( voterRegisterDTO.getSuffixName() );
+        voter.setMailingAddress( toAddress( voterRegisterDTO.getMailingAddress() ) );
 
         return voter;
     }
@@ -81,44 +81,41 @@ public class GlobalMapperImpl implements GlobalMapper {
             return voter;
         }
 
-        if ( voterDTO.getDateOfBirth() != null ) {
-            voter.setDateOfBirth( voterDTO.getDateOfBirth() );
-        }
-        if ( voterDTO.getDmvNumber() != null ) {
-            voter.setDmvNumber( voterDTO.getDmvNumber() );
-        }
-        if ( voterDTO.getEmail() != null ) {
-            voter.setEmail( voterDTO.getEmail() );
-        }
         if ( voterDTO.getFirstName() != null ) {
             voter.setFirstName( voterDTO.getFirstName() );
-        }
-        if ( voterDTO.getFirstVotedYear() != null ) {
-            voter.setFirstVotedYear( voterDTO.getFirstVotedYear().longValue() );
-        }
-        if ( voterDTO.getGender() != null ) {
-            voter.setGender( genderEnumToGender1( voterDTO.getGender() ) );
-        }
-        if ( voterDTO.getHasVotedBefore() != null ) {
-            voter.setHasVotedBefore( voterDTO.getHasVotedBefore() );
-        }
-        if ( voterDTO.getImage() != null ) {
-            voter.setImage( voterDTO.getImage() );
-        }
-        if ( voterDTO.getLastName() != null ) {
-            voter.setLastName( voterDTO.getLastName() );
-        }
-        if ( voterDTO.getMailingAddress() != null ) {
-            if ( voter.getMailingAddress() == null ) {
-                voter.setMailingAddress( new Address() );
-            }
-            addressDTOToAddress( voterDTO.getMailingAddress(), voter.getMailingAddress() );
         }
         if ( voterDTO.getMiddleName() != null ) {
             voter.setMiddleName( voterDTO.getMiddleName() );
         }
+        if ( voterDTO.getLastName() != null ) {
+            voter.setLastName( voterDTO.getLastName() );
+        }
+        if ( voterDTO.getSuffixName() != null ) {
+            voter.setSuffixName( voterDTO.getSuffixName() );
+        }
+        if ( voterDTO.getDateOfBirth() != null ) {
+            voter.setDateOfBirth( voterDTO.getDateOfBirth() );
+        }
+        if ( voterDTO.getGender() != null ) {
+            voter.setGender( genderEnumToGender1( voterDTO.getGender() ) );
+        }
+        if ( voterDTO.getDmvNumber() != null ) {
+            voter.setDmvNumber( voterDTO.getDmvNumber() );
+        }
+        if ( voterDTO.getSsnNumber() != null ) {
+            voter.setSsnNumber( voterDTO.getSsnNumber() );
+        }
+        if ( voterDTO.getEmail() != null ) {
+            voter.setEmail( voterDTO.getEmail() );
+        }
         if ( voterDTO.getPhoneNumber() != null ) {
             voter.setPhoneNumber( voterDTO.getPhoneNumber() );
+        }
+        if ( voterDTO.getHasVotedBefore() != null ) {
+            voter.setHasVotedBefore( voterDTO.getHasVotedBefore() );
+        }
+        if ( voterDTO.getFirstVotedYear() != null ) {
+            voter.setFirstVotedYear( voterDTO.getFirstVotedYear().longValue() );
         }
         if ( voterDTO.getResidentialAddress() != null ) {
             if ( voter.getResidentialAddress() == null ) {
@@ -126,14 +123,17 @@ public class GlobalMapperImpl implements GlobalMapper {
             }
             addressDTOToAddress( voterDTO.getResidentialAddress(), voter.getResidentialAddress() );
         }
+        if ( voterDTO.getMailingAddress() != null ) {
+            if ( voter.getMailingAddress() == null ) {
+                voter.setMailingAddress( new Address() );
+            }
+            addressDTOToAddress( voterDTO.getMailingAddress(), voter.getMailingAddress() );
+        }
+        if ( voterDTO.getImage() != null ) {
+            voter.setImage( voterDTO.getImage() );
+        }
         if ( voterDTO.getSignature() != null ) {
             voter.setSignature( voterDTO.getSignature() );
-        }
-        if ( voterDTO.getSsnNumber() != null ) {
-            voter.setSsnNumber( voterDTO.getSsnNumber() );
-        }
-        if ( voterDTO.getSuffixName() != null ) {
-            voter.setSuffixName( voterDTO.getSuffixName() );
         }
 
         return voter;
@@ -148,26 +148,26 @@ public class GlobalMapperImpl implements GlobalMapper {
         if ( addressDTO.getAddressLine() != null ) {
             address.setAddressLine( addressDTO.getAddressLine() );
         }
-        if ( addressDTO.getAddressType() != null ) {
-            address.setAddressType( addressTypeEnumToAddressType( addressDTO.getAddressType() ) );
-        }
         if ( addressDTO.getAptNumber() != null ) {
             address.setAptNumber( addressDTO.getAptNumber() );
         }
         if ( addressDTO.getCity() != null ) {
             address.setCity( addressDTO.getCity() );
         }
-        if ( addressDTO.getCounty() != null ) {
-            address.setCounty( addressDTO.getCounty() );
-        }
         if ( addressDTO.getState() != null ) {
             address.setState( addressDTO.getState() );
+        }
+        if ( addressDTO.getCounty() != null ) {
+            address.setCounty( addressDTO.getCounty() );
         }
         if ( addressDTO.getTown() != null ) {
             address.setTown( addressDTO.getTown() );
         }
         if ( addressDTO.getZipCode() != null ) {
             address.setZipCode( addressDTO.getZipCode() );
+        }
+        if ( addressDTO.getAddressType() != null ) {
+            address.setAddressType( addressTypeEnumToAddressType( addressDTO.getAddressType() ) );
         }
 
         return address;
@@ -182,22 +182,22 @@ public class GlobalMapperImpl implements GlobalMapper {
         VoterRegisterDTO voterRegisterDTO = new VoterRegisterDTO();
 
         voterRegisterDTO.setPartyId( voterPartyPartyId( voter ) );
-        voterRegisterDTO.setDateOfBirth( voter.getDateOfBirth() );
-        voterRegisterDTO.setDmvNumber( voter.getDmvNumber() );
-        voterRegisterDTO.setEmail( voter.getEmail() );
         voterRegisterDTO.setFirstName( voter.getFirstName() );
+        voterRegisterDTO.setMiddleName( voter.getMiddleName() );
+        voterRegisterDTO.setLastName( voter.getLastName() );
+        voterRegisterDTO.setSuffixName( voter.getSuffixName() );
+        voterRegisterDTO.setDateOfBirth( voter.getDateOfBirth() );
+        voterRegisterDTO.setGender( genderToGenderEnum( voter.getGender() ) );
+        voterRegisterDTO.setDmvNumber( voter.getDmvNumber() );
+        voterRegisterDTO.setSsnNumber( voter.getSsnNumber() );
+        voterRegisterDTO.setEmail( voter.getEmail() );
+        voterRegisterDTO.setPhoneNumber( voter.getPhoneNumber() );
+        voterRegisterDTO.setHasVotedBefore( voter.isHasVotedBefore() );
         if ( voter.getFirstVotedYear() != null ) {
             voterRegisterDTO.setFirstVotedYear( voter.getFirstVotedYear().intValue() );
         }
-        voterRegisterDTO.setGender( genderToGenderEnum( voter.getGender() ) );
-        voterRegisterDTO.setHasVotedBefore( voter.isHasVotedBefore() );
-        voterRegisterDTO.setLastName( voter.getLastName() );
-        voterRegisterDTO.setMailingAddress( toAddressDTO( voter.getMailingAddress() ) );
-        voterRegisterDTO.setMiddleName( voter.getMiddleName() );
-        voterRegisterDTO.setPhoneNumber( voter.getPhoneNumber() );
         voterRegisterDTO.setResidentialAddress( toAddressDTO( voter.getResidentialAddress() ) );
-        voterRegisterDTO.ssnNumber( voter.getSsnNumber() );
-        voterRegisterDTO.suffixName( voter.getSuffixName() );
+        voterRegisterDTO.setMailingAddress( toAddressDTO( voter.getMailingAddress() ) );
 
         return voterRegisterDTO;
     }
@@ -211,26 +211,26 @@ public class GlobalMapperImpl implements GlobalMapper {
         VoterDataDTO voterDataDTO = new VoterDataDTO();
 
         voterDataDTO.setParty( voterPartyPartyName( voter ) );
-        voterDataDTO.status( voterVoterStatusStatusDesc( voter ) );
-        voterDataDTO.setDateOfBirth( voter.getDateOfBirth() );
-        voterDataDTO.setDmvNumber( voter.getDmvNumber() );
-        voterDataDTO.setEmail( voter.getEmail() );
+        voterDataDTO.setStatus( voterVoterStatusStatusDesc( voter ) );
+        voterDataDTO.setVoterId( voter.getVoterId() );
         voterDataDTO.setFirstName( voter.getFirstName() );
+        voterDataDTO.setMiddleName( voter.getMiddleName() );
+        voterDataDTO.setLastName( voter.getLastName() );
+        voterDataDTO.setSuffixName( voter.getSuffixName() );
+        voterDataDTO.setDateOfBirth( voter.getDateOfBirth() );
+        voterDataDTO.setGender( genderToGenderEnum1( voter.getGender() ) );
+        voterDataDTO.setDmvNumber( voter.getDmvNumber() );
+        voterDataDTO.setSsnNumber( voter.getSsnNumber() );
+        voterDataDTO.setEmail( voter.getEmail() );
+        voterDataDTO.setPhoneNumber( voter.getPhoneNumber() );
+        voterDataDTO.setHasVotedBefore( voter.isHasVotedBefore() );
         if ( voter.getFirstVotedYear() != null ) {
             voterDataDTO.setFirstVotedYear( voter.getFirstVotedYear().intValue() );
         }
-        voterDataDTO.setGender( genderToGenderEnum1( voter.getGender() ) );
-        voterDataDTO.setHasVotedBefore( voter.isHasVotedBefore() );
-        voterDataDTO.setImage( voter.getImage() );
-        voterDataDTO.setLastName( voter.getLastName() );
-        voterDataDTO.setMailingAddress( toAddressDTO( voter.getMailingAddress() ) );
-        voterDataDTO.setMiddleName( voter.getMiddleName() );
-        voterDataDTO.setPhoneNumber( voter.getPhoneNumber() );
         voterDataDTO.setResidentialAddress( toAddressDTO( voter.getResidentialAddress() ) );
-        voterDataDTO.signature( voter.getSignature() );
-        voterDataDTO.ssnNumber( voter.getSsnNumber() );
-        voterDataDTO.suffixName( voter.getSuffixName() );
-        voterDataDTO.voterId( voter.getVoterId() );
+        voterDataDTO.setMailingAddress( toAddressDTO( voter.getMailingAddress() ) );
+        voterDataDTO.setImage( voter.getImage() );
+        voterDataDTO.setSignature( voter.getSignature() );
 
         return voterDataDTO;
     }
@@ -244,13 +244,13 @@ public class GlobalMapperImpl implements GlobalMapper {
         Party party = new Party();
 
         party.setPartySymbol( partyDTO.getPartySymbol() );
-        party.setHeadQuarters( partyDTO.getHeadQuarters() );
+        party.setPartyName( partyDTO.getPartyName() );
         party.setPartyAbbreviation( partyDTO.getPartyAbbreviation() );
         party.setPartyFoundationYear( partyDTO.getPartyFoundationYear() );
+        party.setPartyWebSite( partyDTO.getPartyWebSite() );
+        party.setHeadQuarters( partyDTO.getHeadQuarters() );
         party.setPartyFounderName( partyDTO.getPartyFounderName() );
         party.setPartyLeaderName( partyDTO.getPartyLeaderName() );
-        party.setPartyName( partyDTO.getPartyName() );
-        party.setPartyWebSite( partyDTO.getPartyWebSite() );
 
         return party;
     }
@@ -264,14 +264,14 @@ public class GlobalMapperImpl implements GlobalMapper {
         PartyDataDTO partyDataDTO = new PartyDataDTO();
 
         partyDataDTO.setPartySymbol( party.getPartySymbol() );
-        partyDataDTO.setHeadQuarters( party.getHeadQuarters() );
-        partyDataDTO.setPartyAbbreviation( party.getPartyAbbreviation() );
-        partyDataDTO.setPartyFoundationYear( party.getPartyFoundationYear() );
-        partyDataDTO.setPartyFounderName( party.getPartyFounderName() );
-        partyDataDTO.setPartyId( party.getPartyId() );
-        partyDataDTO.setPartyLeaderName( party.getPartyLeaderName() );
         partyDataDTO.setPartyName( party.getPartyName() );
+        partyDataDTO.setPartyAbbreviation( party.getPartyAbbreviation() );
+        partyDataDTO.setPartyFounderName( party.getPartyFounderName() );
+        partyDataDTO.setPartyFoundationYear( party.getPartyFoundationYear() );
+        partyDataDTO.setPartyLeaderName( party.getPartyLeaderName() );
         partyDataDTO.setPartyWebSite( party.getPartyWebSite() );
+        partyDataDTO.setHeadQuarters( party.getHeadQuarters() );
+        partyDataDTO.setPartyId( party.getPartyId() );
 
         return partyDataDTO;
     }
@@ -282,29 +282,29 @@ public class GlobalMapperImpl implements GlobalMapper {
             return;
         }
 
-        if ( partyUpdateDTO.getHeadQuarters() != null ) {
-            party.setHeadQuarters( partyUpdateDTO.getHeadQuarters() );
+        if ( partyUpdateDTO.getPartyName() != null ) {
+            party.setPartyName( partyUpdateDTO.getPartyName() );
         }
         if ( partyUpdateDTO.getPartyAbbreviation() != null ) {
             party.setPartyAbbreviation( partyUpdateDTO.getPartyAbbreviation() );
         }
+        if ( partyUpdateDTO.getPartySymbol() != null ) {
+            party.setPartySymbol( partyUpdateDTO.getPartySymbol() );
+        }
         if ( partyUpdateDTO.getPartyFoundationYear() != null ) {
             party.setPartyFoundationYear( partyUpdateDTO.getPartyFoundationYear() );
+        }
+        if ( partyUpdateDTO.getPartyWebSite() != null ) {
+            party.setPartyWebSite( partyUpdateDTO.getPartyWebSite() );
+        }
+        if ( partyUpdateDTO.getHeadQuarters() != null ) {
+            party.setHeadQuarters( partyUpdateDTO.getHeadQuarters() );
         }
         if ( partyUpdateDTO.getPartyFounderName() != null ) {
             party.setPartyFounderName( partyUpdateDTO.getPartyFounderName() );
         }
         if ( partyUpdateDTO.getPartyLeaderName() != null ) {
             party.setPartyLeaderName( partyUpdateDTO.getPartyLeaderName() );
-        }
-        if ( partyUpdateDTO.getPartyName() != null ) {
-            party.setPartyName( partyUpdateDTO.getPartyName() );
-        }
-        if ( partyUpdateDTO.getPartySymbol() != null ) {
-            party.setPartySymbol( partyUpdateDTO.getPartySymbol() );
-        }
-        if ( partyUpdateDTO.getPartyWebSite() != null ) {
-            party.setPartyWebSite( partyUpdateDTO.getPartyWebSite() );
         }
     }
 
@@ -317,13 +317,13 @@ public class GlobalMapperImpl implements GlobalMapper {
         Address address = new Address();
 
         address.setAddressLine( addressDTO.getAddressLine() );
-        address.setAddressType( addressTypeEnumToAddressType( addressDTO.getAddressType() ) );
         address.setAptNumber( addressDTO.getAptNumber() );
         address.setCity( addressDTO.getCity() );
-        address.setCounty( addressDTO.getCounty() );
         address.setState( addressDTO.getState() );
+        address.setCounty( addressDTO.getCounty() );
         address.setTown( addressDTO.getTown() );
         address.setZipCode( addressDTO.getZipCode() );
+        address.setAddressType( addressTypeEnumToAddressType( addressDTO.getAddressType() ) );
 
         return address;
     }
@@ -337,13 +337,13 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressDTO addressDTO = new AddressDTO();
 
         addressDTO.setAddressLine( address.getAddressLine() );
-        addressDTO.setAddressType( addressTypeToAddressTypeEnum( address.getAddressType() ) );
         addressDTO.setAptNumber( address.getAptNumber() );
         addressDTO.setCity( address.getCity() );
+        addressDTO.setState( address.getState() );
+        addressDTO.setZipCode( address.getZipCode() );
+        addressDTO.setAddressType( addressTypeToAddressTypeEnum( address.getAddressType() ) );
         addressDTO.setCounty( address.getCounty() );
-        addressDTO.state( address.getState() );
-        addressDTO.town( address.getTown() );
-        addressDTO.zipCode( address.getZipCode() );
+        addressDTO.setTown( address.getTown() );
 
         return addressDTO;
     }
@@ -384,11 +384,11 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         Election election = new Election();
 
-        election.setElectionDate( electionDTO.getElectionDate() );
         election.setElectionId( electionDTO.getElectionId() );
         election.setElectionName( electionDTO.getElectionName() );
-        election.setElectionState( electionDTO.getElectionState() );
         election.setElectionType( electionDTO.getElectionType() );
+        election.setElectionDate( electionDTO.getElectionDate() );
+        election.setElectionState( electionDTO.getElectionState() );
         if ( electionDTO.getTotalSeats() != null ) {
             election.setTotalSeats( electionDTO.getTotalSeats() );
         }
@@ -404,12 +404,12 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         ElectionDTO electionDTO = new ElectionDTO();
 
-        electionDTO.setElectionDate( election.getElectionDate() );
         electionDTO.setElectionId( election.getElectionId() );
         electionDTO.setElectionName( election.getElectionName() );
-        electionDTO.setElectionState( election.getElectionState() );
         electionDTO.setElectionType( election.getElectionType() );
-        electionDTO.totalSeats( election.getTotalSeats() );
+        electionDTO.setElectionDate( election.getElectionDate() );
+        electionDTO.setElectionState( election.getElectionState() );
+        electionDTO.setTotalSeats( election.getTotalSeats() );
 
         return electionDTO;
     }
@@ -437,16 +437,16 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressHistory addressHistory = new AddressHistory();
 
         addressHistory.setCreatedAt( address.getCreatedAt() );
-        addressHistory.setCreatedBy( address.getCreatedBy() );
         addressHistory.setUpdatedAt( address.getUpdatedAt() );
+        addressHistory.setCreatedBy( address.getCreatedBy() );
         addressHistory.setUpdatedBy( address.getUpdatedBy() );
         addressHistory.setAddressLine( address.getAddressLine() );
-        addressHistory.setAddressType( address.getAddressType() );
         addressHistory.setAptNumber( address.getAptNumber() );
         addressHistory.setCity( address.getCity() );
         addressHistory.setCounty( address.getCounty() );
         addressHistory.setState( address.getState() );
         addressHistory.setZipCode( address.getZipCode() );
+        addressHistory.setAddressType( address.getAddressType() );
 
         return addressHistory;
     }
@@ -460,14 +460,14 @@ public class GlobalMapperImpl implements GlobalMapper {
         NameHistory nameHistory = new NameHistory();
 
         nameHistory.setCreatedAt( voter.getCreatedAt() );
-        nameHistory.setCreatedBy( voter.getCreatedBy() );
         nameHistory.setUpdatedAt( voter.getUpdatedAt() );
+        nameHistory.setCreatedBy( voter.getCreatedBy() );
         nameHistory.setUpdatedBy( voter.getUpdatedBy() );
-        nameHistory.setFirstName( voter.getFirstName() );
-        nameHistory.setLastName( voter.getLastName() );
-        nameHistory.setMiddleName( voter.getMiddleName() );
-        nameHistory.setSuffixName( voter.getSuffixName() );
         nameHistory.setVoterId( voter.getVoterId() );
+        nameHistory.setFirstName( voter.getFirstName() );
+        nameHistory.setMiddleName( voter.getMiddleName() );
+        nameHistory.setLastName( voter.getLastName() );
+        nameHistory.setSuffixName( voter.getSuffixName() );
 
         return nameHistory;
     }
@@ -480,12 +480,12 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         Officers officers = new Officers();
 
-        officers.setEmail( officersRegisterDTO.getEmail() );
-        officers.setPassword( officersRegisterDTO.getPassword() );
+        officers.setSsnNumber( officersRegisterDTO.getSsnNumber() );
         if ( officersRegisterDTO.getRole() != null ) {
             officers.setRole( Enum.valueOf( RoleType.class, officersRegisterDTO.getRole() ) );
         }
-        officers.setSsnNumber( officersRegisterDTO.getSsnNumber() );
+        officers.setPassword( officersRegisterDTO.getPassword() );
+        officers.setEmail( officersRegisterDTO.getEmail() );
 
         return officers;
     }
@@ -498,12 +498,12 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         OfficersRegisterDTO officersRegisterDTO = new OfficersRegisterDTO();
 
-        officersRegisterDTO.setEmail( officers.getEmail() );
-        officersRegisterDTO.setPassword( officers.getPassword() );
+        officersRegisterDTO.setSsnNumber( officers.getSsnNumber() );
         if ( officers.getRole() != null ) {
             officersRegisterDTO.setRole( officers.getRole().name() );
         }
-        officersRegisterDTO.ssnNumber( officers.getSsnNumber() );
+        officersRegisterDTO.setEmail( officers.getEmail() );
+        officersRegisterDTO.setPassword( officers.getPassword() );
 
         return officersRegisterDTO;
     }
@@ -596,26 +596,26 @@ public class GlobalMapperImpl implements GlobalMapper {
         if ( transferAddress.getAddressLine() != null ) {
             address.setAddressLine( transferAddress.getAddressLine() );
         }
-        if ( transferAddress.getAddressType() != null ) {
-            address.setAddressType( addressTypeEnumToAddressType1( transferAddress.getAddressType() ) );
-        }
         if ( transferAddress.getAptNumber() != null ) {
             address.setAptNumber( transferAddress.getAptNumber() );
         }
         if ( transferAddress.getCity() != null ) {
             address.setCity( transferAddress.getCity() );
         }
-        if ( transferAddress.getCounty() != null ) {
-            address.setCounty( transferAddress.getCounty() );
-        }
         if ( transferAddress.getState() != null ) {
             address.setState( transferAddress.getState() );
+        }
+        if ( transferAddress.getCounty() != null ) {
+            address.setCounty( transferAddress.getCounty() );
         }
         if ( transferAddress.getTown() != null ) {
             address.setTown( transferAddress.getTown() );
         }
         if ( transferAddress.getZipCode() != null ) {
             address.setZipCode( transferAddress.getZipCode() );
+        }
+        if ( transferAddress.getAddressType() != null ) {
+            address.setAddressType( addressTypeEnumToAddressType1( transferAddress.getAddressType() ) );
         }
 
         return address;
@@ -639,9 +639,6 @@ public class GlobalMapperImpl implements GlobalMapper {
         if ( addressDTO.getAddressLine() != null ) {
             address.setAddressLine( addressDTO.getAddressLine() );
         }
-        if ( addressDTO.getAddressType() != null ) {
-            address.setAddressType( addressTypeEnumToAddressType2( addressDTO.getAddressType() ) );
-        }
         if ( addressDTO.getAptNumber() != null ) {
             address.setAptNumber( addressDTO.getAptNumber() );
         }
@@ -653,6 +650,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         }
         if ( addressDTO.getZipCode() != null ) {
             address.setZipCode( addressDTO.getZipCode() );
+        }
+        if ( addressDTO.getAddressType() != null ) {
+            address.setAddressType( addressTypeEnumToAddressType2( addressDTO.getAddressType() ) );
         }
 
         return address;
@@ -675,9 +675,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         Gender gender;
 
         switch ( genderEnum ) {
-            case FEMALE: gender = Gender.FEMALE;
-            break;
             case MALE: gender = Gender.MALE;
+            break;
+            case FEMALE: gender = Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + genderEnum );
         }
@@ -693,9 +693,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         Gender gender;
 
         switch ( genderEnum ) {
-            case FEMALE: gender = Gender.FEMALE;
-            break;
             case MALE: gender = Gender.MALE;
+            break;
+            case FEMALE: gender = Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + genderEnum );
         }
@@ -711,9 +711,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressType addressType;
 
         switch ( addressTypeEnum ) {
-            case MAILING: addressType = AddressType.MAILING;
-            break;
             case RESIDENTIAL: addressType = AddressType.RESIDENTIAL;
+            break;
+            case MAILING: addressType = AddressType.MAILING;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressTypeEnum );
         }
@@ -737,9 +737,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         VoterRegisterDTO.GenderEnum genderEnum;
 
         switch ( gender ) {
-            case FEMALE: genderEnum = VoterRegisterDTO.GenderEnum.FEMALE;
-            break;
             case MALE: genderEnum = VoterRegisterDTO.GenderEnum.MALE;
+            break;
+            case FEMALE: genderEnum = VoterRegisterDTO.GenderEnum.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
@@ -771,9 +771,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         VoterDataDTO.GenderEnum genderEnum;
 
         switch ( gender ) {
-            case FEMALE: genderEnum = VoterDataDTO.GenderEnum.FEMALE;
-            break;
             case MALE: genderEnum = VoterDataDTO.GenderEnum.MALE;
+            break;
+            case FEMALE: genderEnum = VoterDataDTO.GenderEnum.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
@@ -789,9 +789,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressDTO.AddressTypeEnum addressTypeEnum;
 
         switch ( addressType ) {
-            case MAILING: addressTypeEnum = AddressDTO.AddressTypeEnum.MAILING;
-            break;
             case RESIDENTIAL: addressTypeEnum = AddressDTO.AddressTypeEnum.RESIDENTIAL;
+            break;
+            case MAILING: addressTypeEnum = AddressDTO.AddressTypeEnum.MAILING;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressType );
         }
@@ -806,8 +806,8 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         VoterStatusDataDTO voterStatusDataDTO = new VoterStatusDataDTO();
 
-        voterStatusDataDTO.statusDesc( voterStatus.getStatusDesc() );
-        voterStatusDataDTO.statusId( voterStatus.getStatusId() );
+        voterStatusDataDTO.setStatusId( voterStatus.getStatusId() );
+        voterStatusDataDTO.setStatusDesc( voterStatus.getStatusDesc() );
 
         return voterStatusDataDTO;
     }
@@ -819,13 +819,13 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         OfficersResponseDTO officersResponseDTO = new OfficersResponseDTO();
 
-        officersResponseDTO.setEmail( officers.getEmail() );
         officersResponseDTO.setOfficerId( officers.getOfficerId() );
-        officersResponseDTO.setPassword( officers.getPassword() );
+        officersResponseDTO.setSsnNumber( officers.getSsnNumber() );
         if ( officers.getRole() != null ) {
             officersResponseDTO.setRole( officers.getRole().name() );
         }
-        officersResponseDTO.ssnNumber( officers.getSsnNumber() );
+        officersResponseDTO.setEmail( officers.getEmail() );
+        officersResponseDTO.setPassword( officers.getPassword() );
 
         return officersResponseDTO;
     }
@@ -837,15 +837,15 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         NameHistoryDataDTO nameHistoryDataDTO = new NameHistoryDataDTO();
 
-        nameHistoryDataDTO.setCreatedAt( nameHistory.getCreatedAt() );
-        nameHistoryDataDTO.setFirstName( nameHistory.getFirstName() );
         if ( nameHistory.getId() != null ) {
             nameHistoryDataDTO.setId( nameHistory.getId().intValue() );
         }
-        nameHistoryDataDTO.setLastName( nameHistory.getLastName() );
+        nameHistoryDataDTO.setFirstName( nameHistory.getFirstName() );
         nameHistoryDataDTO.setMiddleName( nameHistory.getMiddleName() );
-        nameHistoryDataDTO.suffixName( nameHistory.getSuffixName() );
-        nameHistoryDataDTO.updatedAt( nameHistory.getUpdatedAt() );
+        nameHistoryDataDTO.setLastName( nameHistory.getLastName() );
+        nameHistoryDataDTO.setSuffixName( nameHistory.getSuffixName() );
+        nameHistoryDataDTO.setCreatedAt( nameHistory.getCreatedAt() );
+        nameHistoryDataDTO.setUpdatedAt( nameHistory.getUpdatedAt() );
 
         return nameHistoryDataDTO;
     }
@@ -857,10 +857,10 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         StatusHistoryDataDTO statusHistoryDataDTO = new StatusHistoryDataDTO();
 
-        statusHistoryDataDTO.setCreatedAt( statusHistory.getCreatedAt() );
         statusHistoryDataDTO.setHistoryId( statusHistory.getHistoryId() );
-        statusHistoryDataDTO.status( statusHistory.getStatus() );
-        statusHistoryDataDTO.updatedAt( statusHistory.getUpdatedAt() );
+        statusHistoryDataDTO.setStatus( statusHistory.getStatus() );
+        statusHistoryDataDTO.setCreatedAt( statusHistory.getCreatedAt() );
+        statusHistoryDataDTO.setUpdatedAt( statusHistory.getUpdatedAt() );
 
         return statusHistoryDataDTO;
     }
@@ -873,9 +873,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressHistoryDataDTO.AddressTypeEnum addressTypeEnum;
 
         switch ( addressType ) {
-            case MAILING: addressTypeEnum = AddressHistoryDataDTO.AddressTypeEnum.MAILING;
-            break;
             case RESIDENTIAL: addressTypeEnum = AddressHistoryDataDTO.AddressTypeEnum.RESIDENTIAL;
+            break;
+            case MAILING: addressTypeEnum = AddressHistoryDataDTO.AddressTypeEnum.MAILING;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressType );
         }
@@ -890,18 +890,18 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         AddressHistoryDataDTO addressHistoryDataDTO = new AddressHistoryDataDTO();
 
-        addressHistoryDataDTO.setAddressLine( addressHistory.getAddressLine() );
-        addressHistoryDataDTO.setAddressType( addressTypeToAddressTypeEnum1( addressHistory.getAddressType() ) );
-        addressHistoryDataDTO.setAptNumber( addressHistory.getAptNumber() );
-        addressHistoryDataDTO.setCity( addressHistory.getCity() );
-        addressHistoryDataDTO.setCounty( addressHistory.getCounty() );
-        addressHistoryDataDTO.setCreatedAt( addressHistory.getCreatedAt() );
         if ( addressHistory.getHistoryId() != null ) {
             addressHistoryDataDTO.setHistoryId( addressHistory.getHistoryId().intValue() );
         }
-        addressHistoryDataDTO.state( addressHistory.getState() );
-        addressHistoryDataDTO.updatedAt( addressHistory.getUpdatedAt() );
-        addressHistoryDataDTO.zipCode( addressHistory.getZipCode() );
+        addressHistoryDataDTO.setAddressLine( addressHistory.getAddressLine() );
+        addressHistoryDataDTO.setAptNumber( addressHistory.getAptNumber() );
+        addressHistoryDataDTO.setCity( addressHistory.getCity() );
+        addressHistoryDataDTO.setCounty( addressHistory.getCounty() );
+        addressHistoryDataDTO.setState( addressHistory.getState() );
+        addressHistoryDataDTO.setZipCode( addressHistory.getZipCode() );
+        addressHistoryDataDTO.setAddressType( addressTypeToAddressTypeEnum1( addressHistory.getAddressType() ) );
+        addressHistoryDataDTO.setCreatedAt( addressHistory.getCreatedAt() );
+        addressHistoryDataDTO.setUpdatedAt( addressHistory.getUpdatedAt() );
 
         return addressHistoryDataDTO;
     }
@@ -913,21 +913,21 @@ public class GlobalMapperImpl implements GlobalMapper {
 
         AuditDataDTO auditDataDTO = new AuditDataDTO();
 
-        Map<String, Object> map = audit.getChangeFields();
-        if ( map != null ) {
-            auditDataDTO.setChangeFields( new LinkedHashMap<String, Object>( map ) );
-        }
-        auditDataDTO.setCreatedAt( audit.getCreatedAt() );
-        auditDataDTO.setCreatedBy( audit.getCreatedBy() );
         auditDataDTO.setId( audit.getId() );
-        Map<String, Object> map1 = audit.getOldFields();
-        if ( map1 != null ) {
-            auditDataDTO.setOldFields( new LinkedHashMap<String, Object>( map1 ) );
+        auditDataDTO.setTableName( audit.getTableName() );
+        auditDataDTO.setVoterId( audit.getVoterId() );
+        Map<String, Object> map = audit.getOldFields();
+        if ( map != null ) {
+            auditDataDTO.setOldFields( new LinkedHashMap<String, Object>( map ) );
         }
-        auditDataDTO.tableName( audit.getTableName() );
-        auditDataDTO.updatedAt( audit.getUpdatedAt() );
-        auditDataDTO.updatedBy( audit.getUpdatedBy() );
-        auditDataDTO.voterId( audit.getVoterId() );
+        Map<String, Object> map1 = audit.getChangeFields();
+        if ( map1 != null ) {
+            auditDataDTO.setChangeFields( new LinkedHashMap<String, Object>( map1 ) );
+        }
+        auditDataDTO.setCreatedBy( audit.getCreatedBy() );
+        auditDataDTO.setUpdatedBy( audit.getUpdatedBy() );
+        auditDataDTO.setCreatedAt( audit.getCreatedAt() );
+        auditDataDTO.setUpdatedAt( audit.getUpdatedAt() );
 
         return auditDataDTO;
     }
@@ -940,9 +940,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressType addressType;
 
         switch ( addressTypeEnum ) {
-            case MAILING: addressType = AddressType.MAILING;
-            break;
             case RESIDENTIAL: addressType = AddressType.RESIDENTIAL;
+            break;
+            case MAILING: addressType = AddressType.MAILING;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressTypeEnum );
         }
@@ -958,9 +958,9 @@ public class GlobalMapperImpl implements GlobalMapper {
         AddressType addressType;
 
         switch ( addressTypeEnum ) {
-            case MAILING: addressType = AddressType.MAILING;
-            break;
             case RESIDENTIAL: addressType = AddressType.RESIDENTIAL;
+            break;
+            case MAILING: addressType = AddressType.MAILING;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + addressTypeEnum );
         }

@@ -36,7 +36,7 @@ public class PartyServiceImpl implements PartyService {
 
     @Override
     public PartyDataDTO saveParty(PartyRegisterDTO partyDTO) {
-        log.info("party registration for : {},{},{},{},{},{},{}", partyDTO.getPartyName(),partyDTO.getPartyAbbreviation(),partyDTO.getPartyFounderName(),partyDTO.getPartyFoundationYear(),partyDTO.getPartyLeaderName(),partyDTO.getPartyWebSite(),partyDTO.getHeadQuarters());
+        log.info("Party Registration for : {},{},{},{},{},{},{}", partyDTO.getPartyName(),partyDTO.getPartyAbbreviation(),partyDTO.getPartyFounderName(),partyDTO.getPartyFoundationYear(),partyDTO.getPartyLeaderName(),partyDTO.getPartyWebSite(),partyDTO.getHeadQuarters());
 
         if(partyRepository.existsByPartyNameOrPartyAbbreviationOrPartyLeaderName(partyDTO.getPartyName(),partyDTO.getPartyAbbreviation(), partyDTO.getPartyLeaderName()))
             throw new DataAlreadyExistException("Party with name{"+partyDTO.getPartyName()+"}, abbreviation{"+partyDTO.getPartyAbbreviation()+"} or leader name{"+partyDTO.getPartyLeaderName()+"} already exists");
@@ -163,4 +163,8 @@ public class PartyServiceImpl implements PartyService {
         }
         return null;
     }
+
+
+
+
 }
