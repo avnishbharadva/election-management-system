@@ -23,11 +23,11 @@ const defaultValues: FormData = {
   phoneNumber:null,
   dmvNumber: null,
   gender: "",
-  partyId:null,
+  party:"",
   dateOfBirth: "",
   firstVotedYear: null,
   hasVotedBefore: false,
-  statusId: null,
+  status: "",
   residentialAddress: {
     addressLine: "",
     aptNumber: "",
@@ -51,7 +51,7 @@ const defaultValues: FormData = {
   image:"",
   signature:""
 };
-type  voterFormProps{
+type  voterFormProps={
   voter:FormData,
   ssnNumber:number,
   onClose:() => void
@@ -198,12 +198,12 @@ type  voterFormProps{
             <Title variant="h6">Voting Information</Title>
             <DividerStyle/>
             <FormRowWide>
-              <PartyField name="partyId" control={control} label={"Select Party"} />
+              <PartyField name="party" control={control} label={"Select Party"} />
               <HasVotedBefore name="hasVotedBefore" control={control} label="Has Voted Before" />
               <FirstVotedYear name="firstVotedYear" control={control} label='firstVotedYear' disabled={hasVoted} />
             </FormRowWide>
             <FormRow>
-              <StatusField label="status: " name="statusId" control={control} />
+              <StatusField label="status: " name="status" control={control} />
             </FormRow>
           </VotingInfo>
 

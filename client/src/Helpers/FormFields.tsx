@@ -240,7 +240,7 @@ export const StatusField = ({ control, name }: FieldProps) => {
                     return (
                         <FormControlLabel 
                             key={index} 
-                            value={status?.statusId} 
+                            value={status?.statusDesc} 
                             control={<Radio />} 
                             label={status?.statusDesc} 
                         />
@@ -281,7 +281,7 @@ const PartyData= data?.data
                         ) : isError ? (
                             <MenuItem value="" disabled>Error loading parties</MenuItem>
                         ) : PartyData?.map((party: any) => (
-                            <MenuItem key={party.partyId} value={party.partyId}>{party.partyName}</MenuItem>
+                            <MenuItem key={party.partyId} value={party.partyName}>{party.partyName}</MenuItem>
                         ))}
                     </Select>
                     {(fieldState?.error || isError) && (
