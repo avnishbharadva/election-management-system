@@ -25,7 +25,7 @@ import jakarta.annotation.Generated;
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
 @JsonTypeName("voterDataDTO")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-20T18:47:24.838233900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-25T10:50:57.574994300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class VoterDataDTO {
 
   private String voterId;

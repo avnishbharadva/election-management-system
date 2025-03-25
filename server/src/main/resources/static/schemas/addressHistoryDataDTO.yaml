@@ -30,11 +30,6 @@ properties:
     type: string
     example: "10001"
     description: Zip code (5-digit)
-  addressType:
-    type: string
-    enum: [RESIDENTIAL,MAILING]
-    example: "RESIDENTIAL"
-    description: Type of address (RESIDENTIAL or MAILING)
   createdAt:
     type: string
     format: date-time

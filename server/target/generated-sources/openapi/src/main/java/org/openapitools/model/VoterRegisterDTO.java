@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-20T18:47:24.838233900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-25T10:50:57.574994300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class VoterRegisterDTO {
 
   private String firstName;
@@ -89,7 +89,7 @@ public class VoterRegisterDTO {
 
   private Integer firstVotedYear;
 
-  private Long partyId;
+  private String party;
 
   private AddressDTO residentialAddress;
 
@@ -99,7 +99,7 @@ public class VoterRegisterDTO {
 
   private String signature;
 
-  private Long statusId;
+  private String status;
 
   /**
    * Constructor with only required parameters
@@ -358,24 +358,24 @@ public class VoterRegisterDTO {
     this.firstVotedYear = firstVotedYear;
   }
 
-  public VoterRegisterDTO partyId(Long partyId) {
-    this.partyId = partyId;
+  public VoterRegisterDTO party(String party) {
+    this.party = party;
     return this;
   }
 
   /**
-   * Get partyId
-   * @return partyId
+   * Party name must be between 3 and 30 characters.
+   * @return party
    */
-  
-  @Schema(name = "partyId", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("partyId")
-  public Long getPartyId() {
-    return partyId;
+  @Size(min = 3, max = 30) 
+  @Schema(name = "party", example = "Democratic Alliance", description = "Party name must be between 3 and 30 characters.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("party")
+  public String getParty() {
+    return party;
   }
 
-  public void setPartyId(Long partyId) {
-    this.partyId = partyId;
+  public void setParty(String party) {
+    this.party = party;
   }
 
   public VoterRegisterDTO residentialAddress(AddressDTO residentialAddress) {
@@ -458,24 +458,24 @@ public class VoterRegisterDTO {
     this.signature = signature;
   }
 
-  public VoterRegisterDTO statusId(Long statusId) {
-    this.statusId = statusId;
+  public VoterRegisterDTO status(String status) {
+    this.status = status;
     return this;
   }
 
   /**
-   * Get statusId
-   * @return statusId
+   * status of the voter
+   * @return status
    */
-  
-  @Schema(name = "statusId", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("statusId")
-  public Long getStatusId() {
-    return statusId;
+  @Size(min = 3, max = 10) 
+  @Schema(name = "status", example = "Active", description = "status of the voter", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("status")
+  public String getStatus() {
+    return status;
   }
 
-  public void setStatusId(Long statusId) {
-    this.statusId = statusId;
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   @Override
@@ -499,17 +499,17 @@ public class VoterRegisterDTO {
         Objects.equals(this.phoneNumber, voterRegisterDTO.phoneNumber) &&
         Objects.equals(this.hasVotedBefore, voterRegisterDTO.hasVotedBefore) &&
         Objects.equals(this.firstVotedYear, voterRegisterDTO.firstVotedYear) &&
-        Objects.equals(this.partyId, voterRegisterDTO.partyId) &&
+        Objects.equals(this.party, voterRegisterDTO.party) &&
         Objects.equals(this.residentialAddress, voterRegisterDTO.residentialAddress) &&
         Objects.equals(this.mailingAddress, voterRegisterDTO.mailingAddress) &&
         Objects.equals(this.image, voterRegisterDTO.image) &&
         Objects.equals(this.signature, voterRegisterDTO.signature) &&
-        Objects.equals(this.statusId, voterRegisterDTO.statusId);
+        Objects.equals(this.status, voterRegisterDTO.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(firstName, middleName, lastName, suffixName, dateOfBirth, gender, dmvNumber, ssnNumber, email, phoneNumber, hasVotedBefore, firstVotedYear, partyId, residentialAddress, mailingAddress, image, signature, statusId);
+    return Objects.hash(firstName, middleName, lastName, suffixName, dateOfBirth, gender, dmvNumber, ssnNumber, email, phoneNumber, hasVotedBefore, firstVotedYear, party, residentialAddress, mailingAddress, image, signature, status);
   }
 
   @Override
@@ -528,12 +528,12 @@ public class VoterRegisterDTO {
     sb.append("    phoneNumber: ").append(toIndentedString(phoneNumber)).append("\n");
     sb.append("    hasVotedBefore: ").append(toIndentedString(hasVotedBefore)).append("\n");
     sb.append("    firstVotedYear: ").append(toIndentedString(firstVotedYear)).append("\n");
-    sb.append("    partyId: ").append(toIndentedString(partyId)).append("\n");
+    sb.append("    party: ").append(toIndentedString(party)).append("\n");
     sb.append("    residentialAddress: ").append(toIndentedString(residentialAddress)).append("\n");
     sb.append("    mailingAddress: ").append(toIndentedString(mailingAddress)).append("\n");
     sb.append("    image: ").append(toIndentedString(image)).append("\n");
     sb.append("    signature: ").append(toIndentedString(signature)).append("\n");
-    sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("}");
     return sb.toString();
   }
