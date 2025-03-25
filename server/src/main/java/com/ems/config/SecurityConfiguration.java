@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers( "/officers/authenticate/**" , "/email/**" , "/api/password/**","/redoc.html","/v3/api-docs").permitAll();
-                    registry.requestMatchers("/voters/**","/api/candidate/**").hasAnyRole("STATE","COUNTY");
+                    registry.requestMatchers("/voters/**","/api/candidate/**","/api/counts").hasAnyRole("STATE","COUNTY");
                     registry.requestMatchers("/officers/register/**","/getAllRoles/**","/api/elections/**","/api/party/**").hasRole("STATE");
                     registry.requestMatchers("/actuator/health", "/actuator/info").permitAll();
                     registry.requestMatchers("/actuator/**").permitAll();

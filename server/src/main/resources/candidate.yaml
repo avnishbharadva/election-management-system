@@ -294,12 +294,12 @@ components:
         candidateImage:
           type: string
           description: URL or path of the candidate's image
-          example: "/images/candidate123.jpg"
+          example: "base64-encoded-image-string"
 
         candidateSignature:
           type: string
           description: Candidate's digital signature
-          example: "/signatures/candidate123.png"
+          example: "base64-encoded-signature-string"
     CandidateUpdateDto:
       type: object
       properties:
@@ -388,12 +388,12 @@ components:
         candidateImage:
           type: string
           description: URL or path of the candidate's image
-          example: "/images/candidate123.jpg"
+          example: "base64-encoded-image-string"
 
         candidateSignature:
           type: string
           description: Candidate's digital signature
-          example: "/signatures/candidate123.png"
+          example: "/base64-encoded-signature-string"
 
     ValidationErrorResponse:
       type: object

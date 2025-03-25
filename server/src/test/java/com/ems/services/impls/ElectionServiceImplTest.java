@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.*;
 import org.springframework.data.domain.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,20 +46,12 @@ class ElectionServiceImplTest {
     @InjectMocks
     private ElectionServiceImpl electionService;
 
-    @Mock
-    private ValidationErrorResponse validationErrorResponse;
 
-    private Election election;
-
-    private static final Long ELECTION_ID=1L;
-
-
-
-    private ElectionDTO electionDTO;
-
-
-    private ElectionUpdateDTO electionUpdateDTO;
     private ElectionSortDTO electionSortDTO;
+    private Election election;
+    private static final Long ELECTION_ID=1L;
+    private ElectionDTO electionDTO;
+    private ElectionUpdateDTO electionUpdateDTO;
     private Election election1;
     private Election election2;
     private Election election3;
@@ -120,7 +111,7 @@ class ElectionServiceImplTest {
         electionUpdateDTO.setElectionState("New York");
         electionUpdateDTO.setTotalSeats(10);
 
-        electionSortDTO = new ElectionSortDTO();
+
         electionSortDTO.setElectionId(1L);
         electionSortDTO.setElectionName("Presidential Election");
         electionSortDTO.setElectionDate(LocalDate.of(2025, 11, 9));
@@ -268,7 +259,7 @@ class ElectionServiceImplTest {
 
         assertEquals("Election is completed and cannot be updated.", exception.getMessage());
 
-      }
+    }
 
     @Test
     void updateElection_Fails_WhenSeatsAreInvalid(){
@@ -278,7 +269,6 @@ class ElectionServiceImplTest {
 
         electionUpdateDTO.setTotalSeats(0);
         log.debug("Attempting to update election with invalid total seats: {}", electionUpdateDTO.getTotalSeats());
-
 
         CustomValidationException exception = assertThrows(CustomValidationException.class,
                 () -> electionService.updateElection(ELECTION_ID,electionUpdateDTO));
@@ -414,21 +404,20 @@ class ElectionServiceImplTest {
         when(electionRepository.findAll(any(Pageable.class))).thenReturn(page);
         when(candidateMapper.toElectionSortDTO(any(Election.class)))
                 .thenAnswer(invocation -> {
-                    Election election = invocation.getArgument(0);
+                    Election electionSorted = invocation.getArgument(0);
                     ElectionSortDTO dto = new ElectionSortDTO();
-                    dto.setElectionId(election.getElectionId());
-                    dto.setElectionName(election.getElectionName());
-                    dto.setElectionDate(election.getElectionDate());
-                    dto.setTotalSeats(election.getTotalSeats());
-                    dto.setElectionType(election.getElectionType());
-                    dto.setElectionState(election.getElectionState());
+                    dto.setElectionId(electionSorted.getElectionId());
+                    dto.setElectionName(electionSorted.getElectionName());
+                    dto.setElectionDate(electionSorted.getElectionDate());
+                    dto.setTotalSeats(electionSorted.getTotalSeats());
+                    dto.setElectionType(electionSorted.getElectionType());
+                    dto.setElectionState(electionSorted.getElectionState());
                     return dto;
                 });
 
         log.debug("Calling service method...");
 
         ElectionPageResponse response = electionService.getElectionsSorted("invalid", 0, 10);
-
 
         verify(electionRepository, times(1)).findAll(any(Pageable.class));
         log.info("Response: {}", response);
@@ -512,11 +501,11 @@ class ElectionServiceImplTest {
         when(electionRepository.findAll()).thenReturn(new ArrayList<>());
 
         verify(electionRepository,never()).findAll();
+
         assertThrows(DataNotFoundException.class, () -> {
             log.warn("Expected DataNotFoundException thrown for empty election list");
             electionService.getAllElection();
         });
-
         log.info("Test getAllElection_NotFound passed successfully");
     }
 
