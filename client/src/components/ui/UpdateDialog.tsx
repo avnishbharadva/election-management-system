@@ -21,7 +21,7 @@ interface UpdateDialogProps {
  
 const UpdateDialog: React.FC<UpdateDialogProps> = ({
   open,
-  title = "",
+  title,
   handleClose,
   handleConfirm,
   originalData = {},
