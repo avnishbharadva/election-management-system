@@ -8,7 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogcss";
+import { ChangeBox, ImagePreview, StyledDialog } from "../../style/UpdateDialogCss";
  
 interface UpdateDialogProps {
   open: boolean;

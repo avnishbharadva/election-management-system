@@ -5,7 +5,6 @@ import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
 import { FieldProps } from '../Types/FormField.types';
    
-
   export const NumberField = ({
     control,
     name,

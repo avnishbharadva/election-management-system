@@ -1,4 +1,3 @@
-
 import SearchComponent from "../ui/SearchCandidate";
 import CandidateData from "../ui/CandidateData";
 import { FlexBoxColumn } from "../../style/CommanStyle";

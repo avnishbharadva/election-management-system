@@ -2,32 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { searchVoters } from '../../../api/voterApi/VoterApi';
 
 
-
-
-
-// const voterSlice = createSlice({
-//     name: 'voter',
-//     initialState :[],
-//     reducers: {
-//      addVoter(state, action:any) {
-//         state.push(...action.payload)
-//         },
-//         removeVoter(state, action:any) {
-            
-//             state = state.filter((voter) => voter?.id !== action.payload?.id)
-//         },
-//         removeAllVoter(state) {
-//         state = []
-// }
-// }
-// })
-
-
-// export const { addVoter,removeVoter,removeAllVoter } = voterSlice.actions
-// export default voterSlice.reducer
-
-
-// Async thunk to fetch voters
 export const fetchVoters = createAsyncThunk(
     'voter/fetchVoters',
     async ({ page }) => {

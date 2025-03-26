@@ -21,7 +21,7 @@ import TableComponent from "../ui/TableComponent";
 import { AddButtonContainer } from "../../style/PartyStyle";
 import DeleteDialog from "../ui/DeleteDialog";
 import ViewDetailsDialog from "../ui/ViewDetailsDialog";
-import { Party } from "../../Types/AddParty.types";
+import { Party } from "../../Types/Party.types";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const partyHeader = [

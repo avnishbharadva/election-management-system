@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { searchVoters } from './VoterAPI';
-// /import {searchVoters} from './VoterAPI';
 
-// Async thunk to fetch voters
 export const fetchVoters = createAsyncThunk(
     'voter/fetchVoters',
     async ({ page }) => {
@@ -33,11 +31,9 @@ export const fetchVoters = createAsyncThunk(
         .addCase(fetchVoters.fulfilled, (state, action) => {
           state.loading = false;
           console.log(action.payload)
-         // state.addVoter(action.payload.voters); // Append new voters
         })
         .addCase(fetchVoters.rejected, (state, action) => {
           state.loading = false;
-        //  state.error = action.error.message;
         });
     },
   });

@@ -32,10 +32,3 @@ const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
 };
  
 export default Model;
- 
- 
-
-
-
-
-

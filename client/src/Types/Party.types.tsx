@@ -10,3 +10,14 @@ export interface Party {
     partySymbol: string;
     partyLeaderName: string;
   }
+
+  export interface FormData {
+      partyName: string;
+      partyAbbreviation: string;
+      partyFoundationYear: string;
+      partyFounderName: string;
+      partyWebSite: string;
+      headQuarters: string;
+      partySymbol: string;
+      partyLeaderName: string;
+  }

@@ -24,7 +24,6 @@ const defaultValues: FormData = {
 };
 
 const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
-    // State for UpdateDialog
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [originalPartyData, setOriginalPartyData] = useState<Record<string, any>>({});
     const [updatedPartyData, setUpdatedPartyData] = useState<Record<string, any>>({});

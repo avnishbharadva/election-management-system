@@ -9,7 +9,6 @@ export const AddButtonContainer = styled(Box)({
 })
 
 //Partyform.tsx
-
 export const MainHead = styled(Box)({
      marginTop:'20px',
 })
@@ -22,14 +21,14 @@ export const Form = styled(Box)({
 export const Container = styled(Box)({
      display: 'flex',
      flexDirection: 'column',
-     gap: '16px', //new 
+     gap: '16px', 
      flex: 1, 
      overflowY: "auto", 
      maxHeight: "60vh"
 })
 
 export const Row = styled(Box)({
-  marginTop:'10px',  //new
+  marginTop:'10px', 
   display: 'flex',
   flexDirection: 'row',
   gap: '16px',

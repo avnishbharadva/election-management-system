@@ -64,12 +64,6 @@ export const AddressField = styled(Box)({
      marginTop: '20px',
 })
 
-// export const FormRowWide = styled(Box)({
-//   display: 'flex',
-//   alignItems: 'center',
-//   gap: '1rem',
-//   width: '66%',
-// })
 
 export const FormControlLabel = styled(Box)({
      marginTop: '20px',
@@ -112,41 +106,6 @@ export const SearchContainer = styled(Box)({
     gridTemplateColumns: '1fr auto',
     alignItems: 'center',
     gap: 2,
-})
-
-
-//ViewVoter
-export const BoxContainer = styled(Box)({
-  display: "flex", 
-  flexDirection: "column", 
-  gap: 3,
-});
-
-export const CardContainer = styled(Card)({
-  boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)', 
-  borderRadius: 2
-});
-
-export const MainContainer = styled(Box)({
-  fontWeight: "bold", 
-  color: "#1976d2",
-})
-
-export const StyleDivider = styled(Divider)({
-  marginBottom: 2,
-})
-
-export const ImageContent = styled(CardContent)({
-  display: "flex", 
-  flexDirection: "row", 
-  gap: 3, 
-  justifyContent: "center", 
-  alignItems: "center", 
-})
-
-export const TypographyStyle = styled(Box)({
-  textAlign: "center", 
-  color: "#757575" 
 })
 
 export const CenterBox= styled(Box)({
