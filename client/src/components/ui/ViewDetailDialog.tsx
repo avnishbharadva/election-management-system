@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -6,12 +5,11 @@ import {
   CardContent,
   Dialog,
   DialogActions,
-  DialogContent,
-  DialogTitle,
   Divider,
   Grid,
   Typography,
 } from "@mui/material";
+import { DialogContainer, DialogWrapper, ImageBox, ImageSign, ImageWarpper, Title } from "../../style/CommanStyle";
 
 interface SectionConfig {
   title: string;
@@ -43,39 +41,29 @@ export default function ViewDetailsDialog({
 }: ViewDetailsDialogProps) {
   if (!data) return null;
 
-  // Extract profile image or party symbol
   const imageSrc = imageKey && data[imageKey] ? getImageSrc(data[imageKey]) : null;
-
-  // Extract candidate signature
   const signatureSrc = signatureKey && data[signatureKey] ? getImageSrc(data[signatureKey]) : null;
 
   function getImageSrc(imageData: string) {
     if (!imageData) return "";
     if (imageData.startsWith("data:image")) return imageData;
 
-    let mimeType = "image/jpeg"; // Default to JPEG
-    if (imageData.startsWith("/9j/")) mimeType = "image/jpeg"; // JPEG
-    if (imageData.startsWith("iVBOR")) mimeType = "image/png"; // PNG
-    if (imageData.startsWith("PHN2")) mimeType = "image/svg+xml"; // SVG
+    let mimeType = "image/jpeg"; 
+    if (imageData.startsWith("/9j/")) mimeType = "image/jpeg"; 
+    if (imageData.startsWith("iVBOR")) mimeType = "image/png"; 
+    if (imageData.startsWith("PHN2")) mimeType = "image/svg+xml";
 
     return `data:${mimeType};base64,${imageData}`;
   }
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-      <DialogTitle
-        sx={{
-          backgroundColor: "#1976d2",
-          color: "white",
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
+      <Title>
         {title}
-      </DialogTitle>
+      </Title>
 
-      <DialogContent sx={{ padding: "20px", backgroundColor: "#f9f9f9" }}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <DialogWrapper>
+        <DialogContainer>
           {sections.map((section, index) => (
             <Card key={index} sx={{ boxShadow: 2, borderRadius: 2 }}>
               <CardContent>
@@ -85,7 +73,6 @@ export default function ViewDetailsDialog({
                 <Divider sx={{ marginBottom: 2 }} />
 
                 <Grid container spacing={2}>
-                  {/* ✅ First Section: Candidate Image / Party Symbol on Right Side */}
                   {index === 0 ? (
                     <>
                       <Grid item xs={8}>
@@ -106,21 +93,12 @@ export default function ViewDetailsDialog({
                           })}
                         </Grid>
                       </Grid>
-
-                      {/* 🖼️ Right Side Image + Signature */}
                       {imageSrc && (
                         <Grid item xs={4} sx={{ textAlign: "center" }}>
-                          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            {/* 🎭 Candidate Image or Party Symbol */}
-                            <img
+                          <ImageWarpper>
+                            <ImageBox
                               src={imageSrc}
                               alt="Profile"
-                              style={{
-                                width: "150px",
-                                height: "150px",
-                                borderRadius: "8px",
-                                boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
-                              }}
                               onError={(e) => {
                                 console.error("Error loading image", imageKey, e);
                                 (e.target as HTMLImageElement).src = "/default-placeholder.png";
@@ -129,19 +107,11 @@ export default function ViewDetailsDialog({
                             <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2", marginTop: 1 }}>
                              {imagelabel}
                             </Typography>
-
-                            {/* ✍️ Candidate Signature (Below Image) */}
                             {signatureSrc && (
                               <Box sx={{ marginTop: 2 }}>
-                                <img
+                                <ImageSign
                                   src={signatureSrc}
                                   alt="Signature"
-                                  style={{
-                                    width: "200px",
-                                    height: "80px",
-                                    borderRadius: "4px",
-                                    boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
-                                  }}
                                   onError={(e) => {
                                     console.error("Error loading signature", signatureKey, e);
                                     (e.target as HTMLImageElement).src = "/default-signature.png";
@@ -152,12 +122,11 @@ export default function ViewDetailsDialog({
                                 </Typography>
                               </Box>
                             )}
-                          </Box>
+                          </ImageWarpper>
                         </Grid>
                       )}
                     </>
                   ) : (
-                    // 🔹 Other Sections (Regular Fields)
                     section.fields.map((field, fieldIndex) => {
                       const value =
                         field.key.split(".").reduce((o, k) => (o || {})[k], data) || "N/A";
@@ -177,8 +146,8 @@ export default function ViewDetailsDialog({
               </CardContent>
             </Card>
           ))}
-        </Box>
-      </DialogContent>
+        </DialogContainer>
+      </DialogWrapper>
       <DialogActions
         sx={{
           justifyContent: "center",

@@ -1,4 +1,4 @@
-import { Box, Button, styled, Typography } from "@mui/material";
+import { Box, Button, DialogContent, DialogTitle, styled, Typography } from "@mui/material";
 export const FlexBoxColumn = styled(Box)({
 display:"flex",
 justifyContent:"center",
@@ -48,4 +48,41 @@ export const FlexBoxCenter = styled(Box)({
     padding: "10px",
     borderRadius: "8px",
   });
+
+  export const ImageWarpper = styled(Box)({
+    display: "flex", 
+    flexDirection: "column", 
+    alignItems: "center"
+  })
   
+  export const ImageBox = styled("img")({
+    width: "150px",
+    height: "150px",
+    borderRadius: "8px",
+    boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
+  })
+
+  export const ImageSign = styled("img")({
+    width: "200px",
+    height: "80px",
+    borderRadius: "4px",
+    boxShadow: "2px 2px 5px rgba(0,0,0,0.2)",
+  })
+
+  export const Title = styled(DialogTitle)({
+    backgroundColor: "#1976d2",
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold"
+  })
+
+  export const DialogWrapper = styled(DialogContent)({
+    padding: "20px", 
+    backgroundColor: "#f9f9f9"
+  })
+
+  export const DialogContainer = styled(Box)({
+    display: "flex", 
+    flexDirection: "column", 
+    gap: "3rem"
+  })
