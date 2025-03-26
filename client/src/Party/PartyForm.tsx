@@ -10,6 +10,7 @@ import { MainHead, Form, Container, Row, GridContainer, SubmitButtonContainer, C
 import UpdateDialog from "../components/ui/UpdateDialog"
 import { FormImage } from "../Helpers/FormFields";
 import { FormData } from "../Types/PartyForm.types";
+import Button from "@mui/material/Button";
 
 const defaultValues: FormData = {
     partyName: "",
@@ -199,12 +200,12 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                             </Box>
                         </Stack>
                         <SubmitButtonContainer>
-                            <StyledButton type="submit" variant="contained" disabled={isSubmitting}>
+                            <Button type="submit" variant="contained" disabled={isSubmitting}>
                                 Submit
-                            </StyledButton>
-                            <StyledButton variant="contained" onClick={onClose}>
+                            </Button>
+                            <Button variant="contained" onClick={onClose}>
                                 Cancel
-                            </StyledButton>
+                            </Button>
                         </SubmitButtonContainer>
                     </Container>
                 </Form>
