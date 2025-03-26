@@ -4,11 +4,7 @@ import { useStatusQuery } from '../store/feature/voter/VoterAction';
 import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
 import { FieldProps } from '../Types/FormField.types';
-// Type for the props of each form field component
-
- 
-    
-
+   
   export const NumberField = ({
     control,
     name,
