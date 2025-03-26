@@ -8,26 +8,6 @@ export const AddButtonContainer = styled(Box)({
      marginBottom: '20px',
 })
 
-// export const TableContainerMain = styled(Box)({
-//    marginTop: 2,
-//    overflow: 'auto',
-//    maxHeight: '461px',
-// })
-
-// export const TableMain = styled(Table)({
-//   minWidth: '100px',
-//   tableLayout: 'auto',
-//   whiteSpace: 'nowrap',
-// })
-
-// export const TableCellSticky = styled(TableCell)({
-//   position: 'sticky',
-//   top: 0,
-//   background: 'white',
-//   zIndex: 1,
-// })
-
-
 //Partyform.tsx
 
 export const MainHead = styled(Box)({

@@ -21,12 +21,7 @@ const partyApi = createApi({
                 }, 
                 providesTags: ['party'],
             }
-            ),
-        
-        // PartyById: builder.query({
-        //     query: (partyId) => `party/${partyId}`,
-        //     providesTags: ['party']
-        // }),                         
+            ),                      
  
         registerParty: builder.mutation({
             query: ({ post }: any) => {

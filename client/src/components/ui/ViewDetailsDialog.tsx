@@ -23,8 +23,8 @@ interface ViewDetailsDialogProps {
   handleClose: () => void;
   data: any;
   sections: SectionConfig[];
-  imageKey?: string; // Candidate Image or Party Symbol
-  signatureKey?: string; // Candidate Signature
+  imageKey?: string; 
+  signatureKey?: string;
   title: string;
   imagelabel : string,
   signaturelabel: string

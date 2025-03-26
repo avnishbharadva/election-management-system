@@ -21,19 +21,7 @@ import TableComponent from "../ui/TableComponent";
 import { AddButtonContainer } from "../../style/PartyStyle";
 import DeleteDialog from "../ui/DeleteDialog";
 import ViewDetailsDialog from "../ui/ViewDetailsDialog";
-
-interface Party {
-  partyId: string;
-  partyName: string;
-  partyAbbreviation: string;
-  party: string;
-  partyFoundationYear: string;
-  partyWebSite: string;
-  headQuarters: string;
-  partyFounderName: string;
-  partySymbol: string;
-  partyLeaderName: string;
-}
+import { Party } from "../../Types/AddParty.types";
 
 const partyHeader = [
   { id: "partyName", label: "Party Name" },
@@ -228,6 +216,7 @@ const AddParty = () => {
         </Model>
 
         <ViewDetailsDialog
+        title="Party Details"
           open={action.view}
           handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
           data={selectedParty}

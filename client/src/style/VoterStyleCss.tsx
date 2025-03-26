@@ -18,6 +18,15 @@ export const Head = styled(Title)({
      fontSize: "20px",
 })
 
+
+export const FormRowWide = styled(Box)({
+  display: 'grid',
+  gap: '1rem',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+ 
+})
+ 
+
 export const Container = styled(Box)({
      display: 'flex',
      flexDirection: 'column',
@@ -55,12 +64,12 @@ export const AddressField = styled(Box)({
      marginTop: '20px',
 })
 
-export const FormRowWide = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem',
-  width: '66%',
-})
+// export const FormRowWide = styled(Box)({
+//   display: 'flex',
+//   alignItems: 'center',
+//   gap: '1rem',
+//   width: '66%',
+// })
 
 export const FormControlLabel = styled(Box)({
      marginTop: '20px',
@@ -138,4 +147,9 @@ export const ImageContent = styled(CardContent)({
 export const TypographyStyle = styled(Box)({
   textAlign: "center", 
   color: "#757575" 
+})
+
+export const CenterBox= styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
 })

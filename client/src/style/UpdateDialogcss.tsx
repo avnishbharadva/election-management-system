@@ -36,4 +36,3 @@ export const ImagePreview = styled("img")(({ theme }) => ({
     border: `1px solid ${theme.palette.grey[300]}`,
   }));
  
- 

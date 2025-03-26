@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { toast } from 'react-toastify';
 import { useRegisterPartyMutation, useEditPartyMutation } from "../store/feature/party/partyAction";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { NameField, NumberField } from "../Helpers/FormFields";
 import { StyledButton } from "../style/CommanStyle";
@@ -9,17 +9,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { MainHead, Form, Container, Row, GridContainer, SubmitButtonContainer, CloseIconButton, PartyFormContainer } from "../style/PartyStyle";
 import UpdateDialog from "../components/ui/UpdateDialog"
 import { FormImage } from "../Helpers/FormFields";
-
-interface FormData {
-    partyName: string;
-    partyAbbreviation: string;
-    partyFoundationYear: string;
-    partyFounderName: string;
-    partyWebSite: string;
-    headQuarters: string;
-    partySymbol: string;
-    partyLeaderName: string;
-}
+import { FormData } from "../Types/PartyForm.types";
 
 const defaultValues: FormData = {
     partyName: "",
@@ -134,9 +124,8 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     control={control}
                                     name="partyName"
                                     label="Party Name"
-                                    minLength={2}
-                                    maxLength={50}
-                                    isRequired
+                                    minLength={3}
+                                    maxLength={33}
                                 />
                             </Box>
                             <Box>
@@ -146,7 +135,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     label="Leader Name"
                                     minLength={3}
                                     maxLength={20}
-                                    isRequired
                                 />
                             </Box>
                         </Row>
@@ -158,7 +146,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     label="Founder Name"
                                     minLength={2}
                                     maxLength={20}
-                                    isRequired
                                 />
                             </Box>
                             <Box>
@@ -167,7 +154,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     name="partyFoundationYear"
                                     label="Foundation Year"
                                     fixedLength={4}
-                                    isRequired
                                 />
                             </Box>
                         </Row>
@@ -179,7 +165,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     label="Party Abbreviation"
                                     minLength={2}
                                     maxLength={7}
-                                    isRequired
                                 />
                             </Box>
                             <Box>
@@ -189,7 +174,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                     label="Headquarters"
                                     minLength={3}
                                     maxLength={1000}
-                                    isRequired
                                 />
                             </Box>
                         </Row>
@@ -200,7 +184,6 @@ const PartyForm = ({ party, onClose }: { party: any; onClose: () => void }) => {
                                 label="Website"
                                 minLength={3}
                                 maxLength={100}
-                                isRequired
                             />
                         </GridContainer>
                         <Stack direction="column" sx={{ margin: '0 auto' }} >
