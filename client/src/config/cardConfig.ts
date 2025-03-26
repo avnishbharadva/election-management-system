@@ -3,6 +3,7 @@ export interface CardConfig {
     title: string;
     icon: string; 
     countKey: keyof CountsData; 
+    link:string;
   }
   
   export interface CountsData {
@@ -15,27 +16,32 @@ export interface CardConfig {
   export const cardsConfig: CardConfig[] = [
     {
       id: 1,
-      title: "Candidate",
+      title: "Candidates",
       icon: "AccountBoxIcon", 
       countKey: "candidates",
+      link:'/dashboard/candidates'
+
     },
     {
       id: 2,
       title: "Voters",
       icon: "HowToVoteIcon",
       countKey: "voters",
+       link:'/dashboard/voters'
     },
     {
       id: 3,
-      title: "Party",
+      title: "Parties",
       icon: "GroupsIcon",
       countKey: "parties",
+       link:'/dashboard/parties'
     },
     {
       id: 4,
-      title: "Election",
+      title: "Elections",
       icon: "BallotIcon",
       countKey: "elections",
+       link:'/dashboard/elections'
     },
   ];
   

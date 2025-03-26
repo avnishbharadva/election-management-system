@@ -9,7 +9,7 @@ export const FlexBox = styled(Box)({
 
 
 export const ElectionFormWrapper = styled(Box)({
-    width: "400px", 
+    width: "420px", 
     padding: "20px", 
     backgroundColor: "#fff"
 })

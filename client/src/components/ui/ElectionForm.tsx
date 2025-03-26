@@ -24,7 +24,7 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const [originalData, setOriginalData] = useState<FormValues | null>(null);
   const [updatedData, setUpdatedData] = useState<FormValues | null>(null);
 
-  const { register, handleSubmit, reset, setValue } = useForm<FormValues>({
+  const { register, handleSubmit, reset, setValue, formState: { errors }, } = useForm<FormValues>({
     defaultValues: {
       electionName: "",
       electionType: "State",
@@ -96,29 +96,64 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" flexDirection="column" gap={2}>
           <Section>
-            <Row>
-              <TextField fullWidth label="Election Name" {...register("electionName", { required: "Required" })} InputLabelProps={{ shrink: true }}/>
-              <TextField fullWidth label="Election Type" defaultValue="State" InputProps={{ readOnly: true }} {...register("electionType")} />
-            </Row>
-          </Section>
-          <Section>
-            <Row>
-              <TextField type="date" fullWidth label="Election Date" InputLabelProps={{ shrink: true }} {...register("electionDate", { required: "Required" })} />
-              <TextField fullWidth label="State" defaultValue="New York" InputProps={{ readOnly: true }} {...register("electionState")} />
-            </Row>
-          </Section>
-          <Section sx={{ width: "10.5rem" }}>
-            <TextField
-              fullWidth
-              label="Total Seats"
-              InputLabelProps={{ shrink: true }}
-              type="number"
-              {...register("totalSeats", {
-                required: "Required",
-                min: { value: 1, message: "Seats must be at least 1" }
-              })}
-            />
-          </Section>
+          <Row>
+          <TextField
+            fullWidth
+            label="Election Name"
+            {...register("electionName", { required: "Election Name is required" })}
+            InputLabelProps={{ shrink: true }}
+            error={!!errors.electionName}
+            helperText={errors.electionName?.message}
+          />
+          <TextField
+            fullWidth
+            label="Election Type"
+            defaultValue="State"
+            InputProps={{ readOnly: true }}
+            {...register("electionType")}
+          />
+        </Row>
+      </Section>
+
+      <Section>
+        <Row>
+          <TextField
+            type="date"
+            fullWidth
+            label="Election Date"
+            InputLabelProps={{ shrink: true }}
+            {...register("electionDate", { required: "Election Date is required" })}
+            error={!!errors.electionDate}
+            helperText={errors.electionDate?.message}
+          />
+          <TextField
+            fullWidth
+            label="State"
+            defaultValue="New York"
+            InputProps={{ readOnly: true }}
+            {...register("electionState")}
+          />
+        </Row>
+      </Section>
+
+      <Section sx={{ width: "10.5rem" }}>
+      <TextField
+  fullWidth
+  label="Total Seats"
+  InputLabelProps={{ shrink: true }}
+  type="number"
+  {...register("totalSeats", {
+    required: "Total Seats is required",
+    min: {
+      value: 1,
+      message: "Seats must be greater than 0",
+    },
+  })}
+  error={!!errors.totalSeats}
+  helperText={errors.totalSeats?.message}
+/>
+      </Section>
+
           <ElectionButtonSection>
             <StyledButtonEle type="submit" variant="contained">
               {selectedElection ? "Update Election" : "Add Election"}

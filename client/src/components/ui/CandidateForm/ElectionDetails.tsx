@@ -14,6 +14,7 @@ const ElectionDetails = ({ control, errors, register }: any) => {
   const dispatch: AppDispatch = useDispatch();
   const elections = useSelector((state: RootState) => state.election.elections) || [];
   const [parties, setParties] = useState<{ partyId: number; partyName: string }[]>([]);
+  const {candidate} = useSelector((state: RootState) => state.candidate)
 
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
@@ -51,6 +52,9 @@ const ElectionDetails = ({ control, errors, register }: any) => {
                 labelId="election-label" 
                 label="Election Type"
                 value={field.value ?? ""}
+            // defaultValue={editId ? candidate?.maritalStatus ?? "" : ""}
+            defaultValue={candidate? candidate?.electionId ?? "" : ""}
+
               >
                 {elections.length > 0 ? (
                   elections.map((e: any) => (

@@ -8,7 +8,7 @@ export const StyledSearchContainer = styled(Box)`
   align-items: center;
   width: 100%;
   max-width: 400px;
-  margin: 10px auto;
+  margin: 6px auto;
 `;
 
 export const StyledSearchInput = styled(TextField)`

@@ -1,23 +1,29 @@
 import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Divider,Grid, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { resetState } from "../../store/feature/candidate/candidateSlice";
+import { clearSearchQuery, resetState } from "../../store/feature/candidate/candidateSlice";
+import { AppDispatch } from "../../store/app/store";
+import { defaultValues } from '../../store/feature/candidate/types';
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 interface ViewCandidateProps {
   open: boolean;
   handleClose: () => void;
   selectedCandidate: any;
+
 }
 
 
-
 export default function ViewCandidate({ open,handleClose, selectedCandidate }: ViewCandidateProps) {
-
-  const dispatch = useDispatch()
-  const handleCancel= ()=>{
-    resetState()
+  const dispatch: AppDispatch = useDispatch();
+  const {reset} = useForm()
+  const resetForm = () => {
+    reset(defaultValues); // Reset the form with imported default values
+   
+    dispatch(clearSearchQuery());
+    dispatch(resetState());
     handleClose()
-  dispatch(resetState())
-  }
+  };
   return (
             <>
               {/* Candidate View Dialog */}
@@ -218,7 +224,7 @@ export default function ViewCandidate({ open,handleClose, selectedCandidate }: V
         
 
               <DialogActions sx={{ justifyContent: "center", padding: "10px", backgroundColor: "#f1f1f1" }}>
-                <Button onClick={handleCancel} variant="contained" color="primary">
+                <Button onClick={resetForm} variant="contained" color="primary">
                   Close
                 </Button>
               </DialogActions>

@@ -82,6 +82,7 @@ export interface ModalData {
     open: boolean;
     actionType: "edit" | "add" | null;
     selectedCandidate: Candidate | null;
+   
 }
 
 export interface AddressFormProps {

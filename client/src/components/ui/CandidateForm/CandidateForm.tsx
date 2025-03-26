@@ -12,7 +12,7 @@ import UploadDocuments from "./UploadDocuments";
 import { FormContent, Heading, ModalFooter } from "../../../style/CandidateFormCss";
 import { Box, Button, IconButton } from "@mui/material";
 import { defaultValues, IFormInput } from "../../../store/feature/candidate/types";
-import { clearCandidate } from "../../../store/feature/candidate/candidateSlice";
+import { clearCandidate, clearSearchQuery } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateDialog from "../UpdateDialog";
 
@@ -24,7 +24,7 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   const [signature, setSignature] = useState<File | null>(null);
   const [updatedData, setUpdatedData] = useState<Record<string, any>>({});
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-
+console.log("hiii"+editId)
   const {
     register,
     handleSubmit,
@@ -38,12 +38,12 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   useEffect(() => {
     if (searchQuery) setValue("candidateSSN", searchQuery);
   }, [searchQuery, setValue]);
-
   useEffect(() => {
     if (candidate && Object.keys(candidate).length > 0) {
       setEditId(candidate.candidateId);
       reset({
-        ...candidate
+        ...candidate,
+        electionName: candidate.electionName
       })
       setProfilePic(candidate.candidateImage || null);
       setSignature(candidate.candidateSignature || null);
@@ -142,10 +142,11 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
     setEditId(null);
     setProfilePic(null);
     setSignature(null);
-
+    dispatch(clearSearchQuery());
     dispatch(clearCandidate());
     handleClose();
   };
+  
 
   return (
     <>
