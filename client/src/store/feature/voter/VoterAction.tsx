@@ -13,7 +13,6 @@ const voterApi = createApi({
             console.log('Headers:', headers);
             return headers;
         },
-        //   credentials:'include'
     }),
     tagTypes: ['Voters'],
     endpoints: (builder) => ({
@@ -67,7 +66,6 @@ const voterApi = createApi({
                     image: image ? image : undefined,
                     signature: signature ? signature : undefined,
                 };
-                // console.log('JSON Payload:', payload);
                 return {
                     url: `voters/${voterId}`,
                     method: 'PATCH',

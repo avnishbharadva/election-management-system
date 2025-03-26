@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T23:59:09.751090100+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-26T10:15:03.027692500+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class OfficersRegisterDTO {
 
   private String ssnNumber;

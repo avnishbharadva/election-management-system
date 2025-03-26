@@ -1,6 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
- 
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
  
 const partyApi = createApi({
     reducerPath: 'partyApi',
@@ -10,8 +8,7 @@ const partyApi = createApi({
             if (token) {
               headers.set('Authorization', `Bearer ${token}`);
             }
-            return headers;             
-            //                    
+            return headers;                                
           },
      }),  
     tagTypes: ['party'],
@@ -20,17 +17,16 @@ const partyApi = createApi({
  
             PartyList: builder.query({
                 query: () => {
-                    console.log('Fetching data for party...'); // Log request or other information
                     return 'party';
                 }, 
                 providesTags: ['party'],
             }
             ),
         
-        PartyById: builder.query({
-            query: (partyId) => `party/${partyId}`,
-            providesTags: ['party']
-        }),
+        // PartyById: builder.query({
+        //     query: (partyId) => `party/${partyId}`,
+        //     providesTags: ['party']
+        // }),                         
  
         registerParty: builder.mutation({
             query: ({ post }: any) => {
@@ -56,14 +52,9 @@ const partyApi = createApi({
                 }
                 },
                 invalidatesTags: ['party'],
-                transformResponse: (response: any, arg) => {            
+                transformResponse: (response: any) => {            
                     return {
-                      data: response,
-                      metadata: {
-                        responseReceivedAt: new Date().toISOString(), // Client-side metadata
-                        requestArgs: arg, // Include original args in response
-                   
-                      },            
+                      data: response,       
  
                 }}
             }),
@@ -80,6 +71,6 @@ const partyApi = createApi({
     })
 })
  
-export const { useRegisterPartyMutation, usePartyListQuery, usePartyByIdQuery,useEditPartyMutation, useDeletePartyMutation } = partyApi;
+export const { useRegisterPartyMutation, usePartyListQuery, useEditPartyMutation, useDeletePartyMutation } = partyApi;
  
 export default partyApi

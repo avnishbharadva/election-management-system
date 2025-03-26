@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-21T23:59:08.019607+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-26T10:15:01.748546400+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class AddressDTO {
 
   private String addressLine;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Typography,
   IconButton,
@@ -7,19 +7,21 @@ import {
   ListItemIcon,
   Paper,
   Button,
-} from '@mui/material';
-import { Edit, Visibility, Delete } from '@mui/icons-material';
-import Model from '../ui/Model';
-import PartyForm from '../../Party/PartyForm';
-import { usePartyListQuery, useDeletePartyMutation } from '../../store/feature/party/partyAction';
-import ViewParty, { partySections } from '../../Party/ViewParty';
-import Pagination from '../ui/Pagination';
-import TableComponent from '../ui/TableComponent';
-import { AddButtonContainer } from '../../style/PartyStyle';
-import DeleteDialog from '../ui/DeleteDialog';
-import ViewPartyDialog from '../ui/ViewDetailsDialog';
-import ViewDetailsDialog from '../ui/ViewDetailsDialog';
- 
+} from "@mui/material";
+import { Edit, Visibility, Delete } from "@mui/icons-material";
+import Model from "../ui/Model";
+import PartyForm from "../../Party/PartyForm";
+import {
+  usePartyListQuery,
+  useDeletePartyMutation,
+} from "../../store/feature/party/partyAction";
+import { partySections } from "../../Party/ViewParty";
+import Pagination from "../ui/Pagination";
+import TableComponent from "../ui/TableComponent";
+import { AddButtonContainer } from "../../style/PartyStyle";
+import DeleteDialog from "../ui/DeleteDialog";
+import ViewDetailsDialog from "../ui/ViewDetailsDialog";
+
 interface Party {
   partyId: string;
   partyName: string;
@@ -32,17 +34,17 @@ interface Party {
   partySymbol: string;
   partyLeaderName: string;
 }
- 
+
 const partyHeader = [
   { id: "partyName", label: "Party Name" },
   { id: "partyAbbreviation", label: "Abbreviation" },
   { id: "partyFoundationYear", label: "Foundation Year" },
   { id: "partyWebSite", label: "Website" },
   { id: "headQuarters", label: "Headquarters" },
-  {id: "partyLeaderName", label: "Leader Name"},
+  { id: "partyLeaderName", label: "Leader Name" },
   { id: "actions", label: "Actions" },
 ];
- 
+
 const AddParty = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -57,21 +59,20 @@ const AddParty = () => {
   const [deleteParty] = useDeletePartyMutation();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [partyToDeleteId, setPartyToDeleteId] = useState<string | null>(null);
- 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, party: Party) => {
-    // console.log(party)
+
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    party: Party
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedParty(party);
   };
- 
+
   const handleMenuClose = () => {
-    setAnchorEl(null)
+    setAnchorEl(null);
   };
- 
+
   const handleAction = (actionType: string, party?: Party) => {
- 
-    // console.log(actionType, party);
-    console.log("addmparty", party)
     switch (actionType) {
       case "register":
         setSelectedParty(null);
@@ -79,29 +80,25 @@ const AddParty = () => {
         handleMenuClose();
         break;
       case "edit":
-        console.log("edit"+party)
-        party &&setSelectedParty(party);
+        party && setSelectedParty(party);
         setAction({ register: false, edit: true, view: false });
         handleMenuClose();
         break;
       case "view":
-        console.log("heloo"+party)
         party && setSelectedParty(party);
         setAction({ register: false, edit: false, view: true });
         handleMenuClose();
         break;
-      case 'delete':
+      case "delete":
         if (party) {
           setPartyToDeleteId(party.partyId);
           setDeleteDialogOpen(true);
           handleMenuClose();
         }
-    break;
+        break;
       default:
-        console.log('default');
         break;
     }
-   
   };
 
   const handleDeleteConfirm = async () => {
@@ -117,11 +114,11 @@ const AddParty = () => {
     setPartyToDeleteId(null);
   };
 
-  // console.log("Party data", data?.data);
- 
   const totalElements = data?.data.length || 0;
-  const visibleParties = data?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) || [];
- 
+  const visibleParties =
+    data?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) ||
+    [];
+
   const partys = visibleParties.map((party: Party) => ({
     partyName: party.partyName,
     partyAbbreviation: party.partyAbbreviation,
@@ -129,10 +126,7 @@ const AddParty = () => {
     partyWebSite: party.partyWebSite,
     headQuarters: party.headQuarters,
     partyLeaderName: party.partyLeaderName,
-    // partySymbol:(
-    //   <img src={`data:image/*;base64,${party.partySymbol}`} height="100px" alt="" />
 
-    // ),
     actions: (
       <>
         <IconButton onClick={(e) => handleMenuClick(e, party)} color="primary">
@@ -140,7 +134,7 @@ const AddParty = () => {
         </IconButton>
         <Menu
           anchorEl={anchorEl}
-          open={Boolean(anchorEl) && selectedParty?.partyId === party?.partyId} 
+          open={Boolean(anchorEl) && selectedParty?.partyId === party?.partyId}
           onClose={handleMenuClose}
         >
           <MenuItem onClick={() => handleAction("edit", party)}>
@@ -155,92 +149,101 @@ const AddParty = () => {
             </ListItemIcon>
             View
           </MenuItem>
-          <MenuItem onClick={() => handleAction("delete", party)}> 
-              <ListItemIcon>
-                  <Delete fontSize="small" />
-              </ListItemIcon>
-              Delete
+          <MenuItem onClick={() => handleAction("delete", party)}>
+            <ListItemIcon>
+              <Delete fontSize="small" />
+            </ListItemIcon>
+            Delete
           </MenuItem>
         </Menu>
-        
       </>
     ),
   }));
 
-  // console.log("Selcted Party in Add Party",selectedParty);
-  console.log("Selected Party:", selectedParty); 
-
-
- 
   return (
     <>
       <AddButtonContainer>
-        <Button onClick={() => handleAction('register')} variant="contained">
+        <Button onClick={() => handleAction("register")} variant="contained">
           Add Party
         </Button>
       </AddButtonContainer>
       <Paper>
-      <TableComponent
-        headers={partyHeader}
-        rows={partys}
-        loading={isLoading}
-        error={isError}
-        noDataFound={<Typography>No party data available.</Typography>}
-      >
-        <Pagination
-          totalElements={totalElements}
-          setPage={setPage}
-          page={page}
-          setRowsPerPage={setRowsPerPage}
-          rowsPerPage={rowsPerPage}
-        />
-      </TableComponent>
- 
-      <Model
-        open={ action.register}
-        handleClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
-      >
-        <PartyForm
-          onClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
-          party={selectedParty}
-        />
-      </Model>
-      <Model
-        open={ action.edit}
-        handleClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
-      >
-        <PartyForm
-          onClose={() => setAction((prevAction) => ({ ...prevAction, edit: false, register: false }))}
-          party={selectedParty}
-        />
-      </Model>
+        <TableComponent
+          headers={partyHeader}
+          rows={partys}
+          loading={isLoading}
+          error={isError}
+          noDataFound={<Typography>No party data available.</Typography>}
+        >
+          <Pagination
+            totalElements={totalElements}
+            setPage={setPage}
+            page={page}
+            setRowsPerPage={setRowsPerPage}
+            rowsPerPage={rowsPerPage}
+          />
+        </TableComponent>
 
-      {/* <ViewParty
-        party={selectedParty}
-        open={action.view}
-        handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
-      /> */}
+        <Model
+          open={action.register}
+          handleClose={() =>
+            setAction((prevAction) => ({
+              ...prevAction,
+              edit: false,
+              register: false,
+            }))
+          }
+        >
+          <PartyForm
+            onClose={() =>
+              setAction((prevAction) => ({
+                ...prevAction,
+                edit: false,
+                register: false,
+              }))
+            }
+            party={selectedParty}
+          />
+        </Model>
+        <Model
+          open={action.edit}
+          handleClose={() =>
+            setAction((prevAction) => ({
+              ...prevAction,
+              edit: false,
+              register: false,
+            }))
+          }
+        >
+          <PartyForm
+            onClose={() =>
+              setAction((prevAction) => ({
+                ...prevAction,
+                edit: false,
+                register: false,
+              }))
+            }
+            party={selectedParty}
+          />
+        </Model>
 
-<ViewDetailsDialog 
-  open={action.view}
-  handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
-  data={selectedParty}
-  sections={partySections}
-  imageKey="partySymbol"// Ensure this key matches your API response
-/>
-      
-       <DeleteDialog
-        open={deleteDialogOpen}
-        handleClose={handleDeleteCancel}
-        handleDelete={handleDeleteConfirm}
-        title="Delete Party"
-        message={`Are you sure you want to delete ${selectedParty?.partyName}? This action cannot be undone. `}
-      />
-    </Paper>
+        <ViewDetailsDialog
+          open={action.view}
+          handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
+          data={selectedParty}
+          sections={partySections}
+          imageKey="partySymbol"
+        />
+
+        <DeleteDialog
+          open={deleteDialogOpen}
+          handleClose={handleDeleteCancel}
+          handleDelete={handleDeleteConfirm}
+          title="Delete Party"
+          message={`Are you sure you want to delete ${selectedParty?.partyName}? This action cannot be undone. `}
+        />
+      </Paper>
     </>
   );
 };
 export default AddParty;
-
-
-

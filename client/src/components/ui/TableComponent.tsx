@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography } from '@mui/material';
-// import { tableStyles } from '../../style/PartyStyle';
 import { TableMain, TableCellSticky, TableContainerMain } from '../../style/TableStyleCss';
  
 interface Header {

@@ -54,33 +54,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
     return diff;
   };
  
-  // const renderChanges = (diff: any) => {
-  //   return Object.entries(diff).map(([key, value]: any) => (
-  //     <Grid item xs={12} key={key}>
-  //       <ChangeBox>
-  //         <Typography variant="body1" fontWeight="bold">
-  //           {key.replace(/([A-Z])/g, " $1")}:
-  //         </Typography>
- 
-  //         {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") || key.toLowerCase().includes("partySymbol") ? (
-  //           <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
-  //             {value.old !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.old}`} alt="Old" />}
-  //             <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
-  //             {value.new !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.new}`} alt="New" />}
-  //           </Box>
-  //         ) : (
-  //           <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-  //             <span style={{ color: "#D32F2F" }}>{value.old || "N/A"}</span>
-  //             <span style={{ margin: "0 8px", color: "#616161" }}>→</span>
-  //             <span style={{ color: "#388E3C" }}>{value.new || "N/A"}</span>
-  //           </Typography>
-  //         )}
-  //       </ChangeBox>
-  //     </Grid>
-  //   ));
-  // };
-
-    const renderChanges = (diff: any) => {
+  const renderChanges = (diff: any) => {
     return Object.entries(diff).map(([key, value]: any) => (
       <Grid item xs={12} key={key}>
         <ChangeBox>
@@ -90,21 +64,13 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
  
           {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") || key.toLowerCase().includes("symbol") ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
-             {value.old !== "N/A" && (
-  <ImagePreview
-    src={typeof value.old === "string" && value.old.startsWith("data:image") ? value.old : value.old ? `data:image/png;base64,${value.old}` : ""}  
-    alt="Old"  
-  />
-)}
-<Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
-{value.new !== "N/A" && (
-  <ImagePreview
-    src={typeof value.new === "string" && value.new.startsWith("data:image") ? value.new : value.new ? `data:image/png;base64,${value.new}` : ""}  
-    alt="New"  
-  />
-)}
- 
-            </Box>
+              {value.old !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.old}`} alt="Old" />}
+              <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
+              <ImagePreview
+     src={typeof value.new === "string" && value.new.startsWith("data:image") ? value.new : value.new ? `data:image/png;base64,${value.new}` : ""}  
+     alt="New"  
+   />            
+   </Box>
           ) : (
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               <span style={{ color: "#D32F2F" }}>{value.old || "N/A"}</span>
@@ -116,6 +82,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
       </Grid>
     ));
   };
+
  
   const changes = compareObjects(originalData, updatedData);
  
