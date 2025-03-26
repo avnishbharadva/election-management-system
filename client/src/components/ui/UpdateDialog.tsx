@@ -10,7 +10,6 @@ import {
   Grid,
 } from "@mui/material";
 import { StyledBox } from "../../style/CommanStyle";
-import { Imagepreview } from "../../style/PartyStyle";
 
 interface UpdateDialogProps {
   open: boolean;
