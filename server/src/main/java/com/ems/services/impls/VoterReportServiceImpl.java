@@ -18,8 +18,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VoterReportServiceImpl {
 
-    private static final String path = "D:\\Spring\\election-management-system\\server\\src\\main\\resources\\static\\Reports\\VoterReport.jrxml";
-    private static final String outputFile = "D:\\Spring\\election-management-system\\server\\src\\main\\resources\\static\\Reports";
+    private static final String path = "src/main/resources/static/Reports/VoterReport.jrxml";
+    private static final String outputFile = "src/main/resources/static/Reports";
+
     private final VoterRepository voterRepository;
 
     public void generateReport(String format) throws FileNotFoundException, JRException {
@@ -32,10 +33,10 @@ public class VoterReportServiceImpl {
         parameters.put("createdBy", "Try");
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jrBeanCollectionDataSource);
         if (format.equalsIgnoreCase("pdf")) {
-            JasperExportManager.exportReportToPdfFile(jasperPrint, outputFile + "\\new.pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, outputFile + "\\voter_master.pdf");
         }
         if (format.equalsIgnoreCase("html")) {
-            JasperExportManager.exportReportToHtmlFile(jasperPrint, outputFile + "\\new.html");
+            JasperExportManager.exportReportToHtmlFile(jasperPrint, outputFile + "\\voter_master.html");
         }
     }
 

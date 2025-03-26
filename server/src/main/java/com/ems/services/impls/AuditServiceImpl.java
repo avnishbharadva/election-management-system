@@ -14,6 +14,7 @@ import org.openapitools.model.AuditDataDTO;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
@@ -142,10 +143,6 @@ public class AuditServiceImpl implements AuditService {
             updatedFields.put("zipCode", newAddress.getZipCode());
             oldFields.put("zipCode",oldAddress.getZipCode());
         }
-        if (!Objects.equals(oldAddress.getAddressType(), newAddress.getAddressType())) {
-            updatedFields.put("addressType", newAddress.getAddressType());
-            oldFields.put("addressType",oldAddress.getAddressType());
-        }
 
         return List.of(oldFields,updatedFields);
     }
@@ -163,8 +160,9 @@ public class AuditServiceImpl implements AuditService {
         audit.setVoterId(newVoter.getVoterId());
         audit.setOldFields(fieldList.get(0));
         audit.setChangeFields(fieldList.get(1));
-        audit.setCreatedBy("SYSTEM");
-        audit.setUpdatedBy("SYSTEM");
+        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        audit.setCreatedBy(userName);
+        audit.setUpdatedBy(userName);
         return audit;
     }
 }

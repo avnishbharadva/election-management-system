@@ -28,12 +28,10 @@ properties:
     example: "MALE"
   dmvNumber:
     type: string
-#    pattern: "\\d{9}"
     x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{9}$\", message = \"DMV number must contain exactly 9 digits\")"
     example: "123456789"
   ssnNumber:
     type: string
-#    pattern: "\\d{9}"
     x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{9}$\", message = \"SSN number must contain exactly 9 digits\")"
     example: "987654321"
   email:
@@ -42,7 +40,6 @@ properties:
     example: "john.doe@example.com"
   phoneNumber:
     type: string
-#    pattern: "\\d{11}"
     x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{11}$\", message = \"Phone no must contain exactly 11 digits\")"
     example: "12345678901"
   hasVotedBefore:
@@ -53,10 +50,12 @@ properties:
     minimum: 1900
     maximum: 2025
     example: 2010
-  partyId:
-    type: integer
-    format: int64
-    example: 1
+  party:
+    type: string
+    minLength: 3
+    maxLength: 30
+    example: "Democratic Alliance"
+    description: "Party name must be between 3 and 30 characters."
   residentialAddress:
     $ref: "addressDTO.yaml"
   mailingAddress:
@@ -67,10 +66,12 @@ properties:
   signature:
     type: string
     example: "base64-encoded-signature-string"
-  statusId:
-    type: integer
-    format: int64
-    example: 1
+  status:
+    type: string
+    minLength: 3
+    maxLength: 10
+    example: "Active"
+    description: "status of the voter"
 required:
   - firstName
   - lastName

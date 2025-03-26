@@ -33,12 +33,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new org.openapitools.model.ValidationErrorResponse("bad request, validation failed for fields", errorItemList), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({DataAlreadyExistException.class})
-    public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(DataAlreadyExistException dataAlreadyExistException)
+    @ExceptionHandler({DataAlreadyExistException.class, CustomException.class})
+    public ResponseEntity<ErrorResponse> handleCandidateAlreadyExistsException(Exception ex)
     {
         var errorResponse=new ErrorResponse();
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setMessage(dataAlreadyExistException.getMessage());
+        errorResponse.setMessage(ex.getMessage());
         errorResponse.setRequestTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }

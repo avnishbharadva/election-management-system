@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-19T15:40:48.428675800+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-25T10:50:58.672811700+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class PartyUpdateDTO {
 
   private String partyName;
@@ -88,7 +88,7 @@ public class PartyUpdateDTO {
    * @return partySymbol
    */
   
-  @Schema(name = "partySymbol", description = "Party Symbol String in Base64 format", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @Schema(name = "partySymbol", example = "base64-encoded-party-symbol", description = "Party Symbol String in Base64 format", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("partySymbol")
   public String getPartySymbol() {
     return partySymbol;

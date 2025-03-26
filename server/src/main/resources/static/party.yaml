@@ -160,6 +160,7 @@ components:
           description: "Party abbreviation must not exceed 10 characters."
         partySymbol:
           type: string
+          example: "base64-encoded-party-symbol"
           description: "Party Symbol String in Base64 format"
         partyFounderName:
           type: string
