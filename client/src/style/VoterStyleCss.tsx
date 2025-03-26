@@ -18,14 +18,12 @@ export const Head = styled(Title)({
      fontSize: "20px",
 })
 
-
 export const FormRowWide = styled(Box)({
   display: 'grid',
   gap: '1rem',
   gridTemplateColumns: 'repeat(3, 1fr)',
  
-})
- 
+}) 
 
 export const Container = styled(Box)({
      display: 'flex',
@@ -64,7 +62,6 @@ export const AddressField = styled(Box)({
      marginTop: '20px',
 })
 
-
 export const FormControlLabel = styled(Box)({
      marginTop: '20px',
 })
@@ -98,7 +95,6 @@ export const FormRowCenterGap = styled(Box)({
      gap: '2rem',
      marginTop: '20px',
 })
-
 
 //AddVoter.tsx
 export const SearchContainer = styled(Box)({
