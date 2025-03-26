@@ -1,16 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
- 
+
 const voterApi = createApi({
     reducerPath: 'voters',
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers: any) => {
             const token = localStorage.getItem('token');
- 
+
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
             }
-            console.log('Headers:', headers);
+         
             return headers;
         },
     }),
@@ -27,83 +27,62 @@ const voterApi = createApi({
             },
             transformResponse: (response: any) => {
                 return {
-                    data: response.data,
+                    data: response.data,    
                     totalElements: response.totalElements,
                 };
             },
+            providesTags: ['Voters'],
         }),
- 
+
         registerVoter: builder.mutation({
-            query: ({ post, img, sign }: any) => {
- 
-                if (!img) {
-                    console.error('voter image is not found')
-                }
- 
-                if (!sign) {
-                    console.error('voter signature is not found')
-                }
-                const formData = { ...post, image: img, signature: sign }
-                console.log(formData)
- 
+            query: ({ post}: any) => {
                 return {
                     url: 'voters',
                     method: 'POST',
-                    body: formData,
+                    body: post,
                 }
             },
             invalidatesTags: ['Voters'],
- 
+
         }),
- 
+
         editVoter: builder.mutation({
-            query: ({ voterId, post, image, signature }: any) => {
- 
-                !image && console.error('in voter update image is undefine')
-                !signature && console.error('in voter update  sign  is undefine')
-                const payload = {
-                    ...post,
-                    image: image ? image : undefined,
-                    signature: signature ? signature : undefined,
-                };
+            query: ({ voterId, post }: any) => {
+
+            
                 return {
                     url: `voters/${voterId}`,
                     method: 'PATCH',
-                    body: payload,
+                    body: post,
                 };
             },
             invalidatesTags: ['Voters'],
-            onQueryStarted: async (args, { dispatch, getState, queryFulfilled }) => {
-                console.log("Query started with args:", args);
-                try {
-                    await queryFulfilled;
-                    console.log("Query succeeded");
-                } catch (error) {
-                    console.error("Query failed:", error);
-                }
-            },
+
         }),
- 
+
     })
 })
- 
- 
+
+
 const statusApi = voterApi.injectEndpoints({
     endpoints: (builder) => ({
         status: builder.query({
             query: () => 'voters/status'
         }),
     }),
-    overrideExisting: false, // Set to true if you want to overwrite existing endpoints
+    overrideExisting: false, 
 });
- 
- 
+
+
 export const { useStatusQuery } = statusApi;
- 
- 
+
+
 export const {
     useEditVoterMutation,
     useRegisterVoterMutation,
     useSearchVotersQuery } = voterApi
 export default voterApi
- 
+
+
+
+

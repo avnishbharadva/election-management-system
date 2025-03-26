@@ -1,41 +1,36 @@
-export interface Address {
-        addressLine: string;
-        aptNumber: string;
-        city: string;
-        county: string;
-        zipCode: number | string;
-        addressType: "RESIDENTIAL" | "MAILING";
+export type Address = {
+    addressLine: string;
+    aptNumber: string;
+    city: string;
+    county: string;
+    town:string;
+    state:string;
+    zipCode: number | null;
+    addressType: "RESIDENTIAL" | "MAILING"
 }
 
-export interface Voter {
-    status: number;
+
+export type FormData = {
+    voterId?:number
     firstName: string;
     middleName: string;
     lastName: string;
     suffixName: string;
     email: string;
-    ssnNumber: string;
-    phoneNumber: number;
-    dmvNumber: number;
+    ssnNumber: number | null;
+    phoneNumber: number | null;
+    dmvNumber: number | null;
     gender: string;
-    partyId: number;
+    partyId?: number| null;
     dateOfBirth: string;
-    firstVoterYear: number;
+    firstVotedYear?: number| null;
     hasVotedBefore: boolean;
     residentialAddress: Address;
     mailingAddress?: Address;
-    voterId?: number;
-}
+    statusId?: number | null;
+    image?:string;
+    status?:string;
+    party?:string;
+    signature?:string
+  };
 
-export interface VoterState {
-    allVoters: Voter[];
-    loading: boolean;
-    error: string | null;
-    success: boolean;
-    selectedVoter: Voter | null;
-    totalCount: number;
-    currentPage: number;
-    searchParams: {
-        ssnNumber: string | null;
-    };
-}

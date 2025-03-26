@@ -4,34 +4,34 @@ import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../store/fe
 import { AppDispatch } from "../../store/app/store";
 import { fetchCandidateBySSN } from "../../store/feature/candidate/candidateAPI";
 import { ClearIconStyled, SearchIconStyled, StyledSearchButton, StyledSearchContainer, StyledSearchInput } from "../../style/SearchCss";
-
+ 
 const SearchComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const searchQuery = useSelector((state: any) => state.candidate.searchQuery);
-
+ 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
-    
+   
     if (/^\d{0,9}$/.test(query)) {
       dispatch(setSearchQuery(query));
     }
   };
-
+ 
   const handleSearch =async () => {
     if (searchQuery.length === 9) {
   const result =   await  dispatch(fetchCandidateBySSN(searchQuery));
-    
-  
+   
+ 
     if (!result) {
-      dispatch(setSearchedSSN(searchQuery)); 
+      dispatch(setSearchedSSN(searchQuery));
     }}
-    
+   
   };
-
+ 
   const clearSearch = () => {
     dispatch(clearSearchQuery());
   };
-
+ 
   return (
     <StyledSearchContainer>
       <StyledSearchInput
@@ -68,5 +68,6 @@ const SearchComponent: React.FC = () => {
     </StyledSearchContainer>
   );
 };
-
+ 
 export default SearchComponent;
+ 

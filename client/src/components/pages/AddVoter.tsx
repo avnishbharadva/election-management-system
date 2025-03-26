@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   Box,
@@ -13,27 +14,14 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 import Model from '../ui/Model';
 import SearchComponent from '../ui/SearchComponent';
 import VoterForm from '../../Voter/VoterForm';
-import ViewVoter from '../../Voter/ViewVoter';
 import { useSearchVotersQuery } from '../../store/feature/voter/VoterAction';
 import TableComponent from '../ui/TableComponent';
-import Pagination from '../ui/Pagination';
-import { Voter } from '../../store/feature/voter/type';
+import Pagination from '../ui/Pagination'
+import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
-import { StyledTableDetails } from '../../style/TableStyleCss';
- 
-const voterHeader = [
-  { id: 'status', label: 'Status' },
-  { id: 'ssn', label: 'SSN' },
-  { id: 'dmv', label: 'DMV' },
-  { id: 'firstName', label: 'First Name' },
-  { id: 'middleName', label: 'Middle Name' },
-  { id: 'lastName', label: 'Last Name' },
-  { id: 'gender', label: 'Gender' },
-  { id: 'dob', label: 'DOB' },
-  { id: 'emailId', label: 'Email Id' },
-  { id: 'action', label: 'Action' },
-];
- 
+import ViewDetailsDialog from '../ui/ViewDetailsDialog';
+import { viewVoter, voterTableHeader } from '../../Voter/lableAndKey';
+
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({
     page: 0,
@@ -41,43 +29,39 @@ const AddVoter = () => {
     ssnNumber: '',
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedVoter, setSelectedVoter] = useState<Voter | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedVoter, setSelectedVoter] = useState<FormData | null>(null);
   const [action, setAction] = useState({
     register: false,
     edit: false,
     view: false,
   });
- 
+
   const { data, isLoading, isError } = useSearchVotersQuery({
     page: searchParams.page,
     size: searchParams.size,
-    ssnNumber: hasSearched ? searchParams.ssnNumber : '', // Only send SSN when searched
+    ssnNumber: searchParams.ssnNumber
   });
- 
+
   const handleSearchChange = (value: string) => {
     setSearchParams((prev) => ({
       ...prev,
       ssnNumber: value,
-      page: 0, // Reset to first page on search change
+      page: 0,
     }));
-    if (value.length === 9) {
-      setHasSearched(true);
-    } else {
-      setHasSearched(false);
-    }
+
   };
- 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter: Voter) => {
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, voter: FormData) => {
     setAnchorEl(event.currentTarget);
     setSelectedVoter(voter);
   };
- 
+
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
- 
-  const handleAction = (actionType: string, voter?: Voter) => {
+
+  const handleAction = (actionType: string, voter?: FormData) => {
     switch (actionType) {
       case 'register':
         setSelectedVoter(null);
@@ -95,13 +79,11 @@ const AddVoter = () => {
         handleMenuClose();
         break;
       default:
-        console.log('default');
         break;
     }
   };
- 
   const totalElements = data?.totalElements || 0;
-  const voters = (data?.data || []).map((voter: Voter) => ({
+  const voters = (data?.data || []).map((voter: FormData) => ({
     status: voter.status,
     ssn: voter.ssnNumber,
     dmv: voter.dmvNumber,
@@ -137,8 +119,8 @@ const AddVoter = () => {
       </>
     ),
   }));
- 
   return (
+
     <Box>
       <SearchContainer>
         <SearchComponent
@@ -152,19 +134,18 @@ const AddVoter = () => {
               ssnNumber: '',
               page: 0,
             }));
-            setHasSearched(false);
+
           }}
         />
-      </SearchContainer>  
- 
+      </SearchContainer>
+
       <TableComponent
-        headers={voterHeader}
+        headers={voterTableHeader}
         rows={voters}
         loading={isLoading}
         error={isError}
         noDataFound={
-
-          <StyledTableDetails >
+          <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: "column", gap: 2 }}>
             <PersonOffIcon sx={{ fontSize: 48, color: '#b0bec5' }} />
             <Typography variant="h6" color="textSecondary">
               No Voter Found!
@@ -172,8 +153,7 @@ const AddVoter = () => {
             <Button variant="contained" color="primary" onClick={() => handleAction('register')}>
               Add Voter
             </Button>
-          </StyledTableDetails>
-            
+          </Box>
         }
       >
         <Pagination
@@ -184,45 +164,41 @@ const AddVoter = () => {
           rowsPerPage={searchParams.size}
         />
       </TableComponent>
- 
+
       <Model
         open={action.register}
-        handleClose={() => setAction((prev) => ({ ...prev, register: false }))}
+        handleclose={() => setAction((prev) => ({ ...prev, register: false }))}
       >
         <VoterForm
-          onClose={() => setAction((prev) => ({ ...prev, register: false }))}
           ssnNumber={searchParams.ssnNumber}
+          onClose={() => setAction((prev) => ({ ...prev, register: false }))}
+
         />
       </Model>
       <Model
         open={action.edit}
-        handleClose={() => setAction((prev) => ({ ...prev, edit: false }))}
+        handleclose={() => setAction((prev) => ({ ...prev, edit: false }))}
       >
         <VoterForm
           onClose={() => setAction((prev) => ({ ...prev, edit: false }))}
           voter={selectedVoter}
         />
       </Model>
-      <ViewVoter
-        voter={selectedVoter}
+    
+      <ViewDetailsDialog
+        title='Voter Details'
         open={action.view}
         handleClose={() => setAction((prev) => ({ ...prev, view: false }))}
+        data={selectedVoter}
+        sections={viewVoter}
+        imageKey="image"
+        signatureKey="signature"
+        imagelabel='Image'
+        signaturelabel='Signature'
+
       />
     </Box>
   );
 };
- 
+
 export default AddVoter;
-
-
-
-
-
-
-
-
-
-
-
-
-

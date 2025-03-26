@@ -25,6 +25,9 @@ interface ViewDetailsDialogProps {
   sections: SectionConfig[];
   imageKey?: string; // Candidate Image or Party Symbol
   signatureKey?: string; // Candidate Signature
+  title: string;
+  imagelabel : string,
+  signaturelabel: string
 }
  
 export default function ViewDetailsDialog({
@@ -34,6 +37,9 @@ export default function ViewDetailsDialog({
   sections,
   imageKey,
   signatureKey,
+  title,
+  imagelabel,
+  signaturelabel
 }: ViewDetailsDialogProps) {
   if (!data) return null;
  
@@ -65,7 +71,7 @@ export default function ViewDetailsDialog({
           fontWeight: "bold",
         }}
       >
-        Details
+        {title}
       </DialogTitle>
  
       <DialogContent sx={{ padding: "20px", backgroundColor: "#f9f9f9" }}>
@@ -121,7 +127,7 @@ export default function ViewDetailsDialog({
                               }}
                             />
                             <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2", marginTop: 1 }}>
-                              {imageKey === "partySymbol" ? "Party Symbol" : "Candidate Image"}
+                             {imagelabel}
                             </Typography>
  
                             {/* ✍️ Candidate Signature (Below Image) */}
@@ -142,7 +148,7 @@ export default function ViewDetailsDialog({
                                   }}
                                 />
                                 <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2", marginTop: 1 }}>
-                                  Candidate Signature
+                                  {signaturelabel}
                                 </Typography>
                               </Box>
                             )}

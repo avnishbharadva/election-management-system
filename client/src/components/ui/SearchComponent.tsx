@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, TextField, Button, InputAdornment, IconButton, Tooltip, FormHelperText } from '@mui/material';
+import { Box, TextField, Button, InputAdornment, IconButton, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import '../../style/Search.css';
+// import '../../style/Search.css';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { CenterBox } from '../../style/VoterStyleCss';
 
 type SearchProps = {
   input: string;  
-  onChange?: (value: string) => void;  
+  onChange?: (value:any) => void;  
   name: string;
   length: number;
   onReload?: () => void;
@@ -26,21 +27,17 @@ const SearchComponent = (props: SearchProps) => {
     const value = e.target.value;
     const numericValue = value.replace(/[^0-9]/g, '');
     setSearchQuery(numericValue)
-
-    if (value.length === length && onChange) {
-      // onChange(value); 
-      console.log("search query is equal to length");
-    }
   }, [length, onChange]); 
 
 const handleReload=()=>{
+  setSearchQuery("")
   if (onReload) {
     onReload();
   }
 }
 
   return (
-    <Box className="search-container">
+    <CenterBox>
       <Box display={'flex'} sx={{gap:'8px'}}>
       <TextField
       id={name}
@@ -62,7 +59,7 @@ const handleReload=()=>{
           endAdornment: searchQuery ? (
             <InputAdornment position="end">
               <Tooltip title="Clear">
-              <IconButton onClick={handleReload} edge="end">
+              <IconButton onClick={handleReload} edge="end" >
                 <CloseIcon className="clear-icon" />
               </IconButton>
               </Tooltip>
@@ -89,7 +86,7 @@ const handleReload=()=>{
         Search
       </Button>
       </Box>
-    </Box>
+    </CenterBox>
   );
 };
 

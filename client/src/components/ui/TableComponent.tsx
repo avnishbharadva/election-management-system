@@ -1,28 +1,9 @@
+
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography } from '@mui/material';
-import { TableMain, TableCellSticky, TableContainerMain } from '../../style/TableStyleCss';
+import { TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
+import {TableMain,  TableCellSticky, TableContainerMain } from '../../style/VoterStyleCss';
+import {TableComponentProps} from '../../Types/tableComponentProps.types';
  
-interface Header {
-    label: string;
-    id: string;
-    minWidth?: number;
-    align?: "left" | "center" | "right";
-}
- 
-interface Row {
-    [key: string]: string | React.ReactNode | (() => React.ReactNode);
-}
- 
-interface TableComponentProps {
-    headers: Header[];
-    rows: Row[];
-    loading?: boolean;
-    error?: string | Boolean;
-    noDataFound?: string | React.ReactNode | (() => React.ReactNode);
-    children?: React.ReactNode;
-}
- 
-// Helper function to resolve value to ReactNode
 const resolveToReactNode = (value: string | React.ReactNode | (() => React.ReactNode)): React.ReactNode => {
     return typeof value === 'function' ? value() : value;
 };
@@ -47,7 +28,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
                                 >
                                     <b>{header.label}</b>
                                 </TableCellSticky>
-                                
                             ))}
                         </TableRow>
                     </TableHead>
@@ -66,14 +46,12 @@ const TableComponent: React.FC<TableComponentProps> = ({
                             </TableRow>
                         ) : rows.length > 0 ? (
                             rows.map((row, rowIndex) => (
-                                
                                 <TableRow key={rowIndex}>
-                                    {headers.map((header, cellIndex) => (<>
-
-                                        <TableCell key={cellIndex} align={header.align || 'left'} >
+                                    {headers.map((header, cellIndex) => (
+                                        <TableCell key={cellIndex} align={header.align || 'left'}>
                                             {resolveToReactNode(row[header.id])}
                                         </TableCell>
-                                        </>))}
+                                    ))}
                                 </TableRow>
                             ))
                         ) : (
