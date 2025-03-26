@@ -88,4 +88,3 @@ export const PartyFormContainer = styled(Box)({
   justifyContent:"center",
   marginBottom:"1rem"
 })
-
