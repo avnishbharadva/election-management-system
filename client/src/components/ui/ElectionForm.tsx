@@ -55,7 +55,7 @@ const ElectionForm = ({ selectedElection, closeModal }: any) => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (selectedElection) {
-      const { electionId, ...dataWithoutId } = data; // Remove ID for comparison
+      const { electionId, ...dataWithoutId } = data; 
       setUpdatedData({ ...dataWithoutId, electionId: selectedElection.electionId });
   
       if (JSON.stringify(dataWithoutId) !== JSON.stringify(originalData)) {

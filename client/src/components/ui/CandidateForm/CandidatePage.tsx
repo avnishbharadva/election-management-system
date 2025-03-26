@@ -12,7 +12,9 @@ const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, se
     gender: "",
     dateOfBirth: "",
     partyId: 0,
+    partyName: "",
     electionId: 0,
+    electionName: "",
     candidateEmail: "",
     maritalStatus: "",
     noOfChildren: 0,
@@ -55,6 +57,10 @@ const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, se
     if (selectedCandidate) {
       reset({
         ...selectedCandidate,
+        electionId: typeof selectedCandidate.electionId === "number" ? selectedCandidate.electionId : undefined,
+        electionName: selectedCandidate.electionName || "",
+        partyId: typeof selectedCandidate.partyId === "number" ? selectedCandidate.partyId : undefined,
+        partyName: selectedCandidate.partyName || "",
         candidateImage: selectedCandidate.candidateImage || "",
         candidateSignature: selectedCandidate.candidateSignature || "",
       });

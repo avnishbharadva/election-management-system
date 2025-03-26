@@ -9,6 +9,8 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import { StyledBox } from "../../style/CommanStyle";
+import { Imagepreview } from "../../style/PartyStyle";
 
 interface UpdateDialogProps {
   open: boolean;
@@ -30,22 +32,22 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   const handleConfirmClick = () => {
     handleConfirm(updatedData);
   };
+  
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
-  
     const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);
   
     allKeys.forEach((key) => {
       const fullKey = parentKey ? `${parentKey}.${key}` : key;
       const val1 = obj1?.[key] ?? "N/A";
-      const val2 = obj2?.[key];
-  
+      const val2 = obj2?.[key] ?? "N/A"; 
+      
       if (typeof val2 === "object" && val2 !== null && !Array.isArray(val2)) {
         const nestedDiff = compareObjects(val1 || {}, val2, fullKey);
         if (Object.keys(nestedDiff).length > 0) {
           diff = { ...diff, ...nestedDiff };
         }
-      } else if (val1 !== val2) {
+      } else if (val1 !== val2 && !(val1 === "N/A" && val2 === "N/A")) {
         diff[fullKey] = { old: val1, new: val2 };
       }
     });
@@ -56,16 +58,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   const renderChanges = (diff: any) => {
     return Object.entries(diff).map(([key, value]: any) => (
       <Grid item xs={12} key={key}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            bgcolor: "#f5f5f5",
-            padding: "10px",
-            borderRadius: "8px",
-          }}
-        >
+        <StyledBox>
           <Typography variant="body1" fontWeight="bold" sx={{ textTransform: "capitalize" }}>
             {key.replace(/([A-Z])/g, " $1")}:
           </Typography>
@@ -101,10 +94,11 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
               </span>
             </Typography>
           )}
-        </Box>
+        </StyledBox>
       </Grid>
     ));
   };
+
 
   const changes = compareObjects(originalData, updatedData);
 
@@ -116,7 +110,7 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
           {Object.keys(changes).length > 0 ? (
             renderChanges(changes)
           ) : (
-            <Typography variant="body1" color="textSecondary">
+            <Typography variant="body1" color="textSecondary" sx={{marginTop: 2, textAlign: "center"}}>
               No changes detected.
             </Typography>
           )}

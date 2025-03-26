@@ -39,3 +39,13 @@ export const FlexBoxCenter = styled(Box)({
     textTransform: "capitalize",
     padding: "6px",
   })
+
+ export const StyledBox = styled(Box)({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    padding: "10px",
+    borderRadius: "8px",
+  });
+  

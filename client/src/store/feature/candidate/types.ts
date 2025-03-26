@@ -29,11 +29,13 @@ export interface Candidate {
   noOfChildren: number;
   spouseName?: string;
   partyId: number;
+  partyName: string;
   residentialAddress: Address;
   mailingAddress: Address;
   stateName: string;
   candidateEmail: string;
   electionId: number;
+  electionName: string;
   bankDetails: BankDetails;
   candidateSignature?: string | null; 
   candidateImage?: string | null;      

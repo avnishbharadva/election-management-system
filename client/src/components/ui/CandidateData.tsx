@@ -23,7 +23,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -32,6 +31,8 @@ import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
 import CandidateContainer from "./CandidateForm/CandidatePage";
 import DeleteDialog from "./DeleteDialog";
+import ViewDetailsDialog from "./ViewDetailDialog";
+import { candidateSections } from "../../config/CandidateSection";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -73,7 +74,6 @@ const CandidateData = () => {
 
   const handleClose = () => {   
     setAnchorEl(null);
-    setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
@@ -91,6 +91,7 @@ const CandidateData = () => {
     setOpenViewDialog(false);
     setSelectedCandidate(null);
   };
+  
   const handleEditCandidate = async (candidateId: number) => {
     try {
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
@@ -315,10 +316,16 @@ const CandidateData = () => {
           rowsPerPageOptions={[5, 10, 20]}
         />
       </BoxTableContainer>
-        <ViewCandidate
+      <ViewDetailsDialog
           open={openViewDialog}
           handleClose={handleCloseViewDialog}
-          selectedCandidate={selectedCandidate}
+          title="Candidate Details"
+          data={selectedCandidate?.data}
+          imageKey="candidateImage"
+          signatureKey="candidateSignature" 
+          sections={candidateSections}
+          imagelabel="Candidate Image"
+          signaturelabel="Candidate Signature"
         />
         <DeleteDialog
           open={openDeleteDialog}
