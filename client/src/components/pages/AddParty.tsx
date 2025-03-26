@@ -22,6 +22,7 @@ import { AddButtonContainer } from "../../style/PartyStyle";
 import DeleteDialog from "../ui/DeleteDialog";
 import ViewDetailsDialog from "../ui/ViewDetailsDialog";
 import { Party } from "../../Types/AddParty.types";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const partyHeader = [
   { id: "partyName", label: "Party Name" },
@@ -118,7 +119,7 @@ const AddParty = () => {
     actions: (
       <>
         <IconButton onClick={(e) => handleMenuClick(e, party)} color="primary">
-          ...
+          <MoreHorizIcon sx={{color: 'grey'}} />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
