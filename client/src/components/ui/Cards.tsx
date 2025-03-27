@@ -4,6 +4,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import GroupsIcon from "@mui/icons-material/Groups";
 import BallotIcon from "@mui/icons-material/Ballot";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   CardWrapper,
@@ -30,6 +31,8 @@ const Cards: React.FC = () => {
     elections: 0,
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -50,7 +53,7 @@ const Cards: React.FC = () => {
     <Container>
       <CardWrapper>
         {cardsConfig.map((card) => (
-          <StyledCard key={card.id}>
+          <StyledCard key={card.id} onClick={() => navigate(card.link)}>
             <CardActionArea>
               <CardContent>
                 <Content variant="h6">{card.title}</Content>

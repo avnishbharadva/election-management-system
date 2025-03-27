@@ -1,7 +1,15 @@
 import { Box, Button, IconButton, styled } from "@mui/material";
 
+export const FlexBox = styled(Box)({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  });
+
+
 export const ElectionFormWrapper = styled(Box)({
-    width: "400px", 
+    width: "420px", 
     padding: "20px", 
     backgroundColor: "#fff"
 })
@@ -32,3 +40,4 @@ export const CloseIconButton = styled(IconButton)({
     right: '-1rem', 
     top:'-2rem'
 })
+

@@ -1,7 +1,7 @@
 import {  Toolbar, Typography, IconButton } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu"; 
-import { StyledAppBar, StyledButton } from "../../style/NavbarCss";
+import { ResponsiveTypography, StyledAppBar, StyledButton } from "../../style/NavbarCss";
 import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {

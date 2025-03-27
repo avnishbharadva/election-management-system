@@ -76,7 +76,7 @@ const ElectionData = ({ handleOpenModel }: any) => {
         </FlexBoxCenter>
       ) : (
         <>
-          <Table stickyHeader>
+          <Table stickyHeader >
             <TableHead>
               <TableRow>
                 <TableCell><b>Election Name</b></TableCell>

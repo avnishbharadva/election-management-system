@@ -17,10 +17,10 @@ export default function Sidebar({ mobileOpen, handleDrawerToggle }: SidebarProps
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-    { text: "Candidates", icon: <AccountBoxIcon />, path: "/dashboard/candidate" },
-    { text: "Voters", icon: <HowToVoteIcon />, path: "/dashboard/voter" },
-    { text: "Parties", icon: <GroupsIcon />, path: "/dashboard/party" },
-    { text: "Elections", icon: <BallotIcon />, path: "/dashboard/election" },
+    { text: "Candidates", icon: <AccountBoxIcon />, path: "/dashboard/candidates" },
+    { text: "Voters", icon: <HowToVoteIcon />, path: "/dashboard/voters" },
+    { text: "Parties", icon: <GroupsIcon />, path: "/dashboard/parties" },
+    { text: "Elections", icon: <BallotIcon />, path: "/dashboard/elections" },
   ];
 
   const drawerContent = (

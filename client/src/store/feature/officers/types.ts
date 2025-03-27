@@ -1,5 +1,3 @@
-// import { IFormInput } from '../candidate/types';
-// import { officerLogin } from './officerApi';
 export interface Officer {
     email:string,
     password:string
@@ -14,3 +12,7 @@ export interface OfficerState{
     loading: boolean;
     error: string | null;
 }
+export interface FormValues  {
+    email: string;
+    password: string;
+  };
