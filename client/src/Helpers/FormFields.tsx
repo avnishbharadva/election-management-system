@@ -1,13 +1,9 @@
 import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel, FormHelperText, CircularProgress, Typography, Box } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
-import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
 import { FieldProps, ManuItem } from '../Types/FormField.types';
-
-
- 
-    
+import { StyledFormControl, StyledSelect } from '../style/formfieldCss';
 
   export const NumberField = ({
     control,
@@ -248,43 +244,6 @@ export const StatusField = ({ control, name }: FieldProps) => {
 }
 
 
-export const PartyField = ({ control, name, label }: FieldProps) => {
-    const { data, isLoading, isError, error } = usePartyListQuery({});
-const PartyData= data?.data
-    return (
-        <Controller
-            name={name}
-            control={control}
-            defaultValue=""
-            rules={ { required: "Party selection is required" }}
-            render={({ field, fieldState }) => (
-                <FormControl fullWidth error={!!fieldState?.error || isError}>
-                    <InputLabel>{label || "Select Party"}</InputLabel>
-                    <Select
-                        label={label || "Select Party"}
-                        {...field}
-                        value={field.value ?? ''}
-                        disabled={isLoading || isError}
-                    >
-                        <MenuItem value="" disabled>Select a party</MenuItem>
-                        {isLoading ? (
-                            <MenuItem value="" disabled><CircularProgress size={20} /> Loading...</MenuItem>
-                        ) : isError ? (
-                            <MenuItem value="" disabled>Error loading parties</MenuItem>
-                        ) : PartyData?.map((party: any) => (
-                            <MenuItem key={party.partyId} value={party.partyName}>{party.partyName}</MenuItem>
-                        ))}
-                    </Select>
-                    {(fieldState?.error || isError) && (
-                        <FormHelperText style={{ color: 'red' }}>
-                            {fieldState?.error?.message || (isError && (error instanceof Error ? error.message : "Failed to load parties"))}
-                        </FormHelperText>
-                    )}
-                </FormControl>
-            )}
-        />
-    );
-};
 
 
 export const ManuItemComponet = ({ control,
@@ -304,13 +263,21 @@ export const ManuItemComponet = ({ control,
               defaultValue=""
               rules={{ required: `${label} is required` }}
               render={({ field, fieldState }) => (
-                <FormControl fullWidth error={!!fieldState?.error || isError}>
+                <StyledFormControl fullWidth error={!!fieldState?.error || isError}>
                   <InputLabel>{label}</InputLabel>
-                  <Select
+                  <StyledSelect
                     label={label}
                     {...field}
                     value={field.value ?? ''}
                     disabled={loading || isError}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200, 
+                          overflowY: 'auto', 
+                        },
+                      },
+                    }}
                   >
                     <MenuItem value="" disabled>
                       Select a {label}
@@ -337,7 +304,7 @@ export const ManuItemComponet = ({ control,
                         No {label.toLowerCase()} available
                       </MenuItem>
                     )}
-                  </Select>
+                  </StyledSelect>
                   {(fieldState?.error || isError) && (
                     <FormHelperText style={{ color: 'red' }}>
                       {fieldState?.error?.message ||
@@ -345,7 +312,7 @@ export const ManuItemComponet = ({ control,
                           (error instanceof Error ? error.message : `Failed to load ${label.toLowerCase()}`))}
                     </FormHelperText>
                   )}
-                </FormControl>
+                </StyledFormControl>
               )}
             />
           );
