@@ -1,13 +1,13 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
 import { ModelBox } from "../../style/ModelCss";
- 
+
 interface ModalProps {
   open: boolean;
   handleclose: () => void;
   children: React.ReactNode;
 }
- 
+
 const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
   return (
     <Modal
@@ -15,7 +15,7 @@ const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
       open={open}
       aria-labelledby="modal-title"
       BackdropProps={{
-        onClick: (e) => e.stopPropagation(),
+        onClick: (e) => e.stopPropagation(), 
       }}
       sx={{
         display: "flex",
@@ -30,5 +30,5 @@ const Model: React.FC<ModalProps> = ({ open, handleclose, children }) => {
     </Modal>
   );
 };
- 
+
 export default Model;
