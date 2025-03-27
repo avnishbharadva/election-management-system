@@ -42,7 +42,7 @@ const candidateSlice = createSlice({
         );
       },
       resetFilteredCandidate: (state) => {
-        state.filteredCandidate = null;  // Reset to show full list
+        state.filteredCandidate = null;
       },
       setSearchedSSN: (state, action: PayloadAction<string>) => {
         state.searchedSSN = action.payload;

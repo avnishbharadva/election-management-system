@@ -25,7 +25,7 @@ const AddElection = () => {
 
       <ElectionData handleOpenModel={handleOpenModel} />
 
-      <Model open={open} handleClose={handleClose}>
+      <Model open={open} handleclose={handleClose}>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
           <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
         </Box>
