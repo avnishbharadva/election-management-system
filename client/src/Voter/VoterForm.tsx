@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Checkbox, FormControlLabel} from '@mui/material';
-import { Title } from '../style/CandidateFormCss';
+import { Button, Checkbox, FormControlLabel} from '@mui/material';
+import { ModalFooter, Title } from '../style/CandidateFormCss';
 import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
 import { StyledButton } from '../style/CommanStyle';
 import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
@@ -258,14 +258,14 @@ type  voterFormProps={
             <FormImage label= 'Signature' control={control} name='signature' / >
           </FormRowCenterGap>
 
-          <FormRowCenterGap2 >
-            <StyledButton variant="contained" type="submit" disabled={isSubmitting}>
+          <ModalFooter>
+            <Button variant="contained" type="submit" disabled={isSubmitting}>
               {voter?.voterId ? 'Update Voter' : 'Add Voter'}
-          </StyledButton>
-            <StyledButton variant="contained" type="button" onClick={onClose}>
+          </Button>
+            <Button variant="contained" type="button" onClick={onClose}>
               Cancel
-            </StyledButton>
-          </FormRowCenterGap2>
+            </Button>
+            </ModalFooter>
         </Container>
     
       </HeaderStyles>
