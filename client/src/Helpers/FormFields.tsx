@@ -2,7 +2,7 @@ import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup
 import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
 import ImageUpload from './ImageUpload';
-import { FieldProps, ManuItem } from '../Types/FormField.types';
+import { FieldProps, MenuItemProps } from '../Types/FormField.types';
 import { StyledFormControl, StyledSelect } from '../style/formfieldCss';
 
   export const NumberField = ({
@@ -246,7 +246,7 @@ export const StatusField = ({ control, name }: FieldProps) => {
 
 
 
-export const ManuItemComponet = ({ control,
+export const MenuItemComponet = ({ control,
     name,
     label,
     loading = false,
@@ -255,7 +255,7 @@ export const ManuItemComponet = ({ control,
     data = [],
     valueKey,
     displayKey,
-    idKey}: ManuItem) => {
+    idKey}: MenuItemProps) => {
     return (
             <Controller
               name={name}

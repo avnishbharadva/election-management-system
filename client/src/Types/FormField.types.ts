@@ -20,7 +20,7 @@ export interface FieldProps {
 };
 
 
-export interface ManuItem extends FieldProps {
+export interface MenuItemProps extends FieldProps {
     data: any[];
     value?: any;
     label: string;
