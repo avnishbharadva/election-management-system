@@ -11,8 +11,8 @@ import BankDetails from "./BankDetails";
 import UploadDocuments from "./UploadDocuments";
 import { FormContent, Heading, ModalFooter } from "../../../style/CandidateFormCss";
 import { Box, Button, IconButton } from "@mui/material";
-import { defaultValues, IFormInput } from "../../../store/feature/candidate/types";
-import { clearCandidate, clearSearchQuery } from "../../../store/feature/candidate/candidateSlice";
+import { defaultElection, defaultValues, IFormInput } from "../../../store/feature/candidate/types";
+import { clearCandidate, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateDialog from "../UpdateDialog";
 
@@ -39,14 +39,13 @@ console.log("hiii"+editId)
     if (searchQuery) setValue("candidateSSN", searchQuery);
   }, [searchQuery, setValue]);
   useEffect(() => {
-    if (candidate && Object.keys(candidate).length > 0) {
+    if (candidate && Object.keys(candidate).length > 0 && candidate.candidateId) {
       setEditId(candidate.candidateId);
-      reset({
-        ...candidate,
-        electionName: candidate.electionName
-      })
+      reset({ ...candidate });
       setProfilePic(candidate.candidateImage || null);
       setSignature(candidate.candidateSignature || null);
+    } else {
+      resetForm();
     }
   }, [candidate, reset]);
 
@@ -65,7 +64,6 @@ console.log("hiii"+editId)
 
   const compareCandidateData = (oldData: any, newData: any) => {
     let diff: Record<string, any> = {};
-  
     Object.keys(newData).forEach((key) => {
       const val1 = oldData?.[key];
       let val2 = newData[key];
@@ -73,13 +71,11 @@ console.log("hiii"+editId)
         val2 = { ...val2 }; 
         delete val2.bankDetailsId;
         delete val2.addressId;
-      }
-  
+      } 
       if (JSON.stringify(val1) !== JSON.stringify(val2)) {
         diff[key] = val2;
       }
-    });
-  
+    }); 
     return diff;
   };
   
@@ -87,21 +83,17 @@ console.log("hiii"+editId)
     if (!profilePic || !signature) {
       toast.error("Profile picture and Signature are required!");
       return;
-    }
-  
+    } 
     try {
       const base64ProfilePic = await toBase64(profilePic);
       const base64Signature = await toBase64(signature);
-  
       const newFormData: Partial<IFormInput> = {
         ...data,
         candidateImage: base64ProfilePic,
         candidateSignature: base64Signature,
-      };
-  
+      }; 
       if (editId) {
-        const updatedFields = compareCandidateData(candidate, newFormData);
-        
+        const updatedFields = compareCandidateData(candidate, newFormData);        
         if (Object.keys(updatedFields).length > 0) {
           setUpdatedData(newFormData); 
           setConfirmDialogOpen(true); 
@@ -139,7 +131,7 @@ console.log("hiii"+editId)
    
   const resetForm = () => {
     reset(defaultValues);
-    setEditId(null);
+    setEditId(null); 
     setProfilePic(null);
     setSignature(null);
     dispatch(clearSearchQuery());
@@ -159,7 +151,7 @@ console.log("hiii"+editId)
         </Box>
         <FormContent>
           <PersonalInfo register={register} errors={errors} control={control} watch={watch} />
-          <ElectionDetails control={control} errors={errors} register={register} />
+          <ElectionDetails control={control} errors={errors} register={register} setValue={setValue} />
           <AddressForm register={register} errors={errors} watch={watch} setValue={setValue} />
           <BankDetails register={register} errors={errors} />
           <UploadDocuments
@@ -175,7 +167,6 @@ console.log("hiii"+editId)
           <Button variant="contained" onClick={resetForm}>Cancel</Button>
         </ModalFooter>
       </form>
-
       <UpdateDialog
         open={confirmDialogOpen}
         title="Confirm Candidate Updates"

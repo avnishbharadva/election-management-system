@@ -29,11 +29,13 @@ export interface Candidate {
   noOfChildren: number;
   spouseName?: string;
   partyId: number;
+  partyName: string;
   residentialAddress: Address;
   mailingAddress: Address;
   stateName: string;
   candidateEmail: string;
   electionId: number;
+  electionName: string;
   bankDetails: BankDetails;
   candidateSignature?: string | null; 
   candidateImage?: string | null;      
@@ -130,20 +132,29 @@ export interface UploadDocumentsProps {
 }
 
 export const defaultValues = {
-    candidateName: { firstName: "", middleName: "", lastName: "" },
-    gender: "",
-    dateOfBirth: "",
-    partyId: 0,
-    electionId: 0,
-    candidateEmail: "",
-    maritalStatus: "",
-    noOfChildren: 0,
-    spouseName: "",
-    stateName: "New York",
-    residentialAddress: { street: "", city: "", zipcode: "" },
-    mailingAddress: { street: "", city: "", zipcode: "" },
-    bankDetails: { bankName: "", bankAddress: "" },
-    candidateSSN: "",
-    candidateImage: "",
-    candidateSignature: "",
-  };
+  candidateName: { firstName: "", middleName: "", lastName: "" },
+  gender: undefined,
+  dateOfBirth: "",
+  partyId: 0,
+  partyName: "",
+  electionId: 0,
+  electionName: "",
+  candidateEmail: "",
+  maritalStatus: undefined as "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED" | undefined,
+  noOfChildren: 0,
+  spouseName: "",
+  stateName: "New York",
+  residentialAddress: { street: "", city: "", zipcode: 0 },
+  mailingAddress: { street: "", city: "", zipcode: 0 },
+  bankDetails: { bankName: "", bankAddress: "" },
+  candidateSSN: "",
+  candidateImage: "",
+  candidateSignature: "",
+};
+
+export const defaultElection = {
+  electionId: 0,
+  electionName: "",
+  partyId: 0,
+  partyName: "",
+};

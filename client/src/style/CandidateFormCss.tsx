@@ -101,19 +101,17 @@ export const FormContent = styled(Box)({
   flex: 1,
   overflowY: "auto",
   padding: "16px",
-  maxHeight: "50vh", 
+  maxHeight: "50vh", // Control scrolling area
 });
-export const TableContent = styled(Box)(({ theme }) => ({
+
+export const AddCandidateBox = styled(Box)({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  gap: theme.spacing(2),
-  padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
+  gap: "1rem",
+  padding: "3rem",
+  borderRadius: "2rem",
   backgroundColor: "#f9f9f9",
-  
-  [theme.breakpoints.down("sm")]: {
-    alignItems: "start", 
-  },
-}));
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+})

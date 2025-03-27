@@ -1,11 +1,9 @@
-// import React from "react";
 import { TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText, InputLabel, Select, MenuItem } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { DividerStyle, Row, Section, Title } from "../../../style/CandidateFormCss";
 import { PersonalInfoProps } from "../../../store/feature/candidate/types";
 
 const PersonalInfo = ({ register, errors, control, watch, editId, candidate, searchQuery }: PersonalInfoProps) => {
-
   return (
     <Section>
       <Title variant="h6">Personal Information</Title>
@@ -35,7 +33,6 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
         error={!!errors.candidateName?.lastName}
         helperText={errors.candidateName?.lastName?.message}
         />
-
       </Row>
        <Row>
           <TextField
@@ -137,7 +134,6 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
             <FormHelperText>{errors.maritalStatus.message?.toString()}</FormHelperText>
           )}
         </FormControl>
-
                 <TextField
                   fullWidth
                   label="Spouse Name"
@@ -145,7 +141,6 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
                   InputLabelProps={{ shrink: true }}
                   disabled={watch("maritalStatus") === "SINGLE"} 
                 />
-
                 <TextField
                   fullWidth
                   label="No of Children"
@@ -161,5 +156,4 @@ const PersonalInfo = ({ register, errors, control, watch, editId, candidate, sea
     </Section>
   );
 };
-
 export default PersonalInfo;

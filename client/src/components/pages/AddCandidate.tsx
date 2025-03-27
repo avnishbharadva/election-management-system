@@ -3,14 +3,15 @@ import CandidateData from "../ui/CandidateData";
 import { FlexBoxColumn } from "../../style/CommanStyle";
 import { Box, Button } from "@mui/material";
 
+
 const AddCandidate = () => {
-  return (<>
+  return (
+    <>
     <FlexBoxColumn>
       <SearchComponent />
-      
-    </FlexBoxColumn>
-      <CandidateData />
-      </>
+      </FlexBoxColumn>
+    <CandidateData/>
+    </>
   );
 };
 
