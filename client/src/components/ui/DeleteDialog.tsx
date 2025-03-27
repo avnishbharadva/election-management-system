@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from "@mui/material";
-
+ 
 interface DeleteDialogProps {
   open: boolean;
   handleClose: () => void;
@@ -8,7 +8,7 @@ interface DeleteDialogProps {
   title?: string;
   message?: string;
 }
-
+ 
 const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, handleClose, handleDelete, title = "Confirm Delete", message = "Are you sure you want to delete this item?" }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -27,5 +27,4 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, handleClose, handleDe
     </Dialog>
   );
 };
-
 export default DeleteDialog;

@@ -50,21 +50,25 @@ properties:
     minimum: 1900
     maximum: 2025
     example: 2010
-  partyId:
-    type: integer
-    format: int64
-    example: 1
+  party:
+    type: string
+    minLength: 3
+    maxLength: 30
+    example: "Democratic Alliance"
+    description: "Party name must be between 3 and 30 characters."
   residentialAddress:
-    $ref: "./addressDTO.yaml"
+    $ref: "./addressUpdateDTO.yaml"
   mailingAddress:
-    $ref: "./addressDTO.yaml"
+    $ref: "./addressUpdateDTO.yaml"
   image:
     type: string
     example: "base64-encoded-image-string"
   signature:
     type: string
     example: "base64-encoded-signature-string"
-  statusId:
-    type: integer
-    format: int64
-    example: 1
+  status:
+    type: string
+    minLength: 3
+    maxLength: 10
+    example: "Active"
+    description: "status of the voter"

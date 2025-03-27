@@ -2,8 +2,7 @@ import { Button, TextField, Typography } from "@mui/material";
 import bgImg from "../../assets/images/NYC_Flag.jpg";
 import { useForm,SubmitHandler } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
-import {
- 
+import { 
   FormCard,
   LoginBox,
   LoginField,
@@ -31,6 +30,7 @@ const Login = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (officerData) => {
+
     try {
         await dispatch(officerLogin(officerData)).unwrap()
        navigate("/dashboard");

@@ -1,12 +1,7 @@
 package com.ems.services;
 
 import com.ems.dtos.VoterSearchDTO;
-import org.openapitools.model.VoterDataDTO;
-import org.openapitools.model.VoterRegisterDTO;
-import org.openapitools.model.VoterStatusDataDTO;
-import org.openapitools.model.VoterUpdateRequest;
-import org.openapitools.model.TransferAddress;
-import org.openapitools.model.ChangeVoterAddress;
+import org.openapitools.model.*;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
@@ -16,7 +11,9 @@ public interface VoterService {
     VoterDataDTO register(VoterRegisterDTO voterRegisterDTO);
     Page<VoterDataDTO> searchVoters(VoterSearchDTO searchDTO, int page, int size, String[] sort);
     List<VoterStatusDataDTO> getAllStatus();
+    List<CountyDataDTO> getAllCounties();
+    List<TownDataDTO> getAllTowns();
     VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterDTO);
-    VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress);
-    VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress);
+    VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress, String type);
+    VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress, String type);
 }

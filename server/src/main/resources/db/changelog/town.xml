@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="15" author="Avnish">
+        <insert tableName="town">
+            <column name="town_id" value="1"/>
+            <column name="town_name" value="Hempstead"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="2"/>
+            <column name="town_name" value="Brookhaven"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="3"/>
+            <column name="town_name" value="Islip"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="4"/>
+            <column name="town_name" value="Oyster Bay"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="5"/>
+            <column name="town_name" value="North Hempstead"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="6"/>
+            <column name="town_name" value="Babylon"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="7"/>
+            <column name="town_name" value="Huntington"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="8"/>
+            <column name="town_name" value="Smithtown"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="9"/>
+            <column name="town_name" value="Amherst"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="10"/>
+            <column name="town_name" value="Greece"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="11"/>
+            <column name="town_name" value="Cheektowaga"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="12"/>
+            <column name="town_name" value="Colonie"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="13"/>
+            <column name="town_name" value="Tonawanda"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="14"/>
+            <column name="town_name" value="Clarkstown"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="15"/>
+            <column name="town_name" value="Irondequoit"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="16"/>
+            <column name="town_name" value="White Plains"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="17"/>
+            <column name="town_name" value="Troy"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="18"/>
+            <column name="town_name" value="Schenectady"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="19"/>
+            <column name="town_name" value="Yonkers"/>
+        </insert>
+        <insert tableName="town">
+            <column name="town_id" value="20"/>
+            <column name="town_name" value="Syracuse"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

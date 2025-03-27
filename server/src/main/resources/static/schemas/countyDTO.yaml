@@ -1,0 +1,9 @@
+type: object
+properties:
+  msg:
+    type: string
+    example: "Success"
+  data:
+    type: array
+    items:
+      $ref: "./countyDataDTO.yaml"

@@ -1,0 +1,54 @@
+import React, { useCallback, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { useDropzone } from "react-dropzone";
+import { DropzoneContainer } from '../style/CandidateFormCss';
+import {ImageUploadProps} from "../Types/imageUpload.types"
+ 
+const ImageUpload: React.FC<ImageUploadProps> = ({ label, onImageUpload, imagePreview, borderRadius = "50%" }) => {
+  const [alert, setAlert]= useState("")
+  const MAX_IMG_SIZE = 1024 * 1024 * 1; // 1MB
+  const acceptedFileTypes = [
+    'image/jpeg', 
+    'image/png', 
+    'image/jpg', 
+  ]
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+
+    if (file.size > MAX_IMG_SIZE) {
+      setAlert(`File size exceeds the maximum limit of 1MB`);
+      return;
+    }
+    if (!acceptedFileTypes.includes(file.type)) {
+      setAlert('Please upload a valid image file (JPEG, PNG, SVG)');
+      return;
+    }
+    setAlert("")
+    const reader = new FileReader();
+    reader.onload = () => onImageUpload(reader.result as string)
+    reader.readAsDataURL(file);
+  }, [onImageUpload]);
+ 
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const imagePreviewUrl = imagePreview ? imagePreview.replace(/^data:image\/(png|jpeg|svg\+xml);base64,/, '') : null;
+
+  return (
+    <Box>
+      <Typography variant="subtitle1">{label}</Typography>
+      
+      <DropzoneContainer {...getRootProps()}>
+        <input {...getInputProps()} />
+        {imagePreview ? (
+          <img src={`data:image/png/jpeg/jpg;base64,${imagePreviewUrl}`} alt={label} width="100" height="100" style={{ borderRadius: borderRadius }}  />
+        ) : (
+          <Typography>Drag & Drop or Click to upload {label}</Typography>
+        )}  
+      </DropzoneContainer>
+      <Typography color="error"> {alert} </Typography>
+    </Box>
+  );
+};
+ 
+export default ImageUpload;
