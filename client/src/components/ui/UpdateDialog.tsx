@@ -10,16 +10,8 @@ import {
 } from "@mui/material";
 import { StyledBox } from "../../style/CommanStyle";
 import { ImagePreview, StyledDialog } from "../../style/UpdateDialogcss";
+import { UpdateDialogProps } from "../../Types/UpdateDialog.types";
 
-interface UpdateDialogProps {
-  open: boolean;
-  title?: string;
-  handleClose: () => void;
-  handleConfirm: (data: Record<string, any>) => void;
-  originalData: Record<string, any>;
-  updatedData: Record<string, any>;
-}
- 
 const UpdateDialog: React.FC<UpdateDialogProps> = ({
   open,
   title,

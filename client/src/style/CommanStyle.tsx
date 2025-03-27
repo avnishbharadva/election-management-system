@@ -1,4 +1,4 @@
-import { Box, Button, DialogContent, DialogTitle, styled, Typography } from "@mui/material";
+import { Box, Button, DialogActions, DialogContent, DialogTitle, styled, Typography } from "@mui/material";
 export const FlexBoxColumn = styled(Box)({
 display:"flex",
 justifyContent:"center",
@@ -85,4 +85,11 @@ export const FlexBoxCenter = styled(Box)({
     display: "flex", 
     flexDirection: "column", 
     gap: "3rem"
+  })
+
+  export const DialogAction = styled(DialogActions)({
+    display: "flex",   
+    justifyContent: "center",
+    padding: "10px",
+    backgroundColor: "#f1f1f1",
   })

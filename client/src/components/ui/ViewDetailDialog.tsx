@@ -4,29 +4,12 @@ import {
   Card,
   CardContent,
   Dialog,
-  DialogActions,
   Divider,
   Grid,
   Typography,
 } from "@mui/material";
-import { DialogContainer, DialogWrapper, ImageBox, ImageSign, ImageWarpper, Title } from "../../style/CommanStyle";
-
-interface SectionConfig {
-  title: string;
-  fields: { label: string; key: string }[];
-}
-
-interface ViewDetailsDialogProps {
-  open: boolean;
-  handleClose: () => void;
-  data: any;
-  sections: SectionConfig[];
-  imageKey?: string;
-  signatureKey?: string; 
-  title: string;
-  imagelabel : string,
-  signaturelabel: string
-}
+import { DialogAction, DialogContainer, DialogWrapper, ImageBox, ImageSign, ImageWarpper, Title } from "../../style/CommanStyle";
+import { ViewDetailsDialogProps } from "../../Types/ViewDialog.types";
 
 export default function ViewDetailsDialog({
   open,
@@ -61,7 +44,6 @@ export default function ViewDetailsDialog({
       <Title>
         {title}
       </Title>
-
       <DialogWrapper>
         <DialogContainer>
           {sections.map((section, index) => (
@@ -148,17 +130,11 @@ export default function ViewDetailsDialog({
           ))}
         </DialogContainer>
       </DialogWrapper>
-      <DialogActions
-        sx={{
-          justifyContent: "center",
-          padding: "10px",
-          backgroundColor: "#f1f1f1",
-        }}
-      >
+      <DialogAction>
         <Button onClick={handleClose} variant="contained" color="primary">
           Close
         </Button>
-      </DialogActions>
+      </DialogAction>
     </Dialog>
   );
 }
