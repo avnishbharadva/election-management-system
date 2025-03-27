@@ -6,7 +6,7 @@ export type Address = {
     town:string;
     state:string;
     zipCode: number | null;
-    addressType: "RESIDENTIAL" | "MAILING"
+
 }
 
 

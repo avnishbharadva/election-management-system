@@ -69,12 +69,18 @@ const statusApi = voterApi.injectEndpoints({
         status: builder.query({
             query: () => 'voters/status'
         }),
+        towns: builder.query({
+            query: () => 'voters/towns'
+            }),
+        counties: builder.query({
+            query: () => 'voters/counties'
+            }),
     }),
     overrideExisting: false, 
 });
 
 
-export const { useStatusQuery } = statusApi;
+export const { useStatusQuery,useCountiesQuery,useTownsQuery } = statusApi;
 
 
 export const {

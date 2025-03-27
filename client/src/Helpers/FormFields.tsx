@@ -3,8 +3,8 @@ import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
 import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
-import { FieldProps } from '../Types/FormField.types';
-// Type for the props of each form field component
+import { FieldProps, ManuItem } from '../Types/FormField.types';
+
 
  
     
@@ -96,6 +96,7 @@ export const NameField = ({
     isRequired = true,
     minLength = 0,
     maxLength = 1000,
+    customfield = {}
 }: FieldProps) => {
     return (
         <Controller
@@ -114,14 +115,19 @@ export const NameField = ({
             }}
             render={({ field, fieldState }) => (
                 <TextField
-                    {...field} // Spreads value, onChange, etc.
+                    {...field} 
                     label={label}
                     variant="outlined"
                     fullWidth
-                    error={!!fieldState?.error} // Show error if exists
-                    helperText={fieldState?.error?.message} // Display error message
+                    error={!!fieldState?.error} 
+                    helperText={fieldState?.error?.message} 
+                    inputProps={{
+                        readOnly: customfield?.readOnly || false,  
+                    }}
+                    InputLabelProps={{ shrink: true }}
                 />
             )}
+            
         />
     );
 };
@@ -279,6 +285,72 @@ const PartyData= data?.data
         />
     );
 };
+
+
+export const ManuItemComponet = ({ control,
+    name,
+    label,
+    loading = false,
+    error = '',
+    isError = false,
+    data = [],
+    valueKey,
+    displayKey,
+    idKey}: ManuItem) => {
+    return (
+            <Controller
+              name={name}
+              control={control}
+              defaultValue=""
+              rules={{ required: `${label} is required` }}
+              render={({ field, fieldState }) => (
+                <FormControl fullWidth error={!!fieldState?.error || isError}>
+                  <InputLabel>{label}</InputLabel>
+                  <Select
+                    label={label}
+                    {...field}
+                    value={field.value ?? ''}
+                    disabled={loading || isError}
+                  >
+                    <MenuItem value="" disabled>
+                      Select a {label}
+                    </MenuItem>
+                    {loading ? (
+                      <MenuItem value="" disabled>
+                        <CircularProgress size={20} /> Loading...
+                      </MenuItem>
+                    ) : isError ? (
+                      <MenuItem value="" disabled>
+                        Error loading {label.toLowerCase()}
+                      </MenuItem>
+                    ) : data.length > 0 ? (
+                      data.map((item) => (
+                        <MenuItem
+                          key={item[idKey]}
+                          value={item[valueKey]}
+                        >
+                          {item[displayKey]}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="" disabled>
+                        No {label.toLowerCase()} available
+                      </MenuItem>
+                    )}
+                  </Select>
+                  {(fieldState?.error || isError) && (
+                    <FormHelperText style={{ color: 'red' }}>
+                      {fieldState?.error?.message ||
+                        (isError &&
+                          (error instanceof Error ? error.message : `Failed to load ${label.toLowerCase()}`))}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )}
+            />
+          );
+        };
+
 
 export const DateOfBirthField = ({ control, name, label, rules }: FieldProps) => {
     const validateDateOfBirth = (value: string) => {
