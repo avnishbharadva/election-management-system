@@ -60,27 +60,28 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
           <Typography variant="body1" fontWeight="bold" sx={{ textTransform: "capitalize" }}>
             {key.replace(/([A-Z])/g, " $1")}:
           </Typography>
- 
+  
           {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") || key.toLowerCase().includes("symbol") ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
               {value.old !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.old}`} alt="Old" />}
               <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
               <ImagePreview
-     src={typeof value.new === "string" && value.new.startsWith("data:image") ? value.new : value.new ? `data:image/png;base64,${value.new}` : ""}  
-     alt="New"  
-   />            
-   </Box>
+                src={typeof value.new === "string" && value.new.startsWith("data:image") ? value.new : value.new ? `data:image/png;base64,${value.new}` : ""}  
+                alt="New"  
+              />            
+            </Box>
           ) : (
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              <span style={{ color: "#D32F2F" }}>{value.old || "N/A"}</span>
+              <span style={{ color: "#D32F2F" }}>{typeof value.old === "object" ? JSON.stringify(value.old) : value.old || "N/A"}</span>
               <span style={{ margin: "0 8px", color: "#616161" }}>→</span>
-              <span style={{ color: "#388E3C" }}>{value.new || "N/A"}</span>
+              <span style={{ color: "#388E3C" }}>{typeof value.new === "object" ? JSON.stringify(value.new) : value.new || "N/A"}</span>
             </Typography>
           )}
         </StyledBox>
       </Grid>
     ));
   };
+  
 
 
   const changes = compareObjects(originalData, updatedData);
