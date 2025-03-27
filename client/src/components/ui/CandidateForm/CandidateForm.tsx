@@ -12,7 +12,7 @@ import UploadDocuments from "./UploadDocuments";
 import { FormContent, Heading, ModalFooter } from "../../../style/CandidateFormCss";
 import { Box, Button, IconButton } from "@mui/material";
 import { defaultElection, defaultValues, IFormInput } from "../../../store/feature/candidate/types";
-import { clearCandidate, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
+import { clearCandidate, clearSearchQuery, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateDialog from "../UpdateDialog";
 

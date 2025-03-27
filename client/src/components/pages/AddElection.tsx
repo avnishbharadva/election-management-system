@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import ElectionForm from "../ui/ElectionForm";
 import ElectionData from "../ui/ElectionData";
 import Model from "../ui/Model";
@@ -28,9 +28,9 @@ const AddElection = () => {
       <ElectionData handleOpenModel={handleOpenModel} />
 
       <Model open={open} handleclose={handleClose}>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <FlexBoxCenter sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
           <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
-        </Box>
+        </FlexBoxCenter>
       </Model>
     </FlexBox>
   );

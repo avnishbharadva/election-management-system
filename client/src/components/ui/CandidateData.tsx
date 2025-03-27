@@ -34,9 +34,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, defaultValues, ModalData } from "../../store/feature/candidate/types";
 import DeleteDialog from "./DeleteDialog";
-import ViewDetailsDialog from "./ViewDetailDialog";
+import ViewDetailsDialog from "./ViewDetailsDialog";
 import { candidateSections } from "../../config/CandidateSection";
 import { AddCandidateBox } from "../../style/CandidateFormCss";
+import CandidateForm from "./CandidateForm/CandidateForm";
+import CandidateContainer from "./CandidateForm/CandidatePage";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -418,9 +420,11 @@ const CandidateData = () => {
           </TableBody>
         </Table>
         <Model open={modalData.open} handleclose={handleCloseModal}>
-          <CandidateForm
-            handleClose={handleCloseModal}
-          />
+        <CandidateContainer
+              handleClose={handleCloseModal}
+              selectedCandidate={modalData.selectedCandidate}
+              actionType={modalData.actionType}
+            />
         </Model>
         <TablePagination
           sx={{
