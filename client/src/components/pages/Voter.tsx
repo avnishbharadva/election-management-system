@@ -12,15 +12,15 @@ import {
 import { Edit, Visibility } from '@mui/icons-material';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import Model from '../ui/Model';
-import SearchComponent from '../ui/SearchComponent';
-import VoterForm from '../../Voter/VoterForm';
+import SearchComponent from '../modules/voter/SearchComponent';
+import VoterForm from '../modules/voter/VoterForm';
 import { useSearchVotersQuery } from '../../store/feature/voter/VoterAction';
 import TableComponent from '../ui/TableComponent';
 import Pagination from '../ui/Pagination'
 import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
 import ViewDetailsDialog from '../ui/ViewDetailsDialog';
-import { viewVoter, voterTableHeader } from '../../Voter/lableAndKey';
+import { viewVoter, voterTableHeader } from '../modules/voter/lableAndKey';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const AddVoter = () => {

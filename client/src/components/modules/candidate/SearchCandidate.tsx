@@ -1,9 +1,9 @@
 import { InputAdornment, IconButton} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../store/feature/candidate/candidateSlice";
-import { AppDispatch } from "../../store/app/store";
-import { fetchCandidateBySSN } from "../../store/feature/candidate/candidateAPI";
-import { ClearIconStyled, SearchIconStyled, StyledSearchButton, StyledSearchContainer, StyledSearchInput } from "../../style/SearchCss";
+import { clearSearchQuery, setSearchedSSN, setSearchQuery } from "../../../store/feature/candidate/candidateSlice";
+import { AppDispatch } from "../../../store/app/store";
+import { fetchCandidateBySSN } from "../../../store/feature/candidate/candidateAPI";
+import { ClearIconStyled, SearchIconStyled, StyledSearchButton, StyledSearchContainer, StyledSearchInput } from "../../../style/SearchCss";
  
 const SearchComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

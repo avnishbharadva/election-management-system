@@ -2,16 +2,16 @@
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Checkbox, FormControlLabel} from '@mui/material';
-import { ModalFooter, Title } from '../style/CandidateFormCss';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
-import { StyledButton } from '../style/CommanStyle';
-import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
+import { ModalFooter, Title } from '../../../style/CandidateFormCss';
+import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../../../Helpers/FormFields';
+import { StyledButton } from '../../../style/CommanStyle';
+import { useEditVoterMutation, useRegisterVoterMutation } from '../../../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
+import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../../../style/VoterStyleCss";
 
-import { updateFormValue } from '../Helpers/updateFormValue';
-import UpdateDialog from '../components/ui/UpdateDialog';
-import { FormData } from '../store/feature/voter/type';
+import { updateFormValue } from '../../../Helpers/updateFormValue';
+import UpdateDialog from '../../ui/UpdateDialog';
+import { FormData } from '../../../store/feature/voter/type';
 
 const defaultValues: FormData = {
   firstName: "",
