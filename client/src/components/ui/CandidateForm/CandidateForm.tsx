@@ -24,7 +24,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   const [signature, setSignature] = useState<File | null>(null);
   const [updatedData, setUpdatedData] = useState<Record<string, any>>({});
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-console.log("hiii"+editId)
   const {
     register,
     handleSubmit,
