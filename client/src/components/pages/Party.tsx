@@ -20,7 +20,7 @@ import Pagination from "../ui/Pagination";
 import TableComponent from "../ui/TableComponent";
 import { AddButtonContainer } from "../../style/PartyStyle";
 import DeleteDialog from "../ui/DeleteDialog";
-import ViewDetailsDialog from "../ui/ViewDetailsDialog";
+import ViewDetailsDialog from "../ui/ViewDetailDialog";
 import { Party } from "../../Types/Party.types";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
