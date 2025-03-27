@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-19T15:41:03+0530",
+    date = "2025-03-27T10:13:04+0530",
     comments = "version: 1.6.2, compiler: Eclipse JDT (IDE) 3.41.0.z20250213-2037, environment: Java 21.0.6 (Eclipse Adoptium)"
 )
 @Component
@@ -39,20 +39,20 @@ public class CandidateMapperImpl implements CandidateMapper {
         candidateDto.setBankDetails( bankDetailsToBankDetails( candidate.getBankDetails() ) );
         candidateDto.setPartyName( candidatePartyPartyName( candidate ) );
         candidateDto.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDto.setCandidateEmail( candidate.getCandidateEmail() );
         candidateDto.setCandidateId( candidate.getCandidateId() );
-        candidateDto.setCandidateImage( candidate.getCandidateImage() );
         candidateDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
         candidateDto.setCandidateSSN( candidate.getCandidateSSN() );
-        candidateDto.setCandidateSignature( candidate.getCandidateSignature() );
         candidateDto.setDateOfBirth( candidate.getDateOfBirth() );
         candidateDto.setGender( genderToGender( candidate.getGender() ) );
-        candidateDto.setMailingAddress( candidateAddressToCandidateAddress( candidate.getMailingAddress() ) );
         candidateDto.setMaritalStatus( maritalStatusToMaritalStatus( candidate.getMaritalStatus() ) );
         candidateDto.setNoOfChildren( candidate.getNoOfChildren() );
+        candidateDto.setSpouseName( candidate.getSpouseName() );
         candidateDto.setResidentialAddress( candidateAddressToCandidateAddress( candidate.getResidentialAddress() ) );
-        candidateDto.spouseName( candidate.getSpouseName() );
-        candidateDto.stateName( candidate.getStateName() );
+        candidateDto.setMailingAddress( candidateAddressToCandidateAddress( candidate.getMailingAddress() ) );
+        candidateDto.setStateName( candidate.getStateName() );
+        candidateDto.setCandidateEmail( candidate.getCandidateEmail() );
+        candidateDto.setCandidateImage( candidate.getCandidateImage() );
+        candidateDto.setCandidateSignature( candidate.getCandidateSignature() );
 
         return candidateDto;
     }
@@ -132,13 +132,13 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         candidateDetailsDto.setPartyName( candidatePartyPartyName( candidate ) );
         candidateDetailsDto.setElectionName( candidateElectionElectionName( candidate ) );
-        candidateDetailsDto.setCandidateEmail( candidate.getCandidateEmail() );
         candidateDetailsDto.setCandidateId( candidate.getCandidateId() );
         candidateDetailsDto.setCandidateName( candidateNameToCandidateName( candidate.getCandidateName() ) );
         candidateDetailsDto.setCandidateSSN( candidate.getCandidateSSN() );
         candidateDetailsDto.setGender( genderToGender( candidate.getGender() ) );
-        candidateDetailsDto.spouseName( candidate.getSpouseName() );
-        candidateDetailsDto.stateName( candidate.getStateName() );
+        candidateDetailsDto.setSpouseName( candidate.getSpouseName() );
+        candidateDetailsDto.setStateName( candidate.getStateName() );
+        candidateDetailsDto.setCandidateEmail( candidate.getCandidateEmail() );
 
         return candidateDetailsDto;
     }
@@ -227,14 +227,14 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         ElectionSortDTO electionSortDTO = new ElectionSortDTO();
 
-        electionSortDTO.setElectionDate( election.getElectionDate() );
         if ( election.getElectionId() != null ) {
             electionSortDTO.setElectionId( election.getElectionId().intValue() );
         }
         electionSortDTO.setElectionName( election.getElectionName() );
-        electionSortDTO.setElectionState( election.getElectionState() );
         electionSortDTO.setElectionType( election.getElectionType() );
-        electionSortDTO.totalSeats( election.getTotalSeats() );
+        electionSortDTO.setElectionDate( election.getElectionDate() );
+        electionSortDTO.setElectionState( election.getElectionState() );
+        electionSortDTO.setTotalSeats( election.getTotalSeats() );
 
         return electionSortDTO;
     }
@@ -246,9 +246,9 @@ public class CandidateMapperImpl implements CandidateMapper {
 
         org.openapitools.model.BankDetails bankDetails1 = new org.openapitools.model.BankDetails();
 
-        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
         bankDetails1.setBankDetailsId( bankDetails.getBankDetailsId() );
         bankDetails1.setBankName( bankDetails.getBankName() );
+        bankDetails1.setBankAddress( bankDetails.getBankAddress() );
 
         return bankDetails1;
     }
@@ -277,8 +277,8 @@ public class CandidateMapperImpl implements CandidateMapper {
         org.openapitools.model.CandidateName candidateName1 = new org.openapitools.model.CandidateName();
 
         candidateName1.setFirstName( candidateName.getFirstName() );
-        candidateName1.setLastName( candidateName.getLastName() );
         candidateName1.setMiddleName( candidateName.getMiddleName() );
+        candidateName1.setLastName( candidateName.getLastName() );
 
         return candidateName1;
     }
@@ -291,29 +291,14 @@ public class CandidateMapperImpl implements CandidateMapper {
         Gender gender1;
 
         switch ( gender ) {
-            case FEMALE: gender1 = Gender.FEMALE;
-            break;
             case MALE: gender1 = Gender.MALE;
+            break;
+            case FEMALE: gender1 = Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
 
         return gender1;
-    }
-
-    protected CandidateAddress candidateAddressToCandidateAddress(com.ems.entities.CandidateAddress candidateAddress) {
-        if ( candidateAddress == null ) {
-            return null;
-        }
-
-        CandidateAddress candidateAddress1 = new CandidateAddress();
-
-        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
-        candidateAddress1.setCity( candidateAddress.getCity() );
-        candidateAddress1.street( candidateAddress.getStreet() );
-        candidateAddress1.zipcode( candidateAddress.getZipcode() );
-
-        return candidateAddress1;
     }
 
     protected org.openapitools.model.MaritalStatus maritalStatusToMaritalStatus(MaritalStatus maritalStatus) {
@@ -324,11 +309,11 @@ public class CandidateMapperImpl implements CandidateMapper {
         org.openapitools.model.MaritalStatus maritalStatus1;
 
         switch ( maritalStatus ) {
-            case DIVORCED: maritalStatus1 = org.openapitools.model.MaritalStatus.DIVORCED;
+            case SINGLE: maritalStatus1 = org.openapitools.model.MaritalStatus.SINGLE;
             break;
             case MARRIED: maritalStatus1 = org.openapitools.model.MaritalStatus.MARRIED;
             break;
-            case SINGLE: maritalStatus1 = org.openapitools.model.MaritalStatus.SINGLE;
+            case DIVORCED: maritalStatus1 = org.openapitools.model.MaritalStatus.DIVORCED;
             break;
             case WIDOWED: maritalStatus1 = org.openapitools.model.MaritalStatus.WIDOWED;
             break;
@@ -336,6 +321,21 @@ public class CandidateMapperImpl implements CandidateMapper {
         }
 
         return maritalStatus1;
+    }
+
+    protected CandidateAddress candidateAddressToCandidateAddress(com.ems.entities.CandidateAddress candidateAddress) {
+        if ( candidateAddress == null ) {
+            return null;
+        }
+
+        CandidateAddress candidateAddress1 = new CandidateAddress();
+
+        candidateAddress1.setAddressId( candidateAddress.getAddressId() );
+        candidateAddress1.setStreet( candidateAddress.getStreet() );
+        candidateAddress1.setCity( candidateAddress.getCity() );
+        candidateAddress1.setZipcode( candidateAddress.getZipcode() );
+
+        return candidateAddress1;
     }
 
     protected BankDetails bankDetailsToBankDetails1(org.openapitools.model.BankDetails bankDetails) {
@@ -374,9 +374,9 @@ public class CandidateMapperImpl implements CandidateMapper {
         com.ems.entities.constants.Gender gender1;
 
         switch ( gender ) {
-            case FEMALE: gender1 = com.ems.entities.constants.Gender.FEMALE;
-            break;
             case MALE: gender1 = com.ems.entities.constants.Gender.MALE;
+            break;
+            case FEMALE: gender1 = com.ems.entities.constants.Gender.FEMALE;
             break;
             default: throw new IllegalArgumentException( "Unexpected enum constant: " + gender );
         }
@@ -392,11 +392,11 @@ public class CandidateMapperImpl implements CandidateMapper {
         MaritalStatus maritalStatus1;
 
         switch ( maritalStatus ) {
-            case DIVORCED: maritalStatus1 = MaritalStatus.DIVORCED;
+            case SINGLE: maritalStatus1 = MaritalStatus.SINGLE;
             break;
             case MARRIED: maritalStatus1 = MaritalStatus.MARRIED;
             break;
-            case SINGLE: maritalStatus1 = MaritalStatus.SINGLE;
+            case DIVORCED: maritalStatus1 = MaritalStatus.DIVORCED;
             break;
             case WIDOWED: maritalStatus1 = MaritalStatus.WIDOWED;
             break;

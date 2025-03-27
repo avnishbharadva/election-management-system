@@ -159,7 +159,6 @@ export default function ViewDetailsDialog({
           Close
         </Button>
       </DialogActions>
-
     </Dialog>
   );
 }

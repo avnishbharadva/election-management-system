@@ -129,3 +129,31 @@ export interface UploadDocumentsProps {
   onDropSignature: (acceptedFiles: File[]) => void;
   editId: number | null;
 }
+
+export const defaultValues = {
+  candidateName: { firstName: "", middleName: "", lastName: "" },
+  gender: undefined,
+  dateOfBirth: "",
+  partyId: 0,
+  partyName: "",
+  electionId: 0,
+  electionName: "",
+  candidateEmail: "",
+  maritalStatus: undefined as "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED" | undefined,
+  noOfChildren: 0,
+  spouseName: "",
+  stateName: "New York",
+  residentialAddress: { street: "", city: "", zipcode: 0 },
+  mailingAddress: { street: "", city: "", zipcode: 0 },
+  bankDetails: { bankName: "", bankAddress: "" },
+  candidateSSN: "",
+  candidateImage: "",
+  candidateSignature: "",
+};
+
+export const defaultElection = {
+  electionId: 0,
+  electionName: "",
+  partyId: 0,
+  partyName: "",
+};
