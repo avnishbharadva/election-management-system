@@ -21,6 +21,7 @@ import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
 import ViewDetailsDialog from '../ui/ViewDetailsDialog';
 import { viewVoter, voterTableHeader } from '../../Voter/lableAndKey';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({
@@ -96,7 +97,7 @@ const AddVoter = () => {
     action: (
       <>
         <IconButton onClick={(e) => handleMenuClick(e, voter)} color="primary">
-          ...
+          <MoreHorizIcon />
         </IconButton>
         <Menu
           anchorEl={anchorEl}

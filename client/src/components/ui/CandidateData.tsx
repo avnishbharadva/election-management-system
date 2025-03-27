@@ -27,24 +27,16 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ViewCandidate from "./ViewCandidate";
-import PersonOffIcon from "@mui/icons-material/PersonOff";
-import {
-  resetState,
-  setPage,
-  setPerPage,
-  setSort,
-} from "../../store/feature/candidate/candidateSlice";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import PersonOffIcon from '@mui/icons-material/PersonOff';
+import { clearCandidate, resetFilteredCandidate, resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, defaultValues, ModalData } from "../../store/feature/candidate/types";
 import DeleteDialog from "./DeleteDialog";
-import { TableContent } from "../../style/CandidateFormCss";
-import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
-import CandidateForm from "./CandidateForm/CandidateForm";
-import { useForm } from "react-hook-form";
+import ViewDetailsDialog from "./ViewDetailDialog";
+import { candidateSections } from "../../config/CandidateSection";
+import { AddCandidateBox } from "../../style/CandidateFormCss";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -106,7 +98,6 @@ const CandidateData = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
@@ -121,10 +112,13 @@ const CandidateData = () => {
   };
 
   const handleCloseViewDialog = () => {
-    dispatch(resetState());
+    resetState();
+    dispatch(clearCandidate());
+    resetFilteredCandidate();
     setOpenViewDialog(false);
     setSelectedCandidate(null);
   };
+  
   const handleEditCandidate = async (candidateId: number) => {
     try {
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
@@ -330,30 +324,27 @@ const CandidateData = () => {
             ) : notFound ? (
               <TableRow>
                 <TableCell colSpan={9} align="center">
-                  <TableContent>
-                    <Box>
-                      <PersonOffIcon sx={{ fontSize: 48, color: "#b0bec5" }} />
-                      <Typography variant="h6" color="textSecondary">
-                        No Candidate Found!
-                      </Typography>
+                  <AddCandidateBox>
+                    <PersonOffIcon sx={{ fontSize: 48, color: "#b0bec5" }} />
+                    <Typography variant="h6" color="textSecondary">
+                      No Candidate Found!
+                    </Typography>
                       <Button
                         variant="contained"
                         color="primary"
                         onClick={() => handleOpenModal("add")}
-                        sx={{
-                          textTransform: "none",
-                          borderRadius: 3,
-                          paddingX: 3,
-                          paddingY: 1,
-                        }}
                       >
-                        + Add Candidate
+                        Add Candidate
                       </Button>
-                    </Box>
-                  </TableContent>
+                  </AddCandidateBox>
                 </TableCell>
               </TableRow>
             ) : (
+              candidatesToDisplay.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} align="center">No candidates available.</TableCell>
+                </TableRow>
+              ) :
               candidatesToDisplay.map((candidate: any) => (
                 <TableRow sx={{padding:"12px 14px"}} key={candidate?.candidateId}>
                   <TableCell>{candidate?.candidateSSN}</TableCell>
@@ -447,19 +438,24 @@ const CandidateData = () => {
           rowsPerPageOptions={[5, 10, 20, 50, 100]}
         />
       </BoxTableContainer>
-      <ViewCandidate
-        open={openViewDialog}
-        handleClose={handleCloseViewDialog}
-        selectedCandidate={selectedCandidate}
-        
-      />
-      <DeleteDialog
-        open={openDeleteDialog}
-        handleClose={handleCloseDeleteDialog}
-        handleDelete={handleDeleteCandidate}
-        title="Delete Candidate"
-        message="Are you sure you want to delete this candidate? This action cannot be undone."
-      />
+      <ViewDetailsDialog
+          open={openViewDialog}
+          handleClose={handleCloseViewDialog}
+          title="Candidate Details"
+          data={selectedCandidate?.data}
+          imageKey="candidateImage"
+          signatureKey="candidateSignature" 
+          sections={candidateSections}
+          imagelabel="Candidate Image"
+          signaturelabel="Candidate Signature"
+        />
+        <DeleteDialog
+          open={openDeleteDialog}
+          handleClose={handleCloseDeleteDialog}
+          handleDelete={handleDeleteCandidate}
+          title="Delete Candidate"
+          message="Are you sure you want to delete this candidate? This action cannot be undone."
+        />
     </>
   );
 };

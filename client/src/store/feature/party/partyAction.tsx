@@ -1,36 +1,32 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
+ 
 const partyApi = createApi({
     reducerPath: 'partyApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8082/",
         prepareHeaders: (headers:any) => {
             const token = localStorage.getItem('token');
-        
             if (token) {
               headers.set('Authorization', `Bearer ${token}`);
             }
-            return headers;
+            return headers;                                
           },
      }),  
     tagTypes: ['party'],
    
     endpoints: (builder) => ({
  
-        PartyList: builder.query({
-            query: () => 'party',
-            providesTags: ['party'],
-        }
-        ),
-        PartyById: builder.query({
-            query: (partyId) => `party/${partyId}`
-        }),
+            PartyList: builder.query({
+                query: () => {
+                    return 'party';
+                }, 
+                providesTags: ['party'],
+            }
+            ),                      
  
         registerParty: builder.mutation({
-            query: ({ post, img }: any) => {
-                if(!img){
-                    console.error("party symbole is required")
-                }
-                const formData = {...post ,partySymbol: img}
+            query: ({ post }: any) => {
+                
+                const formData = {...post }
                 console.log(formData)
                  return {
                     url: 'party',
@@ -44,7 +40,6 @@ const partyApi = createApi({
         editParty: builder.mutation({
             query: ({ post, img, partyId }: any) => {
                 const formData = {...post ,partySymbol: img}
-            console.log(formData)
                 return {
                     url: `party/${partyId}`,
                     method: 'PATCH',
@@ -52,24 +47,25 @@ const partyApi = createApi({
                 }
                 },
                 invalidatesTags: ['party'],
-                transformResponse: (response: any, meta, arg) => {
-                    console.log('Response:', response); 
-                    console.log('Meta:', meta); 
-                    console.log('Args:', arg); 
+                transformResponse: (response: any) => {            
                     return {
-                      data: response,
-                      metadata: {
-                        responseReceivedAt: new Date().toISOString(),
-                        requestArgs: arg, 
-                    
-                      },             
-
+                      data: response,       
+ 
                 }}
             }),
+
+            deleteParty: builder.mutation({
+                query: (partyId) => ({
+                    url: `party/${partyId}`,
+                    method: 'DELETE',
+                }),
+                invalidatesTags: ['party'],
+            }),
+            
            
     })
 })
  
-export const { useRegisterPartyMutation, usePartyListQuery, usePartyByIdQuery,useEditPartyMutation } = partyApi;
+export const { useRegisterPartyMutation, usePartyListQuery, useEditPartyMutation, useDeletePartyMutation } = partyApi;
  
 export default partyApi

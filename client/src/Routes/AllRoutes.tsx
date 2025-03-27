@@ -1,3 +1,4 @@
+
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "../components/pages/Login";
 import AddCandidate from "../components/pages/AddCandidate";
