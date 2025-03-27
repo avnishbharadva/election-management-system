@@ -1,17 +1,16 @@
 
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Checkbox, FormControlLabel} from '@mui/material';
-import { Title } from '../style/CandidateFormCss';
-import { NumberField, NameField, EmailField, GenderField, PartyField, DateOfBirthField, FirstVotedYear, HasVotedBefore, StatusField, FormImage } from '../Helpers/FormFields';
-import { StyledButton } from '../style/CommanStyle';
-import { useEditVoterMutation, useRegisterVoterMutation } from '../store/feature/voter/VoterAction';
+import { Button, Checkbox, FormControlLabel} from '@mui/material';
+import { ModalFooter, Title } from '../style/CandidateFormCss';
+import { NumberField, NameField, EmailField, GenderField, DateOfBirthField, FirstVotedYear,  StatusField, FormImage, MenuItemComponent, HasVotedBefore } from '../Helpers/FormFields';
+import { useCountiesQuery, useEditVoterMutation, useRegisterVoterMutation, useTownsQuery } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField, FormRowCenterGap2, VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
-
+import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField,  VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
 import { updateFormValue } from '../Helpers/updateFormValue';
 import UpdateDialog from '../components/ui/UpdateDialog';
 import { FormData } from '../store/feature/voter/type';
+import { usePartyListQuery } from '../store/feature/party/partyAction';
 
 const defaultValues: FormData = {
   firstName: "",
@@ -35,8 +34,7 @@ const defaultValues: FormData = {
     county: "",
     zipCode: null,
     town:"",
-    state:"",
-    addressType: "RESIDENTIAL",
+    state:"New York"
   },
   mailingAddress: {
     addressLine: "",
@@ -44,9 +42,8 @@ const defaultValues: FormData = {
     city: "",
     county: "",
     town:"",
-    state:"",
+    state:"New York",
     zipCode: null,
-    addressType: "MAILING",
   },
   image:"",
   signature:""
@@ -71,6 +68,8 @@ type  voterFormProps={
     const { isSubmitting,dirtyFields} = formState
   
     useEffect(() => {
+      watch("mailingAddress.state", "New York");
+      watch("residentialAddress.state", "New York");
         reset(defaultValues)
         ssnNumber && reset((prv)=>({...prv,ssnNumber:ssnNumber}))
         if (voter) {
@@ -120,29 +119,31 @@ type  voterFormProps={
       }
     }
 
-    const handleSameAddressChange = (checked: boolean) => {
-      setSameAddress(checked);
-      if (checked) {
-        const residentialAddress = getValues("residentialAddress");
-        watch("mailingAddress", {
-          ...residentialAddress,
-          addressType: "MAILING",
-        });   
+    useEffect(() => {
+      const residentialAddress = watch("residentialAddress");
+      if (sameAddress) {  
+          setValue("mailingAddress", {
+              ...residentialAddress,
+            
+          });
       } else {
-        setValue("mailingAddress", {
-          addressLine: "",
-          aptNumber: "",
-          city: "",
-          county: "",
-          town:"",
-          state:"",
-          zipCode: null,
-          addressType: "MAILING",
-        });
-        
+          setValue("mailingAddress", {
+              addressLine: "",
+              aptNumber: "",
+              city: "",
+              county: "",
+              town: "",
+              state: "New York",
+              zipCode: null,
+          
+          });
       }
-    };
+  }, [sameAddress, watch,setValue]);
 
+    const {data:county, isLoading:countyLoading, isError:countyIsError, error:countyError}=useCountiesQuery({})
+    
+    const {data:town, isLoading:townLoading, isError:townIsError, error:townError}=useTownsQuery({})
+    const {data:Party, isLoading:PartyLoading, isError:PartyIsError, error:PartyError}=usePartyListQuery({})
     const handleConfirmSubmit: SubmitHandler<FormData> = (data) => {
 
       const imageurl = data?.image && data?.image.replace(/^data:image\/(png|jpeg|svg\+xml);base64,/, '') 
@@ -157,10 +158,10 @@ type  voterFormProps={
         onSubmit(data);
       }
     };
+ 
 
     const hasVoted =  !watch("hasVotedBefore");
     
-
   return (
     <>
     <form onSubmit={handleSubmit(handleConfirmSubmit)} >
@@ -190,7 +191,7 @@ type  voterFormProps={
 
           <FormRowWide>
             <NameField control={control} name="suffixName" label="Suffix Name" minLength={3} maxLength={7} />
-            <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{ readOnly: true }} />
+            <NumberField control={control} name="ssnNumber" label="SSN Number" fixedLength={9} customfield={{ readOnly: true }}  />
             <NumberField control={control} name="dmvNumber" label="DMV Number" fixedLength={9} />
           </FormRowWide>
 
@@ -198,7 +199,8 @@ type  voterFormProps={
             <Title variant="h6">Voting Information</Title>
             <DividerStyle/>
             <FormRowWide>
-              <PartyField name="party" control={control} label={"Select Party"} />
+              
+              <MenuItemComponent label='Party' name="party" control={control} data={Party?.data} idKey='partyId' valueKey='partyName' displayKey='partyName'  loading={PartyLoading} isError={PartyIsError} error={PartyError} />
               <HasVotedBefore name="hasVotedBefore" control={control} label="Has Voted Before" />
               <FirstVotedYear name="firstVotedYear" control={control} label='firstVotedYear' disabled={hasVoted} />
             </FormRowWide>
@@ -214,9 +216,9 @@ type  voterFormProps={
               <NameField label="Address Line" name="residentialAddress.addressLine" control={control} />
               <NameField label="Apt Number" name="residentialAddress.aptNumber" control={control} />
               <NameField label="City" name="residentialAddress.city" control={control} />
-              <NameField label="County" name="residentialAddress.county" control={control} />
-              <NameField label='town' name="residentialAddress.town" control={control}  maxLength={30} />
-              <NameField label='state' name="residentialAddress.state" control={control}  maxLength={30} />
+               <MenuItemComponent  label='County' name="residentialAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
+               <MenuItemComponent  label='Town' name="residentialAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
+              <NameField label='state' name="residentialAddress.state" control={control}  maxLength={8} />
               <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />  
             </FormRowWide>     
           </AddressField>
@@ -225,7 +227,7 @@ type  voterFormProps={
         control={
           <Checkbox
             checked={sameAddress}
-            onChange={(e) => handleSameAddressChange(e.target.checked)}
+            onChange={(e) => setSameAddress(e.target.checked)}
           />
         }
         label="Same as Residential Address"
@@ -238,14 +240,11 @@ type  voterFormProps={
                 <NameField label="Address Line" name="mailingAddress.addressLine" control={control}  />
                 <NameField label="Apt Number" name="mailingAddress.aptNumber" control={control}  />
                 <NameField label="City" name="mailingAddress.city" control={control}  />
-                <NameField label="County" name="mailingAddress.county" control={control}  />
-                <NameField label='town' name="mailingAddress.town" control={control}  maxLength={30} />
-                <NameField label='state' name="mailingAddress.state" control={control}  maxLength={30} />
-                <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control}  maxLength={5} />
-          
-                
+                <MenuItemComponent  label='County' name="mailingAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
+               <MenuItemComponent  label='Town' name="mailingAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
+               <NameField label='state' name="mailingAddress.state" control={control}  maxLength={8} />
+                <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control}  maxLength={5} />      
               </FormRowWide>
-          
             </AddressField>
           )}
 
@@ -258,14 +257,14 @@ type  voterFormProps={
             <FormImage label= 'Signature' control={control} name='signature' / >
           </FormRowCenterGap>
 
-          <FormRowCenterGap2 >
-            <StyledButton variant="contained" type="submit" disabled={isSubmitting}>
-              {voter?.voterId ? 'Update Voter' : 'Add Voter'}
-          </StyledButton>
-            <StyledButton variant="contained" type="button" onClick={onClose}>
+          <ModalFooter>
+            <Button variant="contained" type="submit" disabled={isSubmitting}>
+              {voter?.voterId ? 'Update' : 'Submit'}
+          </Button>
+            <Button variant="contained" type="button" onClick={onClose}>
               Cancel
-            </StyledButton>
-          </FormRowCenterGap2>
+            </Button>
+            </ModalFooter>
         </Container>
     
       </HeaderStyles>
