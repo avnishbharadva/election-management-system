@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -9,19 +8,13 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-
-interface UpdateDialogProps {
-  open: boolean;
-  title?: string;
-  handleClose: () => void;
-  handleConfirm: (data: Record<string, any>) => void;
-  originalData: Record<string, any>;
-  updatedData: Record<string, any>;
-}
+import { StyledBox } from "../../style/CommanStyle";
+import { ImagePreview, StyledDialog } from "../../style/UpdateDialogcss";
+import { UpdateDialogProps } from "../../Types/UpdateDialog.types";
 
 const UpdateDialog: React.FC<UpdateDialogProps> = ({
   open,
-  title = "Confirm Candidate Updates",
+  title,
   handleClose,
   handleConfirm,
   originalData = {},
@@ -30,106 +23,92 @@ const UpdateDialog: React.FC<UpdateDialogProps> = ({
   const handleConfirmClick = () => {
     handleConfirm(updatedData);
   };
+  
   const compareObjects = (obj1: any, obj2: any, parentKey = "") => {
     let diff: any = {};
-  
     const allKeys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]);
-  
+ 
     allKeys.forEach((key) => {
       const fullKey = parentKey ? `${parentKey}.${key}` : key;
       const val1 = obj1?.[key] ?? "N/A";
-      const val2 = obj2?.[key];
-  
+      const val2 = obj2?.[key] ?? "N/A"; 
+      
       if (typeof val2 === "object" && val2 !== null && !Array.isArray(val2)) {
         const nestedDiff = compareObjects(val1 || {}, val2, fullKey);
         if (Object.keys(nestedDiff).length > 0) {
           diff = { ...diff, ...nestedDiff };
         }
-      } else if (val1 !== val2) {
+      } else if (val1 !== val2 && !(val1 === "N/A" && val2 === "N/A")) {
         diff[fullKey] = { old: val1, new: val2 };
       }
     });
-  
     return diff;
   };
-  
+ 
   const renderChanges = (diff: any) => {
     return Object.entries(diff).map(([key, value]: any) => (
       <Grid item xs={12} key={key}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            bgcolor: "#f5f5f5",
-            padding: "10px",
-            borderRadius: "8px",
-          }}
-        >
+        <StyledBox>
           <Typography variant="body1" fontWeight="bold" sx={{ textTransform: "capitalize" }}>
             {key.replace(/([A-Z])/g, " $1")}:
           </Typography>
-          {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              {value.old !== "N/A" && (
-                <img
-                  src={`data:image/png;base64,${value.old}`}
-                  alt="Old"
-                  width="100"
-                  height="50"
-                  style={{ borderRadius: "4px", objectFit: "cover" }}
-                />
-              )}
+  
+          {key.toLowerCase().includes("image") || key.toLowerCase().includes("signature") || key.toLowerCase().includes("symbol") ? (
+            <Box sx={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              {value.old !== "N/A" && <ImagePreview src={`data:image/png;base64,${value.old}`} alt="Old" />}
               <Typography variant="body1" sx={{ fontWeight: "bold", color: "gray" }}>→</Typography>
-              {value.new !== "N/A" && (
-                <img
-                  src={`data:image/png;base64,${value.new}`}
-                  alt="New"
-                  width="100"
-                  height="50"
-                  style={{ borderRadius: "4px", objectFit: "cover" }}
-                />
-              )}
+              <ImagePreview
+                src={typeof value.new === "string" && value.new.startsWith("data:image") ? value.new : value.new ? `data:image/png;base64,${value.new}` : ""}  
+                alt="New"  
+              />            
             </Box>
           ) : (
-            <Typography variant="body1" color="error">
-              <span style={{ color: "red" }}>
-                {typeof value.old === "object" ? JSON.stringify(value.old) : value.old || "N/A"}
-              </span> →{" "}
-              <span style={{ color: "green" }}>
-                {typeof value.new === "object" ? JSON.stringify(value.new) : value.new || "N/A"}
-              </span>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              <span style={{ color: "#D32F2F" }}>{typeof value.old === "object" ? JSON.stringify(value.old) : value.old || "N/A"}</span>
+              <span style={{ margin: "0 8px", color: "#616161" }}>→</span>
+              <span style={{ color: "#388E3C" }}>{typeof value.new === "object" ? JSON.stringify(value.new) : value.new || "N/A"}</span>
             </Typography>
           )}
-        </Box>
+        </StyledBox>
       </Grid>
     ));
   };
+  
+
 
   const changes = compareObjects(originalData, updatedData);
-
+ 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
+      <DialogContent sx={{marginTop:"calc(1* 16px)"}}>
+        <Grid container spacing={2} sx={{marginTop:"calc(1* 16px)"}}>
           {Object.keys(changes).length > 0 ? (
             renderChanges(changes)
           ) : (
-            <Typography variant="body1" color="textSecondary">
+            <Typography variant="body1" color="textSecondary" sx={{marginTop: 2, textAlign: "center"}}>
               No changes detected.
             </Typography>
           )}
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="secondary">Cancel</Button>
-        <Button onClick={handleConfirmClick} color="primary" variant="contained">
+        <Button onClick={handleClose} color="primary" sx={{ fontWeight: "bold", textTransform: "none" }}>
+          Cancel
+        </Button>
+        <Button
+          onClick={handleConfirmClick}
+          color="primary"
+          variant="contained"
+        >
           Confirm
         </Button>
       </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
-
+ 
 export default UpdateDialog;
+
+
+

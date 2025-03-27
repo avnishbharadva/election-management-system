@@ -1,31 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import CandidateForm from "./CandidateForm";
-import { CandidateContainerProps } from "../../../store/feature/candidate/types";
+import { CandidateContainerProps, defaultValues } from "../../../store/feature/candidate/types";
 
 const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, selectedCandidate }) => {
   const [profilePic, setProfilePic] = useState<File | null>(null);
   const [signature, setSignature] = useState<File | null>(null);
-
-  const defaultValues = {
-    candidateName: { firstName: "", middleName: "", lastName: "" },
-    gender: "",
-    dateOfBirth: "",
-    partyId: 0,
-    electionId: 0,
-    candidateEmail: "",
-    maritalStatus: "",
-    noOfChildren: 0,
-    spouseName: "",
-    stateName: "New York",
-    residentialAddress: { street: "", city: "", zipcode: "" },
-    mailingAddress: { street: "", city: "", zipcode: "" },
-    bankDetails: { bankName: "", bankAddress: "" },
-    candidateSSN: "",
-    candidateImage: "",
-    candidateSignature: "",
-  };
-
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
     defaultValues: selectedCandidate ? selectedCandidate : defaultValues,
   });
@@ -55,6 +35,10 @@ const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, se
     if (selectedCandidate) {
       reset({
         ...selectedCandidate,
+        electionId: typeof selectedCandidate.electionId === "number" ? selectedCandidate.electionId : undefined,
+        electionName: selectedCandidate.electionName || "",
+        partyId: typeof selectedCandidate.partyId === "number" ? selectedCandidate.partyId : undefined,
+        partyName: selectedCandidate.partyName || "",
         candidateImage: selectedCandidate.candidateImage || "",
         candidateSignature: selectedCandidate.candidateSignature || "",
       });
@@ -65,7 +49,6 @@ const CandidateContainer: React.FC<CandidateContainerProps> = ({ handleClose, se
 
   const onSubmit = async (data: any) => {
     const formData = { ...data };
-
     if (profilePic) {
       formData.candidateImage = await fileToBase64(profilePic);
     }

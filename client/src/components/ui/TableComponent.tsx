@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TableBody, TableCell, TableHead, TableRow, CircularProgress, Typography } from '@mui/material';
-import {TableMain,  TableCellSticky, TableContainerMain } from '../../style/VoterStyleCss';
+import {TableMain,  TableCellSticky, TableContainerMain } from '../../style/TableStyleCss';
 import {TableComponentProps} from '../../Types/tableComponentProps.types';
  
 const resolveToReactNode = (value: string | React.ReactNode | (() => React.ReactNode)): React.ReactNode => {

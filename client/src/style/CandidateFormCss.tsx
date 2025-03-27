@@ -82,3 +82,15 @@ export const FormContent = styled(Box)({
   padding: "16px",
   maxHeight: "50vh", // Control scrolling area
 });
+
+export const AddCandidateBox = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "1rem",
+  padding: "3rem",
+  borderRadius: "2rem",
+  backgroundColor: "#f9f9f9",
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+})

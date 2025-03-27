@@ -23,15 +23,17 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ViewCandidate from "./ViewCandidate";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
+import { clearCandidate, resetFilteredCandidate, resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { BoxTableContainer } from "../../style/TableContainerCss";
 import { Candidate, ModalData } from "../../store/feature/candidate/types";
 import CandidateContainer from "./CandidateForm/CandidatePage";
 import DeleteDialog from "./DeleteDialog";
+import ViewDetailsDialog from "./ViewDetailDialog";
+import { candidateSections } from "../../config/CandidateSection";
+import { AddCandidateBox } from "../../style/CandidateFormCss";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -73,7 +75,6 @@ const CandidateData = () => {
 
   const handleClose = () => {   
     setAnchorEl(null);
-    setSelectedCandidateId(null);
   };
 
   const handleView = async (candidateId: number) => {
@@ -88,9 +89,13 @@ const CandidateData = () => {
   };
 
   const handleCloseViewDialog = () => {
+    resetState();
+    dispatch(clearCandidate());
+    resetFilteredCandidate();
     setOpenViewDialog(false);
     setSelectedCandidate(null);
   };
+  
   const handleEditCandidate = async (candidateId: number) => {
     try {
       const data = await dispatch(fetchCandidateById(candidateId)).unwrap();
@@ -203,40 +208,27 @@ const CandidateData = () => {
             ) : notFound ? (
               <TableRow>
                 <TableCell colSpan={9} align="center">
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 2,
-                      padding: 3,
-                      borderRadius: 2,
-                      backgroundColor: "#f9f9f9",
-                      boxShadow: 1,
-                    }}
-                  >
+                  <AddCandidateBox>
                     <PersonOffIcon sx={{ fontSize: 48, color: "#b0bec5" }} />
                     <Typography variant="h6" color="textSecondary">
                       No Candidate Found!
                     </Typography>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleOpenModal("add")}
-                      sx={{
-                        textTransform: "none",
-                        borderRadius: 3,
-                        paddingX: 3,
-                        paddingY: 1,
-                      }}
-                    >
-                      + Add Candidate
-                    </Button>
-                  </Box>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpenModal("add")}
+                      >
+                        Add Candidate
+                      </Button>
+                  </AddCandidateBox>
                 </TableCell>
               </TableRow>
             ) : (
+              candidatesToDisplay.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} align="center">No candidates available.</TableCell>
+                </TableRow>
+              ) :
               candidatesToDisplay.map((candidate: any) => (
                 <TableRow key={candidate?.candidateId}>
                   <TableCell>{candidate?.candidateSSN}</TableCell>
@@ -315,10 +307,16 @@ const CandidateData = () => {
           rowsPerPageOptions={[5, 10, 20]}
         />
       </BoxTableContainer>
-        <ViewCandidate
+      <ViewDetailsDialog
           open={openViewDialog}
           handleClose={handleCloseViewDialog}
-          selectedCandidate={selectedCandidate}
+          title="Candidate Details"
+          data={selectedCandidate?.data}
+          imageKey="candidateImage"
+          signatureKey="candidateSignature" 
+          sections={candidateSections}
+          imagelabel="Candidate Image"
+          signaturelabel="Candidate Signature"
         />
         <DeleteDialog
           open={openDeleteDialog}
