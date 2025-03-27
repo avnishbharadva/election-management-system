@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  */
 @lombok.NoArgsConstructor @lombok.AllArgsConstructor
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-25T10:50:57.574994300+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-03-27T15:34:48.150973900+05:30[Asia/Calcutta]", comments = "Generator version: 7.10.0")
 public class PaginatedVoterDTO {
 
   @Valid
