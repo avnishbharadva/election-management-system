@@ -1,10 +1,10 @@
 import { TextField, MenuItem, FormControl, InputLabel, Select, Radio, RadioGroup, FormLabel, FormControlLabel, FormHelperText, CircularProgress, Typography, Box } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { useStatusQuery } from '../store/feature/voter/VoterAction';
-import { usePartyListQuery } from '../store/feature/party/partyAction'
 import ImageUpload from './ImageUpload';
-import { FieldProps } from '../Types/FormField.types';
-   
+import { FieldProps, MenuItemProps } from '../Types/FormField.types';
+import { StyledFormControl, StyledSelect } from '../style/formfieldCss';
+
   export const NumberField = ({
     control,
     name,
@@ -92,6 +92,7 @@ export const NameField = ({
     isRequired = true,
     minLength = 0,
     maxLength = 1000,
+    customfield = {}
 }: FieldProps) => {
     return (
         <Controller
@@ -110,14 +111,19 @@ export const NameField = ({
             }}
             render={({ field, fieldState }) => (
                 <TextField
-                    {...field} // Spreads value, onChange, etc.
+                    {...field} 
                     label={label}
                     variant="outlined"
                     fullWidth
-                    error={!!fieldState?.error} // Show error if exists
-                    helperText={fieldState?.error?.message} // Display error message
+                    error={!!fieldState?.error} 
+                    helperText={fieldState?.error?.message} 
+                    inputProps={{
+                        readOnly: customfield?.readOnly || false,  
+                    }}
+                    InputLabelProps={{ shrink: true }}
                 />
             )}
+            
         />
     );
 };
@@ -238,43 +244,80 @@ export const StatusField = ({ control, name }: FieldProps) => {
 }
 
 
-export const PartyField = ({ control, name, label }: FieldProps) => {
-    const { data, isLoading, isError, error } = usePartyListQuery({});
-const PartyData= data?.data
+
+
+export const MenuItemComponent = ({ control,
+    name,
+    label,
+    loading = false,
+    error = '',
+    isError = false,
+    data = [],
+    valueKey,
+    displayKey,
+    idKey}: MenuItemProps) => {
     return (
-        <Controller
-            name={name}
-            control={control}
-            defaultValue=""
-            rules={ { required: "Party selection is required" }}
-            render={({ field, fieldState }) => (
-                <FormControl fullWidth error={!!fieldState?.error || isError}>
-                    <InputLabel>{label || "Select Party"}</InputLabel>
-                    <Select
-                        label={label || "Select Party"}
-                        {...field}
-                        value={field.value ?? ''}
-                        disabled={isLoading || isError}
-                    >
-                        <MenuItem value="" disabled>Select a party</MenuItem>
-                        {isLoading ? (
-                            <MenuItem value="" disabled><CircularProgress size={20} /> Loading...</MenuItem>
-                        ) : isError ? (
-                            <MenuItem value="" disabled>Error loading parties</MenuItem>
-                        ) : PartyData?.map((party: any) => (
-                            <MenuItem key={party.partyId} value={party.partyName}>{party.partyName}</MenuItem>
-                        ))}
-                    </Select>
-                    {(fieldState?.error || isError) && (
-                        <FormHelperText style={{ color: 'red' }}>
-                            {fieldState?.error?.message || (isError && (error instanceof Error ? error.message : "Failed to load parties"))}
-                        </FormHelperText>
+            <Controller
+              name={name}
+              control={control}
+              defaultValue=""
+              rules={{ required: `${label} is required` }}
+              render={({ field, fieldState }) => (
+                <StyledFormControl fullWidth error={!!fieldState?.error || isError}>
+                  <InputLabel>{label}</InputLabel>
+                  <StyledSelect
+                    label={label}
+                    {...field}
+                    value={field.value ?? ''}
+                    disabled={loading || isError}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200, 
+                          overflowY: 'auto', 
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select a {label}
+                    </MenuItem>
+                    {loading ? (
+                      <MenuItem value="" disabled>
+                        <CircularProgress size={20} /> Loading...
+                      </MenuItem>
+                    ) : isError ? (
+                      <MenuItem value="" disabled>
+                        Error loading {label.toLowerCase()}
+                      </MenuItem>
+                    ) : data.length > 0 ? (
+                      data.map((item) => (
+                        <MenuItem
+                          key={item[idKey]}
+                          value={item[valueKey]}
+                        >
+                          {item[displayKey]}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value="" disabled>
+                        No {label.toLowerCase()} available
+                      </MenuItem>
                     )}
-                </FormControl>
-            )}
-        />
-    );
-};
+                  </StyledSelect>
+                  {(fieldState?.error || isError) && (
+                    <FormHelperText style={{ color: 'red' }}>
+                      {fieldState?.error?.message ||
+                        (isError &&
+                          (error instanceof Error ? error.message : `Failed to load ${label.toLowerCase()}`))}
+                    </FormHelperText>
+                  )}
+                </StyledFormControl>
+              )}
+            />
+          );
+        };
+
 
 export const DateOfBirthField = ({ control, name, label, rules }: FieldProps) => {
     const validateDateOfBirth = (value: string) => {
