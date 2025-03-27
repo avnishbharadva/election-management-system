@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Checkbox, FormControlLabel} from '@mui/material';
 import { ModalFooter, Title } from '../style/CandidateFormCss';
-import { NumberField, NameField, EmailField, GenderField, DateOfBirthField, FirstVotedYear,  StatusField, FormImage, MenuItemComponet, HasVotedBefore } from '../Helpers/FormFields';
+import { NumberField, NameField, EmailField, GenderField, DateOfBirthField, FirstVotedYear,  StatusField, FormImage, MenuItemComponent, HasVotedBefore } from '../Helpers/FormFields';
 import { useCountiesQuery, useEditVoterMutation, useRegisterVoterMutation, useTownsQuery } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
 import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField,  VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
@@ -200,7 +200,7 @@ type  voterFormProps={
             <DividerStyle/>
             <FormRowWide>
               
-              <MenuItemComponet label='Party' name="party" control={control} data={Party?.data} idKey='partyId' valueKey='partyName' displayKey='partyName'  loading={PartyLoading} isError={PartyIsError} error={PartyError} />
+              <MenuItemComponent label='Party' name="party" control={control} data={Party?.data} idKey='partyId' valueKey='partyName' displayKey='partyName'  loading={PartyLoading} isError={PartyIsError} error={PartyError} />
               <HasVotedBefore name="hasVotedBefore" control={control} label="Has Voted Before" />
               <FirstVotedYear name="firstVotedYear" control={control} label='firstVotedYear' disabled={hasVoted} />
             </FormRowWide>
@@ -216,8 +216,8 @@ type  voterFormProps={
               <NameField label="Address Line" name="residentialAddress.addressLine" control={control} />
               <NameField label="Apt Number" name="residentialAddress.aptNumber" control={control} />
               <NameField label="City" name="residentialAddress.city" control={control} />
-               <MenuItemComponet  label='County' name="residentialAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
-               <MenuItemComponet  label='Town' name="residentialAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
+               <MenuItemComponent  label='County' name="residentialAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
+               <MenuItemComponent  label='Town' name="residentialAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
               <NameField label='state' name="residentialAddress.state" control={control}  maxLength={8} />
               <NumberField label="Zipcode" name="residentialAddress.zipCode" control={control} maxLength={5} />  
             </FormRowWide>     
@@ -240,8 +240,8 @@ type  voterFormProps={
                 <NameField label="Address Line" name="mailingAddress.addressLine" control={control}  />
                 <NameField label="Apt Number" name="mailingAddress.aptNumber" control={control}  />
                 <NameField label="City" name="mailingAddress.city" control={control}  />
-                <MenuItemComponet  label='County' name="mailingAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
-               <MenuItemComponet  label='Town' name="mailingAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
+                <MenuItemComponent  label='County' name="mailingAddress.county" control={control} data={county?.data} idKey='countyId' valueKey='countyName' displayKey='countyName'  loading={countyLoading} isError={countyIsError} error={countyError} />
+               <MenuItemComponent  label='Town' name="mailingAddress.town" control={control} data={town?.data} idKey='townId' valueKey='townName' displayKey='townName'  loading={townLoading} isError={townIsError} error={townError} />
                <NameField label='state' name="mailingAddress.state" control={control}  maxLength={8} />
                 <NumberField label="Zipcode" name="mailingAddress.zipCode" control={control}  maxLength={5} />      
               </FormRowWide>

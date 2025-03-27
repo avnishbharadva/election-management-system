@@ -246,7 +246,7 @@ export const StatusField = ({ control, name }: FieldProps) => {
 
 
 
-export const MenuItemComponet = ({ control,
+export const MenuItemComponent = ({ control,
     name,
     label,
     loading = false,
