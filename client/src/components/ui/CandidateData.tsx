@@ -14,7 +14,8 @@ import {
   TablePagination,
   Box,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Tooltip
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../store/app/store";
 import { deleteCandidateById, fetchCandidateById, fetchCandidates } from "../../store/feature/candidate/candidateAPI";
@@ -163,8 +164,19 @@ const CandidateData = () => {
     <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
       <b>{label}</b>
       <Box sx={{ display: "flex", flexDirection: "column", lineHeight: 0.8 }}>
-      <ArrowDropUpIcon sx={{ fontSize: 18, cursor: "pointer", marginBottom:'-4px' }} onClick={() => handleSort(field)} />
-      <ArrowDropDownIcon sx={{ fontSize: 18, cursor: "pointer", marginTop:'-4px' }} onClick={() => handleSort(field)} />
+      <Tooltip title="Sort Ascending">
+  <ArrowDropUpIcon
+    sx={{ fontSize: 18, cursor: "pointer", marginBottom: "-4px" }}
+    onClick={() => handleSort(field)}
+  />
+</Tooltip>
+
+<Tooltip title="Sort Descending">
+  <ArrowDropDownIcon
+    sx={{ fontSize: 18, cursor: "pointer", marginTop: "-4px" }}
+    onClick={() => handleSort(field)}
+  />
+</Tooltip>
       </Box>
     </Box>
   );
