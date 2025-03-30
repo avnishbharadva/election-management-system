@@ -21,6 +21,8 @@ properties:
   dateOfBirth:
     type: string
     format: date
+    description: Date of birth (must be in the past)
+    x-field-extra-annotation: "@com.ems.customvalidator.MinAge(value=18,message = \"Voter must be at least 18 years old \")"
     example: "1990-05-15"
   gender:
     type: string
@@ -40,16 +42,16 @@ properties:
     example: "john.doe@example.com"
   phoneNumber:
     type: string
-    x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{11}$\", message = \"Phone no must contain exactly 11 digits\")"
-    example: "12345678901"
+    x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{10}$\", message = \"Phone no must contain exactly 10 digits\")"
+    example: "1234567890"
   hasVotedBefore:
     type: boolean
     example: false
   firstVotedYear:
     type: integer
     minimum: 1900
-    maximum: 2025
-    example: 2010
+    maximum: 2007
+    example: 2002
   party:
     type: string
     minLength: 3
