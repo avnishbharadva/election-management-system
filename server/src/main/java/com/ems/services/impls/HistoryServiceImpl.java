@@ -30,7 +30,7 @@ public class HistoryServiceImpl implements HistoryService {
         log.info("name history for voterId : {}", voterId);
         var nameHistoryList = nameHistoryRepo.findByVoterId(voterId);
         if(nameHistoryList.isEmpty())
-            throw new DataNotFoundException("Voter not found with voterId : " + voterId);
+            throw new DataNotFoundException("Name History not found for voterId : " + voterId);
         return mapper.toNameHistoryDataDTO(nameHistoryList);
     }
 
@@ -39,7 +39,7 @@ public class HistoryServiceImpl implements HistoryService {
         log.info("status history for voterId : {}", voterId);
         var statusHistoryList = statusHistoryRepo.findByVoterId(voterId);
         if(statusHistoryList.isEmpty())
-            throw new DataNotFoundException("Voter not found with voterId : " + voterId);
+            throw new DataNotFoundException("Status History not found for voterId : " + voterId);
         return mapper.toStatusHistoryDataDTO(statusHistoryList);
     }
 
@@ -48,7 +48,7 @@ public class HistoryServiceImpl implements HistoryService {
         log.info("address history for voterId : {}", voterId);
         var addressHistoryList = addressHistoryRepo.findByVoterId(voterId);
         if(addressHistoryList.isEmpty())
-            throw new DataNotFoundException("Voter not found with voterId : " + voterId);
+            throw new DataNotFoundException("Address History not found for voterId : " + voterId);
         return mapper.toAddressHistoryDataDTO(addressHistoryList);
     }
 }

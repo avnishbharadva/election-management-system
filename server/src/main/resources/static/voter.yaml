@@ -272,7 +272,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /voters/{voterId}/transfer/{addressType}:
+  /voters/{voterId}/transfer-voter:
     patch:
       summary: Transfer voter county details
       description: Transfer a voter's county based on the provided voter ID.
@@ -282,12 +282,6 @@ paths:
           in: path
           required: true
           description: Unique identifier of the voter
-          schema:
-            type: string
-        - name: addressType
-          in: path
-          required: true
-          description: Type of the address
           schema:
             type: string
       requestBody:
@@ -323,7 +317,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /voters/{voterId}/change/{addressType}:
+  /voters/{voterId}/change-voter:
     patch:
       summary: Update voter details
       operationId: changeVoter
@@ -333,12 +327,6 @@ paths:
           in: path
           required: true
           description: Unique identifier of the voter
-          schema:
-            type: string
-        - name: addressType
-          in: path
-          required: true
-          description: Type of the address
           schema:
             type: string
       requestBody:
