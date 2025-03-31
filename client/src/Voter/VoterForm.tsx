@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Checkbox, FormControlLabel} from '@mui/material';
 import { ModalFooter, Title } from '../style/CandidateFormCss';
+
 import { NumberField, NameField, EmailField, GenderField, DateOfBirthField, FirstVotedYear,  StatusField, FormImage, MenuItemComponent, HasVotedBefore } from '../Helpers/FormFields';
 import { useCountiesQuery, useEditVoterMutation, useRegisterVoterMutation, useTownsQuery } from '../store/feature/voter/VoterAction';
+
 import { toast } from 'react-toastify';
 import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField,  VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
 import { updateFormValue } from '../Helpers/updateFormValue';
@@ -259,7 +261,9 @@ type  voterFormProps={
 
           <ModalFooter>
             <Button variant="contained" type="submit" disabled={isSubmitting}>
+
               {voter?.voterId ? 'Update' : 'Submit'}
+
           </Button>
             <Button variant="contained" type="button" onClick={onClose}>
               Cancel

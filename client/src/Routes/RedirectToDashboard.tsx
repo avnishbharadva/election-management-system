@@ -7,11 +7,11 @@ const RedirectToDashboard = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/dashboard"); // Redirect to dashboard if token exists
+      navigate("/dashboard"); 
     }
   }, [token, navigate]);
 
-  return null; // Renders nothing, just handles redirection
+  return null;
 };
 
 export default RedirectToDashboard;

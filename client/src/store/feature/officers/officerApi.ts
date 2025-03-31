@@ -11,7 +11,7 @@ export const officerLogin = createAsyncThunk('officer/login',async(offcierData:O
             const token = response.data.token;
             localStorage.setItem("token", token);
            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-           toast.success("Signin successful!");
+           toast.success("Sign In Successfully!");
            return token
           }          
     } catch (error:any) {
@@ -20,6 +20,7 @@ export const officerLogin = createAsyncThunk('officer/login',async(offcierData:O
             toast.error("Invalid Credentials");
             return rejectWithValue(error.response?.data?.message);
           }
+          toast.error("Something went wrong")
         return rejectWithValue(error.response?.data?.message || "Failed to Login");
         
     }

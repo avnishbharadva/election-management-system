@@ -12,7 +12,7 @@ import UploadDocuments from "./UploadDocuments";
 import { FormContent, Heading, ModalFooter } from "../../../style/CandidateFormCss";
 import { Box, Button, IconButton } from "@mui/material";
 import { defaultElection, defaultValues, IFormInput } from "../../../store/feature/candidate/types";
-import { clearCandidate, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
+import { clearCandidate, clearSearchQuery, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import UpdateDialog from "../UpdateDialog";
 
@@ -24,7 +24,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   const [signature, setSignature] = useState<File | null>(null);
   const [updatedData, setUpdatedData] = useState<Record<string, any>>({});
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -38,7 +37,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
   useEffect(() => {
     if (searchQuery) setValue("candidateSSN", searchQuery);
   }, [searchQuery, setValue]);
-
   useEffect(() => {
     if (candidate && Object.keys(candidate).length > 0 && candidate.candidateId) {
       setEditId(candidate.candidateId);
@@ -104,7 +102,6 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
       } else {
         await dispatch(addCandidate(newFormData)).unwrap();
         dispatch(fetchCandidates({ page: 0, perPage: 5 }));
-        toast.success("Candidate added successfully.");
         resetForm();
       }
     } catch (error) {
@@ -123,7 +120,7 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
       try {
         await dispatch(updateCandidateData({ candidateId: editId, candidateData: filteredData })).unwrap();
         dispatch(fetchCandidates({ page: 0, perPage: 5 }));
-        toast.success("Candidate updated successfully.");
+        
         resetForm();
       } catch (error) {
         toast.error("Failed to update candidate details.");
@@ -136,9 +133,11 @@ const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) =
     setEditId(null); 
     setProfilePic(null);
     setSignature(null);
+    dispatch(clearSearchQuery());
     dispatch(clearCandidate());
     handleClose();
   };
+  
 
   return (
     <>

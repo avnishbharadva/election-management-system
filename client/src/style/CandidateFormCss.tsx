@@ -1,34 +1,49 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 
-export const DropzoneContainer = styled(Box)({
-    width: "378px",
-    height: "160px",
-    border: "2px dashed #007bff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    cursor: "pointer",
-    borderRadius: "12px",
-    backgroundColor: "#f0f8ff",
-    transition: "all 0.3s ease-in-out",
-    "&:hover": {
-      backgroundColor: "#e0f0ff",
-      borderColor: "#0056b3",
-    },
-  });
+export const DropzoneContainer = styled(Box)(({ theme }) => ({
+  width: "378px",
+  height: "160px",
+  border: "2px dashed #007bff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+  cursor: "pointer",
+  borderRadius: "12px",
+  backgroundColor: "#f0f8ff",
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    backgroundColor: "#e0f0ff",
+    borderColor: "#0056b3",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "100%", 
+    height: "auto", 
+    padding: "1rem", 
+  },
+  [theme.breakpoints.down("md")]: {
+    width: "100%", 
+    height: "auto", 
+    padding: "1rem", 
+  },
+}));
   
 export const Section = styled(Box)({
       gap: '2rem'
   });
   
-export const Row = styled(Box)({
+  export const Row = styled(Box)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     gap: "1.5rem",
     marginBottom: "1rem",
-  });
+    
+    [theme.breakpoints.down("sm")]: { 
+      flexDirection: "column", 
+      gap: "1rem", 
+    },
+  }));
   
 export  const DocumentContainer = styled(Box)({
     display: "flex",
@@ -64,6 +79,12 @@ export const Heading = styled(Typography)({
   fontSize: "20px",
 });
 
+export const FieldContainer = styled(Box)({
+  display: "flex",
+  flexDirection: "column", 
+  gap: "0.5rem", 
+  width: "100%", 
+});
 export const ModalFooter = styled(Box)({
   position: "sticky",
   bottom: 0,

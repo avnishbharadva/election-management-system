@@ -11,6 +11,7 @@ export const fetchCandidates = createAsyncThunk(
         `/candidates?page=${page}&perPage=${perPage}&sortBy=${sortBy}&sortDir=${sortDir}`
       );
       if(response.status === 200){
+      
         return response.data;
       }
       if(response.status === 404){
@@ -46,18 +47,12 @@ export const addCandidate = createAsyncThunk(
     try {
       const response = await axiosInstance.post("/candidates", formData);
       if (response.status === 200) {
+        toast.success(response.data.message)
         return response.data;
       } 
     } catch (error: any) {
-      if (error.response?.status === 400) {
-        toast.error("Invalid input. Please check the form fields.");
-      
-      } else if (error.response?.status === 500) {
-        toast.error("Server error. Please try again later.");
-      } else if (error.response?.status === 403) {
-        toast.error("Forbidden");
-      }else {       
-        toast.error("Failed to add candidate. Please try again.");
+      if (error.response?.status === 404) {
+        toast.error(error.response.data.message);
       }
       return rejectWithValue(error.response?.data || "Error occurred while adding candidate");
     }
@@ -94,7 +89,10 @@ export const updateCandidateData = createAsyncThunk(
         `/candidates/${candidateId}`,
         candidateData, 
       );
-      return response.data;
+      if (response.status === 200) {
+        toast.success(response.data.message)
+        return response.data;
+      } 
     } catch (error: any) {
       toast.error("Something Went Wrong!");
       return rejectWithValue(error.response?.data || error.message || "Error updating candidate");
@@ -112,7 +110,7 @@ export const deleteCandidateById = createAsyncThunk(
       toast.success(response.data.message);     
       return response.data;
     } catch (error: any) { 
-      toast.error("Something Went Wrong!");
+      toast.error(error.data.response.message);
       return rejectWithValue(error.response?.data || error.message || "Error deleting candidate");
     }
   }

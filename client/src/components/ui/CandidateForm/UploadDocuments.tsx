@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import {  Box, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import {
   Section,
   Title,
   DividerStyle,
-  FlexCenter,
   DropzoneContainer,
+  FlexCenter,
 } from "../../../style/CandidateFormCss";
 import { UploadDocumentsProps } from "../../../store/feature/candidate/types";
 

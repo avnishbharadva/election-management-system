@@ -26,7 +26,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({
     page: 0,
-    size: 10,
+    size: 5,
     ssnNumber: '',
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -104,17 +104,17 @@ const AddVoter = () => {
           open={Boolean(anchorEl) && selectedVoter?.voterId === voter?.voterId}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={() => handleAction('edit', voter)}>
-            <ListItemIcon>
-              <Edit fontSize="small" />
-            </ListItemIcon>
-            Edit
-          </MenuItem>
           <MenuItem onClick={() => handleAction('view', voter)}>
             <ListItemIcon>
               <Visibility fontSize="small" />
             </ListItemIcon>
             View
+          </MenuItem>
+          <MenuItem onClick={() => handleAction('edit', voter)}>
+            <ListItemIcon>
+              <Edit fontSize="small" />
+            </ListItemIcon>
+            Edit
           </MenuItem>
         </Menu>
       </>
