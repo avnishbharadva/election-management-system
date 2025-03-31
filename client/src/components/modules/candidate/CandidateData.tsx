@@ -37,7 +37,6 @@ import DeleteDialog from "../../ui/DeleteDialog";
 import ViewDetailsDialog from "../../ui/ViewDetailsDialog";
 import { candidateSections } from "../../../config/CandidateSection";
 import { AddCandidateBox } from "../../../style/CandidateFormCss";
-import CandidateForm from "./CandidateForm";
 import CandidateContainer from "./CandidatePage";
 
 const CandidateData = () => {

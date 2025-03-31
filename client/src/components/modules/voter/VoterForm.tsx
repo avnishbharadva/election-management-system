@@ -2,15 +2,17 @@
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Checkbox, FormControlLabel} from '@mui/material';
-import { ModalFooter, Title } from '../style/CandidateFormCss';
-import { NumberField, NameField, EmailField, GenderField, DateOfBirthField, FirstVotedYear,  StatusField, FormImage, MenuItemComponent, HasVotedBefore } from '../Helpers/FormFields';
-import { useCountiesQuery, useEditVoterMutation, useRegisterVoterMutation, useTownsQuery } from '../store/feature/voter/VoterAction';
 import { toast } from 'react-toastify';
-import { HeaderStyles, Container, FormRow, DividerStyle, FormRowWide, AddressField,  VotingInfo, FormRowCenterGap } from "../style/VoterStyleCss";
-import { updateFormValue } from '../Helpers/updateFormValue';
-import UpdateDialog from '../components/ui/UpdateDialog';
-import { FormData } from '../store/feature/voter/type';
-import { usePartyListQuery } from '../store/feature/party/partyAction';
+import { FormData } from '../../../store/feature/voter/type';
+import { useCountiesQuery, useEditVoterMutation, useRegisterVoterMutation, useTownsQuery } from '../../../store/feature/voter/VoterAction';
+import { updateFormValue } from '../../../Helpers/updateFormValue';
+import { usePartyListQuery } from '../../../store/feature/party/partyAction';
+import { AddressField, Container, DividerStyle, FormRow, FormRowCenterGap, FormRowWide, HeaderStyles, VotingInfo } from '../../../style/VoterStyleCss';
+import { Title } from '../../../style/CommanStyle';
+import { DateOfBirthField, EmailField, FirstVotedYear, FormImage, GenderField, HasVotedBefore, MenuItemComponent, NameField, NumberField, StatusField } from '../../../Helpers/FormFields';
+import { ModalFooter } from '../../../style/CandidateFormCss';
+import UpdateDialog from '../../ui/UpdateDialog';
+
 
 const defaultValues: FormData = {
   firstName: "",

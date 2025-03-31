@@ -19,9 +19,9 @@ import TableComponent from '../ui/TableComponent';
 import Pagination from '../ui/Pagination'
 import { FormData } from '../../store/feature/voter/type';
 import { SearchContainer } from '../../style/VoterStyleCss';
-import ViewDetailsDialog from '../ui/ViewDetailDialog';
-import { viewVoter, voterTableHeader } from '../../Voter/lableAndKey';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { viewVoter, voterTableHeader } from '../modules/voter/lableAndKey';
+import ViewDetailsDialog from '../ui/ViewDetailsDialog';
 
 const AddVoter = () => {
   const [searchParams, setSearchParams] = useState({

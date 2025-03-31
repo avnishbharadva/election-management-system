@@ -11,10 +11,10 @@ import { addElection, fetchElection, updateElectionById } from "../../../store/f
 import { AppDispatch } from "../../../store/app/store";
 import { toast, ToastContainer } from "react-toastify";
 import { Row, Section, Title } from "../../../style/CandidateFormCss";
-import UpdateDialog from "./UpdateDialog";
-import CloseIcon from "@mui/icons-material/Close";
 import { FormValues } from "../../../store/feature/election/types";
 import { CloseIconButton, ElectionButtonSection, ElectionFormContainer, ElectionFormWrapper, StyledButtonEle } from "../../../style/ElectionCss";
+import CloseIcon from '@mui/icons-material/Close';
+import UpdateDialog from "../../ui/UpdateDialog";
 
 const ElectionForm = ({ selectedElection, closeModal }: any) => {
   const dispatch = useDispatch<AppDispatch>();

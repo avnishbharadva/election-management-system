@@ -9,8 +9,8 @@ import { setPage, setPerPage } from "../../../store/feature/election/electionSli
 import { toast, ToastContainer } from "react-toastify";
 import {useEffect, useState} from 'react';
 import { BoxTableContainer } from "../../../style/TableContainerCss";
-import DeleteDialog from "./DeleteDialog";
 import { FlexBoxCenter } from "../../../style/CommanStyle";
+import DeleteDialog from "../../ui/DeleteDialog";
 
 const ElectionData = ({ handleOpenModel }: any) => {
   const dispatch = useDispatch<AppDispatch>();

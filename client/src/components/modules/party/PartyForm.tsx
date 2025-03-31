@@ -1,15 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { toast } from 'react-toastify';
-import { useRegisterPartyMutation, useEditPartyMutation } from "../store/feature/party/partyAction";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { NameField, NumberField } from "../Helpers/FormFields";
 import CloseIcon from "@mui/icons-material/Close";
-import { MainHead, Form, Container, Row, GridContainer, SubmitButtonContainer, CloseIconButton, PartyFormContainer } from "../style/PartyStyle";
-import UpdateDialog from "../components/ui/UpdateDialog"
-import { FormImage } from "../Helpers/FormFields";
-import { FormData } from "../Types/Party.types";
+
 import Button from "@mui/material/Button";
+import { useEditPartyMutation, useRegisterPartyMutation } from "../../../store/feature/party/partyAction";
+import { FormImage, NameField, NumberField } from "../../../Helpers/FormFields";
+import UpdateDialog from "../../ui/UpdateDialog";
+import { CloseIconButton, Container, Form, GridContainer, MainHead, PartyFormContainer, Row, SubmitButtonContainer } from "../../../style/PartyStyle";
 
 const defaultValues: FormData = {
     partyName: "",
