@@ -1,38 +1,48 @@
+components:
+  schemas:
+    AddressDetails:
+      type: object
+      properties:
+        addressLine:
+          type: string
+          minLength: 3
+          maxLength: 30
+          example: "123 Main St"
+        aptNumber:
+          minLength: 2
+          maxLength: 30
+          type: string
+          example: "Apt 4B"
+        city:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: "Springfield"
+        zipCode:
+          type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{5}$\", message = \"Zip Code must contain exactly 5 digits\")"
+          description: 5-digit ZIP code
+          example: "10001"
+        county:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: "1"
+        town:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: "Alexander Street"
+      required:
+        - addressLine
+        - city
+        - zipCode
+        - county
+        - town
+
 type: object
 properties:
-  addressLine:
-    type: string
-    minLength: 3
-    maxLength: 30
-    example: "123 Main St"
-  aptNumber:
-    minLength: 2
-    maxLength: 30
-    type: string
-    example: "Apt 4B"
-  city:
-    type: string
-    minLength: 3
-    maxLength: 20
-    example: "Springfield"
-  zipCode:
-    type: string
-    x-field-extra-annotation: "@jakarta.validation.constraints.Pattern(regexp = \"^\\\\d{5}$\", message = \"Zip Code must contain exactly 5 digits\")"
-    description: 5-digit ZIP code
-    example: "10001"
-  county:
-    type: string
-    minLength: 3
-    maxLength: 20
-    example: "1"
-  town:
-    type: string
-    minLength: 3
-    maxLength: 20
-    example: "Alexander Street"
-required:
-  - addressLine
-  - city
-  - zipCode
-  - county
-  - town
+  residentialAddress:
+    $ref: '#/components/schemas/AddressDetails'
+  mailingAddress:
+    $ref: '#/components/schemas/AddressDetails'

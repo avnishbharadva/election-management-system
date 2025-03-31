@@ -1,15 +1,12 @@
 package com.ems.entities;
 
 import com.ems.entities.constants.Gender;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -46,7 +43,7 @@ public class Voter extends AuditEntity {
     @Column(unique = true, length = 50)
     private String email;
 
-    @Column(length = 11, unique = true)
+    @Column(length = 10, unique = true)
     private String phoneNumber;
 
     @Column(columnDefinition = "boolean default false")

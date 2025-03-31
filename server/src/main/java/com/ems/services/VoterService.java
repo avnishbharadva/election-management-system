@@ -14,6 +14,6 @@ public interface VoterService {
     List<CountyDataDTO> getAllCounties();
     List<TownDataDTO> getAllTowns();
     VoterDataDTO updateVoter(String voterId, VoterUpdateRequest voterDTO);
-    VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress, String type);
-    VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress, String type);
+    VoterDataDTO transferVoterAddress(String voterId, TransferAddress transferAddress);
+    VoterDataDTO changeVoterAddress(String voterId, ChangeVoterAddress changeVoterAddress);
 }

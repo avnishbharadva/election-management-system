@@ -99,17 +99,17 @@ public class VoterApiController implements VotersApi {
     }
 
     @Override
-    public ResponseEntity<VoterDTO> transferVoter(String voterId, String addressType, TransferAddress transferAddress) {
+    public ResponseEntity<VoterDTO> transferVoter(String voterId, TransferAddress transferAddress) {
         log.info("Starting voter transfer for ID: {} | Request ID: {}", voterId, MDC.get("requestId"));
-        VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress, addressType);
+        VoterDataDTO transferredVoter = voterService.transferVoterAddress(voterId, transferAddress);
         log.info("Voter transfer successful for ID: {}", voterId);
         return ResponseEntity.ok(new VoterDTO("Voter Transferred Successfully", transferredVoter));
     }
 
     @Override
-    public ResponseEntity<VoterDTO> changeVoter(String voterId, String addressType, ChangeVoterAddress changeVoterAddress) {
-        log.info("Starting address change for voter ID: {} | Address type: {}", voterId, addressType);
-        VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress, addressType);
+    public ResponseEntity<VoterDTO> changeVoter(String voterId, ChangeVoterAddress changeVoterAddress) {
+        log.info("Starting address change for voter ID: {}", voterId);
+        VoterDataDTO updatedVoter = voterService.changeVoterAddress(voterId, changeVoterAddress);
         log.info("Voter address changed successfully for ID: {}", voterId);
         return ResponseEntity.ok(new VoterDTO("Voter address changed Successfully", updatedVoter));
     }
