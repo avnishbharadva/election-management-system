@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Box, Button } from "@mui/material";
-import ElectionForm from "../ui/ElectionForm";
-import ElectionData from "../ui/ElectionData";
-import Model from "../ui/Model";
+import {  Button } from "@mui/material";
+
 import { FlexBox } from "../../style/ElectionCss";
 import { FlexBoxCenter } from "../../style/CommanStyle";
+import ElectionData from "../modules/election/ElectionData";
+import Model from "../ui/Model";
+import ElectionForm from "../modules/election/ElectionForm";
 const AddElection = () => {
   const [open, setOpen] = useState(false);
   const [selectedElection, setSelectedElection] = useState(null);
@@ -29,7 +30,7 @@ const AddElection = () => {
 
       <Model open={open} handleclose={handleClose}>
         <FlexBoxCenter sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-          <ElectionForm selectedElection={selectedElection} closeModal={handleClose} />
+          <ElectionForm  selectedElection={selectedElection} closeModal={handleClose} />
         </FlexBoxCenter>
       </Model>
     </FlexBox>

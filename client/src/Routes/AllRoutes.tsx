@@ -1,10 +1,10 @@
 
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "../components/pages/Login";
-import AddCandidate from "../components/pages/AddCandidate";
-import AddVoter from "../components/pages/AddVoter";
-import AddParty from "../components/pages/AddParty";
-import AddElection from "../components/pages/AddElection";
+import AddCandidate from "../components/pages/Candidate";
+import AddVoter from "../components/pages/Voter";
+import AddParty from "../components/pages/Party";
+import AddElection from "../components/pages/Election";
 import Layout from "../components/ui/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../components/pages/Dashboard";

@@ -1,17 +1,13 @@
-
-import { ToastContainer } from 'react-toastify'
-import './App.css'
-import AllRoutes from './Routes/AllRoutes'
+import { ToastContainer } from "react-toastify";
+import AllRoutes from "./routes/AllRoutes";
 
 function App() {
- 
   return (
-
     <>
-   <AllRoutes/>
-   <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      <AllRoutes />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

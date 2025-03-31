@@ -1,5 +1,5 @@
-import SearchComponent from "../ui/SearchCandidate";
-import CandidateData from "../ui/CandidateData";
+import SearchComponent from "../modules/candidate/SearchCandidate";
+import CandidateData from "../modules/candidate/CandidateData";
 import { FlexBoxColumn } from "../../style/CommanStyle";
 import { Box, Button } from "@mui/material";
 

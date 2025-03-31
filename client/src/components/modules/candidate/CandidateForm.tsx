@@ -14,7 +14,7 @@ import { Box, Button, IconButton } from "@mui/material";
 import { defaultElection, defaultValues, IFormInput } from "../../../store/feature/candidate/types";
 import { clearCandidate, clearSearchQuery, resetFilteredCandidate } from "../../../store/feature/candidate/candidateSlice";
 import CloseIcon from "@mui/icons-material/Close";
-import UpdateDialog from "../UpdateDialog";
+import UpdateDialog from "../../ui/UpdateDialog";
 
 const CandidateForm: React.FC<{ handleClose: () => void }> = ({ handleClose }) => {
   const dispatch: AppDispatch = useDispatch();

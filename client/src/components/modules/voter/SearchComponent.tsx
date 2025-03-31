@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 // import '../../style/Search.css';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { CenterBox } from '../../style/VoterStyleCss';
+import { CenterBox } from '../../../style/VoterStyleCss';
 
 type SearchProps = {
   input: string;  

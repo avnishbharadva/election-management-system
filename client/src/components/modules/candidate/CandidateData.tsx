@@ -16,29 +16,28 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { RootState, AppDispatch } from "../../store/app/store";
+import { RootState, AppDispatch } from "../../../store/app/store";
 import {
   deleteCandidateById,
   fetchCandidateById,
   fetchCandidates,
-} from "../../store/feature/candidate/candidateAPI";
-import Model from "../ui/Model";
+} from "../../../store/feature/candidate/candidateAPI";
+import Model from "../../ui/Model";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { clearCandidate, resetFilteredCandidate, resetState, setPage, setPerPage , setSort} from "../../store/feature/candidate/candidateSlice";
+import { clearCandidate, resetFilteredCandidate, resetState, setPage, setPerPage , setSort} from "../../../store/feature/candidate/candidateSlice";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { BoxTableContainer } from "../../style/TableContainerCss";
-import { Candidate, defaultValues, ModalData } from "../../store/feature/candidate/types";
-import DeleteDialog from "./DeleteDialog";
-import ViewDetailsDialog from "./ViewDetailsDialog";
-import { candidateSections } from "../../config/CandidateSection";
-import { AddCandidateBox } from "../../style/CandidateFormCss";
-import CandidateForm from "./CandidateForm/CandidateForm";
-import CandidateContainer from "./CandidateForm/CandidatePage";
+import { BoxTableContainer } from "../../../style/TableContainerCss";
+import { Candidate, defaultValues, ModalData } from "../../../store/feature/candidate/types";
+import DeleteDialog from "../../ui/DeleteDialog";
+import ViewDetailsDialog from "../../ui/ViewDetailsDialog";
+import { candidateSections } from "../../../config/CandidateSection";
+import { AddCandidateBox } from "../../../style/CandidateFormCss";
+import CandidateContainer from "./CandidatePage";
 
 const CandidateData = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);

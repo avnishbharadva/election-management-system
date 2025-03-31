@@ -3,14 +3,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/app/store";
-import { fetchElection, deleteElectionById } from "../../store/feature/election/electionApi";
-import { setPage, setPerPage } from "../../store/feature/election/electionSlice";
+import { AppDispatch, RootState } from "../../../store/app/store";
+import { fetchElection, deleteElectionById } from "../../../store/feature/election/electionApi";
+import { setPage, setPerPage } from "../../../store/feature/election/electionSlice";
 import { toast, ToastContainer } from "react-toastify";
 import {useEffect, useState} from 'react';
-import { BoxTableContainer } from "../../style/TableContainerCss";
-import DeleteDialog from "./DeleteDialog";
-import { FlexBoxCenter } from "../../style/CommanStyle";
+import { BoxTableContainer } from "../../../style/TableContainerCss";
+import { FlexBoxCenter } from "../../../style/CommanStyle";
+import DeleteDialog from "../../ui/DeleteDialog";
 
 const ElectionData = ({ handleOpenModel }: any) => {
   const dispatch = useDispatch<AppDispatch>();

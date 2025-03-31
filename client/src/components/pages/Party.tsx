@@ -10,19 +10,19 @@ import {
 } from "@mui/material";
 import { Edit, Visibility, Delete } from "@mui/icons-material";
 import Model from "../ui/Model";
-import PartyForm from "../../Party/PartyForm";
 import {
   usePartyListQuery,
   useDeletePartyMutation,
 } from "../../store/feature/party/partyAction";
-import { partySections } from "../../Party/ViewParty";
 import Pagination from "../ui/Pagination";
 import TableComponent from "../ui/TableComponent";
 import { AddButtonContainer } from "../../style/PartyStyle";
 import DeleteDialog from "../ui/DeleteDialog";
-import ViewDetailsDialog from "../ui/ViewDetailDialog";
-import { Party } from "../../Types/Party.types";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Party } from "../../Types/Party.types";
+import PartyForm from "../modules/party/PartyForm";
+import { partySections } from "../modules/party/ViewParty";
+import ViewDetailsDialog from "../ui/ViewDetailsDialog";
 
 const partyHeader = [
   { id: "partyName", label: "Party Name" },
